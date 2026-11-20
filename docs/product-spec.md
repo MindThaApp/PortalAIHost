@@ -12,7 +12,7 @@ Goals:
 Non-goals (v1):
 - It is not a chat app. A minimal "Try it" box is fine.
 - No model training or fine-tuning.
-- No audio processing. Apps send text only.
+- No audio processing in v1. Apps send text only. Speech-to-text comes later as a user option (section 13).
 - No vision models in v1 (see section 12).
 
 ## 2. Users and scenarios
@@ -111,7 +111,8 @@ Decide before the Store listing.
 3. **Relay plus remote pairing,** security review.
 4. **macOS menu-bar host.**
 5. **Other apps join:** PDF Portal (ask questions about a PDF with page citations, summaries, data extraction), Files Portal.
-6. **Later:** vision model for drawings and scans on big-RAM machines; optional cloud bring-your-own-key backend behind the same API.
+6. **Speech-to-text (optional):** Whisper models on the host for the same PC and LAN (section 13).
+7. **Later:** vision model for drawings and scans on big-RAM machines; optional cloud bring-your-own-key backend behind the same API.
 
 ## 11. Acceptance for phase 1
 - Fresh Windows PC: install, recommended model chosen, download, "Try it" answers, all without other software.
@@ -126,3 +127,13 @@ Decide before the Store listing.
 - Business model (section 9).
 - Name check for the Store.
 - Whether Voice Portal's built-in text model should migrate to the host when both are installed, to avoid two copies.
+
+## 13. Speech-to-text (later, optional)
+Every part of this is a user option and off by default.
+- **Engine:** whisper.cpp (MIT), bundled beside llama.cpp. Whisper models (MIT) such as large-v3 and large-v3-turbo come from the same data-driven catalogue, with the same hardware-based recommendation.
+- **API:** the OpenAI-compatible `POST /v1/audio/transcriptions`, with the same tokens, queue and priorities as text.
+- **Reach:**
+  - Same PC and LAN first.
+  - Audio over the relay is a separate opt-in switch, off by default, because of size (~30–60 MB per hour) and privacy. If enabled, it carries the same E2E encryption and per-device limits.
+- **Clients:** Voice Portal keeps its built-in Whisper. Users can choose "Use Portal AI Host for transcription" when the host is reachable. Live dictation stays on-device by default.
+- **Privacy:** no audio or transcript is stored or logged on the host; audio is deleted from memory once transcribed.
