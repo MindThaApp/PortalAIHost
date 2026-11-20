@@ -1,0 +1,1 @@
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><ImplicitUsings>enable</ImplicitUsings><OutputType>WinExe</OutputType><TargetFramework>net10.0</TargetFramework><AssemblyName>SpikeVisible</AssemblyName></PropertyGroup></Project>
