@@ -19,6 +19,16 @@ public interface ICallerIdentityResolver
     CallerIdentity? Resolve(IPEndPoint remote, IPEndPoint local);
 }
 
+/// <summary>
+/// Binds an access request to the process that made it: only the same package (or, unpackaged, the same exe)
+/// may poll it and collect the token.
+/// </summary>
+public interface ICallerBoundRequests
+{
+    /// <summary>True when <paramref name="poller"/> may poll the request (also true for unknown ids).</summary>
+    bool IsSameCaller(string requestId, CallerIdentity poller);
+}
+
 /// <summary>Audit trail of auth decisions. By construction it carries ids only, never token text.</summary>
 public interface IAuthAuditLog
 {

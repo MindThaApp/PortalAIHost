@@ -36,7 +36,7 @@ public sealed class ClientRegistryOptions
 /// </list>
 /// All state changes run under one lock; persistence is atomic and happens before a token leaves the host.
 /// </summary>
-public sealed partial class ClientRegistry : IClientRegistry, IDisposable
+public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundRequests, IDisposable
 {
     public const string FileName = "clients.json";
     public const int SchemaVersion = 1;
@@ -235,6 +235,37 @@ public sealed partial class ClientRegistry : IClientRegistry, IDisposable
             await delayCts.CancelAsync().ConfigureAwait(false);
             ct.ThrowIfCancellationRequested();
             _ = finished;
+        }
+    }
+
+    public bool IsSameCaller(string requestId, CallerIdentity poller)
+    {
+        ArgumentNullException.ThrowIfNull(poller);
+        lock (_gate)
+        {
+            if (!_requests.TryGetValue(requestId, out var entry))
+            {
+                return true;
+            }
+
+            var creator = entry.Info.Caller;
+            if (!poller.SameUser)
+            {
+                return false;
+            }
+
+            if (creator.PackageFamilyName is not null || poller.PackageFamilyName is not null)
+            {
+                return string.Equals(creator.PackageFamilyName, poller.PackageFamilyName,
+                    StringComparison.OrdinalIgnoreCase);
+            }
+
+            if (creator.ExePath is not null || poller.ExePath is not null)
+            {
+                return string.Equals(creator.ExePath, poller.ExePath, StringComparison.OrdinalIgnoreCase);
+            }
+
+            return creator.ProcessId == poller.ProcessId;
         }
     }
 
