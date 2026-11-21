@@ -62,9 +62,9 @@ internal sealed class ProgressPump : IAsyncDisposable
         {
             await _write.WaitAsync(_stop.Token).ConfigureAwait(false);
         }
-        catch (OperationCanceledException)
+        catch (Exception ex) when (ex is OperationCanceledException or ObjectDisposedException)
         {
-            return;
+            return; // The pump was stopped or disposed while this tick waited.
         }
 
         try
@@ -74,13 +74,20 @@ internal sealed class ProgressPump : IAsyncDisposable
                 await _ctx.WriteProgressAsync(e).ConfigureAwait(false);
             }
         }
-        catch (Exception ex) when (ex is OperationCanceledException or IOException or InvalidOperationException)
+        catch (Exception ex) when (ex is OperationCanceledException or IOException or InvalidOperationException or
+            ObjectDisposedException)
         {
             // The client went away; the request's own token ends the work.
         }
         finally
         {
-            _write.Release();
+            try
+            {
+                _write.Release();
+            }
+            catch (ObjectDisposedException)
+            {
+            }
         }
     }
 
