@@ -18,6 +18,7 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
     private CatalogueModelSummary? _rec;
     private string _downloadState = "none";
     private int _loadVersion;
+    private bool _loaded;
 
     public HomeViewModel(ShellViewModel shell, IUiDispatcher ui, IStrings strings)
     {
@@ -73,6 +74,8 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
     [ObservableProperty] private double _percent;
     [ObservableProperty] private string _progressText = "";
     [ObservableProperty] private string _errorLine = "";
+    [ObservableProperty] private string _noteText = "";
+    [ObservableProperty] private bool _hasNote;
 
     /// <summary>Reads the model list and the connected apps from the host. Call when the page opens.</summary>
     public async Task LoadAsync()
@@ -98,6 +101,7 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
         _ui.Post(() =>
         {
             if (version != _loadVersion) return;
+            _loaded = true;
             LoadingCatalogue = false;
             if (apps is { } n) AppsLine = n == 0 ? _s.Get("Vm_HomeAppsNone") : n == 1 ? _s.Get("Vm_HomeApps1") : _s.Format("Vm_HomeApps", n);
             if (failed || view is null)
@@ -137,11 +141,20 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
         RefreshDownload();
     }
 
+    partial void OnErrorLineChanged(string value) => UpdateNote();
+
+    private void UpdateNote()
+    {
+        NoteText = ErrorLine.Length > 0 ? ErrorLine : IsDownloading ? "" : ProgressText;
+        HasNote = NoteText.Length > 0;
+    }
+
     private void RefreshDownload()
     {
         IsDownloading = _downloadState is "downloading" or "queued" or "verifying";
         DownloadFailed = _downloadState == "failed";
         CanDownload = _rec is not null && !NotEnoughSpace && (_downloadState is "none" or "paused" or "failed");
+        UpdateNote();
     }
 
     [RelayCommand]
@@ -200,7 +213,8 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
         var hadModel = ShowInstalled;
         Update();
         // A model appeared or went away: read the lists again so the card has the right apps count.
-        if (hadModel != ShowInstalled) _ = LoadAsync();
+        // Also covers the page opening before the host answered: the first connected snapshot loads them.
+        if (hadModel != ShowInstalled || (!_loaded && _shell.Snapshot.Connected)) _ = LoadAsync();
     }
 
     private void Update()

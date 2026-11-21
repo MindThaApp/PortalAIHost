@@ -12,6 +12,8 @@ public enum FakeScenario
     Loaded,
     SafeMode,
     ApprovalPending,
+    NoCatalogue,
+    LowDisk,
 }
 
 /// <summary>A host stand-in with scripted state. Nothing here touches disk or the network.</summary>
@@ -44,6 +46,8 @@ public sealed class FakeHostControl : IHostControl, IDisposable
         Scenario = scenario;
         _connected = scenario != FakeScenario.NoHost;
         _safeMode = scenario == FakeScenario.SafeMode;
+        CatalogueAvailable = scenario != FakeScenario.NoCatalogue;
+        if (scenario == FakeScenario.LowDisk) FreeBytes = 3_400_000_000;
         switch (scenario)
         {
             case FakeScenario.Downloading:

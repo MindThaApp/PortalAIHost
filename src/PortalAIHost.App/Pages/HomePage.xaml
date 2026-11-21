@@ -73,10 +73,9 @@
                             <TextBlock Text="{x:Bind ViewModel.ProgressText, Mode=OneWay}" TextWrapping="Wrap" />
                         </StackPanel>
                         <TextBlock
-                            Text="{x:Bind ViewModel.ProgressText, Mode=OneWay}"
+                            Text="{x:Bind ViewModel.NoteText, Mode=OneWay}"
                             TextWrapping="Wrap"
-                            Visibility="{x:Bind ViewModel.CanDownload, Mode=OneWay}" />
-                        <TextBlock Text="{x:Bind ViewModel.ErrorLine, Mode=OneWay}" TextWrapping="Wrap" />
+                            Visibility="{x:Bind ViewModel.HasNote, Mode=OneWay}" />
                         <StackPanel Orientation="Horizontal" Spacing="12">
                             <Button
                                 x:Uid="HomeDownloadButton"

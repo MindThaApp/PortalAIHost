@@ -96,6 +96,20 @@ public class HomeTests
     }
 
     [Fact]
+    public async Task Page_opened_before_the_host_answers_fills_in_once_connected()
+    {
+        using var rig = new Rig(FakeScenario.NoHost);
+        var home = new HomeViewModel(rig.Shell, rig.Ui, rig.Strings);
+        await home.LoadAsync();
+        Assert.False(home.HasRecommendation);
+        rig.Host.HostStarted();
+        await rig.Shell.RefreshAsync();
+        await Task.Delay(100);
+        Assert.True(home.ShowOnboarding);
+        Assert.True(home.HasRecommendation);
+    }
+
+    [Fact]
     public async Task No_model_shows_the_recommended_model_and_a_download_button()
     {
         var (rig, home) = await Open(FakeScenario.Fresh);
