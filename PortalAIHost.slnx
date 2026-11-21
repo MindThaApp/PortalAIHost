@@ -18,6 +18,7 @@
     <Project Path="tests/Portal.AiHost.Server.Tests/Portal.AiHost.Server.Tests.csproj" />
     <Project Path="tests/Portal.AiHost.Client.Tests/Portal.AiHost.Client.Tests.csproj" />
     <Project Path="tests/PortalAIHost.App.Tests/PortalAIHost.App.Tests.csproj" />
+    <Project Path="tests/PortalAIHost.Soak/PortalAIHost.Soak.csproj" />
   </Folder>
 </Solution>
 
