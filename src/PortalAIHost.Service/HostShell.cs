@@ -31,9 +31,15 @@ public sealed class HostShellOptions
 
     public IModelStore? Store { get; init; }
 
+    /// <summary>Opens the model store once this host holds the single-instance lock (used when Store is null).</summary>
+    public Func<IModelStore?>? OpenStore { get; init; }
+
     public string HostVersion { get; init; } = "1.0.0";
 
     public TimeSpan QuitGrace { get; init; } = TimeSpan.FromSeconds(5);
+
+    /// <summary>Grace for in-flight requests when Windows ends the session; the whole stop must fit in a few seconds.</summary>
+    public TimeSpan SessionEndGrace { get; init; } = TimeSpan.FromMilliseconds(500);
 
     /// <summary>Overrides the port list (tests).</summary>
     public IReadOnlyList<int>? Ports { get; init; }
@@ -49,11 +55,16 @@ public sealed class HostShell : IAsyncDisposable
     private readonly TaskCompletionSource _quit = new(TaskCreationOptions.RunContinuationsAsynchronously);
     private readonly TaskCompletionSource _done = new(TaskCreationOptions.RunContinuationsAsynchronously);
     private ControlPipeServer _pipe = null!;
-    private ClientRegistry _registry = null!;
-    private FairScheduler _scheduler = null!;
+    private ClientRegistry? _registry;
+    private FairScheduler? _scheduler;
     private SettingsStore<HostSettings> _settings = null!;
-    private SafeModeMarker _marker = null!;
+    private SafeModeMarker? _marker;
+    private readonly Lock _showGate = new();
+    private EventHandler<string?>? _showRequested;
+    private List<string?>? _pendingShows = [];
+    private IModelStore? _store;
     private int _quitting;
+    private volatile bool _sessionEnding;
 
     private HostShell(HostShellOptions options) => _o = options;
 
@@ -61,16 +72,46 @@ public sealed class HostShell : IAsyncDisposable
 
     public AiHostServer Server { get; private set; } = null!;
 
-    public SafeModeMarker Marker => _marker;
+    /// <summary>True from the start of a quit (pipe, tray or session end).</summary>
+    public bool IsQuitting => Volatile.Read(ref _quitting) != 0;
+
+    public SafeModeMarker Marker => _marker!;
 
     public ControlPipeServer Pipe => _pipe;
 
     public SettingsStore<HostSettings> Settings => _settings;
 
-    public IModelStore? Store => _o.Store;
+    public IModelStore? Store => _store;
 
-    /// <summary>The window asked to be shown (pipe <c>show</c>, tray Open, or an approval request).</summary>
-    public event EventHandler<string?>? ShowRequested;
+    /// <summary>
+    /// The window asked to be shown (pipe <c>show</c>, tray Open, or an approval request). Requests made before
+    /// the first handler is added are kept and delivered to it, so an early <c>show</c> is never lost.
+    /// </summary>
+    public event EventHandler<string?>? ShowRequested
+    {
+        add
+        {
+            List<string?>? replay;
+            lock (_showGate)
+            {
+                _showRequested += value;
+                replay = _pendingShows;
+                _pendingShows = null;
+            }
+
+            foreach (var page in replay ?? [])
+            {
+                value?.Invoke(this, page);
+            }
+        }
+        remove
+        {
+            lock (_showGate)
+            {
+                _showRequested -= value;
+            }
+        }
+    }
 
     /// <summary>Completes after a clean quit.</summary>
     public Task Completion => _done.Task;
@@ -80,7 +121,9 @@ public sealed class HostShell : IAsyncDisposable
         ArgumentNullException.ThrowIfNull(options);
         var shell = new HostShell(options);
         var handler = new ControlHandler(shell);
-        var pipe = ControlPipeServer.TryStart(options.Paths.PipeName, handler.HandleAsync);
+        // Hold the name now (single instance) but answer only once everything is up: a window that connects
+        // during startup waits, and its show or quit is handled after startup instead of hitting a half-built host.
+        var pipe = ControlPipeServer.TryStart(options.Paths.PipeName, handler.HandleAsync, acceptNow: false);
         if (pipe is null)
         {
             return null;
@@ -93,16 +136,18 @@ public sealed class HostShell : IAsyncDisposable
         }
         catch
         {
-            await pipe.DisposeAsync().ConfigureAwait(false);
+            await shell.AbortStartAsync().ConfigureAwait(false);
             throw;
         }
 
+        pipe.Begin();
         return shell;
     }
 
     private async Task StartCoreAsync(CancellationToken ct)
     {
         var root = _o.Paths.DataRoot;
+        _store = _o.Store ?? _o.OpenStore?.Invoke();
         _marker = SafeModeMarker.Begin(root);
         _settings = HostSettingsFile.Create(root);
         var settings = _settings.Load();
@@ -139,11 +184,26 @@ public sealed class HostShell : IAsyncDisposable
     {
         Status = Runtime.BuildStatus(null),
         SafeMode = Runtime.SafeMode,
-        UncleanExits = _marker.UncleanExits,
+        UncleanExits = _marker?.UncleanExits ?? 0,
         BaseUrl = Server?.BaseUrl,
     };
 
-    public void RequestShow(string? page) => ShowRequested?.Invoke(this, page);
+    public void RequestShow(string? page)
+    {
+        EventHandler<string?>? handler;
+        lock (_showGate)
+        {
+            if (_pendingShows is { } pending)
+            {
+                pending.Add(page);
+                return;
+            }
+
+            handler = _showRequested;
+        }
+
+        handler?.Invoke(this, page);
+    }
 
     /// <summary>Starts a clean quit (tray Quit or pipe <c>quit</c>); safe to call more than once.</summary>
     public void RequestQuit() => _ = QuitAsync();
@@ -159,17 +219,99 @@ public sealed class HostShell : IAsyncDisposable
         _quit.TrySetResult();
         try
         {
-            await Runtime.StopAsync(_o.QuitGrace).ConfigureAwait(false);
-            await Server.StopAsync().ConfigureAwait(false);
-            await _pipe.DisposeAsync().ConfigureAwait(false);
-            await Runtime.DisposeAsync().ConfigureAwait(false);
-            _registry.Dispose();
-            _scheduler.Dispose();
-            _marker.EndClean();
+            await StopPartsAsync(_sessionEnding ? _o.SessionEndGrace : _o.QuitGrace).ConfigureAwait(false);
+            Guard(() => _marker?.EndClean());
         }
         finally
         {
             _done.TrySetResult();
+        }
+    }
+
+    /// <summary>
+    /// Every step on its own guard, so one failure never skips the discovery delete or the clean-exit marker.
+    /// Works on a half-started host too (null parts are skipped).
+    /// </summary>
+    private async Task StopPartsAsync(TimeSpan grace)
+    {
+        await GuardAsync(() => Runtime?.StopAsync(grace) ?? Task.CompletedTask).ConfigureAwait(false);
+        await GuardAsync(() => Server?.StopAsync() ?? Task.CompletedTask).ConfigureAwait(false);
+        await GuardAsync(async () => await _pipe.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+        await GuardAsync(async () =>
+        {
+            if (Runtime is { } r)
+            {
+                await r.DisposeAsync().ConfigureAwait(false);
+            }
+        }).ConfigureAwait(false);
+        Guard(() => _registry?.Dispose());
+        Guard(() => _scheduler?.Dispose());
+    }
+
+    /// <summary>
+    /// Startup failed: release everything that started. The safe-mode marker stays, so a host that keeps failing
+    /// to start ends up in safe mode.
+    /// </summary>
+    private async Task AbortStartAsync()
+    {
+        Interlocked.Exchange(ref _quitting, 1);
+        try
+        {
+            await StopPartsAsync(TimeSpan.Zero).ConfigureAwait(false);
+        }
+        finally
+        {
+            _done.TrySetResult();
+        }
+    }
+
+    /// <summary>
+    /// Windows is ending the session or closing the app for an update. Called on the tray thread, which must not
+    /// return before the stop is done: the clean-exit marker and the discovery delete come first (they are what
+    /// the next start checks), then the normal quit with a short grace, bounded by the budget.
+    /// True when everything stopped in time.
+    /// </summary>
+    public bool StopForSessionEnd(TimeSpan budget)
+    {
+        _sessionEnding = true;
+        Guard(() =>
+        {
+            if (_o.Paths.DiscoveryPath is { } path && Runtime is { } r)
+            {
+                DiscoveryFileWriter.DeleteIfOwn(path, r.InstanceId);
+            }
+        });
+        Guard(() => _marker?.EndClean());
+        var quit = QuitAsync();
+        try
+        {
+            return quit.Wait(budget);
+        }
+        catch (AggregateException)
+        {
+            return true;
+        }
+    }
+
+    private static void Guard(Action step)
+    {
+        try
+        {
+            step();
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException)
+        {
+        }
+    }
+
+    private static async Task GuardAsync(Func<Task> step)
+    {
+        try
+        {
+            await step().ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException)
+        {
         }
     }
 
@@ -181,7 +323,7 @@ public sealed class HostShell : IAsyncDisposable
 
     private async Task LoadActiveModelsAsync(CancellationToken ct)
     {
-        if (_o.Store is null || !File.Exists(ActiveModelsPath))
+        if (_store is null || !File.Exists(ActiveModelsPath))
         {
             return;
         }
@@ -198,7 +340,7 @@ public sealed class HostShell : IAsyncDisposable
 
         foreach (var (kind, id) in map ?? [])
         {
-            if (await _o.Store.GetAsync(id, ct).ConfigureAwait(false) is { IsComplete: true } stored && stored.Kind == kind)
+            if (await _store.GetAsync(id, ct).ConfigureAwait(false) is { IsComplete: true } stored && stored.Kind == kind)
             {
                 await Runtime.SetActiveAsync(kind, ToActive(stored), ct).ConfigureAwait(false);
             }
@@ -207,7 +349,7 @@ public sealed class HostShell : IAsyncDisposable
 
     internal async Task ActivateAsync(string modelId, CancellationToken ct)
     {
-        var stored = _o.Store is null ? null : await _o.Store.GetAsync(modelId, ct).ConfigureAwait(false);
+        var stored = _store is null ? null : await _store.GetAsync(modelId, ct).ConfigureAwait(false);
         if (stored is not { IsComplete: true })
         {
             throw new ControlPipeException(ErrorCodes.NotFound, "That model is not installed.");

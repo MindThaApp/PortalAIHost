@@ -4,7 +4,8 @@ namespace Portal.AiHost.Platform.Windows.Tray;
 
 /// <summary>
 /// Plain <c>Shell_NotifyIcon</c> tray icon with Open and Quit, on its own message-loop thread. Its hidden
-/// top-level window also receives <c>WM_POWERBROADCAST</c>, so the host learns about resume from sleep.
+/// top-level window also receives <c>WM_POWERBROADCAST</c> (resume from sleep) and <c>WM_QUERYENDSESSION</c> /
+/// <c>WM_ENDSESSION</c> (shutdown, logoff, update), so the host can stop cleanly.
 /// Events are raised on the tray thread; handlers should hand work off quickly.
 /// </summary>
 public sealed unsafe partial class TrayIcon : IDisposable
@@ -15,6 +16,10 @@ public sealed unsafe partial class TrayIcon : IDisposable
     private const uint WmDestroy = 0x0002;
     private const uint WmCommand = 0x0111;
     private const uint WmPowerBroadcast = 0x0218;
+    private const uint WmQueryEndSession = 0x0011;
+    private const uint WmEndSession = 0x0016;
+    private const nint EndSessionCloseApp = 0x1;
+    private const uint RestartNoCrash = 1, RestartNoHang = 2, RestartNoReboot = 8;
     private const uint WmLButtonDblClk = 0x0203;
     private const uint WmRButtonUp = 0x0205;
     private const uint WmContextMenu = 0x007B;
@@ -34,12 +39,14 @@ public sealed unsafe partial class TrayIcon : IDisposable
     private readonly string _tooltip;
     private readonly string _openText;
     private readonly string _quitText;
+    private readonly bool _showIcon;
     private uint _taskbarCreated;
     private nint _hwnd;
     private Exception? _startError;
 
-    private TrayIcon(string tooltip, string openText, string quitText)
+    private TrayIcon(string tooltip, string openText, string quitText, bool showIcon)
     {
+        _showIcon = showIcon;
         _tooltip = tooltip;
         _openText = openText;
         _quitText = quitText;
@@ -53,9 +60,24 @@ public sealed unsafe partial class TrayIcon : IDisposable
 
     public event EventHandler? Resumed;
 
-    public static TrayIcon Start(string tooltip = "Portal AI Host", string openText = "Open", string quitText = "Quit")
+    /// <summary>
+    /// Windows is ending the session (shutdown, restart, logoff) or closing the app for an update (argument true).
+    /// Raised synchronously on the tray thread: the handler must finish its clean stop before it returns, because
+    /// the process can be ended as soon as it does.
+    /// </summary>
+    public event EventHandler<bool>? SessionEnding;
+
+    /// <summary>The hidden window that receives tray, power and session messages.</summary>
+    public nint WindowHandle => _hwnd;
+
+    /// <summary>
+    /// Starts the hidden window and, when <paramref name="showIcon"/> is true, the tray icon. Without the icon the
+    /// window still receives resume and session-end messages (test mode, or a host with no tray).
+    /// </summary>
+    public static TrayIcon Start(string tooltip = "Portal AI Host", string openText = "Open", string quitText = "Quit",
+        bool showIcon = true)
     {
-        var tray = new TrayIcon(tooltip, openText, quitText);
+        var tray = new TrayIcon(tooltip, openText, quitText, showIcon);
         tray._thread.Start();
         tray._ready.Wait(TimeSpan.FromSeconds(10));
         if (tray._startError is { } error)
@@ -119,7 +141,20 @@ public sealed unsafe partial class TrayIcon : IDisposable
         }
     }
 
-    private void AddIcon() => Notify(NimAdd, NifMessage | NifIcon | NifTip);
+    private void AddIcon()
+    {
+        if (_showIcon)
+        {
+            Notify(NimAdd, NifMessage | NifIcon | NifTip);
+        }
+    }
+
+    /// <summary>
+    /// Asks Windows to start the host again after an update or Restart Manager closed it (not after a crash, a
+    /// hang or a reboot). Returns false when Windows refused.
+    /// </summary>
+    public static bool RegisterForRestartAfterUpdate() =>
+        RegisterApplicationRestart(null, RestartNoCrash | RestartNoHang | RestartNoReboot) == 0;
 
     private void Notify(uint message, uint flags)
     {
@@ -186,6 +221,15 @@ public sealed unsafe partial class TrayIcon : IDisposable
                 }
 
                 return 0;
+            case WmQueryEndSession:
+                return 1; // Never block shutdown; the clean stop happens on WM_ENDSESSION.
+            case WmEndSession:
+                if (wParam != 0)
+                {
+                    SessionEnding?.Invoke(this, (lParam & EndSessionCloseApp) != 0);
+                }
+
+                return 0;
             case WmPowerBroadcast:
                 if (wParam is PbtApmResumeAutomatic or PbtApmResumeSuspend)
                 {
@@ -194,7 +238,11 @@ public sealed unsafe partial class TrayIcon : IDisposable
 
                 return 1;
             case WmCloseTray:
-                Notify(NimDelete, 0);
+                if (_showIcon)
+                {
+                    Notify(NimDelete, 0);
+                }
+
                 DestroyWindow(_hwnd);
                 return 0;
             case WmDestroy:
@@ -314,6 +362,9 @@ public sealed unsafe partial class TrayIcon : IDisposable
 
     [LibraryImport("kernel32.dll", StringMarshalling = StringMarshalling.Utf16)]
     private static partial nint GetModuleHandleW(string? name);
+
+    [LibraryImport("kernel32.dll", StringMarshalling = StringMarshalling.Utf16)]
+    private static partial int RegisterApplicationRestart(string? commandLine, uint flags);
 
     [LibraryImport("user32.dll", SetLastError = true)]
     private static partial ushort RegisterClassExW(WndClassExW* wc);

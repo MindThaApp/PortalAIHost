@@ -14,6 +14,15 @@ internal static class Program
 {
     public const string TrayInTestModeVariable = "PORTALAIHOST_TEST_TRAY";
 
+    /// <summary>The host could not start (no free port, unreadable data); everything it started was released.</summary>
+    public const int StartFailedExitCode = 4;
+
+    /// <summary>Another Windows user's process holds this user's pipe name.</summary>
+    public const int PipeHeldByOtherUserExitCode = 5;
+
+    /// <summary>How long a session end may take before Windows is let go.</summary>
+    private static readonly TimeSpan SessionEndBudget = TimeSpan.FromSeconds(3);
+
     [STAThread]
     private static int Main(string[] args) => RunAsync(args).GetAwaiter().GetResult();
 
@@ -32,23 +41,37 @@ internal static class Program
             [ModelKinds.Embedding] = CreateSupervisor(ModelKinds.Embedding),
         };
 
-        var shell = await HostShell.StartAsync(new HostShellOptions
+        HostShell? shell;
+        try
         {
-            Paths = paths,
-            Supervisors = supervisors,
-            KeyProtector = new DpapiHostKeyProtector(),
-            CallerResolver = new WindowsCallerIdentityResolver(),
-            Hardware = new WindowsHardwareProbe(),
-            Store = OpenStore(paths),
-            HostVersion = typeof(Program).Assembly.GetName().Version?.ToString(3) ?? "1.0.0",
-        }).ConfigureAwait(false);
+            shell = await HostShell.StartAsync(new HostShellOptions
+            {
+                Paths = paths,
+                Supervisors = supervisors,
+                KeyProtector = new DpapiHostKeyProtector(),
+                CallerResolver = new WindowsCallerIdentityResolver(),
+                Hardware = new WindowsHardwareProbe(),
+                OpenStore = () => OpenStore(paths), // Only after the single-instance lock is held.
+                HostVersion = typeof(Program).Assembly.GetName().Version?.ToString(3) ?? "1.0.0",
+            }).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException)
+        {
+            await DisposeAllAsync(supervisors.Values).ConfigureAwait(false);
+            await Console.Error.WriteLineAsync("Portal AI Host could not start: " + ex.GetType().Name).ConfigureAwait(false);
+            return StartFailedExitCode;
+        }
 
         if (shell is null)
         {
             // Another host owns this user's pipe: ask it to show its window, then leave.
-            foreach (var s in supervisors.Values)
+            await DisposeAllAsync(supervisors.Values).ConfigureAwait(false);
+            if (await ControlPipeServer.ProbeHolderAsync(paths.PipeName, TimeSpan.FromSeconds(1)).ConfigureAwait(false)
+                is PipeHolder.OtherUser)
             {
-                await s.DisposeAsync().ConfigureAwait(false);
+                await Console.Error.WriteLineAsync("Portal AI Host cannot start: another Windows user holds its admin pipe.")
+                    .ConfigureAwait(false);
+                return PipeHeldByOtherUserExitCode;
             }
 
             try
@@ -65,13 +88,26 @@ internal static class Program
         }
 
         shell.ShowRequested += (_, page) => OpenWindow(paths, page);
+        // The hidden window always runs (test mode too) so shutdown, logoff, update and resume reach the host;
+        // the icon itself only outside test mode unless asked for.
+        var showIcon = !paths.TestMode || Environment.GetEnvironmentVariable(TrayInTestModeVariable) == "1";
         TrayIcon? tray = null;
-        if (!paths.TestMode || Environment.GetEnvironmentVariable(TrayInTestModeVariable) == "1")
+        try
         {
-            tray = TrayIcon.Start();
+            tray = TrayIcon.Start(showIcon: showIcon);
             tray.OpenRequested += (_, _) => OpenWindow(paths, null);
             tray.QuitRequested += (_, _) => shell.RequestQuit();
             tray.Resumed += (_, _) => _ = shell.OnResumeAsync();
+            tray.SessionEnding += (_, _) => shell.StopForSessionEnd(SessionEndBudget);
+        }
+        catch (InvalidOperationException)
+        {
+            // No window station (for example a service session): the host still serves; quit comes over the pipe.
+        }
+
+        if (!paths.TestMode)
+        {
+            TrayIcon.RegisterForRestartAfterUpdate();
         }
 
         try
@@ -84,6 +120,20 @@ internal static class Program
         }
 
         return 0;
+    }
+
+    private static async Task DisposeAllAsync(IEnumerable<IEngineSupervisor> supervisors)
+    {
+        foreach (var s in supervisors)
+        {
+            try
+            {
+                await s.DisposeAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is not OutOfMemoryException)
+            {
+            }
+        }
     }
 
     private static EngineSupervisor CreateSupervisor(string kind) => new(kind, new LlamaServerAdapter(),
