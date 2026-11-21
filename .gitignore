@@ -4,4 +4,4 @@ obj/
 .vs/
 builds/
 artifacts/
-models/
+/models/
