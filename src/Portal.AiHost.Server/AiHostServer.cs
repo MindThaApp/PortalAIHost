@@ -3,10 +3,12 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text.Json;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Connections.Features;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Portal.AiHost.Contracts;
@@ -61,6 +63,12 @@ public sealed class AiHostServer : IAsyncDisposable
     private readonly AiHostServerOptions _options;
     private WebApplication? _app;
 
+    /// <summary>Open TCP connections allowed at once.</summary>
+    public const int MaxConnections = 256;
+
+    /// <summary>How long a stop waits for open requests before closing them.</summary>
+    public static readonly TimeSpan ShutdownTimeout = TimeSpan.FromSeconds(2);
+
     private AiHostServer(AiHostRuntime runtime, AiHostServerOptions options)
     {
         _runtime = runtime;
@@ -88,7 +96,10 @@ public sealed class AiHostServer : IAsyncDisposable
         Exception? last = null;
         foreach (var port in options.CandidatePorts())
         {
-            foreach (var withIpv6 in Socket.OSSupportsIPv6 ? new[] { true, false } : [false])
+            // Fixed ports listen on both loopbacks or not at all: if [::1]:P is taken the next port is tried, so
+            // a client that resolves localhost to ::1 never reaches a stranger. The OS-assigned fallback is IPv4
+            // only, because the two families would get different ports.
+            foreach (var withIpv6 in port != 0 && Socket.OSSupportsIPv6 ? new[] { true } : [false])
             {
                 ct.ThrowIfCancellationRequested();
                 var app = server.Build(port, withIpv6);
@@ -106,6 +117,11 @@ public sealed class AiHostServer : IAsyncDisposable
                 {
                     last = ex;
                     await app.DisposeAsync().ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    await app.DisposeAsync().ConfigureAwait(false);
+                    throw;
                 }
             }
         }
@@ -138,10 +154,14 @@ public sealed class AiHostServer : IAsyncDisposable
             Args = [],
         });
         builder.Configuration.Sources.Clear();
+        builder.Configuration.AddInMemoryCollection(); // Only what this code sets.
         builder.WebHost.UseKestrelCore();
+        builder.Services.Configure<Microsoft.Extensions.Hosting.HostOptions>(o => o.ShutdownTimeout = ShutdownTimeout);
         builder.WebHost.ConfigureKestrel(k =>
         {
             k.AddServerHeader = false;
+            // Local apps only: a sane cap stops a runaway client from exhausting the host.
+            k.Limits.MaxConcurrentConnections = MaxConnections;
             // Kestrel's own cap is a backstop one byte above ours, so our OpenAI-shaped 413 wins.
             k.Limits.MaxRequestBodySize = (long)_options.MaxRequestBytes + 1;
             k.Limits.MaxRequestHeadersTotalSize = 32 * 1024;
@@ -171,14 +191,36 @@ public sealed class AiHostServer : IAsyncDisposable
             return;
         }
 
-        if (RequestGuard.HasOrigin(request))
+        if (RequestGuard.IsBrowserRequest(request))
         {
             await WriteErrorAsync(http, ErrorCodes.ForbiddenOrigin, "Browser requests are not accepted.").ConfigureAwait(false);
             return;
         }
 
-        var (result, body) = await RequestGuard.ReadBodyAsync(request, _options.MaxRequestBytes, http.RequestAborted)
-            .ConfigureAwait(false);
+        RequestGuard.BodyResult result;
+        byte[] body;
+        try
+        {
+            (result, body) = await RequestGuard.ReadBodyAsync(request, _options.MaxRequestBytes, http.RequestAborted)
+                .ConfigureAwait(false);
+        }
+        catch (Exception ex) when (http.RequestAborted.IsCancellationRequested &&
+            ex is IOException or OperationCanceledException or BadHttpRequestException)
+        {
+            return; // The client went away mid-body: nobody to answer.
+        }
+        catch (BadHttpRequestException)
+        {
+            http.Response.Headers.Connection = "close";
+            await WriteErrorAsync(http, ErrorCodes.InvalidRequest, "The request body could not be read.").ConfigureAwait(false);
+            return;
+        }
+        catch (IOException)
+        {
+            http.Response.Headers.Connection = "close";
+            await WriteErrorAsync(http, ErrorCodes.InvalidRequest, "The request body could not be read.").ConfigureAwait(false);
+            return;
+        }
         if (result == RequestGuard.BodyResult.TooLarge)
         {
             http.Response.Headers.Connection = "close";
@@ -199,6 +241,8 @@ public sealed class AiHostServer : IAsyncDisposable
         await _runtime.Pipeline.HandleAsync(apiRequest, new KestrelResponseSink(http)).ConfigureAwait(false);
     }
 
+    private static readonly object CallerKey = new();
+
     private CallerIdentity? ResolveCaller(HttpContext http)
     {
         var c = http.Connection;
@@ -207,14 +251,27 @@ public sealed class AiHostServer : IAsyncDisposable
             return null;
         }
 
+        // One lookup per TCP connection: the process at the other end cannot change while it stays open.
+        var items = http.Features.Get<IConnectionItemsFeature>()?.Items;
+        if (items is not null && items.TryGetValue(CallerKey, out var cached) && cached is CallerIdentity known)
+        {
+            return known;
+        }
+
         try
         {
-            return _options.CallerResolver.Resolve(new IPEndPoint(c.RemoteIpAddress, c.RemotePort),
+            var caller = _options.CallerResolver.Resolve(new IPEndPoint(c.RemoteIpAddress, c.RemotePort),
                 new IPEndPoint(c.LocalIpAddress, c.LocalPort));
+            if (caller is not null && items is not null)
+            {
+                items[CallerKey] = caller;
+            }
+
+            return caller;
         }
-        catch (Exception ex) when (ex is InvalidOperationException or System.ComponentModel.Win32Exception or IOException)
+        catch (Exception ex) when (ex is not OutOfMemoryException)
         {
-            return null;
+            return null; // Fail closed: no identity means no access request.
         }
     }
 
@@ -282,7 +339,13 @@ public sealed class AiHostServer : IAsyncDisposable
             _app = null;
             try
             {
-                await app.StopAsync(ct).ConfigureAwait(false);
+                using var deadline = CancellationTokenSource.CreateLinkedTokenSource(ct);
+                deadline.CancelAfter(ShutdownTimeout);
+                await app.StopAsync(deadline.Token).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                // Past the deadline: the remaining connections are closed by DisposeAsync.
             }
             finally
             {

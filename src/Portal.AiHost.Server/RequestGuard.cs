@@ -31,6 +31,14 @@ public static class RequestGuard
     /// <summary>Any Origin header means a browser; no legitimate client sends one.</summary>
     public static bool HasOrigin(HttpRequest request) => request.Headers.ContainsKey("Origin");
 
+    /// <summary>
+    /// Origin or any Fetch Metadata header means a browser. A no-cors GET (an img or script tag) carries no Origin,
+    /// but every current browser adds Sec-Fetch-*; native clients send none of them.
+    /// </summary>
+    public static bool IsBrowserRequest(HttpRequest request) =>
+        HasOrigin(request) || request.Headers.ContainsKey("Sec-Fetch-Site") ||
+        request.Headers.ContainsKey("Sec-Fetch-Mode") || request.Headers.ContainsKey("Sec-Fetch-Dest");
+
     public enum BodyResult
     {
         Ok,

@@ -92,6 +92,20 @@ public sealed class SecurityTests
         Assert.Contains("\"forbidden_origin\"", await response.Content.ReadAsStringAsync());
     }
 
+    [Theory]
+    [InlineData("Sec-Fetch-Site", "cross-site")]
+    [InlineData("Sec-Fetch-Mode", "no-cors")]
+    [InlineData("Sec-Fetch-Dest", "image")]
+    public async Task Fetch_metadata_header_without_origin_is_refused(string header, string value)
+    {
+        await using var host = await TestHost.StartAsync();
+        using var msg = new HttpRequestMessage(HttpMethod.Get, Routes.Ping);
+        msg.Headers.Add(header, value);
+        using var response = await host.Http.SendAsync(msg);
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+        Assert.Contains("\"forbidden_origin\"", await response.Content.ReadAsStringAsync());
+    }
+
     [Fact]
     public async Task Post_without_json_content_type_is_refused()
     {

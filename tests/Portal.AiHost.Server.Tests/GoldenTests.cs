@@ -165,7 +165,8 @@ public sealed class GoldenTests
         await host.Registry.ApproveAsync(id, default);
         using var poll = await host.Http.GetAsync($"{Routes.AuthRequests}/{id}?wait_ms=0");
         AssertShape(AuthApproved, await poll.Content.ReadAsStringAsync());
-        Assert.True(host.Resolver.Calls >= 2, "Every request, /host/auth included, carries the caller identity.");
+        // The identity is looked up once per TCP connection and reused for its later requests.
+        Assert.True(host.Resolver.Calls >= 1, "Every request, /host/auth included, carries the caller identity.");
     }
 
     [Fact]

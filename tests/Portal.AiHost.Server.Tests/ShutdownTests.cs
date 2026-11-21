@@ -56,4 +56,22 @@ public sealed class ShutdownTests
         Assert.Equal(EngineState.Ready, host.Chat.State);
         Assert.Equal(loadsBefore + 1, host.Chat.LoadCount);
     }
+
+    [Fact]
+    public async Task Server_stop_does_not_wait_for_a_long_request()
+    {
+        await using var host = await TestHost.StartAsync(new FakeEngineOptions { TokenDelay = TimeSpan.FromSeconds(30) });
+        var token = await host.GetTokenAsync();
+        var call = host.Http.SendAsync(host.Authed(HttpMethod.Post, Routes.ChatCompletions, token,
+            """{ "messages": [ { "role": "user", "content": "Hi" } ] }"""));
+        for (var i = 0; i < 100 && host.Runtime.InFlightRequests == 0; i++)
+        {
+            await Task.Delay(20);
+        }
+
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+        await host.Server.StopAsync();
+        Assert.True(watch.Elapsed < TimeSpan.FromSeconds(6), watch.Elapsed.ToString());
+        await Assert.ThrowsAnyAsync<Exception>(() => call.WaitAsync(TimeSpan.FromSeconds(10)));
+    }
 }
