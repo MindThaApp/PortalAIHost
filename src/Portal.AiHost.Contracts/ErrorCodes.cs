@@ -23,6 +23,7 @@ public static class ErrorCodes
     public const string EngineRestarting = "engine_restarting";
     public const string InsufficientMemory = "insufficient_memory";
     public const string HostStopping = "host_stopping";
+    public const string AuthUnavailable = "auth_unavailable";
     public const string DeadlineExceeded = "deadline_exceeded";
     public const string EngineError = "engine_error";
     public const string InternalError = "internal_error";
@@ -67,6 +68,7 @@ public static class ErrorCatalog
         [ErrorCodes.EngineRestarting] = new(503, ErrorTypes.Unavailable, true),
         [ErrorCodes.InsufficientMemory] = new(503, ErrorTypes.Unavailable, false),
         [ErrorCodes.HostStopping] = new(503, ErrorTypes.Unavailable, false),
+        [ErrorCodes.AuthUnavailable] = new(503, ErrorTypes.Unavailable, true),
         [ErrorCodes.DeadlineExceeded] = new(504, ErrorTypes.Timeout, false),
         [ErrorCodes.EngineError] = new(500, ErrorTypes.Server, true),
         [ErrorCodes.InternalError] = new(500, ErrorTypes.Server, true),

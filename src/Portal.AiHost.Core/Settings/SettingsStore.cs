@@ -63,6 +63,11 @@ public sealed class SettingsStore<T>
 
     public int SchemaVersion { get; }
 
+    /// <summary>How often a read is tried when the file is locked, before the store reports Unavailable.</summary>
+    public int ReadAttempts { get; init; } = 3;
+
+    public TimeSpan ReadRetryDelay { get; init; } = TimeSpan.FromMilliseconds(50);
+
     public string FilePath => _path;
 
     public SettingsLoadState LoadState { get; private set; } = SettingsLoadState.Defaults;
@@ -96,12 +101,23 @@ public sealed class SettingsStore<T>
                 return _current;
             }
 
-            byte[] raw;
-            try
+            byte[]? raw = null;
+            for (var attempt = 1; raw is null && attempt <= Math.Max(1, ReadAttempts); attempt++)
             {
-                raw = File.ReadAllBytes(_path);
+                try
+                {
+                    raw = File.ReadAllBytes(_path);
+                }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+                {
+                    if (attempt < ReadAttempts && ReadRetryDelay > TimeSpan.Zero)
+                    {
+                        Thread.Sleep(ReadRetryDelay);
+                    }
+                }
             }
-            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+
+            if (raw is null)
             {
                 // Locked or unreadable: use defaults in memory, refuse to save over the file.
                 LoadState = SettingsLoadState.Unavailable;

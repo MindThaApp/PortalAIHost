@@ -25,6 +25,13 @@ public sealed class DpapiHostKeyProtector : IHostKeyProtector
         return Transform(protectedData, protect: false);
     }
 
+    /// <summary>Errors that mean the blob will never open: damaged data or another user's key.</summary>
+    private static bool IsDefinitive(int error) => error is
+        13 // ERROR_INVALID_DATA
+        or unchecked((int)0x80090005) // NTE_BAD_DATA
+        or unchecked((int)0x80090003) // NTE_BAD_KEY
+        or unchecked((int)0x8009000B); // NTE_BAD_KEY_STATE (another user's or a reset profile key)
+
     private static unsafe byte[] Transform(byte[] input, bool protect)
     {
         fixed (byte* inPtr = input)
@@ -40,7 +47,14 @@ public sealed class DpapiHostKeyProtector : IHostKeyProtector
                     IdentityNative.CryptProtectUiForbidden, &outBlob);
             if (!ok)
             {
-                throw new CryptographicException(Marshal.GetLastPInvokeError());
+                var error = Marshal.GetLastPInvokeError();
+                if (!protect && IsDefinitive(error))
+                {
+                    throw new HostKeyDamagedException("The host key blob cannot be opened by this user.",
+                        new CryptographicException(error));
+                }
+
+                throw new CryptographicException(error);
             }
 
             try

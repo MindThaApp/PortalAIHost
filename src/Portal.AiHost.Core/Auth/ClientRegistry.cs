@@ -28,6 +28,11 @@ public sealed class ClientRegistryOptions
     /// <summary>Pending requests the host keeps open at once, so prompts cannot be flooded.</summary>
     public int MaxPendingPerHost { get; init; } = 16;
 
+    /// <summary>Attempts to read host.key and clients.json before reporting auth_unavailable.</summary>
+    public int StoreReadAttempts { get; init; } = 3;
+
+    public TimeSpan StoreRetryDelay { get; init; } = TimeSpan.FromMilliseconds(50);
+
     /// <summary>Last-used times are written to disk at most this often per token.</summary>
     public TimeSpan LastUsedWriteInterval { get; init; } = TimeSpan.FromMinutes(5);
 }
@@ -55,13 +60,15 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
     private readonly ClientRegistryOptions _options;
     private readonly TimeProvider _time;
     private readonly IAuthAuditLog? _audit;
-    private readonly TokenHasher _hasher;
-    private readonly SettingsStore<ClientRegistryData> _store;
+    private readonly IHostKeyProtector _protector;
+    private TokenHasher? _hasher;
+    private SettingsStore<ClientRegistryData>? _store;
+    private bool _ready;
     private readonly Lock _gate = new();
     private readonly Dictionary<string, PendingRequest> _requests = new(StringComparer.Ordinal);
     private readonly Dictionary<string, List<DateTimeOffset>> _attempts = new(StringComparer.Ordinal);
     private readonly Dictionary<string, DateTimeOffset> _lastUsedWritten = new(StringComparer.Ordinal);
-    private readonly ClientRegistryData _data;
+    private ClientRegistryData _data = new();
 
     // Decoded digests, parallel to _data.Clients (same order).
     private readonly List<byte[]> _digests = new();
@@ -74,43 +81,106 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
         _options = options;
         _time = time ?? TimeProvider.System;
         _audit = audit;
+        _protector = protector;
         Directory.CreateDirectory(options.DataDirectory);
 
-        var key = HostKeyFile.LoadOrCreate(options.DataDirectory, protector, out var keyCreated);
-        try
+        // A locked or unreadable store at start-up is retried on the next call (503 auth_unavailable meanwhile).
+        lock (_gate)
         {
-            _hasher = new TokenHasher(key);
-        }
-        finally
-        {
-            CryptographicOperations.ZeroMemory(key);
-        }
-
-        _store = new SettingsStore<ClientRegistryData>(Path.Combine(options.DataDirectory, FileName),
-            AuthJsonContext.Default.ClientRegistryData, SchemaVersion, static () => new ClientRegistryData());
-        _data = _store.Load();
-
-        foreach (var client in _data.Clients)
-        {
-            byte[] digest;
             try
             {
-                digest = Convert.FromBase64String(client.TokenHash);
+                EnsureReadyLocked();
             }
-            catch (FormatException)
+            catch (ApiException)
             {
-                digest = [];
             }
-
-            // A record from an older key can never match again; it stays listed so the user can remove it.
-            if (keyCreated)
-            {
-                digest = [];
-            }
-
-            _digests.Add(digest);
         }
     }
+
+    /// <summary>True once host.key and clients.json were read.</summary>
+    public bool IsReady
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return _ready;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Loads the host key and the registry. Never starts from an empty registry when a file exists but cannot be
+    /// read: that would log every app out. Throws 503 auth_unavailable instead and tries again on the next call.
+    /// </summary>
+    private void EnsureReadyLocked()
+    {
+        if (_ready)
+        {
+            return;
+        }
+
+        try
+        {
+            if (_hasher is null)
+            {
+                var key = HostKeyFile.LoadOrCreate(_options.DataDirectory, _protector, out var keyCreated,
+                    _options.StoreReadAttempts, _options.StoreRetryDelay);
+                try
+                {
+                    _hasher = new TokenHasher(key);
+                    _keyCreated = keyCreated;
+                }
+                finally
+                {
+                    CryptographicOperations.ZeroMemory(key);
+                }
+            }
+
+            var store = new SettingsStore<ClientRegistryData>(Path.Combine(_options.DataDirectory, FileName),
+                AuthJsonContext.Default.ClientRegistryData, SchemaVersion, static () => new ClientRegistryData())
+            {
+                ReadAttempts = _options.StoreReadAttempts,
+                ReadRetryDelay = _options.StoreRetryDelay,
+            };
+            var data = store.Load();
+            if (store.LoadState is SettingsLoadState.Unavailable or SettingsLoadState.NewerSchema)
+            {
+                throw Unavailable();
+            }
+
+            _digests.Clear();
+            foreach (var client in data.Clients)
+            {
+                byte[] digest;
+                try
+                {
+                    digest = Convert.FromBase64String(client.TokenHash);
+                }
+                catch (FormatException)
+                {
+                    digest = [];
+                }
+
+                // A record from an older key can never match again; it stays listed so the user can remove it.
+                _digests.Add(_keyCreated ? [] : digest);
+            }
+
+            _store = store;
+            _data = data;
+            _ready = true;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or CryptographicException)
+        {
+            throw Unavailable();
+        }
+    }
+
+    private bool _keyCreated;
+
+    private static ApiException Unavailable() =>
+        new(ErrorCodes.AuthUnavailable, "Access tokens cannot be checked right now. Try again shortly.",
+            retryAfterMs: 2000);
 
     public event EventHandler<AccessRequestInfo>? RequestPending;
 
@@ -143,6 +213,7 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
         AccessRequestInfo info;
         lock (_gate)
         {
+            EnsureReadyLocked();
             var now = _time.GetUtcNow();
             PruneLocked(now);
 
@@ -241,6 +312,7 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
             TimeSpan remaining;
             lock (_gate)
             {
+                EnsureReadyLocked();
                 var now = _time.GetUtcNow();
                 PruneLocked(now);
                 if (!_requests.TryGetValue(requestId, out var entry))
@@ -289,6 +361,7 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
     {
         lock (_gate)
         {
+            EnsureReadyLocked();
             var before = _data.Denials.ToList();
             var removed = _data.Denials.RemoveAll(d => d.AppId == appId);
             if (removed > 0)
@@ -330,9 +403,10 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
             return Task.FromResult(Rejected(null, "malformed", ErrorCodes.TokenInvalid));
         }
 
-        var digest = _hasher.Hash(text);
         lock (_gate)
         {
+            EnsureReadyLocked();
+            var digest = _hasher!.Hash(text);
             // Compare against every record; no early exit, so timing does not depend on which one matches.
             var match = -1;
             for (var i = 0; i < _digests.Count; i++)
@@ -375,6 +449,7 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
     {
         lock (_gate)
         {
+            EnsureReadyLocked();
             IReadOnlyList<RegisteredClient> list = _data.Clients.Select(c => new RegisteredClient(
                 c.TokenId, c.AppId, c.AppName, c.PackageFamilyName, c.DeviceId, c.CreatedAt, c.LastUsedAt,
                 c.Revoked)).ToList();
@@ -386,6 +461,7 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
     {
         lock (_gate)
         {
+            EnsureReadyLocked();
             var client = _data.Clients.FirstOrDefault(c => c.TokenId == tokenId) ??
                 throw new ApiException(ErrorCodes.NotFound, "Unknown token id.");
             RevokeLocked([client], "token");
@@ -400,6 +476,7 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
         lock (_gate)
         {
             // Removing an app also frees its app id for whichever program the user approves next.
+            EnsureReadyLocked();
             var bindings = _data.Bindings.ToList();
             _data.Bindings.RemoveAll(b => b.AppId == appId);
             int revoked;
@@ -425,6 +502,7 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
     {
         lock (_gate)
         {
+            EnsureReadyLocked();
             var bindings = _data.Bindings.ToList();
             _data.Bindings.RemoveAll(b => b.DeviceId == deviceId);
             int revoked;
@@ -480,7 +558,7 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
                 r.Changed.TrySetResult();
             }
 
-            _hasher.Dispose();
+            _hasher?.Dispose();
         }
     }
 
@@ -490,6 +568,7 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
     {
         lock (_gate)
         {
+            EnsureReadyLocked();
             var now = _time.GetUtcNow();
             PruneLocked(now);
             if (!_requests.TryGetValue(requestId, out var entry))
@@ -596,7 +675,7 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
         string deviceId, CallerIdentity caller, string callerKey, DateTimeOffset now)
     {
         var token = TokenFormat.NewToken();
-        var digest = _hasher.Hash(token);
+        var digest = _hasher!.Hash(token);
         var client = new StoredClient
         {
             TokenId = NewTokenIdLocked(),
@@ -780,7 +859,7 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
             ? k
             : CallerKey(new CallerIdentity(0, client.PackageFamilyName, client.ExePath, client.CallerVerified, true));
 
-    private void SaveLocked() => _store.Save(_data);
+    private void SaveLocked() => (_store ?? throw Unavailable()).Save(_data);
 
     private bool TrySaveLocked()
     {

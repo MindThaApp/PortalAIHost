@@ -22,7 +22,7 @@ public class IdentityTests
         Assert.Equal(key, protector.Unprotect(blob));
 
         blob[^1] ^= 0xFF;
-        Assert.Throws<CryptographicException>(() => protector.Unprotect(blob));
+        Assert.Throws<Portal.AiHost.Core.Auth.HostKeyDamagedException>(() => protector.Unprotect(blob));
     }
 
     [Theory]

@@ -195,6 +195,71 @@ public sealed class ClientRegistryHardeningTests : IDisposable
         Assert.Equal(ErrorCodes.TokenRevoked, (await reopened.ValidateAsync(token, _ct)).ErrorCode);
     }
 
+    // ---- 4: temporary store failures never log apps out ----
+
+    private ClientRegistryOptions FastRetry() =>
+        new() { DataDirectory = _dir.Path, StoreRetryDelay = TimeSpan.Zero };
+
+    [Fact]
+    public async Task TemporaryKeyFailureIsUnavailableAndKeepsTheKey()
+    {
+        string token;
+        using (var registry = NewRegistry())
+        {
+            token = await IssueAsync(registry, Real);
+        }
+
+        var keyPath = _dir.File(HostKeyFile.FileName);
+        var keyBefore = File.ReadAllBytes(keyPath);
+        var flaky = new FakeKeyProtector { FailTransient = true };
+        using var reopened = new ClientRegistry(FastRetry(), flaky, _time);
+
+        var ex = await Assert.ThrowsAsync<ApiException>(() => reopened.ValidateAsync(token, _ct));
+        Assert.Equal(ErrorCodes.AuthUnavailable, ex.Code);
+        Assert.Equal(503, ErrorCatalog.Get(ex.Code).HttpStatus);
+        Assert.Equal(keyBefore, File.ReadAllBytes(keyPath));
+        Assert.Empty(Directory.GetFiles(_dir.Path, "*.bak"));
+
+        flaky.FailTransient = false;
+        Assert.True((await reopened.ValidateAsync(token, _ct)).IsValid);
+    }
+
+    [Fact]
+    public async Task LockedRegistryFileAtStartIsUnavailableNotEmpty()
+    {
+        string token;
+        using (var registry = NewRegistry())
+        {
+            token = await IssueAsync(registry, Real);
+        }
+
+        ClientRegistry reopened;
+        using (new FileStream(_dir.File(ClientRegistry.FileName), FileMode.Open, FileAccess.Read, FileShare.None))
+        {
+            reopened = new ClientRegistry(FastRetry(), _protector, _time);
+            Assert.False(reopened.IsReady);
+            var ex = await Assert.ThrowsAsync<ApiException>(() => reopened.ValidateAsync(token, _ct));
+            Assert.Equal(ErrorCodes.AuthUnavailable, ex.Code);
+            await Assert.ThrowsAsync<ApiException>(() => reopened.CreateRequestAsync(Req("com.other.app"), Real, _ct));
+        }
+
+        using (reopened)
+        {
+            Assert.True((await reopened.ValidateAsync(token, _ct)).IsValid);
+            Assert.True(reopened.IsReady);
+        }
+    }
+
+    [Fact]
+    public async Task WrongLengthKeyIsTreatedAsDamaged()
+    {
+        File.WriteAllBytes(_dir.File(HostKeyFile.FileName), _protector.Protect([1, 2, 3]));
+        using var registry = NewRegistry();
+        Assert.True(registry.IsReady);
+        Assert.Single(Directory.GetFiles(_dir.Path, "*.bak"));
+        await IssueAsync(registry, Real);
+    }
+
     // ---- 3: caps on pending requests, pruned rate-limit buckets ----
 
     [Fact]

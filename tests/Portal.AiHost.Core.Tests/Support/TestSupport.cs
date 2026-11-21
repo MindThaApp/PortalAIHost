@@ -122,7 +122,11 @@ public sealed class FakeKeyProtector : IHostKeyProtector
 
     public int ProtectCalls { get; private set; }
 
+    /// <summary>The blob is definitely unusable (like another user's DPAPI key).</summary>
     public bool FailUnprotect { get; set; }
+
+    /// <summary>A temporary failure (like DPAPI unavailable during sign-in).</summary>
+    public bool FailTransient { get; set; }
 
     public byte[] Protect(byte[] plaintext)
     {
@@ -132,9 +136,14 @@ public sealed class FakeKeyProtector : IHostKeyProtector
 
     public byte[] Unprotect(byte[] protectedData)
     {
+        if (FailTransient)
+        {
+            throw new CryptographicException("Fake protector is temporarily unavailable.");
+        }
+
         if (FailUnprotect || protectedData.Length < Magic.Length || !protectedData.AsSpan(0, Magic.Length).SequenceEqual(Magic))
         {
-            throw new CryptographicException("Fake blob could not be opened.");
+            throw new HostKeyDamagedException("Fake blob could not be opened.");
         }
 
         return protectedData.Skip(Magic.Length).Select(b => (byte)(b ^ 0x5A)).ToArray();

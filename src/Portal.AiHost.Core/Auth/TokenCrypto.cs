@@ -17,6 +17,19 @@ public interface IHostKeyProtector
     byte[] Unprotect(byte[] protectedData);
 }
 
+/// <summary>
+/// Thrown by a protector when the blob can definitely never be opened (another user's key, or damaged data).
+/// Only this leads to a new host key; any other failure is treated as temporary.
+/// </summary>
+public sealed class HostKeyDamagedException : CryptographicException
+{
+    public HostKeyDamagedException(string message, Exception? inner = null) : base(message, inner) { }
+
+    public HostKeyDamagedException() : base("The host key cannot be opened.") { }
+
+    public HostKeyDamagedException(string message) : base(message) { }
+}
+
 /// <summary>Token text format: "pah_" + 43 base64url characters (32 random bytes).</summary>
 public static class TokenFormat
 {
@@ -122,30 +135,56 @@ public static class HostKeyFile
 {
     public const string FileName = "host.key";
 
-    public static byte[] LoadOrCreate(string dataDirectory, IHostKeyProtector protector, out bool created)
+    /// <summary>
+    /// Loads the key, or makes one when there is none. A blob that is definitely unusable (wrong user, damaged,
+    /// wrong length) is backed up under a unique name and replaced. A locked file or a temporary DPAPI failure
+    /// is retried and then thrown, so the caller can report "unavailable" and keep every token.
+    /// </summary>
+    public static byte[] LoadOrCreate(string dataDirectory, IHostKeyProtector protector, out bool created,
+        int attempts = 3, TimeSpan? retryDelay = null)
     {
         ArgumentNullException.ThrowIfNull(protector);
+        var delay = retryDelay ?? TimeSpan.FromMilliseconds(50);
         var path = Path.Combine(dataDirectory, FileName);
-        if (File.Exists(path))
+        for (var attempt = 1; ; attempt++)
         {
-            var blob = File.ReadAllBytes(path);
             try
             {
-                var key = protector.Unprotect(blob);
+                if (!File.Exists(path))
+                {
+                    break;
+                }
+
+                var blob = File.ReadAllBytes(path);
+                byte[] key;
+                try
+                {
+                    key = protector.Unprotect(blob);
+                }
+                catch (HostKeyDamagedException)
+                {
+                    key = [];
+                }
+
                 if (key.Length == TokenHasher.KeyBytes)
                 {
                     created = false;
                     return key;
                 }
 
+                // Definitely unusable: keep a copy, then the atomic write below replaces host.key.
                 CryptographicOperations.ZeroMemory(key);
+                AtomicFile.CopyToUniqueBackup(path, FileName + ".unreadable.bak");
+                break;
             }
-            catch (CryptographicException)
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or CryptographicException
+                                       && ex is not HostKeyDamagedException && attempt < attempts)
             {
+                if (delay > TimeSpan.Zero)
+                {
+                    Thread.Sleep(delay);
+                }
             }
-
-            // Keep the unreadable blob; the atomic write below then replaces host.key.
-            AtomicFile.CopyToUniqueBackup(path, FileName + ".unreadable.bak");
         }
 
         var fresh = RandomNumberGenerator.GetBytes(TokenHasher.KeyBytes);
