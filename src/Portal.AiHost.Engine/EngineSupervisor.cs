@@ -493,7 +493,7 @@ public sealed class EngineSupervisor : IEngineSupervisor
         }
     }
 
-    private async Task StopCoreAsync(string? reason)
+    private async Task StopCoreAsync(string? reason, bool alreadyStopping = false)
     {
         Run? run;
         lock (_sync)
@@ -516,7 +516,11 @@ public sealed class EngineSupervisor : IEngineSupervisor
             return;
         }
 
-        SetState(EngineState.Stopping, 0, reason);
+        if (!alreadyStopping)
+        {
+            SetState(EngineState.Stopping, 0, reason);
+        }
+
         await TearDownRunAsync(run).ConfigureAwait(false);
         SetState(EngineState.Stopped, 0, reason);
     }
@@ -749,16 +753,28 @@ public sealed class EngineSupervisor : IEngineSupervisor
                 await _gate.WaitAsync(_disposeCts.Token).ConfigureAwait(false);
                 try
                 {
-                    lock (_sync)
+                    // Re-read the policy (it may have changed while waiting), then confirm "no requests" and leave
+                    // Ready in one step: a request can only start while Ready, so none slips in before the stop.
+                    const string reason = "Unloaded after being idle.";
+                    due = false;
+                    if (ReadPolicy(policy) is { } idleNow)
                     {
-                        due = _state == EngineState.Ready
-                            && Volatile.Read(ref _active) == 0
-                            && Stopwatch.GetElapsedTime(_lastActivityTicks) >= idle;
+                        lock (_sync)
+                        {
+                            due = _state == EngineState.Ready
+                                && Volatile.Read(ref _active) == 0
+                                && Stopwatch.GetElapsedTime(_lastActivityTicks) >= idleNow;
+                            if (due)
+                            {
+                                _state = EngineState.Stopping;
+                            }
+                        }
                     }
 
-                    if (due && ReadPolicy(policy) is not null)
+                    if (due)
                     {
-                        await StopCoreAsync("Unloaded after being idle.").ConfigureAwait(false);
+                        StateChanged?.Invoke(this, new EngineStateChange(_kind, EngineState.Stopping, 0, reason));
+                        await StopCoreAsync(reason, alreadyStopping: true).ConfigureAwait(false);
                     }
                 }
                 finally
