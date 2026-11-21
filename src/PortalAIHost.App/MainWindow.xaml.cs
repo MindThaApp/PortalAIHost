@@ -17,6 +17,12 @@ public sealed partial class MainWindow : Window
         InitializeComponent();
         Title = AppServices.Strings.Get("Vm_AppTitle");
         SystemBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop();
+        TitleText.Text = Title;
+        ExtendsContentIntoTitleBar = true;
+        SetTitleBar(TitleBarArea);
+        Root.ActualThemeChanged += (_, _) => ApplyTitleBarColours();
+        Root.Loaded += (_, _) => ApplyTitleBarColours();
+        ApplyTitleBarColours();
         Closed += (_, _) => _shell.Dispose();
         AppWindow.Resize(new Windows.Graphics.SizeInt32(1100, 760));
         if (AppOptions.OffScreen)
@@ -26,6 +32,26 @@ public sealed partial class MainWindow : Window
         {
             if (e.PropertyName == nameof(ShellViewModel.ShowFirstRun)) ApplyFirstRun();
         };
+    }
+
+    /// <summary>Makes the caption buttons match the app theme (and follow it when it changes).</summary>
+    private void ApplyTitleBarColours()
+    {
+        if (!AppWindowTitleBar.IsCustomizationSupported()) return;
+        var dark = Root.ActualTheme == ElementTheme.Dark;
+        var fg = dark ? Microsoft.UI.Colors.White : Microsoft.UI.Colors.Black;
+        var hover = dark ? Windows.UI.Color.FromArgb(0x20, 255, 255, 255) : Windows.UI.Color.FromArgb(0x18, 0, 0, 0);
+        var press = dark ? Windows.UI.Color.FromArgb(0x38, 255, 255, 255) : Windows.UI.Color.FromArgb(0x30, 0, 0, 0);
+        var inactive = dark ? Windows.UI.Color.FromArgb(0xFF, 0x9A, 0x9A, 0x9A) : Windows.UI.Color.FromArgb(0xFF, 0x70, 0x70, 0x70);
+        var tb = AppWindow.TitleBar;
+        tb.ButtonBackgroundColor = Microsoft.UI.Colors.Transparent;
+        tb.ButtonInactiveBackgroundColor = Microsoft.UI.Colors.Transparent;
+        tb.ButtonForegroundColor = fg;
+        tb.ButtonInactiveForegroundColor = inactive;
+        tb.ButtonHoverBackgroundColor = hover;
+        tb.ButtonHoverForegroundColor = fg;
+        tb.ButtonPressedBackgroundColor = press;
+        tb.ButtonPressedForegroundColor = fg;
     }
 
     /// <summary>

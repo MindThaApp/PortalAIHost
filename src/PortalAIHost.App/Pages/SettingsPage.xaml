@@ -26,6 +26,7 @@
                     <TextBox
                         x:Uid="SettingsFolder"
                         Text="{x:Bind ViewModel.ModelsFolder, Mode=TwoWay}"
+                        PlaceholderText="{x:Bind ViewModel.FolderPlaceholder, Mode=OneWay}"
                         IsEnabled="{x:Bind ViewModel.Available, Mode=OneWay}" />
                     <Button
                         x:Uid="SettingsFolderApply"
