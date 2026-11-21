@@ -54,7 +54,8 @@ internal static class Program
                 KeyProtector = new DpapiHostKeyProtector(),
                 CallerResolver = new WindowsCallerIdentityResolver(),
                 Hardware = new WindowsHardwareProbe(),
-                OpenStoreFor = settings => OpenStore(paths, settings), // Only after the single-instance lock is held.
+                OpenStoreReporting = settings => OpenStore(paths, settings), // Only after the single-instance lock is held.
+                OpenPreviousStores = OpenPreviousStores,
                 Catalogue = catalogue,
                 CreateDownloader = store => new ModelDownloader(Http.Value, store, options: null, sleep: new PowerRequestSleepBlocker()),
                 HostVersion = typeof(Program).Assembly.GetName().Version?.ToString(3) ?? "1.0.0",
@@ -162,7 +163,7 @@ internal static class Program
         });
 
     /// <summary>Folder name the host creates (and marks) inside a models folder the user picked.</summary>
-    public const string StoreFolderName = "Portal AI Host models";
+    public const string StoreFolderName = ModelStore.UserFolderName;
 
     /// <summary>
     /// The store folder: the default LocalState\models, or a marked subfolder of the folder chosen in settings.
@@ -176,7 +177,7 @@ internal static class Program
             return fallback;
         }
 
-        var folder = Path.GetFullPath(Path.Combine(chosen, StoreFolderName));
+        var folder = Path.GetFullPath(ModelStore.StoreFolderIn(chosen));
         if (paths.TestMode && !folder.StartsWith(Path.GetFullPath(paths.DataRoot) + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
         {
             return fallback;
@@ -185,16 +186,50 @@ internal static class Program
         return folder;
     }
 
-    private static ModelStore? OpenStore(HostPaths paths, HostSettings settings)
+    /// <summary>
+    /// Opens the store. The default folder is created when missing; a chosen folder gets the same checks as a
+    /// new store (parent must exist, no FAT32) and an existing unmarked or damaged folder is refused, never adopted.
+    /// A refusal is reported (status store_problem) and downloads stay off.
+    /// </summary>
+    private static StoreOpenResult OpenStore(HostPaths paths, HostSettings settings)
     {
+        var folder = StoreFolderFor(paths, settings);
         try
         {
-            return ModelStore.OpenOrCreate(StoreFolderFor(paths, settings));
+            var isDefault = string.Equals(folder, Path.Combine(paths.DataRoot, "models"), StringComparison.OrdinalIgnoreCase);
+            return new(isDefault ? ModelStore.OpenOrCreate(folder) : ModelStore.OpenOrCreateInParent(settings.ModelsFolder!), null);
         }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException)
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException or ArgumentException)
         {
-            return null;
+            return new(null, $"The models folder '{folder}' could not be used: {ex.Message}");
         }
+    }
+
+    /// <summary>Earlier models folders, opened only when they exist and carry the marker. Nothing is created.</summary>
+    private static IReadOnlyList<IModelStore> OpenPreviousStores(HostSettings settings, IModelStore? current)
+    {
+        var stores = new List<IModelStore>();
+        foreach (var path in settings.PreviousStoreFolders ?? [])
+        {
+            if (current is not null && string.Equals(Path.GetFullPath(path), current.Location.Path, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            try
+            {
+                if (Directory.Exists(path))
+                {
+                    stores.Add(ModelStore.Open(path));
+                }
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException)
+            {
+                // Unmarked, damaged or unreadable: left alone and not listed.
+            }
+        }
+
+        return stores;
     }
 
     /// <summary>Starts the window next to this exe; never in test mode.</summary>

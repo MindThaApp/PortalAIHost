@@ -2,6 +2,7 @@ using System.Text.Json;
 using Portal.AiHost.Contracts;
 using Portal.AiHost.Contracts.Control;
 using Portal.AiHost.Core.Abstractions;
+using Portal.AiHost.Core.Store;
 using Portal.AiHost.Platform.Windows.Pipes;
 
 namespace PortalAIHost.Service;
@@ -93,7 +94,15 @@ internal sealed class ControlHandler(HostShell shell)
                 return ControlPipe.Ok(id);
 
             case ControlTypes.RemoveModel:
-                await shell.Models.RemoveAsync(Payload(r, AiHostJsonContext.Default.RemoveModelCommand)!.CatalogueId, ct).ConfigureAwait(false);
+                var remove = Payload(r, AiHostJsonContext.Default.RemoveModelCommand)!;
+                if (remove.StoreFolder is { Length: > 0 } oldFolder)
+                {
+                    await shell.Models.RemoveFromPreviousAsync(remove.CatalogueId, oldFolder, ct).ConfigureAwait(false);
+                }
+                else
+                {
+                    await shell.Models.RemoveAsync(remove.CatalogueId, ct).ConfigureAwait(false);
+                }
                 return ControlPipe.Ok(id);
 
             case ControlTypes.ActivateModel:
@@ -133,18 +142,71 @@ internal sealed class ControlHandler(HostShell shell)
     internal SettingsSaved SaveSettings(HostSettings next)
     {
         var old = shell.Settings.Current;
-        shell.Settings.Save(next);
         var folderChanged = !string.Equals(old.ModelsFolder ?? "", next.ModelsFolder ?? "", StringComparison.OrdinalIgnoreCase);
+        var refused = folderChanged ? CheckModelsFolder(next.ModelsFolder, shell.Store?.Location.Path) : null;
+        if (refused is not null)
+        {
+            next.ModelsFolder = old.ModelsFolder; // the other settings still save
+            folderChanged = false;
+        }
+
+        // Host-owned: earlier store folders stay listed (and removable) after a change; nothing is moved or deleted.
+        var previous = new List<string>(old.PreviousStoreFolders ?? []);
+        if (folderChanged && shell.Store?.Location.Path is { } currentRoot
+            && !previous.Contains(currentRoot, StringComparer.OrdinalIgnoreCase))
+        {
+            previous.Insert(0, currentRoot);
+        }
+
+        next.PreviousStoreFolders = previous.Count == 0 ? null : previous.Take(MaxPreviousStoreFolders).ToList();
+        shell.Settings.Save(next);
         var restart = folderChanged || old.MaxMemoryPercent != next.MaxMemoryPercent
             || !string.Equals(old.Backend, next.Backend, StringComparison.Ordinal);
         return new SettingsSaved
         {
             ModelsFolderChanged = folderChanged,
             AppliesAtRestart = restart,
+            FolderRefused = refused,
             Note = folderChanged
-                ? "New downloads go to the new folder after the host restarts. Models already downloaded are not moved or deleted."
+                ? $"New downloads go to the '{ModelStore.UserFolderName}' folder inside the new folder after the host restarts. "
+                  + "Models already downloaded are not moved or deleted; they stay listed so you can remove them."
                 : null,
         };
+    }
+
+    /// <summary>Earlier models folders kept in settings.</summary>
+    internal const int MaxPreviousStoreFolders = 5;
+
+    /// <summary>Why a chosen models folder cannot be used, or null. Reads only; nothing is created.</summary>
+    internal static string? CheckModelsFolder(string? chosen, string? currentStoreRoot)
+    {
+        if (string.IsNullOrEmpty(chosen))
+        {
+            return null; // back to the default folder
+        }
+
+        if (!Path.IsPathFullyQualified(chosen))
+        {
+            return "Pick a full folder path, for example D:\\Models.";
+        }
+
+        if (ModelStore.CheckParentFolder(chosen) is { } reason)
+        {
+            return reason;
+        }
+
+        if (currentStoreRoot is not null)
+        {
+            var full = Path.GetFullPath(chosen).TrimEnd(Path.DirectorySeparatorChar);
+            var current = Path.GetFullPath(currentStoreRoot).TrimEnd(Path.DirectorySeparatorChar);
+            if (full.Equals(current, StringComparison.OrdinalIgnoreCase)
+                || full.StartsWith(current + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+            {
+                return "That folder is inside the current models folder. Pick a folder outside it.";
+            }
+        }
+
+        return null;
     }
 
     /// <summary>Publisher from the caller's file version info, only for a verified caller; otherwise unknown.</summary>

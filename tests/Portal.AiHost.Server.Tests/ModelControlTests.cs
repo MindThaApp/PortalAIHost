@@ -264,6 +264,7 @@ public sealed class ModelControlTests
         Assert.Equal(300, status.Status.Models[ModelKinds.Chat].IdleUnloadSeconds);
         Assert.Equal(TimeSpan.FromSeconds(300), shell.IdleUnloadFor(ModelKinds.Chat));
 
+        Directory.CreateDirectory(Path.Combine(root.Path, "elsewhere"));
         var answer = await client.ExchangeAsync(ControlTypes.SetSettings, System.Text.Json.JsonSerializer.SerializeToElement(new HostSettings
         {
             ModelsFolder = Path.Combine(root.Path, "elsewhere"),
@@ -273,11 +274,121 @@ public sealed class ModelControlTests
         Assert.True(saved.ModelsFolderChanged);
         Assert.True(saved.AppliesAtRestart);
         Assert.Contains("not moved or deleted", saved.Note);
+        Assert.Null(saved.FolderRefused);
         Assert.True(Directory.Exists(Path.Combine(root.Path, "models")));
+        // The old store folder is kept in settings so its models stay listed; nothing was created in the new folder yet.
+        Assert.Equal(Path.Combine(root.Path, "models"), Assert.Single(shell.Settings.Current.PreviousStoreFolders!), ignoreCase: true);
+        Assert.Empty(Directory.GetFileSystemEntries(Path.Combine(root.Path, "elsewhere")));
 
         status = await client.GetStatusAsync();
         Assert.True(status.Status.Models[ModelKinds.Chat].KeepLoaded);
         Assert.Null(shell.IdleUnloadFor(ModelKinds.Chat));
+    }
+
+    private static async Task<SettingsSaved> SaveAsync(ControlPipeClient client, string? folder)
+    {
+        var answer = await client.ExchangeAsync(ControlTypes.SetSettings, JsonSerializer.SerializeToElement(
+            new HostSettings { ModelsFolder = folder }, AiHostJsonContext.Default.HostSettings));
+        return answer.Payload!.Value.Deserialize(AiHostJsonContext.Default.SettingsSaved)!;
+    }
+
+    [Fact(Timeout = 30000)]
+    public async Task A_models_folder_that_is_missing_or_inside_the_current_store_is_refused_and_nothing_is_created()
+    {
+        using var root = new TestRoot();
+        var (shell, _) = await StartAsync(root, catalogue: null);
+        await using var _s = shell;
+        await using var client = await ControlPipeClient.ConnectAsync(shell.Paths().PipeName);
+
+        var missing = Path.Combine(root.Path, "no", "such");
+        var saved = await SaveAsync(client, missing);
+        Assert.NotNull(saved.FolderRefused);
+        Assert.False(saved.ModelsFolderChanged);
+        Assert.False(Directory.Exists(missing));
+        Assert.Null(shell.Settings.Current.ModelsFolder);
+
+        var inside = Path.Combine(root.Path, "models", "sub");
+        Directory.CreateDirectory(inside);
+        saved = await SaveAsync(client, inside);
+        Assert.Contains("inside the current models folder", saved.FolderRefused);
+        Assert.Null(shell.Settings.Current.ModelsFolder);
+        Assert.Null(shell.Settings.Current.PreviousStoreFolders);
+    }
+
+    [Fact]
+    public void A_chosen_folder_never_creates_missing_parents_and_never_adopts_an_unmarked_folder()
+    {
+        using var root = new TestRoot();
+        var missing = Path.Combine(root.Path, "gone");
+        Assert.Throws<StoreRefusedException>(() => ModelStore.OpenOrCreateInParent(missing));
+        Assert.False(Directory.Exists(missing));
+
+        var mine = Path.Combine(root.Path, "mine");
+        Directory.CreateDirectory(Path.Combine(mine, ModelStore.UserFolderName));
+        File.WriteAllText(Path.Combine(mine, ModelStore.UserFolderName, "keep.txt"), "user file");
+        Assert.Throws<StoreRefusedException>(() => ModelStore.OpenOrCreateInParent(mine));
+        Assert.Equal("user file", File.ReadAllText(Path.Combine(mine, ModelStore.UserFolderName, "keep.txt")));
+        Assert.Single(Directory.GetFileSystemEntries(Path.Combine(mine, ModelStore.UserFolderName)));
+
+        var fresh = Path.Combine(root.Path, "fresh");
+        Directory.CreateDirectory(fresh);
+        var created = ModelStore.OpenOrCreateInParent(fresh);
+        Assert.Equal(ModelStore.StoreFolderIn(fresh), created.Location.Path, ignoreCase: true);
+        Assert.Equal(created.Location.StoreId, ModelStore.OpenOrCreateInParent(fresh).Location.StoreId); // same store next start
+    }
+
+    [Fact(Timeout = 30000)]
+    public async Task Models_in_an_earlier_folder_are_listed_and_removed_with_the_store_rules_only()
+    {
+        using var root = new TestRoot();
+        var body = RandomNumberGenerator.GetBytes(4096);
+        var entry = Entry(body);
+        var old = ModelStore.OpenOrCreate(Path.Combine(root.Path, "old-store"));
+        using (old.AcquireDownload(entry.Id))
+        {
+            await old.EnsureModelAsync(entry.Id, entry.DisplayName, entry.Kind, entry.Engine, CancellationToken.None);
+            var part = await old.BeginFileAsync(entry.Id, "tiny.gguf", CancellationToken.None);
+            await File.WriteAllBytesAsync(part, body);
+            await old.CommitFileAsync(entry.Id, part, entry.Files[0].Sha256, CancellationToken.None);
+        }
+
+        var stray = Path.Combine(old.Location.Path, "not-recorded.gguf");
+        File.WriteAllBytes(stray, body);
+        var file = (await old.GetAsync(entry.Id, CancellationToken.None))!.Files.Single().Path;
+        var store = ModelStore.OpenOrCreate(Path.Combine(root.Path, "models"));
+        var shell = await HostShell.StartAsync(new HostShellOptions
+        {
+            Paths = HostPaths.Resolve(n => n == HostPaths.TestRootVariable ? root.Path : null)!,
+            Supervisors = new Dictionary<string, IEngineSupervisor>
+            {
+                [ModelKinds.Chat] = new FakeEngineSupervisor(ModelKinds.Chat),
+                [ModelKinds.Embedding] = new FakeEngineSupervisor(ModelKinds.Embedding),
+            },
+            KeyProtector = new TestKeyProtector(),
+            CallerResolver = new SameUserResolver(),
+            QuitGrace = TimeSpan.FromMilliseconds(200),
+            Store = store,
+            Catalogue = [entry],
+            OpenPreviousStores = (_, _) => [old],
+        }) ?? throw new InvalidOperationException("pipe already owned");
+        await using var _s = shell;
+        await using var client = await ControlPipeClient.ConnectAsync(shell.Paths().PipeName);
+
+        var row = Assert.Single((await client.ListModelsAsync()).Models, m => m.StoreFolder is not null);
+        Assert.Equal(old.Location.Path, row.StoreFolder);
+        Assert.True(row.Installed);
+
+        var wrong = await Assert.ThrowsAsync<ControlPipeException>(() => client.ExchangeAsync(ControlTypes.RemoveModel,
+            JsonSerializer.SerializeToElement(new RemoveModelCommand { CatalogueId = entry.Id, StoreFolder = root.Path }, AiHostJsonContext.Default.RemoveModelCommand)));
+        Assert.Equal(ErrorCodes.NotFound, wrong.Code);
+        Assert.True(File.Exists(file));
+
+        await client.ExchangeAsync(ControlTypes.RemoveModel, JsonSerializer.SerializeToElement(
+            new RemoveModelCommand { CatalogueId = entry.Id, StoreFolder = row.StoreFolder }, AiHostJsonContext.Default.RemoveModelCommand));
+        Assert.False(File.Exists(file));
+        Assert.True(File.Exists(stray)); // not recorded in the old store: never touched
+        Assert.True(Directory.Exists(old.Location.Path)); // the folder itself is never deleted
+        Assert.DoesNotContain((await client.ListModelsAsync()).Models, m => m.StoreFolder is not null);
     }
 
     [Fact]

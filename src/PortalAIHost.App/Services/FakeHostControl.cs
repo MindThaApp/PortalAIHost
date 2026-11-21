@@ -190,6 +190,17 @@ public sealed class FakeHostControl : IHostControl, IDisposable
 
     public int RemoveCalls { get; private set; }
 
+    /// <summary>The fake has no earlier models folders; counts the call like a remove.</summary>
+    public Task RemoveOldModelAsync(string catalogueId, string storeFolder, CancellationToken ct = default)
+    {
+        lock (_gate)
+        {
+            RemoveCalls++;
+        }
+
+        return Task.CompletedTask;
+    }
+
     public Task RemoveModelAsync(string catalogueId, CancellationToken ct = default)
     {
         lock (_gate)

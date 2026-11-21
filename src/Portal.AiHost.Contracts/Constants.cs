@@ -1,6 +1,13 @@
 namespace Portal.AiHost.Contracts;
 
 /// <summary>API version and fixed identifiers (api-v1.md sections 1, 2, 6).</summary>
+/// <summary>Folder names shared by the host and the window.</summary>
+public static class HostFolders
+{
+    /// <summary>Subfolder the host creates (and marks) inside a models folder the user picked.</summary>
+    public const string ModelsSubfolder = "Portal AI Host Models";
+}
+
 public static class ApiInfo
 {
     public const string ApiVersion = "1";

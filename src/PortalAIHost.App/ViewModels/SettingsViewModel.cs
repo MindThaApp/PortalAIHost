@@ -139,8 +139,18 @@ public sealed partial class SettingsViewModel : ObservableObject
             _ui.Post(() =>
             {
                 _current = next;
+                if (saved.FolderRefused is { } refused)
+                {
+                    _current.ModelsFolder = old; // the host kept the old folder
+                    Message = _s.Format("Vm_FolderRefused", refused);
+                    return;
+                }
+
+                var target = string.IsNullOrEmpty(next.ModelsFolder)
+                    ? _s.Get("Vm_DefaultFolder")
+                    : Path.Combine(next.ModelsFolder, HostFolders.ModelsSubfolder);
                 Message = saved.ModelsFolderChanged
-                    ? _s.Format("Vm_FolderSavedNote", string.IsNullOrEmpty(old) ? _s.Get("Vm_DefaultFolder") : old)
+                    ? _s.Format("Vm_FolderSavedNote", string.IsNullOrEmpty(old) ? _s.Get("Vm_DefaultFolder") : Path.Combine(old, HostFolders.ModelsSubfolder), target)
                     : _s.Get("Vm_Saved");
             });
         }

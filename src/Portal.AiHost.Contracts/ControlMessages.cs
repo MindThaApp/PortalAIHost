@@ -138,6 +138,12 @@ public sealed class CatalogueModelSummary
 
     /// <summary>Plain-language reason from the recommender.</summary>
     public string? Reason { get; init; }
+
+    /// <summary>
+    /// Null for the current models folder. Set for a model left in an earlier models folder after a folder change:
+    /// it can only be removed (send this folder with models.remove), not used or downloaded.
+    /// </summary>
+    public string? StoreFolder { get; init; }
 }
 
 public sealed class ModelListing
@@ -168,6 +174,9 @@ public sealed class DownloadCommand
 public sealed class RemoveModelCommand
 {
     public string CatalogueId { get; init; } = "";
+
+    /// <summary>Earlier models folder to remove from (a listing's store_folder); null for the current folder.</summary>
+    public string? StoreFolder { get; init; }
 }
 
 /// <summary>Answer to settings.set.</summary>
@@ -181,6 +190,12 @@ public sealed class SettingsSaved
 
     /// <summary>Plain-language note for the window, for example where the old models stay.</summary>
     public string? Note { get; init; }
+
+    /// <summary>
+    /// Set when the new models folder was refused (missing, FAT32, inside the current models folder). The other
+    /// settings were saved; the models folder stayed as it was.
+    /// </summary>
+    public string? FolderRefused { get; init; }
 }
 
 /// <summary>Start-with-Windows states (Windows StartupTask). The window reads and changes these itself.</summary>
@@ -231,7 +246,15 @@ public sealed class HostSettings
     /// <summary>auto, gpu or cpu.</summary>
     public string Backend { get; init; } = "auto";
 
-    public string? ModelsFolder { get; init; }
+    /// <summary>Folder chosen for models; the host keeps them in its own "Portal AI Host Models" subfolder there.</summary>
+    public string? ModelsFolder { get; set; }
+
+    /// <summary>
+    /// Earlier models folders (store folders) kept after a folder change, so their models stay listed and can be
+    /// removed. Owned by the host: the value sent with settings.set is ignored.
+    /// </summary>
+    public List<string>? PreviousStoreFolders { get; set; }
+
     public int MaxMemoryPercent { get; init; } = 80;
     public bool PreventSleepWhileDownloading { get; init; } = true;
     public long? BandwidthCapBytesPerSecond { get; init; }
@@ -276,4 +299,11 @@ public sealed class ControlStatus
     /// <summary>True while the PC runs on battery (idle unload uses the shorter timeout).</summary>
     [JsonPropertyName("on_battery")]
     public bool OnBattery { get; init; }
+
+    /// <summary>
+    /// Plain-language reason the models folder could not be opened (for example a folder without the host's marker
+    /// or a damaged store.json, both left untouched), or null. Downloads are off while this is set.
+    /// </summary>
+    [JsonPropertyName("store_problem")]
+    public string? StoreProblem { get; init; }
 }

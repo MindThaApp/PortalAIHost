@@ -16,6 +16,9 @@
   <data name="NavSettings.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Settings</value></data>
   <data name="HomeTitle.Text" xml:space="preserve"><value>Home</value></data>
   <data name="HomeSafeModeBar.Title" xml:space="preserve"><value>Safe mode</value></data>
+  <data name="HomeStoreProblemBar.Title" xml:space="preserve"><value>Models folder not available</value></data>
+  <data name="Vm_OldFolderBadge" xml:space="preserve"><value>Earlier folder</value></data>
+  <data name="Vm_OldFolderRow" xml:space="preserve"><value>In an earlier models folder: {0}. Remove it to free the space.</value></data>
   <data name="HomeSafeModeBar.Message" xml:space="preserve"><value>The host closed unexpectedly more than once, so it started with careful settings. Your apps still work. If this keeps happening, restart your PC.</value></data>
   <data name="HomeStartButton.Content" xml:space="preserve"><value>Start Portal AI Host</value></data>
   <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Start Portal AI Host</value></data>
@@ -167,7 +170,8 @@
   <data name="Vm_RemoveBody" xml:space="preserve"><value>{0} will be removed from this PC. Only files the host downloaded are deleted; a model file you added yourself is only taken off the list and stays where it is.</value></data>
   <data name="Vm_RemoveYes" xml:space="preserve"><value>Remove</value></data>
   <data name="Vm_AutoRemove" xml:space="preserve"><value>Remove {0}</value></data>
-  <data name="Vm_FolderSavedNote" xml:space="preserve"><value>Saved. New downloads go to the new folder after the host restarts. Models already downloaded are not moved or deleted; they stay in {0}.</value></data>
+  <data name="Vm_FolderSavedNote" xml:space="preserve"><value>Saved. After the host restarts, new downloads go to {1}. Models already downloaded are not moved or deleted; they stay in {0} and stay listed on the Models page, so you can remove them there.</value></data>
+  <data name="Vm_FolderRefused" xml:space="preserve"><value>The other settings were saved, but that models folder cannot be used: {0}</value></data>
   <data name="Vm_Startup_Unavailable" xml:space="preserve"><value>Start with Windows is only available in the installed app.</value></data>
   <data name="Vm_Startup_DisabledByUser" xml:space="preserve"><value>Start with Windows was turned off in Task Manager. Turn it back on there (Startup apps).</value></data>
   <data name="Vm_Startup_Policy" xml:space="preserve"><value>Start with Windows is set by your organisation.</value></data>

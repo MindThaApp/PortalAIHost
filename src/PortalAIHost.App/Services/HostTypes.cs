@@ -16,6 +16,9 @@ public sealed record HostSnapshot(bool Connected, HostStatus? Status, bool SafeM
 
     /// <summary>Unclean exits in a row that led to safe mode.</summary>
     public int UncleanExits { get; init; }
+
+    /// <summary>Why the host could not open its models folder (left untouched), or null.</summary>
+    public string? StoreProblem { get; init; }
 }
 
 /// <summary>The model list plus the storage facts the Models page shows.</summary>
@@ -64,6 +67,8 @@ public interface IHostControl
     Task CancelDownloadAsync(string catalogueId, CancellationToken ct = default);
     /// <summary>Has the host remove a model (its own files only; a file added in place is only forgotten).</summary>
     Task RemoveModelAsync(string catalogueId, CancellationToken ct = default);
+    /// <summary>Has the host remove a model left in an earlier models folder, with the same store rules.</summary>
+    Task RemoveOldModelAsync(string catalogueId, string storeFolder, CancellationToken ct = default);
     Task ActivateModelAsync(string catalogueId, CancellationToken ct = default);
     Task<HostSettings> GetSettingsAsync(CancellationToken ct = default);
     /// <summary>Saves settings. A new models folder never moves or deletes the models already downloaded.</summary>

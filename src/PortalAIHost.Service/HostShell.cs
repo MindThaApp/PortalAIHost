@@ -40,6 +40,12 @@ public sealed class HostShellOptions
     /// <summary>Opens the store for the saved settings (models folder). Used before <see cref="OpenStore"/> when set.</summary>
     public Func<HostSettings, IModelStore?>? OpenStoreFor { get; init; }
 
+    /// <summary>Like <see cref="OpenStoreFor"/>, and also says why the store could not be opened. Used first when set.</summary>
+    public Func<HostSettings, StoreOpenResult>? OpenStoreReporting { get; init; }
+
+    /// <summary>Opens earlier models folders (settings) for listing and remove only; never creates anything.</summary>
+    public Func<HostSettings, IModelStore?, IReadOnlyList<IModelStore>>? OpenPreviousStores { get; init; }
+
     /// <summary>Verified catalogue entries, or null when no trusted model list could be loaded (fail closed).</summary>
     public IReadOnlyList<CatalogueEntry>? Catalogue { get; init; }
 
@@ -56,6 +62,9 @@ public sealed class HostShellOptions
     /// <summary>Overrides the port list (tests).</summary>
     public IReadOnlyList<int>? Ports { get; init; }
 }
+
+/// <summary>An opened store, or null with a plain-language reason.</summary>
+public sealed record StoreOpenResult(IModelStore? Store, string? Problem);
 
 /// <summary>
 /// The running host: runtime, HTTP server, admin pipe and safe-mode marker. <see cref="StartAsync"/> returns null
@@ -201,7 +210,18 @@ public sealed class HostShell : IAsyncDisposable
         _marker = SafeModeMarker.Begin(root);
         _settings = HostSettingsFile.Create(root);
         var settings = _settings.Load();
-        _store = _o.Store ?? _o.OpenStoreFor?.Invoke(settings) ?? _o.OpenStore?.Invoke();
+        if (_o.Store is null && _o.OpenStoreReporting is { } open)
+        {
+            var opened = open(settings);
+            _store = opened.Store;
+            StoreProblem = opened.Problem;
+        }
+        else
+        {
+            _store = _o.Store ?? _o.OpenStoreFor?.Invoke(settings) ?? _o.OpenStore?.Invoke();
+        }
+
+        var previous = _o.OpenPreviousStores?.Invoke(settings, _store) ?? [];
         await ReleaseStaleInUseAsync(ct).ConfigureAwait(false);
         foreach (var sup in _o.Supervisors.Values)
         {
@@ -213,7 +233,7 @@ public sealed class HostShell : IAsyncDisposable
         Models = new ModelCenter(_store, _o.Catalogue,
             _store is IModelStoreWriter writer ? _o.CreateDownloader?.Invoke(writer) : null,
             _o.Hardware, () => _settings.Current, kind => Runtime?.GetActive(kind)?.ModelId, PushDownloadAsync,
-            isLoaded: IsLoaded);
+            isLoaded: IsLoaded, previousStores: previous);
         _registry = new ClientRegistry(new ClientRegistryOptions { DataDirectory = root }, _o.KeyProtector);
         _scheduler = new FairScheduler();
         Runtime = await AiHostRuntime.StartAsync(new AiHostRuntimeOptions
@@ -252,7 +272,11 @@ public sealed class HostShell : IAsyncDisposable
         BaseUrl = Server?.BaseUrl,
         UpgradeModelId = Models?.UpgradeModelId,
         OnBattery = SafeBattery(),
+        StoreProblem = StoreProblem,
     };
+
+    /// <summary>Why the models folder could not be opened, or null.</summary>
+    public string? StoreProblem { get; private set; }
 
     private bool SafeBattery()
     {

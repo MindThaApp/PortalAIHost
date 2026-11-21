@@ -10,6 +10,12 @@
                 Severity="Warning"
                 IsClosable="False"
                 IsOpen="{x:Bind ViewModel.SafeMode, Mode=OneWay}" />
+            <InfoBar
+                x:Uid="HomeStoreProblemBar"
+                Severity="Error"
+                IsClosable="False"
+                Message="{x:Bind ViewModel.StoreProblem, Mode=OneWay}"
+                IsOpen="{x:Bind ViewModel.HasStoreProblem, Mode=OneWay}" />
             <Border Style="{StaticResource CardBorder}">
                 <StackPanel Spacing="8">
                     <TextBlock Text="{x:Bind ViewModel.StatusTitle, Mode=OneWay}" Style="{StaticResource SubtitleTextBlockStyle}" TextWrapping="Wrap" />

@@ -23,6 +23,7 @@ internal sealed class ModelCenter : IAsyncDisposable
     private readonly Func<HostSettings> _settings;
     private readonly Func<string, string?> _activeId;
     private readonly Func<string, bool> _isLoaded;
+    private readonly IReadOnlyList<IModelStore> _previous;
     private readonly Func<DownloadProgressEvent, Task> _push;
     private readonly ConcurrentDictionary<string, Running> _running = new(StringComparer.Ordinal);
     private readonly ConcurrentDictionary<string, string> _lastState = new(StringComparer.Ordinal);
@@ -33,8 +34,9 @@ internal sealed class ModelCenter : IAsyncDisposable
     /// <param name="isLoaded">True while an engine still runs with that model (for example while it stops after a switch).</param>
     public ModelCenter(IModelStore? store, IReadOnlyList<CatalogueEntry>? catalogue, ModelDownloader? downloader,
         IHardwareProbe? hardware, Func<HostSettings> settings, Func<string, string?> activeId, Func<DownloadProgressEvent, Task> push,
-        Func<string, bool>? isLoaded = null)
+        Func<string, bool>? isLoaded = null, IReadOnlyList<IModelStore>? previousStores = null)
     {
+        _previous = previousStores ?? [];
         _store = store;
         _catalogue = catalogue;
         _downloader = downloader;
@@ -87,6 +89,30 @@ internal sealed class ModelCenter : IAsyncDisposable
                 DownloadState = s.IsComplete ? null : DownloadStateFor(s.Id, s),
                 BytesDone = s.IsComplete ? 0 : s.Files.Sum(f => f.SizeBytes),
             });
+        }
+
+        // Models left in earlier models folders: listed so their space can be freed; remove only.
+        foreach (var old in _previous)
+        {
+            IReadOnlyList<StoredModel> oldModels;
+            try
+            {
+                oldModels = await old.ListAsync(ct).ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                continue;
+            }
+
+            foreach (var s in oldModels)
+            {
+                models.Add(new CatalogueModelSummary
+                {
+                    Id = s.Id, DisplayName = s.DisplayName, Kind = s.Kind, Engine = s.Engine, SizeBytes = s.TotalBytes,
+                    Installed = s.IsComplete, FitsThisPc = true, ExistingCopy = s.Origin == ModelOrigin.External,
+                    StoreFolder = old.Location.Path,
+                });
+            }
         }
 
         return new ModelListing
@@ -290,6 +316,37 @@ internal sealed class ModelCenter : IAsyncDisposable
 
         _lastState.TryRemove(id, out _);
         await _push(new DownloadProgressEvent { CatalogueId = id, State = "cancelled" }).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Removes a model from an earlier models folder, through that folder's own store rules (marker, recorded
+    /// files only, external files only forgotten). The folder itself is never deleted.
+    /// </summary>
+    public async Task RemoveFromPreviousAsync(string id, string storeFolder, CancellationToken ct)
+    {
+        var old = _previous.FirstOrDefault(s => string.Equals(s.Location.Path, storeFolder, StringComparison.OrdinalIgnoreCase))
+            ?? throw new ControlPipeException(ErrorCodes.NotFound, "That folder is not an earlier models folder of this host.");
+        if (await old.GetAsync(id, ct).ConfigureAwait(false) is null)
+        {
+            throw new ControlPipeException(ErrorCodes.NotFound, "That model is not in that folder.");
+        }
+
+        try
+        {
+            await old.RemoveAsync(id, ct).ConfigureAwait(false);
+        }
+        catch (InvalidOperationException ex)
+        {
+            throw new ControlPipeException(ErrorCodes.InvalidRequest, ex.Message);
+        }
+        catch (KeyNotFoundException)
+        {
+            throw new ControlPipeException(ErrorCodes.NotFound, "That model is not in that folder.");
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            throw new ControlPipeException(ErrorCodes.InvalidRequest, "The model could not be removed: " + ex.Message);
+        }
     }
 
     /// <summary>Removes a model through the store: host-created files only; an external model is only forgotten.</summary>

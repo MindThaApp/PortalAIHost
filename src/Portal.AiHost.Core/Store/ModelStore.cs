@@ -101,7 +101,7 @@ internal sealed class ManifestFile
 /// </summary>
 public sealed partial class ModelStore : IModelStoreWriter
 {
-    public const string UserFolderName = "Portal AI Host Models";
+    public const string UserFolderName = Portal.AiHost.Contracts.HostFolders.ModelsSubfolder;
 
     private const long Fat32MaxFile = 4L * 1024 * 1024 * 1024 - 1;
     private readonly SemaphoreSlim _gate = new(1, 1);
@@ -181,7 +181,41 @@ public sealed partial class ModelStore : IModelStoreWriter
         return CreateFresh(root, disk);
     }
 
-    private static string PickNewStoreFolder(string parentFolder, IDiskInfo disk)
+    /// <summary>
+    /// The models folder chosen in settings: opens parent\"Portal AI Host Models" when it exists (it must carry the
+    /// marker), otherwise creates it with the same checks as <see cref="CreateInParent"/>. Missing parents are
+    /// never created, and an existing unmarked folder is refused.
+    /// </summary>
+    public static ModelStore OpenOrCreateInParent(string parentFolder, IDiskInfo? disk = null)
+    {
+        disk ??= SystemDiskInfo.Instance;
+        var parent = CheckedParent(parentFolder, disk);
+        var root = StoreFolderIn(parent);
+        return Directory.Exists(root) ? Open(root, disk) : CreateFresh(root, disk);
+    }
+
+    /// <summary>The store folder the host uses inside a chosen models folder.</summary>
+    public static string StoreFolderIn(string parentFolder) => Path.Combine(OwnedFolder.Normalize(parentFolder), UserFolderName);
+
+    /// <summary>Plain-language reason a folder cannot hold a new store (missing, FAT32), or null when it can. Reads only.</summary>
+    public static string? CheckParentFolder(string parentFolder, IDiskInfo? disk = null)
+    {
+        try
+        {
+            CheckedParent(parentFolder, disk ?? SystemDiskInfo.Instance);
+            return null;
+        }
+        catch (StoreRefusedException ex)
+        {
+            return ex.Message;
+        }
+        catch (Exception ex) when (ex is IOException or ArgumentException or UnauthorizedAccessException or NotSupportedException)
+        {
+            return $"'{parentFolder}' cannot be used: {ex.Message}";
+        }
+    }
+
+    private static string CheckedParent(string parentFolder, IDiskInfo disk)
     {
         var parent = OwnedFolder.Normalize(parentFolder);
         if (!Directory.Exists(parent))
@@ -195,8 +229,11 @@ public sealed partial class ModelStore : IModelStoreWriter
             throw new StoreRefusedException($"'{parent}' is {fs}, which cannot hold files over 4 GB. Use an NTFS or exFAT drive.");
         }
 
-        return UniquePath(Path.Combine(parent, UserFolderName));
+        return parent;
     }
+
+    private static string PickNewStoreFolder(string parentFolder, IDiskInfo disk) =>
+        UniquePath(Path.Combine(CheckedParent(parentFolder, disk), UserFolderName));
 
     private static ModelStore CreateFresh(string root, IDiskInfo disk)
     {

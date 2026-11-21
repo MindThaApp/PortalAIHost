@@ -22,12 +22,13 @@ public sealed partial class ModelRowViewModel : ObservableObject
         SizeText = Fmt.Bytes(m.SizeBytes);
         QualityText = Fmt.Stars(m.Quality);
         QualityName = strings.Format("Vm_QualityName", Math.Round(m.Quality, 1));
-        Reason = m.Reason ?? "";
+        Reason = m.StoreFolder is { } oldFolder ? strings.Format("Vm_OldFolderRow", oldFolder) : m.Reason ?? "";
         Recommended = m.Recommended;
         Installed = m.Installed;
         Active = m.Active;
         FitsThisPc = m.FitsThisPc;
         ExistingCopy = existingCopy;
+        StoreFolder = m.StoreFolder;
         State = m.Installed ? "done" : m.DownloadState ?? "none";
         if (!m.Installed && m.DownloadState is not null && m.SizeBytes > 0)
         {
@@ -46,6 +47,11 @@ public sealed partial class ModelRowViewModel : ObservableObject
     public bool Recommended { get; }
     public bool FitsThisPc { get; }
     public bool ExistingCopy { get; }
+
+    /// <summary>Set for a model left in an earlier models folder: it can only be removed.</summary>
+    public string? StoreFolder { get; }
+
+    public bool InOldFolder => StoreFolder is not null;
     public string AutoDownload => _s.Format("Vm_AutoDownload", Name);
     public string AutoPause => _s.Format("Vm_AutoPause", Name);
     public string AutoResume => _s.Format("Vm_AutoResume", Name);
@@ -95,11 +101,17 @@ public sealed partial class ModelRowViewModel : ObservableObject
         CanPause = State == "downloading";
         CanResume = State is "paused" or "failed";
         CanCancel = State is "downloading" or "paused" or "queued";
-        CanDownload = !Installed && State == "none";
-        CanActivate = Installed && !Active;
-        CanRemove = Installed && !Active && !busy;
+        CanDownload = !InOldFolder && !Installed && State == "none";
+        CanActivate = !InOldFolder && Installed && !Active;
+        CanRemove = InOldFolder || (Installed && !Active && !busy);
+        if (InOldFolder)
+        {
+            CanPause = CanResume = CanCancel = ShowProgress = false;
+        }
+
         TooBig = !FitsThisPc && !Installed;
-        Badge = Active ? _s.Get("Vm_InUse") : Installed ? _s.Get("Vm_Installed") : Recommended ? _s.Get("Vm_BestForYou") : "";
+        Badge = InOldFolder ? _s.Get("Vm_OldFolderBadge")
+            : Active ? _s.Get("Vm_InUse") : Installed ? _s.Get("Vm_Installed") : Recommended ? _s.Get("Vm_BestForYou") : "";
     }
 
     partial void OnActiveChanged(bool value) => Refresh();
@@ -165,7 +177,7 @@ public sealed partial class ModelsViewModel : ObservableObject, IDisposable
         Models.Clear();
         foreach (var m in view.Models)
             Models.Add(new ModelRowViewModel(this, _s, m, view.ExistingCopyIds.Contains(m.Id)));
-        Recommended = Models.FirstOrDefault(m => m.Recommended);
+        Recommended = Models.FirstOrDefault(m => m.Recommended && !m.InOldFolder);
         StorageLine = _s.Format("Vm_StorageLine", view.StorageFolder, Fmt.Bytes(view.FreeBytes));
         var existing = Models.FirstOrDefault(m => m.ExistingCopy);
         ExistingCopyLine = existing is null ? "" : _s.Format("Vm_ExistingCopy", existing.Name);
@@ -177,7 +189,7 @@ public sealed partial class ModelsViewModel : ObservableObject, IDisposable
 
     private void OnProgress(DownloadProgressEvent e) => _ui.Post(() =>
     {
-        var row = Models.FirstOrDefault(m => m.Id == e.CatalogueId);
+        var row = Models.FirstOrDefault(m => m.Id == e.CatalogueId && !m.InOldFolder);
         row?.Apply(e);
     });
 
@@ -190,7 +202,10 @@ public sealed partial class ModelsViewModel : ObservableObject, IDisposable
         // The host deletes only files it downloaded (store rules); the window only asks, after a confirmation.
         var ok = await _dialogs.ConfirmAsync(_s.Get("Vm_RemoveTitle"), _s.Format("Vm_RemoveBody", row.Name), _s.Get("Vm_RemoveYes"), _s.Get("Vm_Cancel"));
         if (!ok) return;
-        if (await Run(() => _shell.Host.RemoveModelAsync(row.Id))) await LoadAsync();
+        var removed = row.StoreFolder is { } old
+            ? await Run(() => _shell.Host.RemoveOldModelAsync(row.Id, old))
+            : await Run(() => _shell.Host.RemoveModelAsync(row.Id));
+        if (removed) await LoadAsync();
     }
 
     public async Task CancelAsync(ModelRowViewModel row)

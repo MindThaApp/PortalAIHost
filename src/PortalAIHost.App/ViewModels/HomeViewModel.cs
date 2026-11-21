@@ -25,6 +25,8 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
 
     [ObservableProperty] private bool _noHost;
     [ObservableProperty] private bool _safeMode;
+    [ObservableProperty] private bool _hasStoreProblem;
+    [ObservableProperty] private string _storeProblem = "";
     [ObservableProperty] private bool _showStatus;
     [ObservableProperty] private string _statusTitle = "";
     [ObservableProperty] private string _statusDetail = "";
@@ -43,6 +45,8 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
         NoHost = !snap.Connected;
         ShowStatus = snap.Connected;
         SafeMode = snap.Connected && snap.SafeMode;
+        StoreProblem = snap.Connected ? snap.StoreProblem ?? "" : "";
+        HasStoreProblem = StoreProblem.Length > 0;
         StartMessage = _shell.StartMessage;
         CanStart = !_shell.Starting;
         if (snap.Status is not { } st)

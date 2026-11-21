@@ -82,6 +82,10 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
     public Task RemoveModelAsync(string catalogueId, CancellationToken ct = default) =>
         SendAsync(ControlTypes.RemoveModel, new RemoveModelCommand { CatalogueId = catalogueId }, AiHostJsonContext.Default.RemoveModelCommand, ct);
 
+    public Task RemoveOldModelAsync(string catalogueId, string storeFolder, CancellationToken ct = default) =>
+        SendAsync(ControlTypes.RemoveModel, new RemoveModelCommand { CatalogueId = catalogueId, StoreFolder = storeFolder },
+            AiHostJsonContext.Default.RemoveModelCommand, ct);
+
     public Task ActivateModelAsync(string catalogueId, CancellationToken ct = default) =>
         SendAsync(ControlTypes.ActivateModel, new ActivateModelCommand { CatalogueId = catalogueId }, AiHostJsonContext.Default.ActivateModelCommand, ct);
 
@@ -118,6 +122,7 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
     {
         UpgradeModelId = s.UpgradeModelId,
         UncleanExits = s.UncleanExits,
+        StoreProblem = s.StoreProblem,
     };
 
     // ---- plumbing -------------------------------------------------------------------------------
