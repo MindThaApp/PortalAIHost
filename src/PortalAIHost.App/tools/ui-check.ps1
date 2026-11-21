@@ -22,7 +22,7 @@ $work = Join-Path $env:TEMP ("portalaihost-uicheck-" + [guid]::NewGuid().ToStrin
 New-Item -ItemType Directory -Path $work | Out-Null
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 Copy-Item -Path (Join-Path $BuildDir '*') -Destination $work -Recurse
-$exe = Join-Path $work 'PortalAIHost.exe'
+$exe = Join-Path $work 'PortalAIHost.App.exe'
 if (-not (Test-Path -LiteralPath $exe)) { throw "No exe in copy: $exe" }
 
 function Get-Win([int]$procId, [int]$timeoutSec = 25) {

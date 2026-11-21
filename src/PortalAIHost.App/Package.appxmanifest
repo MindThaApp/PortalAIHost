@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Package manifest, source for scripts/build-msix.ps1 (the script copies it to AppxManifest.xml in the layout,
+  fills in the architecture and applies any identity overrides).
+
+  PLACEHOLDERS: the Identity Name / Publisher and PublisherDisplayName below are NOT real. They are replaced by the
+  Partner Center values once the Store name is reserved (build-msix.ps1 -IdentityName -Publisher
+  -PublisherDisplayName). Version: the 4th (revision) field must stay 0 for Store builds.
+
+  Layout (flat package root): PortalAIHost.App.exe (WinUI window) and PortalAIHost.Service.exe (headless host)
+  sit side by side, with engine\vulkan and engine\cpu beneath the root.
+-->
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="uap desktop rescap">
+
+  <Identity Name="PLACEHOLDER-PortalAIHost" Publisher="CN=PLACEHOLDER-Publisher" Version="1.0.0.0"
+            ProcessorArchitecture="x64" />
+
+  <Properties>
+    <DisplayName>Portal AI Host</DisplayName>
+    <PublisherDisplayName>PLACEHOLDER Publisher</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.22000.0" MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="en-us" />
+  </Resources>
+
+  <Applications>
+    <!-- The window: Start menu entry. -->
+    <Application Id="App" Executable="PortalAIHost.App.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements DisplayName="Portal AI Host" Description="Local AI for your Portal apps."
+                          BackgroundColor="transparent"
+                          Square150x150Logo="Assets\Square150x150Logo.png"
+                          Square44x44Logo="Assets\Square44x44Logo.png" />
+    </Application>
+
+    <!-- The host: headless, no Start entry, offered as a startup task, started by the portal-ai-host: protocol. -->
+    <Application Id="Service" Executable="PortalAIHost.Service.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements DisplayName="Portal AI Host (background)" Description="Portal AI Host background service."
+                          BackgroundColor="transparent"
+                          Square150x150Logo="Assets\Square150x150Logo.png"
+                          Square44x44Logo="Assets\Square44x44Logo.png"
+                          AppListEntry="none" />
+      <Extensions>
+        <desktop:Extension Category="windows.startupTask" Executable="PortalAIHost.Service.exe"
+                           EntryPoint="Windows.FullTrustApplication">
+          <desktop:StartupTask TaskId="PortalAIHostStartup" Enabled="false" DisplayName="Portal AI Host" />
+        </desktop:Extension>
+        <!-- Clients may only ask the host to start or to open its window (portal-ai-host:start, portal-ai-host:open). -->
+        <uap:Extension Category="windows.protocol">
+          <uap:Protocol Name="portal-ai-host" />
+        </uap:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
+</Package>
