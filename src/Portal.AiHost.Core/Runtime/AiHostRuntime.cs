@@ -53,6 +53,9 @@ public sealed class AiHostRuntimeOptions
 
     public bool SafeMode { get; init; }
 
+    /// <summary>Per kind: keep loaded, and the idle unload timeout in seconds now in force (status reports it).</summary>
+    public Func<string, (bool KeepLoaded, int IdleUnloadSeconds)>? IdlePolicy { get; init; }
+
     public TimeProvider Time { get; init; } = TimeProvider.System;
 }
 
@@ -286,6 +289,7 @@ public sealed class AiHostRuntime : IAsyncDisposable
         {
             var active = GetActive(kind);
             var ks = _kinds[kind];
+            var idle = _o.IdlePolicy?.Invoke(kind) ?? (false, 600);
             anyActive |= active is not null;
             var state = active is null ? ModelStates.NotInstalled : sup.State switch
             {
@@ -304,7 +308,8 @@ public sealed class AiHostRuntime : IAsyncDisposable
                 State = state,
                 LoadedSince = state == ModelStates.Loaded ? ks.LoadedSince : null,
                 LoadProgress = state == ModelStates.Loaded ? 1.0 : state == ModelStates.Loading ? ks.Progress : 0.0,
-                IdleUnloadSeconds = 600,
+                KeepLoaded = idle.KeepLoaded,
+                IdleUnloadSeconds = idle.KeepLoaded ? 0 : idle.IdleUnloadSeconds,
             };
         }
 

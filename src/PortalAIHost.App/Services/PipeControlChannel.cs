@@ -5,6 +5,40 @@ using Windows.ApplicationModel;
 
 namespace PortalAIHost.App.Services;
 
+/// <summary>Pipe name the host uses for this run: the real one, or the test-root one when a test data root is set.</summary>
+public static class HostPipeName
+{
+    public const string TestRootVariable = "PORTALAIHOST_TEST_DATA_ROOT";
+    public const string TestRootMarker = ".portal-ai-host-test-root";
+
+    /// <summary>
+    /// Same rule as the host (HostPaths): a test root gives a pipe of its own. A test root that is missing or not
+    /// marked fails closed with a name no host listens on, so a test window never reaches the real host.
+    /// </summary>
+    public static string ForThisRun(Func<string, string?>? env = null)
+    {
+        var root = (env ?? Environment.GetEnvironmentVariable)(TestRootVariable);
+        if (root is null)
+        {
+            return ControlPipe.NameForCurrentUser();
+        }
+
+        if (root.Length == 0 || !Path.IsPathFullyQualified(root))
+        {
+            return ControlPipe.NameForCurrentUser("test-refused");
+        }
+
+        var full = Path.GetFullPath(root);
+        if (!Directory.Exists(full) || !File.Exists(Path.Combine(full, TestRootMarker)))
+        {
+            return ControlPipe.NameForCurrentUser("test-refused");
+        }
+
+        var hash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(full.ToUpperInvariant())))[..16];
+        return ControlPipe.NameForCurrentUser("test-" + hash);
+    }
+}
+
 /// <summary>Opens the current user's control pipe with a short timeout.</summary>
 public sealed class PipeControlChannelFactory : IControlChannelFactory
 {
@@ -13,7 +47,7 @@ public sealed class PipeControlChannelFactory : IControlChannelFactory
 
     public PipeControlChannelFactory(string? pipeName = null, TimeSpan? timeout = null)
     {
-        _pipeName = pipeName;
+        _pipeName = pipeName ?? HostPipeName.ForThisRun();
         _timeout = timeout ?? TimeSpan.FromMilliseconds(400);
     }
 

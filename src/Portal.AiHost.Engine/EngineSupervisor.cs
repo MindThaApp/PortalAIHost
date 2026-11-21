@@ -38,6 +38,12 @@ public sealed class EngineSupervisorOptions
     /// <summary>Unload the model after this long without requests; null disables.</summary>
     public TimeSpan? IdleUnloadAfter { get; init; }
 
+    /// <summary>
+    /// Read on every idle check instead of <see cref="IdleUnloadAfter"/> when set, so settings and battery changes
+    /// apply without a restart. Returning null means keep loaded.
+    /// </summary>
+    public Func<TimeSpan?>? IdleUnloadPolicy { get; init; }
+
     public TimeSpan KillWait { get; init; } = TimeSpan.FromSeconds(10);
 }
 
@@ -74,9 +80,13 @@ public sealed class EngineSupervisor : IEngineSupervisor
         _kind = kind;
         _adapter = adapter;
         _o = options;
-        if (_o.IdleUnloadAfter is { } idle)
+        if (_o.IdleUnloadPolicy is { } policy)
         {
-            _ = Task.Run(() => IdleLoopAsync(idle));
+            _ = Task.Run(() => IdleLoopAsync(policy, TimeSpan.FromSeconds(2)));
+        }
+        else if (_o.IdleUnloadAfter is { } idle)
+        {
+            _ = Task.Run(() => IdleLoopAsync(() => idle, TimeSpan.FromMilliseconds(Math.Clamp(idle.TotalMilliseconds / 4, 20, 5000))));
         }
     }
 
@@ -699,14 +709,30 @@ public sealed class EngineSupervisor : IEngineSupervisor
         }
     }
 
-    private async Task IdleLoopAsync(TimeSpan idle)
+    private static TimeSpan? ReadPolicy(Func<TimeSpan?> policy)
     {
-        var period = TimeSpan.FromMilliseconds(Math.Clamp(idle.TotalMilliseconds / 4, 20, 5000));
+        try
+        {
+            return policy();
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException)
+        {
+            return null; // a broken policy never unloads
+        }
+    }
+
+    private async Task IdleLoopAsync(Func<TimeSpan?> policy, TimeSpan period)
+    {
         try
         {
             while (!_disposeCts.IsCancellationRequested)
             {
                 await Task.Delay(period, _disposeCts.Token).ConfigureAwait(false);
+                if (ReadPolicy(policy) is not { } idle)
+                {
+                    continue; // keep loaded
+                }
+
                 bool due;
                 lock (_sync)
                 {
@@ -730,7 +756,7 @@ public sealed class EngineSupervisor : IEngineSupervisor
                             && Stopwatch.GetElapsedTime(_lastActivityTicks) >= idle;
                     }
 
-                    if (due)
+                    if (due && ReadPolicy(policy) is not null)
                     {
                         await StopCoreAsync("Unloaded after being idle.").ConfigureAwait(false);
                     }

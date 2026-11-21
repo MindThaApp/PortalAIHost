@@ -77,38 +77,35 @@ internal sealed class ControlHandler(HostShell shell)
                 return ControlPipe.Ok(id);
 
             case ControlTypes.ListModels:
-                var listing = new ModelListing();
-                if (shell.Store is { } store)
-                {
-                    foreach (var m in await store.ListAsync(ct).ConfigureAwait(false))
-                    {
-                        listing.Models.Add(new CatalogueModelSummary
-                        {
-                            Id = m.Id, DisplayName = m.DisplayName, Kind = m.Kind, Engine = m.Engine,
-                            SizeBytes = m.TotalBytes, Installed = m.IsComplete,
-                            Active = runtime.GetActive(m.Kind)?.ModelId == m.Id, FitsThisPc = true,
-                        });
-                    }
-                }
+                return Ok(id, await shell.Models.ListAsync(ct).ConfigureAwait(false), AiHostJsonContext.Default.ModelListing);
 
-                return Ok(id, listing, AiHostJsonContext.Default.ModelListing);
+            case ControlTypes.StartDownload or ControlTypes.ResumeDownload:
+                // Start on a paused model resumes from its partial file, exactly like resume.
+                await shell.Models.StartAsync(Payload(r, AiHostJsonContext.Default.DownloadCommand)!.CatalogueId).ConfigureAwait(false);
+                return ControlPipe.Ok(id);
+
+            case ControlTypes.PauseDownload:
+                await shell.Models.PauseAsync(Payload(r, AiHostJsonContext.Default.DownloadCommand)!.CatalogueId).ConfigureAwait(false);
+                return ControlPipe.Ok(id);
+
+            case ControlTypes.CancelDownload:
+                await shell.Models.CancelAsync(Payload(r, AiHostJsonContext.Default.DownloadCommand)!.CatalogueId, ct).ConfigureAwait(false);
+                return ControlPipe.Ok(id);
+
+            case ControlTypes.RemoveModel:
+                await shell.Models.RemoveAsync(Payload(r, AiHostJsonContext.Default.RemoveModelCommand)!.CatalogueId, ct).ConfigureAwait(false);
+                return ControlPipe.Ok(id);
 
             case ControlTypes.ActivateModel:
                 await shell.ActivateAsync(Payload(r, AiHostJsonContext.Default.ActivateModelCommand)!.CatalogueId, ct)
                     .ConfigureAwait(false);
                 return ControlPipe.Ok(id);
 
-            case ControlTypes.StartDownload or ControlTypes.PauseDownload or ControlTypes.CancelDownload:
-                return ControlPipe.Error(id, ErrorCodes.FeatureDisabled, "Downloads are not available in this build yet.");
-
             case ControlTypes.GetSettings:
                 return Ok(id, shell.Settings.Current, AiHostJsonContext.Default.HostSettings);
 
             case ControlTypes.SetSettings:
-                // Saved only: memory cap, backend and keep-loaded take effect at the next host start (the planner
-                // and auto-load read them once at startup). Engines already loaded are not touched.
-                shell.Settings.Save(Payload(r, AiHostJsonContext.Default.HostSettings)!);
-                return ControlPipe.Ok(id);
+                return Ok(id, SaveSettings(Payload(r, AiHostJsonContext.Default.HostSettings)!), AiHostJsonContext.Default.SettingsSaved);
 
             case ControlTypes.TryItChat:
                 var tryIt = Payload(r, AiHostJsonContext.Default.TryItRequest)!;
@@ -129,8 +126,49 @@ internal sealed class ControlHandler(HostShell shell)
         }
     }
 
+    /// <summary>
+    /// Saves settings. Idle unload applies at once; memory cap, backend and the models folder at the next host start.
+    /// A new models folder never moves or deletes the models already downloaded: they stay where they are.
+    /// </summary>
+    internal SettingsSaved SaveSettings(HostSettings next)
+    {
+        var old = shell.Settings.Current;
+        shell.Settings.Save(next);
+        var folderChanged = !string.Equals(old.ModelsFolder ?? "", next.ModelsFolder ?? "", StringComparison.OrdinalIgnoreCase);
+        var restart = folderChanged || old.MaxMemoryPercent != next.MaxMemoryPercent
+            || !string.Equals(old.Backend, next.Backend, StringComparison.Ordinal);
+        return new SettingsSaved
+        {
+            ModelsFolderChanged = folderChanged,
+            AppliesAtRestart = restart,
+            Note = folderChanged
+                ? "New downloads go to the new folder after the host restarts. Models already downloaded are not moved or deleted."
+                : null,
+        };
+    }
+
+    /// <summary>Publisher from the caller's file version info, only for a verified caller; otherwise unknown.</summary>
+    internal static string? PublisherOf(CallerIdentity caller)
+    {
+        if (!caller.Verified || caller.ExePath is not { Length: > 0 } exe)
+        {
+            return null;
+        }
+
+        try
+        {
+            var company = System.Diagnostics.FileVersionInfo.GetVersionInfo(exe).CompanyName;
+            return string.IsNullOrWhiteSpace(company) ? null : company.Trim();
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException)
+        {
+            return null;
+        }
+    }
+
     internal static PendingApproval ToPending(AccessRequestInfo info) => new()
     {
+        Publisher = PublisherOf(info.Caller),
         RequestId = info.RequestId,
         AppId = info.AppId,
         AppName = info.AppName,

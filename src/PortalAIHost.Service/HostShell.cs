@@ -4,6 +4,9 @@ using Portal.AiHost.Contracts;
 using Portal.AiHost.Contracts.Control;
 using Portal.AiHost.Core.Abstractions;
 using Portal.AiHost.Core.Auth;
+using Portal.AiHost.Core.Catalogue;
+using Portal.AiHost.Core.Download;
+using Portal.AiHost.Core.Store;
 using Portal.AiHost.Core.Runtime;
 using Portal.AiHost.Core.Scheduling;
 using Portal.AiHost.Core.Settings;
@@ -33,6 +36,15 @@ public sealed class HostShellOptions
 
     /// <summary>Opens the model store once this host holds the single-instance lock (used when Store is null).</summary>
     public Func<IModelStore?>? OpenStore { get; init; }
+
+    /// <summary>Opens the store for the saved settings (models folder). Used before <see cref="OpenStore"/> when set.</summary>
+    public Func<HostSettings, IModelStore?>? OpenStoreFor { get; init; }
+
+    /// <summary>Verified catalogue entries, or null when no trusted model list could be loaded (fail closed).</summary>
+    public IReadOnlyList<CatalogueEntry>? Catalogue { get; init; }
+
+    /// <summary>Creates the downloader for the opened store; null disables downloads.</summary>
+    public Func<IModelStoreWriter, ModelDownloader?>? CreateDownloader { get; init; }
 
     public string HostVersion { get; init; } = "1.0.0";
 
@@ -82,6 +94,41 @@ public sealed class HostShell : IAsyncDisposable
     public SettingsStore<HostSettings> Settings => _settings;
 
     public IModelStore? Store => _store;
+
+    internal HostPaths PathsForTests => _o.Paths;
+
+    /// <summary>Catalogue, downloads and remove for the models page.</summary>
+    internal ModelCenter Models { get; private set; } = null!;
+
+    /// <summary>Idle unload after this long for a kind, or null to keep it loaded: settings, and 5 minutes on battery.</summary>
+    public TimeSpan? IdleUnloadFor(string kind)
+    {
+        var (keep, seconds) = IdlePolicyFor(kind);
+        return keep ? null : TimeSpan.FromSeconds(seconds);
+    }
+
+    internal (bool KeepLoaded, int IdleUnloadSeconds) IdlePolicyFor(string kind)
+    {
+        var s = _settings?.Current;
+        var k = s is not null && s.Kinds.TryGetValue(kind, out var v) ? v : null;
+        if (k?.KeepLoaded == true)
+        {
+            return (true, 0);
+        }
+
+        var seconds = k?.IdleUnloadSeconds is > 0 and var n ? n : 600;
+        bool battery;
+        try
+        {
+            battery = _o.Hardware?.IsOnBattery == true;
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException)
+        {
+            battery = false;
+        }
+
+        return (false, battery ? Math.Min(seconds, 300) : seconds);
+    }
 
     /// <summary>
     /// The window asked to be shown (pipe <c>show</c>, tray Open, or an approval request). Requests made before
@@ -147,10 +194,13 @@ public sealed class HostShell : IAsyncDisposable
     private async Task StartCoreAsync(CancellationToken ct)
     {
         var root = _o.Paths.DataRoot;
-        _store = _o.Store ?? _o.OpenStore?.Invoke();
         _marker = SafeModeMarker.Begin(root);
         _settings = HostSettingsFile.Create(root);
         var settings = _settings.Load();
+        _store = _o.Store ?? _o.OpenStoreFor?.Invoke(settings) ?? _o.OpenStore?.Invoke();
+        Models = new ModelCenter(_store, _o.Catalogue,
+            _store is IModelStoreWriter writer ? _o.CreateDownloader?.Invoke(writer) : null,
+            _o.Hardware, () => _settings.Current, kind => Runtime?.GetActive(kind)?.ModelId, PushDownloadAsync);
         _registry = new ClientRegistry(new ClientRegistryOptions { DataDirectory = root }, _o.KeyProtector);
         _scheduler = new FairScheduler();
         Runtime = await AiHostRuntime.StartAsync(new AiHostRuntimeOptions
@@ -162,6 +212,7 @@ public sealed class HostShell : IAsyncDisposable
             Planner = new() { MaxMemoryPercent = settings.MaxMemoryPercent, Backend = settings.Backend },
             HostVersion = _o.HostVersion,
             SafeMode = _marker.SafeMode,
+            IdlePolicy = IdlePolicyFor,
         }, ct).ConfigureAwait(false);
 
         Runtime.EngineStateChanged += (_, change) => _ = PushEngineStateAsync(change);
@@ -186,7 +237,21 @@ public sealed class HostShell : IAsyncDisposable
         SafeMode = Runtime.SafeMode,
         UncleanExits = _marker?.UncleanExits ?? 0,
         BaseUrl = Server?.BaseUrl,
+        UpgradeModelId = Models?.UpgradeModelId,
+        OnBattery = SafeBattery(),
     };
+
+    private bool SafeBattery()
+    {
+        try
+        {
+            return _o.Hardware?.IsOnBattery == true;
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException)
+        {
+            return false;
+        }
+    }
 
     public void RequestShow(string? page)
     {
@@ -234,6 +299,14 @@ public sealed class HostShell : IAsyncDisposable
     /// </summary>
     private async Task StopPartsAsync(TimeSpan grace)
     {
+        // Downloads stop first and keep their partial files, so the next start can resume them.
+        await GuardAsync(async () =>
+        {
+            if (Models is { } m)
+            {
+                await m.DisposeAsync().ConfigureAwait(false);
+            }
+        }).ConfigureAwait(false);
         await GuardAsync(() => Runtime?.StopAsync(grace) ?? Task.CompletedTask).ConfigureAwait(false);
         await GuardAsync(() => Server?.StopAsync() ?? Task.CompletedTask).ConfigureAwait(false);
         await GuardAsync(async () => await _pipe.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
@@ -385,6 +458,18 @@ public sealed class HostShell : IAsyncDisposable
                 Progress = change.Progress,
             }, AiHostJsonContext.Default.EngineStateEvent)).ConfigureAwait(false);
             await PushStatusAsync().ConfigureAwait(false);
+        }
+        catch (ObjectDisposedException)
+        {
+        }
+    }
+
+    private async Task PushDownloadAsync(DownloadProgressEvent e)
+    {
+        try
+        {
+            await _pipe.BroadcastAsync(ControlTypes.EventDownloadProgress,
+                JsonSerializer.SerializeToElement(e, AiHostJsonContext.Default.DownloadProgressEvent)).ConfigureAwait(false);
         }
         catch (ObjectDisposedException)
         {

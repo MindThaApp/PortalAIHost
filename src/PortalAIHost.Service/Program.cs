@@ -1,7 +1,10 @@
 using System.Diagnostics;
 using Portal.AiHost.Contracts;
+using Portal.AiHost.Contracts.Control;
 using Portal.AiHost.Core.Abstractions;
+using Portal.AiHost.Core.Download;
 using Portal.AiHost.Core.Store;
+using Portal.AiHost.Platform.Windows.Power;
 using Portal.AiHost.Engine;
 using Portal.AiHost.Platform.Windows.Hardware;
 using Portal.AiHost.Platform.Windows.Identity;
@@ -28,20 +31,20 @@ internal static class Program
 
     private static async Task<int> RunAsync(string[] args)
     {
-        _ = args;
+        var launch = LaunchArgs.Parse(args);
         var paths = HostPaths.Resolve(Environment.GetEnvironmentVariable);
         if (paths is null)
         {
             return HostPaths.BadTestRootExitCode;
         }
 
+        HostShell? shell = null;
         var supervisors = new Dictionary<string, IEngineSupervisor>(StringComparer.Ordinal)
         {
-            [ModelKinds.Chat] = CreateSupervisor(ModelKinds.Chat),
-            [ModelKinds.Embedding] = CreateSupervisor(ModelKinds.Embedding),
+            [ModelKinds.Chat] = CreateSupervisor(ModelKinds.Chat, () => shell?.IdleUnloadFor(ModelKinds.Chat)),
+            [ModelKinds.Embedding] = CreateSupervisor(ModelKinds.Embedding, () => shell?.IdleUnloadFor(ModelKinds.Embedding)),
         };
-
-        HostShell? shell;
+        var catalogue = CatalogueSource.Load(AppContext.BaseDirectory, Environment.GetEnvironmentVariable);
         try
         {
             shell = await HostShell.StartAsync(new HostShellOptions
@@ -51,7 +54,9 @@ internal static class Program
                 KeyProtector = new DpapiHostKeyProtector(),
                 CallerResolver = new WindowsCallerIdentityResolver(),
                 Hardware = new WindowsHardwareProbe(),
-                OpenStore = () => OpenStore(paths), // Only after the single-instance lock is held.
+                OpenStoreFor = settings => OpenStore(paths, settings), // Only after the single-instance lock is held.
+                Catalogue = catalogue,
+                CreateDownloader = store => new ModelDownloader(Http.Value, store, options: null, sleep: new PowerRequestSleepBlocker()),
                 HostVersion = typeof(Program).Assembly.GetName().Version?.ToString(3) ?? "1.0.0",
             }).ConfigureAwait(false);
         }
@@ -78,7 +83,10 @@ internal static class Program
             {
                 await using var client = await ControlPipeClient.ConnectAsync(paths.PipeName, TimeSpan.FromSeconds(3))
                     .ConfigureAwait(false);
-                await client.ShowAsync().ConfigureAwait(false);
+                if (launch == LaunchMode.Open)
+                {
+                    await client.ShowAsync().ConfigureAwait(false);
+                }
             }
             catch (Exception ex) when (ex is TimeoutException or IOException or ControlPipeException or UnauthorizedAccessException)
             {
@@ -88,6 +96,10 @@ internal static class Program
         }
 
         shell.ShowRequested += (_, page) => OpenWindow(paths, page);
+        if (launch == LaunchMode.Open && LaunchArgs.IsProtocol(args))
+        {
+            shell.RequestShow(null);
+        }
         // The hidden window always runs (test mode too) so shutdown, logoff, update and resume reach the host;
         // the icon itself only outside test mode unless asked for.
         var showIcon = !paths.TestMode || Environment.GetEnvironmentVariable(TrayInTestModeVariable) == "1";
@@ -136,9 +148,12 @@ internal static class Program
         }
     }
 
-    private static EngineSupervisor CreateSupervisor(string kind) => new(kind, new LlamaServerAdapter(),
+    private static readonly Lazy<HttpClient> Http = new(() => new HttpClient { Timeout = Timeout.InfiniteTimeSpan });
+
+    private static EngineSupervisor CreateSupervisor(string kind, Func<TimeSpan?> idle) => new(kind, new LlamaServerAdapter(),
         new EngineSupervisorOptions
         {
+            IdleUnloadPolicy = idle,
             ResolveBinary = (spec, cpu) =>
             {
                 var flavour = cpu || spec.Placement.Backend == RuntimeProbe.Cpu ? RuntimeProbe.Cpu : RuntimeProbe.Vulkan;
@@ -146,11 +161,35 @@ internal static class Program
             },
         });
 
-    private static ModelStore? OpenStore(HostPaths paths)
+    /// <summary>Folder name the host creates (and marks) inside a models folder the user picked.</summary>
+    public const string StoreFolderName = "Portal AI Host models";
+
+    /// <summary>
+    /// The store folder: the default LocalState\models, or a marked subfolder of the folder chosen in settings.
+    /// A test run never leaves its test root. Changing the folder never moves or deletes the old store.
+    /// </summary>
+    internal static string StoreFolderFor(HostPaths paths, HostSettings settings)
+    {
+        var fallback = Path.Combine(paths.DataRoot, "models");
+        if (settings.ModelsFolder is not { Length: > 0 } chosen || !Path.IsPathFullyQualified(chosen))
+        {
+            return fallback;
+        }
+
+        var folder = Path.GetFullPath(Path.Combine(chosen, StoreFolderName));
+        if (paths.TestMode && !folder.StartsWith(Path.GetFullPath(paths.DataRoot) + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+        {
+            return fallback;
+        }
+
+        return folder;
+    }
+
+    private static ModelStore? OpenStore(HostPaths paths, HostSettings settings)
     {
         try
         {
-            return ModelStore.OpenOrCreate(Path.Combine(paths.DataRoot, "models"));
+            return ModelStore.OpenOrCreate(StoreFolderFor(paths, settings));
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException)
         {
@@ -166,8 +205,10 @@ internal static class Program
             return;
         }
 
-        var exe = Path.Combine(AppContext.BaseDirectory, "PortalAIHost.App.exe");
-        if (!File.Exists(exe))
+        var exe = new[] { "PortalAIHost.exe", "PortalAIHost.App.exe" }
+            .SelectMany(n => new[] { Path.Combine(AppContext.BaseDirectory, n), Path.Combine(AppContext.BaseDirectory, "..", n) })
+            .Select(Path.GetFullPath).FirstOrDefault(File.Exists);
+        if (exe is null)
         {
             return;
         }
@@ -177,8 +218,7 @@ internal static class Program
             var start = new ProcessStartInfo(exe) { UseShellExecute = false };
             if (page is not null)
             {
-                start.ArgumentList.Add("--page");
-                start.ArgumentList.Add(page);
+                start.ArgumentList.Add("--page=" + page);
             }
 
             using var _ = Process.Start(start);

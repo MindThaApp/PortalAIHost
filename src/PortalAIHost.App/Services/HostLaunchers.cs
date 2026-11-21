@@ -17,6 +17,7 @@ public interface IStartedProcess : IDisposable
 public sealed class ProcessHostLauncher : IHostLauncher
 {
     public const string HostExeName = "PortalAIHost.Service.exe";
+    public const string HostSubfolder = "host";
 
     // Host exit codes (PortalAIHost.Service Program / HostPaths).
     public const int ExitBadTestRoot = 3;
@@ -51,9 +52,11 @@ public sealed class ProcessHostLauncher : IHostLauncher
             return true;
         }
 
-        var exe = Path.Combine(_baseDirectory, HostExeName);
+        // Next to the app, or in a host subfolder (a framework-dependent host cannot share the self-contained app's folder).
+        var exe = new[] { Path.Combine(_baseDirectory, HostExeName), Path.Combine(_baseDirectory, HostSubfolder, HostExeName) }
+            .FirstOrDefault(File.Exists);
         IStartedProcess? process = null;
-        if (File.Exists(exe))
+        if (exe is not null)
         {
             process = _start(exe);
             if (process is null)
