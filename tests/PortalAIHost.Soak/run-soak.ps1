@@ -43,7 +43,9 @@ if ($Real) {
 }
 else {
     $stub = Join-Path $tmp 'stub'
-    dotnet publish (Join-Path $repo 'tests\Portal.AiHost.Engine.Tests\StubChild') -c Release -p:AssemblyName=llama-server -o $stub -nologo -v q | Select-String 'error' | Select-Object -First 5
+    dotnet publish (Join-Path $repo 'tests\Portal.AiHost.Engine.Tests\StubChild') -c Release -o $stub -nologo -v q | Select-String 'error' | Select-Object -First 5
+    # The apphost loads StubChild.dll beside it, so a copy named llama-server.exe works as the engine.
+    Copy-Item (Join-Path $stub 'StubChild.exe') (Join-Path $stub 'llama-server.exe')
     $driverArgs += @('--mode', 'fake', '--engine-stub', $stub)
 }
 if ($Minutes) { $driverArgs += @('--minutes', "$Minutes") }

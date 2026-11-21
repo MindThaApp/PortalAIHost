@@ -102,20 +102,26 @@ internal static class Soak
 
             var psi = new ProcessStartInfo(serviceExe) { UseShellExecute = false, CreateNoWindow = true, WorkingDirectory = bin };
             psi.Environment[HostPathsVars.TestRoot] = data;
-            host = Process.Start(psi)!;
             var pipeName = ControlPipe.NameForCurrentUser("test-" + Hash(Path.GetFullPath(data)));
+            // Saved settings apply at the next start: set them, quit, start again.
+            host = Process.Start(psi)!;
+            await using (var first = await ControlPipeClient.ConnectAsync(pipeName, TimeSpan.FromSeconds(30)))
+            {
+                var settings = await first.GetSettingsAsync();
+                var kinds = new Dictionary<string, KindSettings>
+                {
+                    [ModelKinds.Chat] = new() { KeepLoaded = false, IdleUnloadSeconds = o.IdleSeconds },
+                    [ModelKinds.Embedding] = new() { KeepLoaded = false, IdleUnloadSeconds = o.IdleSeconds },
+                };
+                await first.SetSettingsAsync(new HostSettings { Backend = "cpu", MaxMemoryPercent = settings.MaxMemoryPercent, Kinds = kinds });
+                await first.QuitAsync();
+            }
+            if (!host.WaitForExit(15000)) throw new InvalidOperationException("host did not quit after settings were saved");
+            host = Process.Start(psi)!;
             await using var pipe = await ControlPipeClient.ConnectAsync(pipeName, TimeSpan.FromSeconds(30));
             var status = await pipe.GetStatusAsync();
             var baseUrl = status.BaseUrl ?? throw new InvalidOperationException("host reported no base url");
-            Log($"host pid {host.Id} at {baseUrl}");
-            var settings = await pipe.GetSettingsAsync();
-            var kinds = new Dictionary<string, KindSettings>
-            {
-                [ModelKinds.Chat] = new() { KeepLoaded = false, IdleUnloadSeconds = o.IdleSeconds },
-                [ModelKinds.Embedding] = new() { KeepLoaded = false, IdleUnloadSeconds = o.IdleSeconds },
-            };
-            await pipe.SetSettingsAsync(new HostSettings { Backend = "cpu", MaxMemoryPercent = settings.MaxMemoryPercent, Kinds = kinds });
-            await pipe.ActivateModelAsync("soak-chat");
+            Log($"host pid {host.Id} at {baseUrl}");            await pipe.ActivateModelAsync("soak-chat");
             if (haveEmbed) await pipe.ActivateModelAsync("soak-embed");
 
             // Three simulated apps, approved over the admin pipe.
@@ -125,7 +131,7 @@ internal static class Soak
                 if (n == "soak-embed-app" && !haveEmbed) continue;
                 apps.Add((n, AiHostClient.Create(new AiHostClientOptions
                 {
-                    AppId = n, AppDisplayName = n, TokenStore = new MemoryTokenStore(),
+                    AppId = "com.portalsoak." + n["soak-".Length..].Replace("-", ""), AppDisplayName = n, TokenStore = new MemoryTokenStore(),
                     DiscoveryOverride = new Uri(baseUrl), AccessReason = "soak",
                 })));
             }
@@ -200,7 +206,8 @@ internal static class Soak
             var slopeMbPerHour = steady.Count >= 3 ? Slope(steady) * 60 / (1024 * 1024) : double.NaN;
             var handleGrowth = steady.Count >= 2 ? steady[^1].Handles - steady[0].Handles : 0;
             var p95 = ttft.Count > 0 ? Percentile(ttft, 0.95) : double.NaN;
-            if (double.IsNaN(slopeMbPerHour) || slopeMbPerHour >= 5) failures.Add($"private-bytes slope {slopeMbPerHour:F2} MB/h (limit 5)");
+            var slopeLimit = fake ? 60.0 : 5.0; // a 5-minute run cannot resolve 5 MB/h; the real 60-minute run holds the 5 MB/h line
+            if (double.IsNaN(slopeMbPerHour) || slopeMbPerHour >= slopeLimit) failures.Add($"private-bytes slope {slopeMbPerHour:F2} MB/h (limit {slopeLimit})");
             if (handleGrowth > 50) failures.Add($"handles grew by {handleGrowth} (limit 50)");
             if (counts.Unexpected > 0) failures.Add($"{counts.Unexpected} requests ended in an unexpected state");
             if (counts.Ok == 0) failures.Add("no request succeeded");
