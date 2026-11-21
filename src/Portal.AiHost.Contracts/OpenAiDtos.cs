@@ -12,7 +12,7 @@ namespace Portal.AiHost.Contracts;
 public sealed class ChatCompletionRequest
 {
     public string? Model { get; init; }
-    public List<ChatMessage> Messages { get; init; } = new();
+    public List<ChatMessage> Messages { get; set; } = new();
     public bool? Stream { get; init; }
     public StreamOptions? StreamOptions { get; init; }
     public int? MaxTokens { get; init; }
@@ -52,7 +52,7 @@ public sealed class StreamOptions
 public sealed class ResponseFormat
 {
     /// <summary>text, json_object or json_schema.</summary>
-    public string Type { get; init; } = "text";
+    public string Type { get; set; } = "text";
 
     public JsonSchemaFormat? JsonSchema { get; init; }
 }
@@ -66,7 +66,7 @@ public sealed class JsonSchemaFormat
 
 public sealed class ChatMessage
 {
-    public string Role { get; init; } = ChatRoles.User;
+    public string Role { get; set; } = ChatRoles.User;
     public ChatContent? Content { get; init; }
     public string? Name { get; init; }
     public List<ToolCall>? ToolCalls { get; init; }
@@ -97,20 +97,20 @@ public sealed class ChatContent
 public sealed class ContentPart
 {
     /// <summary>Only "text" is supported in v1; image and audio parts are refused.</summary>
-    public string Type { get; init; } = "text";
+    public string Type { get; set; } = "text";
 
     public string? Text { get; init; }
 }
 
 public sealed class ToolDefinition
 {
-    public string Type { get; init; } = "function";
-    public FunctionDefinition Function { get; init; } = new();
+    public string Type { get; set; } = "function";
+    public FunctionDefinition Function { get; set; } = new();
 }
 
 public sealed class FunctionDefinition
 {
-    public string Name { get; init; } = "";
+    public string Name { get; set; } = "";
     public string? Description { get; init; }
 
     /// <summary>JSON-schema object, passed through untouched.</summary>
@@ -140,18 +140,18 @@ public sealed class FunctionCall
 /// <summary>Non-streaming chat.completion response.</summary>
 public sealed class ChatCompletionResponse
 {
-    public string Id { get; init; } = "";
-    public string Object { get; init; } = "chat.completion";
+    public string Id { get; set; } = "";
+    public string Object { get; set; } = "chat.completion";
     public long Created { get; init; }
-    public string Model { get; init; } = "";
-    public List<ChatChoice> Choices { get; init; } = new();
+    public string Model { get; set; } = "";
+    public List<ChatChoice> Choices { get; set; } = new();
     public Usage? Usage { get; init; }
 }
 
 public sealed class ChatChoice
 {
     public int Index { get; init; }
-    public ChatResponseMessage Message { get; init; } = new();
+    public ChatResponseMessage Message { get; set; } = new();
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public string? FinishReason { get; init; }
@@ -159,7 +159,7 @@ public sealed class ChatChoice
 
 public sealed class ChatResponseMessage
 {
-    public string Role { get; init; } = ChatRoles.Assistant;
+    public string Role { get; set; } = ChatRoles.Assistant;
     public string? Content { get; init; }
     public string? ReasoningContent { get; init; }
     public List<ToolCall>? ToolCalls { get; init; }
@@ -175,11 +175,11 @@ public sealed class Usage
 /// <summary>One streamed chat.completion.chunk event.</summary>
 public sealed class ChatCompletionChunk
 {
-    public string Id { get; init; } = "";
-    public string Object { get; init; } = "chat.completion.chunk";
+    public string Id { get; set; } = "";
+    public string Object { get; set; } = "chat.completion.chunk";
     public long Created { get; init; }
-    public string Model { get; init; } = "";
-    public List<ChatChunkChoice> Choices { get; init; } = new();
+    public string Model { get; set; } = "";
+    public List<ChatChunkChoice> Choices { get; set; } = new();
 
     /// <summary>Only on the final chunk when stream_options.include_usage is set.</summary>
     public Usage? Usage { get; init; }
@@ -188,7 +188,7 @@ public sealed class ChatCompletionChunk
 public sealed class ChatChunkChoice
 {
     public int Index { get; init; }
-    public ChatDeltaMessage Delta { get; init; } = new();
+    public ChatDeltaMessage Delta { get; set; } = new();
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public string? FinishReason { get; init; }
@@ -208,7 +208,7 @@ public sealed class ChatDeltaMessage
 public sealed class EmbeddingsRequest
 {
     public string? Model { get; init; }
-    public StringOrList Input { get; init; } = new();
+    public StringOrList Input { get; set; } = new();
 
     /// <summary>float (default) or base64.</summary>
     public string? EncodingFormat { get; init; }
@@ -216,17 +216,17 @@ public sealed class EmbeddingsRequest
 
 public sealed class EmbeddingsResponse
 {
-    public string Object { get; init; } = "list";
-    public List<EmbeddingData> Data { get; init; } = new();
-    public string Model { get; init; } = "";
+    public string Object { get; set; } = "list";
+    public List<EmbeddingData> Data { get; set; } = new();
+    public string Model { get; set; } = "";
     public EmbeddingsUsage? Usage { get; init; }
 }
 
 public sealed class EmbeddingData
 {
-    public string Object { get; init; } = "embedding";
+    public string Object { get; set; } = "embedding";
     public int Index { get; init; }
-    public EmbeddingVector Embedding { get; init; } = new();
+    public EmbeddingVector Embedding { get; set; } = new();
 }
 
 public sealed class EmbeddingsUsage
@@ -290,7 +290,7 @@ public sealed class StringOrList
 
     public StringOrList(params string[] values) => Values = new List<string>(values);
 
-    public List<string> Values { get; init; } = new();
+    public List<string> Values { get; set; } = new();
 
     /// <summary>True when the wire form is a bare string rather than an array.</summary>
     public bool IsSingle { get; init; }

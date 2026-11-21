@@ -10,24 +10,24 @@ namespace Portal.AiHost.Contracts;
 /// <summary>Contents of host.json (api-v1.md section 2).</summary>
 public sealed class DiscoveryFile
 {
-    public int Schema { get; init; } = 1;
-    public string Service { get; init; } = ApiInfo.ServiceName;
-    public string ApiVersion { get; init; } = Contracts.ApiInfo.ApiVersion;
-    public string BaseUrl { get; init; } = "";
+    public int Schema { get; set; } = 1;
+    public string Service { get; set; } = ApiInfo.ServiceName;
+    public string ApiVersion { get; set; } = Contracts.ApiInfo.ApiVersion;
+    public string BaseUrl { get; set; } = "";
     public int Port { get; init; }
     public int Pid { get; init; }
-    public string InstanceId { get; init; } = "";
-    public string HostVersion { get; init; } = "";
+    public string InstanceId { get; set; } = "";
+    public string HostVersion { get; set; } = "";
     public DateTimeOffset StartedAt { get; init; }
 }
 
 /// <summary>GET /host/ping.</summary>
 public sealed class PingResponse
 {
-    public string Service { get; init; } = ApiInfo.ServiceName;
-    public string ApiVersion { get; init; } = Contracts.ApiInfo.ApiVersion;
-    public string HostVersion { get; init; } = "";
-    public string InstanceId { get; init; } = "";
+    public string Service { get; set; } = ApiInfo.ServiceName;
+    public string ApiVersion { get; set; } = Contracts.ApiInfo.ApiVersion;
+    public string HostVersion { get; set; } = "";
+    public string InstanceId { get; set; } = "";
 }
 
 // ---- /host/auth ------------------------------------------------------------
@@ -35,8 +35,8 @@ public sealed class PingResponse
 /// <summary>POST /host/auth/requests body.</summary>
 public sealed class AuthRequestCreate
 {
-    public string AppId { get; init; } = "";
-    public string AppName { get; init; } = "";
+    public string AppId { get; set; } = "";
+    public string AppName { get; set; } = "";
     public string? AppVersion { get; init; }
     public string? Reason { get; init; }
 }
@@ -44,16 +44,16 @@ public sealed class AuthRequestCreate
 /// <summary>202 response of POST /host/auth/requests.</summary>
 public sealed class AuthRequestCreated
 {
-    public string RequestId { get; init; } = "";
-    public string Status { get; init; } = AuthStatuses.Pending;
+    public string RequestId { get; set; } = "";
+    public string Status { get; set; } = AuthStatuses.Pending;
     public DateTimeOffset ExpiresAt { get; init; }
-    public int PollWaitMs { get; init; } = ApiLimits.AuthWaitMsDefault;
+    public int PollWaitMs { get; set; } = ApiLimits.AuthWaitMsDefault;
 }
 
 /// <summary>GET /host/auth/requests/{id}. The token is present once, on approval.</summary>
 public sealed class AuthRequestStatus
 {
-    public string Status { get; init; } = AuthStatuses.Pending;
+    public string Status { get; set; } = AuthStatuses.Pending;
     public string? Token { get; init; }
     public string? TokenId { get; init; }
     public string? AppId { get; init; }
@@ -64,25 +64,25 @@ public sealed class AuthRequestStatus
 /// <summary>GET /host/status.</summary>
 public sealed class HostStatus
 {
-    public string ApiVersion { get; init; } = Contracts.ApiInfo.ApiVersion;
-    public string HostVersion { get; init; } = "";
-    public string InstanceId { get; init; } = "";
-    public string State { get; init; } = HostStates.NoModel;
+    public string ApiVersion { get; set; } = Contracts.ApiInfo.ApiVersion;
+    public string HostVersion { get; set; } = "";
+    public string InstanceId { get; set; } = "";
+    public string State { get; set; } = HostStates.NoModel;
     public StatusClient? Client { get; init; }
 
     /// <summary>Keyed by model kind. Expect unknown kinds and ignore them.</summary>
-    public Dictionary<string, ModelStatus> Models { get; init; } = new();
+    public Dictionary<string, ModelStatus> Models { get; set; } = new();
 
-    public QueueStatus Queue { get; init; } = new();
-    public HardwareInfo Hardware { get; init; } = new();
+    public QueueStatus Queue { get; set; } = new();
+    public HardwareInfo Hardware { get; set; } = new();
     public bool UpgradeAvailable { get; init; }
-    public SharingStatus Sharing { get; init; } = new();
+    public SharingStatus Sharing { get; set; } = new();
 }
 
 public sealed class StatusClient
 {
-    public string AppId { get; init; } = "";
-    public string TokenId { get; init; } = "";
+    public string AppId { get; set; } = "";
+    public string TokenId { get; set; } = "";
     public DateTimeOffset ApprovedAt { get; init; }
 }
 
@@ -90,7 +90,7 @@ public sealed class ModelStatus
 {
     public string? Id { get; init; }
     public string? DisplayName { get; init; }
-    public string State { get; init; } = ModelStates.NotInstalled;
+    public string State { get; set; } = ModelStates.NotInstalled;
     public DateTimeOffset? LoadedSince { get; init; }
     public double LoadProgress { get; init; }
     public bool KeepLoaded { get; init; }
@@ -108,19 +108,19 @@ public sealed class QueueStatus
 
 public sealed class HardwareInfo
 {
-    public string Os { get; init; } = "windows";
-    public string Arch { get; init; } = "x64";
+    public string Os { get; set; } = "windows";
+    public string Arch { get; set; } = "x64";
     public int CpuCores { get; init; }
     public long RamBytes { get; init; }
-    public List<GpuInfo> Gpus { get; init; } = new();
+    public List<GpuInfo> Gpus { get; set; } = new();
 }
 
 public sealed class GpuInfo
 {
-    public string Name { get; init; } = "";
-    public string Vendor { get; init; } = "";
+    public string Name { get; set; } = "";
+    public string Vendor { get; set; } = "";
     public long VramBytes { get; init; }
-    public string Backend { get; init; } = "";
+    public string Backend { get; set; } = "";
 }
 
 public sealed class SharingStatus
@@ -134,12 +134,12 @@ public sealed class SharingStatus
 /// <summary>GET /host/capabilities.</summary>
 public sealed class HostCapabilities
 {
-    public string ApiVersion { get; init; } = Contracts.ApiInfo.ApiVersion;
+    public string ApiVersion { get; set; } = Contracts.ApiInfo.ApiVersion;
     public long CapabilitiesRevision { get; init; }
-    public ChatCapabilities Chat { get; init; } = new();
-    public EmbeddingCapabilities Embeddings { get; init; } = new();
-    public CapabilityLimits Limits { get; init; } = new();
-    public List<string> Endpoints { get; init; } = new();
+    public ChatCapabilities Chat { get; set; } = new();
+    public EmbeddingCapabilities Embeddings { get; set; } = new();
+    public CapabilityLimits Limits { get; set; } = new();
+    public List<string> Endpoints { get; set; } = new();
 }
 
 public sealed class ChatCapabilities
@@ -161,8 +161,8 @@ public sealed class ChatCapabilities
 
 public sealed class ChatModelInfo
 {
-    public string Id { get; init; } = "";
-    public string DisplayName { get; init; } = "";
+    public string Id { get; set; } = "";
+    public string DisplayName { get; set; } = "";
     public string? Family { get; init; }
     public double? ParamsTotalB { get; init; }
     public double? ParamsActiveB { get; init; }
@@ -182,8 +182,8 @@ public sealed class ChatFeatures
 
 public sealed class PlacementInfo
 {
-    public string Backend { get; init; } = "";
-    public string GpuOffload { get; init; } = "";
+    public string Backend { get; set; } = "";
+    public string GpuOffload { get; set; } = "";
     public int GpuLayers { get; init; }
     public int TotalLayers { get; init; }
     public int? MoeExpertLayersOnCpu { get; init; }
@@ -208,22 +208,22 @@ public sealed class EmbeddingCapabilities
 
 public sealed class EmbeddingModelInfo
 {
-    public string Id { get; init; } = "";
-    public string DisplayName { get; init; } = "";
+    public string Id { get; set; } = "";
+    public string DisplayName { get; set; } = "";
 }
 
 public sealed class CapabilityLimits
 {
-    public int MaxRequestBytes { get; init; } = ApiLimits.MaxRequestBytes;
-    public int MaxQueuedPerApp { get; init; } = ApiLimits.MaxQueuedPerApp;
-    public DeadlineDefaults DefaultDeadlineMs { get; init; } = new();
-    public int MaxDeadlineMs { get; init; } = ApiLimits.MaxDeadlineMs;
+    public int MaxRequestBytes { get; set; } = ApiLimits.MaxRequestBytes;
+    public int MaxQueuedPerApp { get; set; } = ApiLimits.MaxQueuedPerApp;
+    public DeadlineDefaults DefaultDeadlineMs { get; set; } = new();
+    public int MaxDeadlineMs { get; set; } = ApiLimits.MaxDeadlineMs;
 }
 
 public sealed class DeadlineDefaults
 {
-    public int Interactive { get; init; } = ApiLimits.DefaultInteractiveDeadlineMs;
-    public int Batch { get; init; } = ApiLimits.DefaultBatchDeadlineMs;
+    public int Interactive { get; set; } = ApiLimits.DefaultInteractiveDeadlineMs;
+    public int Batch { get; set; } = ApiLimits.DefaultBatchDeadlineMs;
 }
 
 // ---- /v1/models, warmup, tokenize -------------------------------------------
@@ -231,16 +231,16 @@ public sealed class DeadlineDefaults
 /// <summary>GET /v1/models.</summary>
 public sealed class ModelList
 {
-    public string Object { get; init; } = "list";
-    public List<ModelEntry> Data { get; init; } = new();
+    public string Object { get; set; } = "list";
+    public List<ModelEntry> Data { get; set; } = new();
 }
 
 public sealed class ModelEntry
 {
-    public string Id { get; init; } = "";
-    public string Object { get; init; } = "model";
-    public string OwnedBy { get; init; } = ApiInfo.ServiceName;
-    public string Kind { get; init; } = ModelKinds.Chat;
+    public string Id { get; set; } = "";
+    public string Object { get; set; } = "model";
+    public string OwnedBy { get; set; } = ApiInfo.ServiceName;
+    public string Kind { get; set; } = ModelKinds.Chat;
     public bool Active { get; init; }
     public bool Loaded { get; init; }
     public int? ContextTokens { get; init; }
@@ -249,13 +249,13 @@ public sealed class ModelEntry
 /// <summary>POST /host/warmup body.</summary>
 public sealed class WarmupRequest
 {
-    public string Kind { get; init; } = ModelKinds.Chat;
+    public string Kind { get; set; } = ModelKinds.Chat;
 }
 
 /// <summary>POST /host/warmup response: 202 (loading) or 200 (loaded).</summary>
 public sealed class WarmupResponse
 {
-    public string State { get; init; } = ModelStates.Loading;
+    public string State { get; set; } = ModelStates.Loading;
     public double? LoadProgress { get; init; }
 }
 
@@ -278,14 +278,14 @@ public sealed class TokenizeResponse
 /// <summary>The error envelope: {"error":{...}} (api-v1.md section 5).</summary>
 public sealed class ApiError
 {
-    public ApiErrorBody Error { get; init; } = new();
+    public ApiErrorBody Error { get; set; } = new();
 }
 
 public sealed class ApiErrorBody
 {
-    public string Message { get; init; } = "";
-    public string Type { get; init; } = ErrorTypes.Server;
-    public string Code { get; init; } = ErrorCodes.InternalError;
+    public string Message { get; set; } = "";
+    public string Type { get; set; } = ErrorTypes.Server;
+    public string Code { get; set; } = ErrorCodes.InternalError;
 
     /// <summary>Always written, as null when absent, to match the documented shape.</summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
@@ -299,7 +299,7 @@ public sealed class ApiErrorBody
 public sealed class PortalProgressEvent
 {
     [JsonPropertyName("event")]
-    public string Event { get; init; } = ProgressEvents.Queued;
+    public string Event { get; set; } = ProgressEvents.Queued;
 
     public int? Position { get; init; }
     public double? Progress { get; init; }

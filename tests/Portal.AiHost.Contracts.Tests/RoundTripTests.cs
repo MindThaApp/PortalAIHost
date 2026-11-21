@@ -335,6 +335,20 @@ public class RoundTripTests
     }
 
     [Fact]
+    public void MissingFieldsKeepTheirDefaults()
+    {
+        var s = JsonSerializer.Deserialize("""{ "start_with_windows": true }""", Ctx.HostSettings)!;
+        Assert.Equal(80, s.MaxMemoryPercent);
+        Assert.True(s.PreventSleepWhileDownloading);
+        Assert.Equal("auto", s.Backend);
+        Assert.NotNull(s.Kinds);
+        var k = JsonSerializer.Deserialize("""{ "keep_loaded": true }""", Ctx.KindSettings)!;
+        Assert.Equal(600, k.IdleUnloadSeconds);
+        var l = JsonSerializer.Deserialize("""{ }""", Ctx.ModelListing)!;
+        Assert.NotNull(l.Models);
+    }
+
+    [Fact]
     public void EveryErrorCodeInTheDocumentIsCatalogued()
     {
         string[] documented =

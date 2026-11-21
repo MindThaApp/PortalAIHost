@@ -4,7 +4,16 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ui="using:Microsoft.UI.Xaml.Automation">
     <Grid x:Name="Root">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid x:Name="TitleBarArea" Grid.Row="0" Background="Transparent">
+            <TextBlock x:Name="TitleText" VerticalAlignment="Center" Margin="16,0,0,0"
+                       Style="{StaticResource CaptionTextBlockStyle}" IsHitTestVisible="False" />
+        </Grid>
         <NavigationView
+            Grid.Row="1"
             x:Name="Nav"
             PaneDisplayMode="Left"
             IsBackButtonVisible="Collapsed"

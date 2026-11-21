@@ -36,6 +36,7 @@ public sealed partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private bool _startWithWindows;
     [ObservableProperty] private int _idleIndex = TenMinutesIndex;
     [ObservableProperty] private string _modelsFolder = "";
+    [ObservableProperty] private string _folderPlaceholder = "";
     [ObservableProperty] private string _message = "";
     [ObservableProperty] private bool _available;
     [ObservableProperty] private string _startupState = StartupStates.Unavailable;
@@ -61,6 +62,9 @@ public sealed partial class SettingsViewModel : ObservableObject
         {
             var s = await _shell.Host.GetSettingsAsync().ConfigureAwait(false);
             var startup = await _startup.GetStateAsync().ConfigureAwait(false);
+            var shownFolder = "";
+            try { shownFolder = (await _shell.Host.ListModelsAsync().ConfigureAwait(false)).StorageFolder; }
+            catch (Exception ex) when (ex is HostUnavailableException or HostRequestException) { }
             _ui.Post(() =>
             {
                 _loading = true;
@@ -71,6 +75,7 @@ public sealed partial class SettingsViewModel : ObservableObject
                     : startup is StartupStates.Enabled or StartupStates.EnabledByPolicy;
                 IdleIndex = IndexFor(s);
                 ModelsFolder = s.ModelsFolder ?? "";
+                FolderPlaceholder = shownFolder;
                 Available = true;
                 Message = "";
                 _loading = false;
