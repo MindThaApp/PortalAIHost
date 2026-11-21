@@ -43,7 +43,7 @@ public sealed class ControlPipeClient : IAsyncDisposable
         CancellationToken ct = default)
     {
         var pipe = new NamedPipeClientStream(".", pipeName ?? ControlPipe.NameForCurrentUser(), PipeDirection.InOut,
-            PipeOptions.Asynchronous | PipeOptions.CurrentUserOnly);
+            PipeOptions.Asynchronous | PipeOptions.CurrentUserOnly, System.Security.Principal.TokenImpersonationLevel.Identification);
         try
         {
             await pipe.ConnectAsync(timeout ?? TimeSpan.FromSeconds(2), ct).ConfigureAwait(false);
