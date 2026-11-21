@@ -32,6 +32,23 @@ internal sealed class TestRoot : IDisposable
         return p;
     }
 
+    public static void CreateHardLink(string link, string target)
+    {
+        var psi = new ProcessStartInfo("cmd.exe", $"/c mklink /H \"{link}\" \"{target}\"")
+        {
+            CreateNoWindow = true,
+            UseShellExecute = false,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+        };
+        using var p = Process.Start(psi)!;
+        p.WaitForExit(10_000);
+        if (!File.Exists(link))
+        {
+            throw new InvalidOperationException("Could not create a hard link for the test.");
+        }
+    }
+
     public static void CreateJunction(string link, string target)
     {
         var psi = new ProcessStartInfo("cmd.exe", $"/c mklink /J \"{link}\" \"{target}\"")
@@ -166,6 +183,12 @@ internal sealed class RangeServer : IAsyncDisposable
     public string Etag { get; set; } = "\"v1\"";
     public bool IgnoreRange { get; set; }
 
+    /// <summary>Per request number (1-based): serve these bytes instead of the file.</summary>
+    public Func<int, byte[]?> Override { get; set; } = _ => null;
+
+    /// <summary>Added to the start of the Content-Range header of 206 answers (a broken server).</summary>
+    public long ContentRangeShift { get; set; }
+
     /// <summary>Per request number (1-based): close the connection after this many body bytes.</summary>
     public Func<int, int?> DropAfter { get; set; } = _ => null;
 
@@ -236,13 +259,15 @@ internal sealed class RangeServer : IAsyncDisposable
                 number = Requests.Count;
             }
 
+            data = Override(number) ?? data;
+
             var length = data.Length - start;
             var sb = new StringBuilder();
             sb.Append(partial ? "HTTP/1.1 206 Partial Content\r\n" : "HTTP/1.1 200 OK\r\n");
             sb.Append($"Content-Length: {length}\r\nETag: {Etag}\r\nAccept-Ranges: bytes\r\nConnection: close\r\n");
             if (partial)
             {
-                sb.Append($"Content-Range: bytes {start}-{data.Length - 1}/{data.Length}\r\n");
+                sb.Append($"Content-Range: bytes {start + ContentRangeShift}-{data.Length - 1}/{data.Length}\r\n");
             }
 
             sb.Append("\r\n");

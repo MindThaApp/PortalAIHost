@@ -99,7 +99,7 @@ public class ModelStoreTests
     }
 
     [Fact]
-    public async Task NameClashGetsNumberedNameAndForeignFileIsNeverReplaced()
+    public async Task NameClashStopsWithoutRenamingAndForeignFileIsNeverReplaced()
     {
         using var root = new TestRoot();
         var store = ModelStore.OpenOrCreate(Path.Combine(root.Path, "models"), new FakeDisk());
@@ -112,12 +112,9 @@ public class ModelStoreTests
         var foreign = Path.Combine(folder, "a.gguf");
         File.WriteAllText(foreign, "not the host's");
 
-        var stored = await AddFileAsync(store, "m", "a.gguf", TestData.RandomBytes(100, 4));
-        Assert.NotEqual(foreign, stored.Path);
+        await Assert.ThrowsAsync<StoreSafetyException>(() => store.BeginFileAsync("m", "a.gguf", Ct));
         Assert.Equal("not the host's", File.ReadAllText(foreign));
-
-        await store.RemoveAsync("m", Ct);
-        Assert.Equal("not the host's", File.ReadAllText(foreign));
+        Assert.DoesNotContain(Directory.GetFiles(folder), f => f.Contains('(', StringComparison.Ordinal));
     }
 
     [Fact]
@@ -131,9 +128,10 @@ public class ModelStoreTests
         var intruder = Path.Combine(Path.GetDirectoryName(part)!, "b.gguf");
         File.WriteAllText(intruder, "appeared meanwhile");
 
-        var stored = await store.CommitFileAsync("m", part, TestData.Sha(data), Ct);
-        Assert.Equal("b (2).gguf", Path.GetFileName(stored.Path));
+        await Assert.ThrowsAsync<StoreSafetyException>(() => store.CommitFileAsync("m", part, TestData.Sha(data), Ct));
         Assert.Equal("appeared meanwhile", File.ReadAllText(intruder));
+        Assert.Equal(data, File.ReadAllBytes(part));
+        Assert.Equal(StoredFileState.Partial, (await store.GetAsync("m", Ct))!.Files[0].State);
     }
 
     [Theory]
@@ -160,9 +158,11 @@ public class ModelStoreTests
         await AddFileAsync(store, "m", "victim.gguf", new byte[100]);
 
         var json = File.ReadAllText(StoreJson(store));
-        File.WriteAllText(StoreJson(store), json.Replace("\"path\": \"m\\\\victim.gguf\"", "\"path\": \"..\\\\..\\\\outside\\\\victim.gguf\""));
+        File.WriteAllText(StoreJson(store), json.Replace("\"path\": \"m\\\\victim.gguf\"", "\"path\": \"..\\\\outside\\\\victim.gguf\""));
         var reopened = ModelStore.Open(store.Location.Path, new FakeDisk());
 
+        Assert.Contains("outside", File.ReadAllText(StoreJson(store)), StringComparison.Ordinal);
+        Assert.Equal(victim, Path.GetFullPath(Path.Combine(store.Location.Path, "..", "outside", "victim.gguf")));
         await Assert.ThrowsAsync<StoreSafetyException>(() => reopened.RemoveAsync("m", Ct));
         Assert.True(File.Exists(victim));
     }
