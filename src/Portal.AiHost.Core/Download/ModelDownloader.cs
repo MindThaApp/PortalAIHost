@@ -222,6 +222,23 @@ public sealed class ModelDownloader
         await _store.RemoveAsync(modelId, ct).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Checks before a start that the drive has room for what is still missing (plus headroom), so the window
+    /// can say so at once. Throws <see cref="InsufficientDiskSpaceException"/>; reads only, changes nothing.
+    /// </summary>
+    public async Task CheckSpaceAsync(CatalogueEntry entry, CancellationToken ct)
+    {
+        var stored = await _store.GetAsync(entry.Id, ct).ConfigureAwait(false);
+        long alreadyThere = 0;
+        foreach (var f in entry.Files)
+        {
+            var s = stored?.Files.FirstOrDefault(x => x.Name == f.Name);
+            alreadyThere += s is null ? 0 : s.State == StoredFileState.Partial ? Math.Min(s.SizeBytes, f.Size) : f.Size;
+        }
+
+        CheckDisk(entry.TotalBytes - alreadyThere);
+    }
+
     private void CheckDisk(long remaining)
     {
         var needed = remaining + (long)(remaining * _options.HeadroomFraction) + _options.FixedHeadroomBytes;

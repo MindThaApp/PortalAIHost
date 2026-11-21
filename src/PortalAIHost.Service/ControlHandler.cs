@@ -81,7 +81,7 @@ internal sealed class ControlHandler(HostShell shell)
 
             case ControlTypes.StartDownload or ControlTypes.ResumeDownload:
                 // Start on a paused model resumes from its partial file, exactly like resume.
-                await shell.Models.StartAsync(Payload(r, AiHostJsonContext.Default.DownloadCommand)!.CatalogueId).ConfigureAwait(false);
+                await shell.Models.StartAsync(Payload(r, AiHostJsonContext.Default.DownloadCommand)!.CatalogueId, ct).ConfigureAwait(false);
                 return ControlPipe.Ok(id);
 
             case ControlTypes.PauseDownload:

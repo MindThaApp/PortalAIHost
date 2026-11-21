@@ -153,8 +153,11 @@ public sealed class ModelListing
     /// <summary>Catalogue id of the recommended upgrade over the active chat model, or null.</summary>
     public string? UpgradeModelId { get; init; }
 
-    /// <summary>False when no trusted, signed model list could be loaded: only installed models are listed.</summary>
-    public bool CatalogueAvailable { get; init; }
+    /// <summary>
+    /// False when no trusted, signed model list could be loaded: only installed models are listed. True when the
+    /// field is missing (an older host), so the window never shows a false "list unavailable".
+    /// </summary>
+    public bool CatalogueAvailable { get; set; } = true; // set, not init: generated readers would reset an init default
 }
 
 public sealed class DownloadCommand

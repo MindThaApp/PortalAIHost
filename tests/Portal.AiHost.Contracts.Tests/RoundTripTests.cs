@@ -317,8 +317,12 @@ public class RoundTripTests
         RoundTrip("""{ "token_id": "tk_1" }""", Ctx.ClientRevoke);
         RoundTrip("""
             { "models": [ { "id": "m", "display_name": "M", "kind": "chat", "engine": "llama-server", "size_bytes": 10,
-              "quality": 4.5, "recommended": true, "installed": false, "active": false, "fits_this_pc": true, "reason": "fits" } ] }
+              "quality": 4.5, "recommended": true, "installed": false, "active": false, "fits_this_pc": true,
+              "existing_copy": false, "download_state": "paused", "bytes_done": 4, "reason": "fits" } ],
+              "models_folder": "D:/Models/Portal AI Host Models", "free_bytes": 1000, "catalogue_available": true }
             """, Ctx.ModelListing);
+        // A listing without the field (an older host) reads as "catalogue available".
+        Assert.True(System.Text.Json.JsonSerializer.Deserialize("""{ "models": [] }""", Ctx.ModelListing)!.CatalogueAvailable);
         RoundTrip("""{ "catalogue_id": "m" }""", Ctx.DownloadCommand);
         RoundTrip("""{ "catalogue_id": "m" }""", Ctx.ActivateModelCommand);
         RoundTrip("""{ "catalogue_id": "m", "state": "downloading", "bytes_done": 5, "bytes_total": 10, "eta_seconds": 3.5 }""", Ctx.DownloadProgressEvent);

@@ -22,13 +22,18 @@ internal sealed class ModelCenter : IAsyncDisposable
     private readonly IHardwareProbe? _hardware;
     private readonly Func<HostSettings> _settings;
     private readonly Func<string, string?> _activeId;
+    private readonly Func<string, bool> _isLoaded;
     private readonly Func<DownloadProgressEvent, Task> _push;
     private readonly ConcurrentDictionary<string, Running> _running = new(StringComparer.Ordinal);
     private readonly ConcurrentDictionary<string, string> _lastState = new(StringComparer.Ordinal);
+    private readonly object _profileSync = new();
     private Task<HardwareProfile>? _profile;
+    private volatile bool _disposed;
 
+    /// <param name="isLoaded">True while an engine still runs with that model (for example while it stops after a switch).</param>
     public ModelCenter(IModelStore? store, IReadOnlyList<CatalogueEntry>? catalogue, ModelDownloader? downloader,
-        IHardwareProbe? hardware, Func<HostSettings> settings, Func<string, string?> activeId, Func<DownloadProgressEvent, Task> push)
+        IHardwareProbe? hardware, Func<HostSettings> settings, Func<string, string?> activeId, Func<DownloadProgressEvent, Task> push,
+        Func<string, bool>? isLoaded = null)
     {
         _store = store;
         _catalogue = catalogue;
@@ -36,6 +41,7 @@ internal sealed class ModelCenter : IAsyncDisposable
         _hardware = hardware;
         _settings = settings;
         _activeId = activeId;
+        _isLoaded = isLoaded ?? (_ => false);
         _push = push;
     }
 
@@ -125,13 +131,27 @@ internal sealed class ModelCenter : IAsyncDisposable
         }
 
         HardwareProfile hw;
+        Task<HardwareProfile> probe;
+        lock (_profileSync)
+        {
+            var hardware = _hardware;
+            probe = _profile ??= Task.Run(() => hardware.ProbeAsync(CancellationToken.None));
+        }
+
         try
         {
-            hw = await (_profile ??= _hardware.ProbeAsync(CancellationToken.None)).WaitAsync(ct).ConfigureAwait(false);
+            hw = await probe.WaitAsync(ct).ConfigureAwait(false);
         }
         catch (Exception ex) when (ex is not OperationCanceledException and not OutOfMemoryException)
         {
-            _profile = null;
+            lock (_profileSync)
+            {
+                if (ReferenceEquals(_profile, probe))
+                {
+                    _profile = null; // a later listing probes again
+                }
+            }
+
             return result;
         }
 
@@ -160,37 +180,81 @@ internal sealed class ModelCenter : IAsyncDisposable
 
     // ---- downloads ------------------------------------------------------------------------------
 
-    /// <summary>Starts a download, or resumes a paused or failed one from its partial file.</summary>
-    public Task StartAsync(string id)
+    /// <summary>
+    /// Starts a download, or resumes a paused or failed one from its partial file. Problems known up front (no
+    /// model list, not downloadable, a file the user added, not enough space) are answered as pipe errors.
+    /// </summary>
+    public async Task StartAsync(string id, CancellationToken ct = default)
     {
-        var entry = Find(id) ?? throw new ControlPipeException(ErrorCodes.NotFound,
-            CatalogueAvailable ? "That model is not in the model list." : "The model list is unavailable.");
-        var downloader = _downloader ?? throw new ControlPipeException(ErrorCodes.FeatureDisabled, "The models folder is not available.");
-        var run = new Running();
-        if (!_running.TryAdd(id, run))
+        if (_disposed)
         {
-            run.Cts.Dispose();
-            return Task.CompletedTask; // already downloading
+            throw new ControlPipeException(ErrorCodes.HostStopping, "The host is shutting down.");
+        }
+
+        if (!CatalogueAvailable)
+        {
+            throw new ControlPipeException(ErrorCodes.FeatureDisabled, "The model list is unavailable, so nothing can be downloaded.");
+        }
+
+        var entry = Find(id) ?? throw new ControlPipeException(ErrorCodes.NotFound, "That model is not in the model list.");
+        var downloader = _downloader ?? throw new ControlPipeException(ErrorCodes.FeatureDisabled, "The models folder is not available.");
+        if (_running.ContainsKey(id))
+        {
+            return; // already downloading
+        }
+
+        if (!entry.IsDownloadable)
+        {
+            throw new ControlPipeException(ErrorCodes.InvalidRequest, "This model cannot be downloaded: the model list has no verified files for it.");
+        }
+
+        if (_store is not null && await _store.GetAsync(id, ct).ConfigureAwait(false) is { Origin: ModelOrigin.External })
+        {
+            throw new ControlPipeException(ErrorCodes.InvalidRequest, "This model is a file you added on this PC; it is not downloaded.");
+        }
+
+        try
+        {
+            await downloader.CheckSpaceAsync(entry, ct).ConfigureAwait(false);
+        }
+        catch (InsufficientDiskSpaceException ex)
+        {
+            throw new ControlPipeException(ErrorCodes.InvalidRequest, ex.Message);
+        }
+
+        var run = new Running();
+        if (_disposed || !_running.TryAdd(id, run))
+        {
+            run.Dispose();
+            return; // already downloading, or the host started shutting down
         }
 
         _lastState.TryRemove(id, out _);
         var progress = new Progress(this);
+        var token = run.Token;
         run.Task = Task.Run(async () =>
         {
             try
             {
-                await downloader.DownloadAsync(entry, progress, run.Cts.Token).ConfigureAwait(false);
+                await downloader.DownloadAsync(entry, progress, token).ConfigureAwait(false);
             }
             catch (Exception ex) when (ex is not OutOfMemoryException)
             {
-                // The downloader already reported paused or failed; the partial files stay for a resume.
+                // The downloader normally reports paused or failed itself (the partial files stay for a resume).
+                // Some refusals happen before it reports anything; say so here, so no failure is silent.
+                if (!progress.TerminalSent)
+                {
+                    var state = ex is OperationCanceledException or InsufficientDiskSpaceException or DiskFullException ? "paused" : "failed";
+                    progress.Report(new DownloadProgress(id, state, 0, entry.TotalBytes, null,
+                        ex is OperationCanceledException ? null : ex.Message));
+                }
             }
             finally
             {
                 _running.TryRemove(new KeyValuePair<string, Running>(id, run));
+                run.Dispose();
             }
-        });
-        return Task.CompletedTask;
+        }, CancellationToken.None);
     }
 
     /// <summary>Stops a download and keeps its partial file, so a resume continues from there.</summary>
@@ -201,7 +265,7 @@ internal sealed class ModelCenter : IAsyncDisposable
             return;
         }
 
-        await run.Cts.CancelAsync().ConfigureAwait(false);
+        run.Cancel();
         await run.Task.ConfigureAwait(false);
         _lastState[id] = "paused";
     }
@@ -246,6 +310,12 @@ internal sealed class ModelCenter : IAsyncDisposable
             throw new ControlPipeException(ErrorCodes.InvalidRequest, "This model is in use. Pick another model first.");
         }
 
+        // After a switch the old engine can still be stopping with this model's file open.
+        if (_isLoaded(id))
+        {
+            throw new ControlPipeException(ErrorCodes.InvalidRequest, "This model is still loaded. Try again in a few seconds.");
+        }
+
         try
         {
             await _store.RemoveAsync(id, ct).ConfigureAwait(false);
@@ -254,6 +324,15 @@ internal sealed class ModelCenter : IAsyncDisposable
         {
             throw new ControlPipeException(ErrorCodes.InvalidRequest, ex.Message);
         }
+        catch (KeyNotFoundException)
+        {
+            throw new ControlPipeException(ErrorCodes.NotFound, "That model is not on this PC.");
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            // Includes the store's safety refusals: nothing that failed a check was deleted.
+            throw new ControlPipeException(ErrorCodes.InvalidRequest, "The model could not be removed: " + ex.Message);
+        }
 
         _lastState.TryRemove(id, out _);
         await _push(new DownloadProgressEvent { CatalogueId = id, State = "removed" }).ConfigureAwait(false);
@@ -261,28 +340,89 @@ internal sealed class ModelCenter : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
+        _disposed = true;
         foreach (var id in _running.Keys.ToList())
         {
             await PauseAsync(id).ConfigureAwait(false);
         }
     }
 
-    private sealed class Running
+    /// <summary>Fire-and-forget push whose failure (for example a closed pipe) is observed, never left unobserved.</summary>
+    private void Push(DownloadProgressEvent e)
     {
-        public CancellationTokenSource Cts { get; } = new();
+        Task push;
+        try
+        {
+            push = _push(e);
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException)
+        {
+            return;
+        }
+
+        _ = push.ContinueWith(static t => _ = t.Exception, CancellationToken.None,
+            TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+    }
+
+    private sealed class Running : IDisposable
+    {
+        private readonly CancellationTokenSource _cts = new();
+        private readonly object _sync = new();
+        private bool _disposed;
+
+        public Running() => Token = _cts.Token;
+
+        public CancellationToken Token { get; }
+
         public Task Task { get; set; } = Task.CompletedTask;
+
+        public void Cancel()
+        {
+            lock (_sync)
+            {
+                if (!_disposed)
+                {
+                    _cts.Cancel();
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            lock (_sync)
+            {
+                if (_disposed)
+                {
+                    return;
+                }
+
+                _disposed = true;
+            }
+
+            _cts.Dispose();
+        }
     }
 
     private sealed class Progress(ModelCenter owner) : IProgress<DownloadProgress>
     {
+        private volatile bool _terminal;
+
+        /// <summary>True once done, paused or failed was reported for this run.</summary>
+        public bool TerminalSent => _terminal;
+
         public void Report(DownloadProgress p)
         {
+            if (p.State is "done" or "failed" or "paused")
+            {
+                _terminal = true;
+            }
+
             if (p.State is "failed" or "paused")
             {
                 owner._lastState[p.ModelId] = p.State;
             }
 
-            _ = owner._push(new DownloadProgressEvent
+            owner.Push(new DownloadProgressEvent
             {
                 CatalogueId = p.ModelId, State = p.State, BytesDone = p.BytesDone, BytesTotal = p.BytesTotal,
                 EtaSeconds = p.EtaSeconds, Message = p.Message,

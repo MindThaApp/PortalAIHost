@@ -75,6 +75,10 @@ public sealed class HostShell : IAsyncDisposable
     private EventHandler<string?>? _showRequested;
     private List<string?>? _pendingShows = [];
     private IModelStore? _store;
+    private readonly Lock _inUseGate = new();
+    private Task _inUseChain = Task.CompletedTask;
+    private readonly Dictionary<string, string> _inUse = new(StringComparer.Ordinal); // kind -> model marked in use
+    private readonly List<(IEngineSupervisor Supervisor, EventHandler<EngineStateChange> Handler)> _inUseHandlers = [];
     private int _quitting;
     private volatile bool _sessionEnding;
 
@@ -198,9 +202,18 @@ public sealed class HostShell : IAsyncDisposable
         _settings = HostSettingsFile.Create(root);
         var settings = _settings.Load();
         _store = _o.Store ?? _o.OpenStoreFor?.Invoke(settings) ?? _o.OpenStore?.Invoke();
+        await ReleaseStaleInUseAsync(ct).ConfigureAwait(false);
+        foreach (var sup in _o.Supervisors.Values)
+        {
+            EventHandler<EngineStateChange> handler = (_, change) => QueueInUse(sup, change);
+            sup.StateChanged += handler;
+            _inUseHandlers.Add((sup, handler));
+        }
+
         Models = new ModelCenter(_store, _o.Catalogue,
             _store is IModelStoreWriter writer ? _o.CreateDownloader?.Invoke(writer) : null,
-            _o.Hardware, () => _settings.Current, kind => Runtime?.GetActive(kind)?.ModelId, PushDownloadAsync);
+            _o.Hardware, () => _settings.Current, kind => Runtime?.GetActive(kind)?.ModelId, PushDownloadAsync,
+            isLoaded: IsLoaded);
         _registry = new ClientRegistry(new ClientRegistryOptions { DataDirectory = root }, _o.KeyProtector);
         _scheduler = new FairScheduler();
         Runtime = await AiHostRuntime.StartAsync(new AiHostRuntimeOptions
@@ -317,8 +330,107 @@ public sealed class HostShell : IAsyncDisposable
                 await r.DisposeAsync().ConfigureAwait(false);
             }
         }).ConfigureAwait(false);
+        await GuardAsync(DrainInUseAsync).ConfigureAwait(false);
         Guard(() => _registry?.Dispose());
         Guard(() => _scheduler?.Dispose());
+    }
+
+    // ---- in-use marks ---------------------------------------------------------------------------
+
+    /// <summary>True while any engine that is not stopped still runs with this model (its file may be open).</summary>
+    private bool IsLoaded(string modelId) =>
+        _o.Supervisors.Values.Any(s => s.State is not EngineState.Stopped && s.Current?.ModelId == modelId);
+
+    /// <summary>
+    /// Keeps the store's in-use marks in step with the engines, so the store itself refuses to remove a model an
+    /// engine has open. Updates run one after another in event order.
+    /// </summary>
+    private void QueueInUse(IEngineSupervisor sup, EngineStateChange change)
+    {
+        if (_store is null)
+        {
+            return;
+        }
+
+        var modelId = change.State is EngineState.Stopped ? null : sup.Current?.ModelId;
+        lock (_inUseGate)
+        {
+            _inUseChain = _inUseChain.ContinueWith(_ => SyncInUseAsync(sup.Kind, modelId), CancellationToken.None,
+                TaskContinuationOptions.None, TaskScheduler.Default).Unwrap();
+        }
+    }
+
+    private async Task SyncInUseAsync(string kind, string? modelId)
+    {
+        var store = _store!;
+        _inUse.TryGetValue(kind, out var marked);
+        if (marked == modelId)
+        {
+            return;
+        }
+
+        if (marked is not null)
+        {
+            _inUse.Remove(kind);
+            await TrySetInUseAsync(store, marked, false).ConfigureAwait(false);
+        }
+
+        if (modelId is not null && await TrySetInUseAsync(store, modelId, true).ConfigureAwait(false))
+        {
+            _inUse[kind] = modelId;
+        }
+    }
+
+    private static async Task<bool> TrySetInUseAsync(IModelStore store, string modelId, bool inUse)
+    {
+        try
+        {
+            await store.SetInUseAsync(modelId, inUse, CancellationToken.None).ConfigureAwait(false);
+            return true;
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException)
+        {
+            return false; // not a stored model (for example a test spec) or the inventory could not be written
+        }
+    }
+
+    /// <summary>Marks left by a host that did not exit cleanly: no engine runs yet, so none of them is in use.</summary>
+    private async Task ReleaseStaleInUseAsync(CancellationToken ct)
+    {
+        if (_store is null)
+        {
+            return;
+        }
+
+        try
+        {
+            foreach (var m in await _store.ListAsync(ct).ConfigureAwait(false))
+            {
+                if (m.Files.Any(f => f.State == StoredFileState.InUse))
+                {
+                    await TrySetInUseAsync(_store, m.Id, false).ConfigureAwait(false);
+                }
+            }
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+        }
+    }
+
+    private async Task DrainInUseAsync()
+    {
+        foreach (var (sup, handler) in _inUseHandlers)
+        {
+            sup.StateChanged -= handler;
+        }
+
+        Task chain;
+        lock (_inUseGate)
+        {
+            chain = _inUseChain;
+        }
+
+        await chain.WaitAsync(TimeSpan.FromSeconds(2)).ConfigureAwait(false);
     }
 
     /// <summary>

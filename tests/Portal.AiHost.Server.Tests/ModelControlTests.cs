@@ -54,8 +54,41 @@ public sealed class ModelControlTests
         Files = [new CatalogueFile { Name = "tiny.gguf", Size = body.Length, Sha256 = Convert.ToHexStringLower(SHA256.HashData(body)), Urls = ["https://example.invalid/tiny.gguf"] }],
     };
 
+    /// <summary>A fake engine whose stop waits for the test, like a real engine that takes seconds to exit.</summary>
+    private sealed class SlowStopSupervisor(FakeEngineSupervisor inner) : IEngineSupervisor
+    {
+        public TaskCompletionSource StopGate { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        public string Kind => inner.Kind;
+        public EngineState State => inner.State;
+        public EngineLaunchSpec? Current => inner.Current;
+        public event EventHandler<EngineStateChange>? StateChanged
+        {
+            add => inner.StateChanged += value;
+            remove => inner.StateChanged -= value;
+        }
+
+        public Task StartAsync(EngineLaunchSpec spec, CancellationToken ct) => inner.StartAsync(spec, ct);
+
+        public async Task StopAsync(CancellationToken ct)
+        {
+            await StopGate.Task.WaitAsync(ct).ConfigureAwait(false);
+            await inner.StopAsync(ct).ConfigureAwait(false);
+        }
+
+        public Task<ChatCompletionResponse> ChatAsync(ChatCompletionRequest r, CancellationToken ct) => inner.ChatAsync(r, ct);
+        public IAsyncEnumerable<ChatCompletionChunk> StreamChatAsync(ChatCompletionRequest r, CancellationToken ct) => inner.StreamChatAsync(r, ct);
+        public Task<EmbeddingsResponse> EmbedAsync(EmbeddingsRequest r, CancellationToken ct) => inner.EmbedAsync(r, ct);
+        public Task<int> CountTokensAsync(TokenizeRequest r, CancellationToken ct) => inner.CountTokensAsync(r, ct);
+
+        public ValueTask DisposeAsync()
+        {
+            StopGate.TrySetResult();
+            return inner.DisposeAsync();
+        }
+    }
+
     private static async Task<(HostShell Shell, ModelStore Store)> StartAsync(TestRoot root, IReadOnlyList<CatalogueEntry>? catalogue,
-        byte[]? body = null, bool battery = false)
+        byte[]? body = null, bool battery = false, IEngineSupervisor? chat = null, long headroom = 0)
     {
         var store = ModelStore.OpenOrCreate(Path.Combine(root.Path, "models"));
         var shell = await HostShell.StartAsync(new HostShellOptions
@@ -63,7 +96,7 @@ public sealed class ModelControlTests
             Paths = HostPaths.Resolve(n => n == HostPaths.TestRootVariable ? root.Path : null)!,
             Supervisors = new Dictionary<string, IEngineSupervisor>
             {
-                [ModelKinds.Chat] = new FakeEngineSupervisor(ModelKinds.Chat),
+                [ModelKinds.Chat] = chat ?? new FakeEngineSupervisor(ModelKinds.Chat),
                 [ModelKinds.Embedding] = new FakeEngineSupervisor(ModelKinds.Embedding),
             },
             KeyProtector = new TestKeyProtector(),
@@ -73,7 +106,7 @@ public sealed class ModelControlTests
             Store = store,
             Catalogue = catalogue,
             CreateDownloader = w => new ModelDownloader(new HttpClient(new BytesHandler(body ?? [])), w,
-                options: new DownloadOptions { FixedHeadroomBytes = 0, PreventSleep = false, MaxAttempts = 1 }),
+                options: new DownloadOptions { FixedHeadroomBytes = headroom, PreventSleep = false, MaxAttempts = 1 }),
         }) ?? throw new InvalidOperationException("pipe already owned");
         return (shell, store);
     }
@@ -91,7 +124,70 @@ public sealed class ModelControlTests
         Assert.StartsWith(root.Path, listing.ModelsFolder!, StringComparison.OrdinalIgnoreCase);
         Assert.True(listing.FreeBytes > 0);
         var ex = await Assert.ThrowsAsync<ControlPipeException>(() => client.StartDownloadAsync("anything"));
-        Assert.Equal(ErrorCodes.NotFound, ex.Code);
+        Assert.Equal(ErrorCodes.FeatureDisabled, ex.Code);
+    }
+
+    [Fact(Timeout = 30000)]
+    public async Task A_download_without_room_on_the_drive_is_refused_up_front_and_writes_nothing()
+    {
+        using var root = new TestRoot();
+        var body = RandomNumberGenerator.GetBytes(4096);
+        var (shell, store) = await StartAsync(root, [Entry(body)], body, headroom: 1L << 60);
+        await using var _s = shell;
+        await using var client = await ControlPipeClient.ConnectAsync(shell.Paths().PipeName);
+        var ex = await Assert.ThrowsAsync<ControlPipeException>(() => client.StartDownloadAsync("tiny-chat"));
+        Assert.Equal(ErrorCodes.InvalidRequest, ex.Code);
+        Assert.Contains("GB", ex.Message);
+        Assert.Null(await store.GetAsync("tiny-chat", CancellationToken.None));
+    }
+
+    [Fact(Timeout = 30000)]
+    public async Task A_model_whose_engine_is_still_stopping_after_a_switch_cannot_be_removed()
+    {
+        using var root = new TestRoot();
+        var body = RandomNumberGenerator.GetBytes(4096);
+        var chat = new SlowStopSupervisor(new FakeEngineSupervisor(ModelKinds.Chat));
+        var (shell, store) = await StartAsync(root, [Entry(body)], body, chat: chat);
+        await using var _s = shell;
+        var fileA = Path.Combine(root.Path, "a.gguf");
+        var fileB = Path.Combine(root.Path, "b.gguf");
+        File.WriteAllBytes(fileA, body);
+        File.WriteAllBytes(fileB, body);
+        var a = await store.AddExternalAsync(fileA, ModelKinds.Chat, EngineKinds.LlamaServer, CancellationToken.None);
+        var b = await store.AddExternalAsync(fileB, ModelKinds.Chat, EngineKinds.LlamaServer, CancellationToken.None);
+        await using var client = await ControlPipeClient.ConnectAsync(shell.Paths().PipeName);
+        await using var second = await ControlPipeClient.ConnectAsync(shell.Paths().PipeName);
+        await client.ActivateModelAsync(a.Id);
+        await chat.StartAsync(new EngineLaunchSpec { Kind = ModelKinds.Chat, ModelId = a.Id, ModelFiles = [fileA] }, CancellationToken.None);
+        Assert.Equal(EngineState.Ready, chat.State);
+
+        // Switch to B: the active slot moves at once, the old engine is still stopping with A open.
+        var switching = client.ActivateModelAsync(b.Id);
+        while (shell.Runtime.GetActive(ModelKinds.Chat)?.ModelId != b.Id)
+        {
+            await Task.Delay(10);
+        }
+
+        var ex = await Assert.ThrowsAsync<ControlPipeException>(() => second.ExchangeAsync(ControlTypes.RemoveModel,
+            JsonSerializer.SerializeToElement(new RemoveModelCommand { CatalogueId = a.Id }, AiHostJsonContext.Default.RemoveModelCommand)));
+        Assert.Equal(ErrorCodes.InvalidRequest, ex.Code);
+        Assert.NotNull(await store.GetAsync(a.Id, CancellationToken.None));
+
+        // The store itself also holds the in-use mark while the engine runs with A.
+        Assert.All((await store.GetAsync(a.Id, CancellationToken.None))!.Files, f => Assert.Equal(StoredFileState.InUse, f.State));
+
+        chat.StopGate.SetResult();
+        await switching;
+        Assert.Equal(EngineState.Stopped, chat.State);
+        for (var i = 0; i < 100 && (await store.GetAsync(a.Id, CancellationToken.None))!.Files.Any(f => f.State == StoredFileState.InUse); i++)
+        {
+            await Task.Delay(20);
+        }
+
+        await second.ExchangeAsync(ControlTypes.RemoveModel,
+            JsonSerializer.SerializeToElement(new RemoveModelCommand { CatalogueId = a.Id }, AiHostJsonContext.Default.RemoveModelCommand));
+        Assert.Null(await store.GetAsync(a.Id, CancellationToken.None));
+        Assert.True(File.Exists(fileA)); // a file the user added is only forgotten
     }
 
     [Fact(Timeout = 30000)]
