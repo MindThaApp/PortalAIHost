@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http.Headers;
@@ -64,6 +65,10 @@ public sealed class InsufficientDiskSpaceException(long neededBytes, long freeBy
     public long FreeBytes { get; } = freeBytes;
 }
 
+/// <summary>The drive filled up while writing; the download is paused and can resume when space is freed.</summary>
+public sealed class DiskFullException(IOException inner)
+    : DownloadException("The drive is full; the download is paused. Free some space and resume.", inner);
+
 /// <summary>The file failed its hash twice (once after a restart from zero): "file damaged at source".</summary>
 public sealed class ModelFileDamagedException(string fileName)
     : DownloadException($"'{fileName}' is damaged at the source (hash mismatch twice).");
@@ -94,6 +99,7 @@ public sealed class ModelDownloader
     private readonly IDiskInfo _disk;
     private readonly DownloadOptions _options;
     private readonly ISleepBlocker? _sleep;
+    private readonly ConcurrentDictionary<string, Lazy<Task<StoredModel>>> _active = new(StringComparer.Ordinal);
 
     public ModelDownloader(HttpClient http, IModelStoreWriter store, IDiskInfo? disk = null, DownloadOptions? options = null, ISleepBlocker? sleep = null)
     {
@@ -104,6 +110,11 @@ public sealed class ModelDownloader
         _sleep = sleep;
     }
 
+    /// <summary>
+    /// Downloads (or resumes) a model. Only one download per model runs at a time: a second call for the same model
+    /// on this downloader joins the running one (its token only stops its own wait), and the store refuses a second
+    /// downloader on the same model.
+    /// </summary>
     public async Task<StoredModel> DownloadAsync(CatalogueEntry entry, IProgress<DownloadProgress>? progress, CancellationToken ct)
     {
         if (!entry.IsDownloadable)
@@ -111,6 +122,27 @@ public sealed class ModelDownloader
             throw new NotDownloadableException($"'{entry.Id}' has no pinned commit or verified hashes in the catalogue.");
         }
 
+        var mine = new Lazy<Task<StoredModel>>(() => RunAsync(entry, progress, ct));
+        var running = _active.GetOrAdd(entry.Id, mine);
+        if (!ReferenceEquals(running, mine))
+        {
+            return await running.Value.WaitAsync(ct).ConfigureAwait(false);
+        }
+
+        try
+        {
+            return await mine.Value.ConfigureAwait(false);
+        }
+        finally
+        {
+            _active.TryRemove(new KeyValuePair<string, Lazy<Task<StoredModel>>>(entry.Id, mine));
+        }
+    }
+
+    private async Task<StoredModel> RunAsync(CatalogueEntry entry, IProgress<DownloadProgress>? progress, CancellationToken ct)
+    {
+        await Task.Yield();
+        using var session = _store.AcquireDownload(entry.Id);
         await _store.EnsureModelAsync(entry.Id, entry.DisplayName, entry.Kind, entry.Engine, ct).ConfigureAwait(false);
         var stored = await _store.GetAsync(entry.Id, ct).ConfigureAwait(false);
         var pending = entry.Files
@@ -158,6 +190,11 @@ public sealed class ModelDownloader
             tracker.Report("paused");
             throw;
         }
+        catch (Exception ex) when (ex is InsufficientDiskSpaceException or DiskFullException)
+        {
+            tracker.Report("paused", ex.Message);
+            throw;
+        }
         catch (Exception ex)
         {
             tracker.Report("failed", ex.Message);
@@ -197,6 +234,12 @@ public sealed class ModelDownloader
 
     private async Task DownloadPartAsync(CatalogueEntry entry, CatalogueFile file, ProgressTracker tracker, CancellationToken ct)
     {
+        var adopted = await _store.TryAdoptExistingAsync(entry.Id, file.Name, file.Sha256, file.Size, ct).ConfigureAwait(false);
+        if (adopted is not null)
+        {
+            return; // already in place (for example renamed just before a crash); counted as done
+        }
+
         var restartedFromZero = false;
         while (true)
         {
@@ -213,6 +256,7 @@ public sealed class ModelDownloader
             await _store.DiscardPartAsync(entry.Id, partPath, ct).ConfigureAwait(false);
             if (restartedFromZero)
             {
+                await _store.ForgetIfEmptyAsync(entry.Id, ct).ConfigureAwait(false);
                 throw new ModelFileDamagedException(file.Name);
             }
 
@@ -229,7 +273,15 @@ public sealed class ModelDownloader
             {
                 return await TransferOnceAsync(modelId, file, partPath, tracker, ct).ConfigureAwait(false);
             }
-            catch (Exception ex) when (IsTransient(ex) && !ct.IsCancellationRequested)
+            catch (IOException io) when (IsDiskFull(io))
+            {
+                throw new DiskFullException(io);
+            }
+            catch (IOException io) when (IsSharingViolation(io))
+            {
+                throw new DownloadException($"'{file.Name}' is in use by another program; the download stopped.", io);
+            }
+            catch (Exception ex) when (IsRetryable(ex) && !ct.IsCancellationRequested)
             {
                 if (_options.MaxAttempts is { } max && attempt >= max)
                 {
@@ -243,15 +295,29 @@ public sealed class ModelDownloader
         }
     }
 
-    private static bool IsTransient(Exception ex) => ex switch
+    /// <summary>
+    /// Network trouble is retried. Store safety refusals, a full disk, sharing violations and download errors are
+    /// final and reported.
+    /// </summary>
+    public static bool IsRetryable(Exception ex) => ex switch
     {
-        DownloadException => false,
+        DownloadException or StoreSafetyException or StoreRefusedException => false,
+        IOException io when IsDiskFull(io) || IsSharingViolation(io) => false,
         HttpRequestException h => h.StatusCode is null or HttpStatusCode.RequestTimeout or HttpStatusCode.TooManyRequests
             || (int?)h.StatusCode >= 500,
         TaskCanceledException => true, // HttpClient timeout (the caller's token is checked separately)
         IOException => true,
         _ => false,
     };
+
+    private static bool IsWin32(IOException e, params int[] codes) =>
+        ((uint)e.HResult >> 16) == 0x8007 && codes.Contains(e.HResult & 0xFFFF);
+
+    /// <summary>ERROR_DISK_FULL (112) or ERROR_HANDLE_DISK_FULL (39).</summary>
+    public static bool IsDiskFull(IOException e) => IsWin32(e, 0x70, 0x27);
+
+    /// <summary>ERROR_SHARING_VIOLATION (32) or ERROR_LOCK_VIOLATION (33).</summary>
+    public static bool IsSharingViolation(IOException e) => IsWin32(e, 0x20, 0x21);
 
     private async Task<string> TransferOnceAsync(
         string modelId, CatalogueFile file, string partPath, ProgressTracker tracker, CancellationToken ct)
@@ -270,6 +336,16 @@ public sealed class ModelDownloader
         {
             await ResetAsync(modelId, partPath, length, tracker, ct).ConfigureAwait(false);
             length = 0;
+        }
+
+        // Only bytes the sidecar vouches for were flushed to disk; anything after them may be lost or zeroed by a
+        // power cut, so the store-issued .part is shortened to that point (no sidecar: nothing is vouched for).
+        var durable = Math.Min(length, state?.BytesDone ?? 0);
+        if (durable < length)
+        {
+            tracker.Add(-(length - durable));
+            await _store.TruncatePartAsync(modelId, partPath, durable, ct).ConfigureAwait(false);
+            length = durable;
         }
 
         // Re-hash the existing prefix so the final hash covers every byte on disk.
@@ -342,30 +418,54 @@ public sealed class ModelDownloader
         await WriteStateAsync(modelId, partPath, url, file, etagOut, length, ct).ConfigureAwait(false);
 
         await using var body = await response.Content.ReadAsStreamAsync(ct).ConfigureAwait(false);
-        await using var output = new FileStream(partPath, FileMode.Open, FileAccess.Write, FileShare.Read, _options.BufferBytes, useAsync: true);
+        // Re-checked through the store on every attempt: marker, no links on the way, one hard link, same file ID.
+        await using var output = await _store.OpenPartForWriteAsync(modelId, partPath, _options.BufferBytes, ct).ConfigureAwait(false);
         output.Seek(length, SeekOrigin.Begin);
         var buffer = new byte[_options.BufferBytes];
         var sinceCheck = 0L;
         int n;
-        while ((n = await body.ReadAsync(buffer, ct).ConfigureAwait(false)) > 0)
+        try
         {
-            if (length + n > file.Size)
+            while ((n = await body.ReadAsync(buffer, ct).ConfigureAwait(false)) > 0)
             {
-                throw new DownloadException($"'{file.Name}' is larger at the source than the catalogue says.");
+                if (length + n > file.Size)
+                {
+                    throw new DownloadException($"'{file.Name}' is larger at the source than the catalogue says.");
+                }
+
+                await output.WriteAsync(buffer.AsMemory(0, n), ct).ConfigureAwait(false);
+                sha.AppendData(buffer, 0, n);
+                length += n;
+                sinceCheck += n;
+                tracker.Add(n);
+                if (sinceCheck >= _options.DiskCheckIntervalBytes)
+                {
+                    sinceCheck = 0;
+                    await output.FlushAsync(ct).ConfigureAwait(false);
+                    output.Flush(flushToDisk: true); // durable before the sidecar vouches for it
+                    await WriteStateAsync(modelId, partPath, url, file, etagOut, length, ct).ConfigureAwait(false);
+                    CheckDisk(tracker.Total - tracker.Done);
+                }
+            }
+        }
+        catch
+        {
+            // Pause, cut connection or error: make what was written durable and record it, so a resume (even after
+            // a power cut) starts from a flushed point. Best effort; the original error is what is reported.
+            try
+            {
+                await output.FlushAsync(CancellationToken.None).ConfigureAwait(false);
+                output.Flush(flushToDisk: true);
+                await WriteStateAsync(modelId, partPath, url, file, etagOut, length, CancellationToken.None).ConfigureAwait(false);
+            }
+            catch (IOException)
+            {
+            }
+            catch (UnauthorizedAccessException)
+            {
             }
 
-            await output.WriteAsync(buffer.AsMemory(0, n), ct).ConfigureAwait(false);
-            sha.AppendData(buffer, 0, n);
-            length += n;
-            sinceCheck += n;
-            tracker.Add(n);
-            if (sinceCheck >= _options.DiskCheckIntervalBytes)
-            {
-                sinceCheck = 0;
-                await output.FlushAsync(ct).ConfigureAwait(false);
-                await WriteStateAsync(modelId, partPath, url, file, etagOut, length, ct).ConfigureAwait(false);
-                CheckDisk(tracker.Total - tracker.Done);
-            }
+            throw;
         }
 
         await output.FlushAsync(ct).ConfigureAwait(false);
