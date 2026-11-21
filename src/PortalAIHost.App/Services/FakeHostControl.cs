@@ -12,6 +12,8 @@ public enum FakeScenario
     Loaded,
     SafeMode,
     ApprovalPending,
+    NoCatalogue,
+    LowDisk,
 }
 
 /// <summary>A host stand-in with scripted state. Nothing here touches disk or the network.</summary>
@@ -44,6 +46,8 @@ public sealed class FakeHostControl : IHostControl, IDisposable
         Scenario = scenario;
         _connected = scenario != FakeScenario.NoHost;
         _safeMode = scenario == FakeScenario.SafeMode;
+        CatalogueAvailable = scenario != FakeScenario.NoCatalogue;
+        if (scenario == FakeScenario.LowDisk) FreeBytes = 3_400_000_000;
         switch (scenario)
         {
             case FakeScenario.Downloading:
@@ -65,6 +69,12 @@ public sealed class FakeHostControl : IHostControl, IDisposable
     }
 
     public FakeScenario Scenario { get; }
+
+    /// <summary>When false the model list has only installed models, like a host with no trusted catalogue.</summary>
+    public bool CatalogueAvailable { get; set; } = true;
+
+    /// <summary>Free space reported for the models folder.</summary>
+    public long FreeBytes { get; set; } = 212_000_000_000;
 
     public event Action<HostSnapshot>? StatusChanged;
     public event Action<PendingApproval>? ApprovalPending;
@@ -158,7 +168,9 @@ public sealed class FakeHostControl : IHostControl, IDisposable
         {
             IReadOnlySet<string> existing = Scenario == FakeScenario.Fresh ? new HashSet<string> { "chat-8b" } : new HashSet<string>();
             var upgrade = Scenario is FakeScenario.Loaded or FakeScenario.SafeMode ? "qwen3-30b" : null;
-            return Task.FromResult(new ModelCatalogView(_models.Select(Copy).ToList(), existing, _settings.ModelsFolder ?? "", 212_000_000_000, upgrade));
+            if (!CatalogueAvailable)
+                return Task.FromResult(new ModelCatalogView(_models.Where(m => m.Installed).Select(Copy).ToList(), existing, _settings.ModelsFolder ?? "", FreeBytes, upgrade) { CatalogueAvailable = false });
+            return Task.FromResult(new ModelCatalogView(_models.Select(Copy).ToList(), existing, _settings.ModelsFolder ?? "", FreeBytes, upgrade));
         }
     }
 
@@ -327,6 +339,8 @@ public sealed class FakeHostControl : IHostControl, IDisposable
         Id = m.Id, DisplayName = m.DisplayName, Kind = m.Kind, Engine = m.Engine, SizeBytes = m.SizeBytes,
         Quality = m.Quality, Recommended = m.Recommended, Installed = m.Installed, Active = m.Id == _activeId,
         FitsThisPc = m.FitsThisPc, Reason = m.Reason,
+        DownloadState = !m.Installed && _downloads.TryGetValue(m.Id, out var d) && d.State != "done" ? d.State : null,
+        BytesDone = !m.Installed && _downloads.TryGetValue(m.Id, out var d2) ? d2.BytesDone : 0,
     };
 
     private static DownloadProgressEvent Make(string id, string state, long done, long total) => new()

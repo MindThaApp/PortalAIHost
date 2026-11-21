@@ -10,13 +10,28 @@ public sealed partial class HomePage : Page
 {
     public HomePage()
     {
-        ViewModel = new HomeViewModel(AppServices.Shell, AppServices.Strings);
+        ViewModel = new HomeViewModel(AppServices.Shell, AppServices.Ui, AppServices.Strings);
         InitializeComponent();
     }
 
     public HomeViewModel ViewModel { get; }
 
-    private void OnSeeModels(object sender, RoutedEventArgs e) => Frame.Navigate(typeof(ModelsPage));
+    private void Go(string tag, System.Type page)
+    {
+        if (AppServices.NavigateTo is { } go) go(tag);
+        else Frame.Navigate(page);
+    }
+
+    private void OnSeeModels(object sender, RoutedEventArgs e) => Go("models", typeof(ModelsPage));
+
+    private void OnSeeApps(object sender, RoutedEventArgs e) => Go("apps", typeof(AppsPage));
+
+    private void OnOpenSettings(object sender, RoutedEventArgs e) => Go("settings", typeof(SettingsPage));
+
+    protected override async void OnNavigatedTo(NavigationEventArgs e)
+    {
+        await ViewModel.LoadAsync();
+    }
 
     protected override void OnNavigatedFrom(NavigationEventArgs e) => ViewModel.Dispose();
 }
