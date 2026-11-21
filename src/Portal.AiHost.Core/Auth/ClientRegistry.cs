@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using Portal.AiHost.Contracts;
@@ -20,6 +21,12 @@ public sealed class ClientRegistryOptions
 
     /// <summary>How long a finished request still answers polls (denied, claimed, expired) before 404.</summary>
     public TimeSpan FinishedRetention { get; init; } = TimeSpan.FromMinutes(10);
+
+    /// <summary>Pending requests one calling program may have open at once (all app ids together).</summary>
+    public int MaxPendingPerCaller { get; init; } = 8;
+
+    /// <summary>Pending requests the host keeps open at once, so prompts cannot be flooded.</summary>
+    public int MaxPendingPerHost { get; init; } = 16;
 
     /// <summary>Last-used times are written to disk at most this often per token.</summary>
     public TimeSpan LastUsedWriteInterval { get; init; } = TimeSpan.FromMinutes(5);
@@ -146,8 +153,20 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
                     "Requests from a process running as another Windows user are refused.");
             }
 
+            // An app id belongs to the first program the user approved for it (package, else exe path).
+            var key = CallerKey(caller);
+            var binding = _data.Bindings.FirstOrDefault(b => b.AppId == request.AppId && b.DeviceId == deviceId);
+            if (binding is not null && binding.CallerKey != key)
+            {
+                Refuse(request.AppId, "app_id_bound_to_other_caller");
+                throw new ApiException(ErrorCodes.AccessDenied,
+                    "This app id is registered to a different program. The user can remove the app in Portal AI Host.");
+            }
+
+            // Pending slot, quota and denial are per (app id, device, calling program): a squatter using the same
+            // app id cannot lock out, block or use up the quota of the real app.
             var denial = _data.Denials.FirstOrDefault(d =>
-                d.AppId == request.AppId && d.DeviceId == deviceId && d.DeniedUntil > now);
+                d.AppId == request.AppId && d.DeviceId == deviceId && d.CallerKey == key && d.DeniedUntil > now);
             if (denial is not null)
             {
                 Refuse(request.AppId, "denied_cooldown");
@@ -155,8 +174,9 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
                     "The user denied access for this app. Ask the user to allow it in Portal AI Host.");
             }
 
-            var pending = _requests.Values.FirstOrDefault(r =>
-                r.Status == AuthStatuses.Pending && r.Info.AppId == request.AppId && r.DeviceId == deviceId);
+            var open = _requests.Values.Where(r => r.Status == AuthStatuses.Pending).ToList();
+            var pending = open.FirstOrDefault(r =>
+                r.Info.AppId == request.AppId && r.DeviceId == deviceId && r.CallerKey == key);
             if (pending is not null)
             {
                 Refuse(request.AppId, "already_pending");
@@ -165,8 +185,17 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
                     retryAfterMs: RetryMs(pending.Info.ExpiresAt - now));
             }
 
-            var attempts = _attempts.TryGetValue(request.AppId, out var list) ? list : _attempts[request.AppId] = new();
-            attempts.RemoveAll(t => now - t >= TimeSpan.FromHours(1));
+            if (open.Count(r => r.CallerKey == key) >= _options.MaxPendingPerCaller ||
+                open.Count >= _options.MaxPendingPerHost)
+            {
+                Refuse(request.AppId, "too_many_pending");
+                throw new ApiException(ErrorCodes.RateLimited,
+                    "Too many access requests are waiting for the user.",
+                    retryAfterMs: RetryMs(open.Min(r => r.Info.ExpiresAt) - now));
+            }
+
+            var attemptKey = request.AppId + "|" + deviceId + "|" + key;
+            var attempts = _attempts.TryGetValue(attemptKey, out var list) ? list : _attempts[attemptKey] = new();
             if (attempts.Count >= _options.RequestsPerHourPerApp)
             {
                 Refuse(request.AppId, "rate_limited");
@@ -184,7 +213,7 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
                 caller,
                 now,
                 now + _options.RequestLifetime);
-            _requests[info.RequestId] = new PendingRequest(info, deviceId);
+            _requests[info.RequestId] = new PendingRequest(info, deviceId, key);
             Audit(AuthAuditKind.RequestCreated, now, info.AppId, info.RequestId, null, null);
         }
 
@@ -248,24 +277,7 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
                 return true;
             }
 
-            var creator = entry.Info.Caller;
-            if (!poller.SameUser)
-            {
-                return false;
-            }
-
-            if (creator.PackageFamilyName is not null || poller.PackageFamilyName is not null)
-            {
-                return string.Equals(creator.PackageFamilyName, poller.PackageFamilyName,
-                    StringComparison.OrdinalIgnoreCase);
-            }
-
-            if (creator.ExePath is not null || poller.ExePath is not null)
-            {
-                return string.Equals(creator.ExePath, poller.ExePath, StringComparison.OrdinalIgnoreCase);
-            }
-
-            return creator.ProcessId == poller.ProcessId;
+            return poller.SameUser && CallerKey(entry.Info.Caller) == CallerKey(poller);
         }
     }
 
@@ -283,7 +295,11 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
                 SaveLocked();
             }
 
-            _attempts.Remove(appId);
+            foreach (var k in _attempts.Keys.Where(k => k.StartsWith(appId + "|", StringComparison.Ordinal)).ToList())
+            {
+                _attempts.Remove(k);
+            }
+
             Audit(AuthAuditKind.ReAllowed, _time.GetUtcNow(), appId, null, null, null);
         }
 
@@ -369,7 +385,9 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
     {
         lock (_gate)
         {
-            return RevokeLocked(_data.Clients.Where(c => c.AppId == appId).ToList(), "app");
+            // Removing an app also frees its app id for whichever program the user approves next.
+            _data.Bindings.RemoveAll(b => b.AppId == appId);
+            return RevokeLocked(_data.Clients.Where(c => c.AppId == appId).ToList(), "app", forceSave: true);
         }
     }
 
@@ -378,7 +396,8 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
     {
         lock (_gate)
         {
-            return RevokeLocked(_data.Clients.Where(c => c.DeviceId == deviceId).ToList(), "device");
+            _data.Bindings.RemoveAll(b => b.DeviceId == deviceId);
+            return RevokeLocked(_data.Clients.Where(c => c.DeviceId == deviceId).ToList(), "device", forceSave: true);
         }
     }
 
@@ -404,7 +423,7 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
 
             var issued = IssueLocked(old.AppId, old.AppName, old.AppVersion, old.DeviceId,
                 new CallerIdentity(0, old.PackageFamilyName, old.ExePath, old.CallerVerified, true),
-                _time.GetUtcNow());
+                CallerKeyOf(old), _time.GetUtcNow());
             return issued;
         }
     }
@@ -443,6 +462,34 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
 
             if (approve)
             {
+                var binding = _data.Bindings.FirstOrDefault(b =>
+                    b.AppId == entry.Info.AppId && b.DeviceId == entry.DeviceId);
+                if (binding is not null && binding.CallerKey != entry.CallerKey)
+                {
+                    throw new ApiException(ErrorCodes.AccessDenied,
+                        "This app id is registered to a different program; the request cannot be approved.");
+                }
+
+                if (binding is null)
+                {
+                    _data.Bindings.Add(new StoredBinding
+                    {
+                        AppId = entry.Info.AppId,
+                        DeviceId = entry.DeviceId,
+                        CallerKey = entry.CallerKey,
+                        BoundAt = now,
+                    });
+                    try
+                    {
+                        SaveLocked();
+                    }
+                    catch
+                    {
+                        _data.Bindings.RemoveAt(_data.Bindings.Count - 1);
+                        throw;
+                    }
+                }
+
                 entry.Status = AuthStatuses.Approved;
                 Audit(AuthAuditKind.Approved, now, entry.Info.AppId, requestId, null, null);
             }
@@ -450,11 +497,13 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
             {
                 entry.Status = AuthStatuses.Denied;
                 entry.FinishedAt = now;
-                _data.Denials.RemoveAll(d => d.AppId == entry.Info.AppId && d.DeviceId == entry.DeviceId);
+                _data.Denials.RemoveAll(d => d.AppId == entry.Info.AppId && d.DeviceId == entry.DeviceId &&
+                    d.CallerKey == entry.CallerKey);
                 _data.Denials.Add(new StoredDenial
                 {
                     AppId = entry.Info.AppId,
                     DeviceId = entry.DeviceId,
+                    CallerKey = entry.CallerKey,
                     DeniedUntil = now + _options.DenyCooldown,
                 });
                 SaveLocked();
@@ -475,7 +524,7 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
             case AuthStatuses.Approved:
                 // First collection: create, persist (digest only), then hand out the token once.
                 var (token, tokenId) = IssueLocked(appId, entry.Info.AppName, entry.Info.AppVersion, entry.DeviceId,
-                    entry.Info.Caller, now);
+                    entry.Info.Caller, entry.CallerKey, now);
                 entry.Status = AuthStatuses.Claimed;
                 entry.TokenId = tokenId;
                 entry.FinishedAt = now;
@@ -489,7 +538,7 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
     }
 
     private (string Token, string TokenId) IssueLocked(string appId, string appName, string? appVersion,
-        string deviceId, CallerIdentity caller, DateTimeOffset now)
+        string deviceId, CallerIdentity caller, string callerKey, DateTimeOffset now)
     {
         var token = TokenFormat.NewToken();
         var digest = _hasher.Hash(token);
@@ -504,11 +553,13 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
             ExePath = caller.ExePath,
             CallerVerified = caller.Verified,
             DeviceId = deviceId,
+            CallerKey = callerKey,
             CreatedAt = now,
         };
 
-        // Rotation: the app's earlier token on this device stops working.
-        var previous = _data.Clients.Where(c => c.AppId == appId && c.DeviceId == deviceId && !c.Revoked).ToList();
+        // Rotation: the same program's earlier token for this app and device stops working.
+        var previous = _data.Clients.Where(c =>
+            c.AppId == appId && c.DeviceId == deviceId && !c.Revoked && CallerKeyOf(c) == callerKey).ToList();
         foreach (var p in previous)
         {
             p.Revoked = true;
@@ -556,7 +607,7 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
         }
     }
 
-    private int RevokeLocked(List<StoredClient> clients, string scope)
+    private int RevokeLocked(List<StoredClient> clients, string scope, bool forceSave = false)
     {
         var now = _time.GetUtcNow();
         var changed = 0;
@@ -568,7 +619,7 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
             Audit(AuthAuditKind.TokenRevoked, now, c.AppId, null, c.TokenId, scope);
         }
 
-        if (changed > 0)
+        if (changed > 0 || forceSave)
         {
             SaveLocked();
         }
@@ -605,7 +656,42 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
         }
 
         _data.Denials.RemoveAll(d => d.DeniedUntil <= now);
+
+        List<string>? stale = null;
+        foreach (var (k, times) in _attempts)
+        {
+            times.RemoveAll(t => now - t >= TimeSpan.FromHours(1));
+            if (times.Count == 0)
+            {
+                (stale ??= new()).Add(k);
+            }
+        }
+
+        stale?.ForEach(k => _attempts.Remove(k));
     }
+
+    /// <summary>Number of rate-limit buckets kept (stale ones are pruned).</summary>
+    internal int TrackedAttemptKeys
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return _attempts.Count;
+            }
+        }
+    }
+
+    /// <summary>Identity of a calling program: package family name, else exe path, else process id.</summary>
+    internal static string CallerKey(CallerIdentity caller) =>
+        caller.PackageFamilyName is { Length: > 0 } pfn ? "pfn:" + pfn.ToUpperInvariant()
+        : caller.ExePath is { Length: > 0 } exe ? "exe:" + exe.ToUpperInvariant()
+        : "pid:" + caller.ProcessId.ToString(CultureInfo.InvariantCulture);
+
+    private static string CallerKeyOf(StoredClient client) =>
+        client.CallerKey is { Length: > 0 } k
+            ? k
+            : CallerKey(new CallerIdentity(0, client.PackageFamilyName, client.ExePath, client.CallerVerified, true));
 
     private void SaveLocked() => _store.Save(_data);
 
@@ -662,10 +748,11 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
     [GeneratedRegex(@"^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$", RegexOptions.CultureInvariant)]
     private static partial Regex AppIdPattern();
 
-    private sealed class PendingRequest(AccessRequestInfo info, string deviceId)
+    private sealed class PendingRequest(AccessRequestInfo info, string deviceId, string callerKey)
     {
         public AccessRequestInfo Info { get; } = info;
         public string DeviceId { get; } = deviceId;
+        public string CallerKey { get; } = callerKey;
         public string Status { get; set; } = AuthStatuses.Pending;
         public string? TokenId { get; set; }
         public DateTimeOffset? FinishedAt { get; set; }

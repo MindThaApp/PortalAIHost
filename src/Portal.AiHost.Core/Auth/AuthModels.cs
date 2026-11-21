@@ -1,8 +1,11 @@
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json.Serialization;
 using Portal.AiHost.Contracts.Control;
 using Portal.AiHost.Core.Abstractions;
+
+[assembly: InternalsVisibleTo("Portal.AiHost.Core.Tests")]
 
 namespace Portal.AiHost.Core.Auth;
 
@@ -165,6 +168,9 @@ internal sealed class StoredClient
     public string? ExePath { get; set; }
     public bool CallerVerified { get; set; }
     public string DeviceId { get; set; } = ClientPrincipal.LocalDevice;
+
+    /// <summary>Calling program the token was issued to ("pfn:...", "exe:..." or "pid:...").</summary>
+    public string? CallerKey { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset? LastUsedAt { get; set; }
     public bool Revoked { get; set; }
@@ -176,13 +182,24 @@ internal sealed class StoredDenial
 {
     public string AppId { get; set; } = "";
     public string DeviceId { get; set; } = ClientPrincipal.LocalDevice;
+    public string CallerKey { get; set; } = "";
     public DateTimeOffset DeniedUntil { get; set; }
+}
+
+/// <summary>An app id (per device) belongs to the first program the user approved for it.</summary>
+internal sealed class StoredBinding
+{
+    public string AppId { get; set; } = "";
+    public string DeviceId { get; set; } = ClientPrincipal.LocalDevice;
+    public string CallerKey { get; set; } = "";
+    public DateTimeOffset BoundAt { get; set; }
 }
 
 internal sealed class ClientRegistryData
 {
     public List<StoredClient> Clients { get; set; } = new();
     public List<StoredDenial> Denials { get; set; } = new();
+    public List<StoredBinding> Bindings { get; set; } = new();
 }
 
 [JsonSourceGenerationOptions(
