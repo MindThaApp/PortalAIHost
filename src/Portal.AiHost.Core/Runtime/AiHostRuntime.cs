@@ -66,6 +66,8 @@ public sealed class AiHostRuntime : IAsyncDisposable
     private readonly ConcurrentDictionary<string, ActiveModel> _active = new(StringComparer.Ordinal);
     private readonly ConcurrentDictionary<string, KindState> _kinds = new(StringComparer.Ordinal);
     private readonly CancellationTokenSource _lifetime = new();
+    private readonly SemaphoreSlim _resumeGate = new(1, 1);
+    private readonly System.Collections.Concurrent.ConcurrentDictionary<string, byte> _keepLoaded = new(StringComparer.Ordinal);
     private long _revision = 1;
     private int _inFlight;
     private volatile bool _stopping;
@@ -75,6 +77,7 @@ public sealed class AiHostRuntime : IAsyncDisposable
         _o = options;
         SafeMode = options.SafeMode;
         Pipeline = new ApiPipeline(options.Registry, options.Pipeline, options.Time);
+        Pipeline.HostStopping = _lifetime.Token;
         foreach (var (kind, sup) in options.Supervisors)
         {
             _kinds[kind] = new KindState();
@@ -143,6 +146,12 @@ public sealed class AiHostRuntime : IAsyncDisposable
     /// <summary>Loads every kind marked keep-loaded, unless the host is in safe mode.</summary>
     public async Task AutoLoadAsync(IEnumerable<string> keepLoadedKinds, CancellationToken ct)
     {
+        keepLoadedKinds = keepLoadedKinds.ToList();
+        foreach (var kind in keepLoadedKinds)
+        {
+            _keepLoaded[kind] = 0;
+        }
+
         if (SafeMode)
         {
             return;
@@ -167,41 +176,60 @@ public sealed class AiHostRuntime : IAsyncDisposable
     /// <summary>After sleep or resume: restart engines that are no longer healthy.</summary>
     public async Task CheckEnginesAfterResumeAsync(CancellationToken ct)
     {
-        foreach (var (kind, sup) in _o.Supervisors)
+        // Windows sends more than one resume message per wake; one check at a time, overlapping ones are skipped.
+        if (!await _resumeGate.WaitAsync(0, ct).ConfigureAwait(false))
         {
-            if (GetActive(kind) is null)
-            {
-                continue;
-            }
+            return;
+        }
 
-            if (sup.State is EngineState.Failed)
+        try
+        {
+            foreach (var (kind, sup) in _o.Supervisors)
             {
-                await sup.StopAsync(ct).ConfigureAwait(false);
-            }
-
-            if (sup.State is EngineState.Ready)
-            {
-                try
+                if (GetActive(kind) is null)
                 {
-                    using var probe = CancellationTokenSource.CreateLinkedTokenSource(ct);
-                    probe.CancelAfter(TimeSpan.FromSeconds(10));
-                    await sup.CountTokensAsync(new TokenizeRequest { Text = "ping" }, probe.Token).ConfigureAwait(false);
                     continue;
                 }
-                catch (Exception ex) when (ex is not OperationCanceledException || !ct.IsCancellationRequested)
+
+                var reload = false;
+                if (sup.State is EngineState.Failed)
                 {
                     await sup.StopAsync(ct).ConfigureAwait(false);
+                    reload = _keepLoaded.ContainsKey(kind);
+                }
+                else if (sup.State is EngineState.Ready)
+                {
+                    try
+                    {
+                        using var probe = CancellationTokenSource.CreateLinkedTokenSource(ct);
+                        probe.CancelAfter(TimeSpan.FromSeconds(10));
+                        await sup.CountTokensAsync(new TokenizeRequest { Text = "ping" }, probe.Token).ConfigureAwait(false);
+                        continue;
+                    }
+                    catch (Exception ex) when (ex is not OperationCanceledException || !ct.IsCancellationRequested)
+                    {
+                        await sup.StopAsync(ct).ConfigureAwait(false);
+                    }
+
+                    reload = true;
                 }
 
-                try
+                if (reload)
                 {
-                    await EnsureLoadedAsync(kind, ct).ConfigureAwait(false);
-                }
-                catch (Exception ex) when (ex is ApiException or EngineException or EngineCrashedException)
-                {
-                    // The next request retries.
+                    try
+                    {
+                        await EnsureLoadedAsync(kind, ct).ConfigureAwait(false);
+                    }
+                    catch (Exception ex) when (ex is ApiException or EngineException or EngineCrashedException)
+                    {
+                        // The next request retries.
+                    }
                 }
             }
+        }
+        finally
+        {
+            _resumeGate.Release();
         }
     }
 
