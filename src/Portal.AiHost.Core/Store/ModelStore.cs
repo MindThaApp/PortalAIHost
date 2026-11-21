@@ -87,6 +87,12 @@ internal sealed class ManifestFile
     /// <summary>Volume + file index of the .part file when the host created it.</summary>
     public string? PartFileId { get; set; }
 
+    /// <summary>
+    /// Volume + file index of the finished file, recorded when it was committed. Remove refuses a file whose ID
+    /// changed (replaced by another file of the same size). Null in older inventories: then only size is checked.
+    /// </summary>
+    public string? FileId { get; set; }
+
     public long Size { get; set; }
     public string? Sha256 { get; set; }
     public StoredFileState State { get; set; }
@@ -364,6 +370,7 @@ public sealed partial class ModelStore : IModelStoreWriter
             f.Size = new FileInfo(finalFull).Length;
             f.Sha256 = sha256.ToLowerInvariant();
             f.State = StoredFileState.Verified;
+            f.FileId = TryFileId(f.Path);
             SaveManifest();
             return ToStoredFile(f, ModelOrigin.Catalogue);
         });
@@ -510,6 +517,7 @@ public sealed partial class ModelStore : IModelStoreWriter
             rec.Size = size;
             rec.Sha256 = hash;
             rec.State = StoredFileState.Verified;
+            rec.FileId = TryFileId(finalRel);
             SaveManifest();
             return ToStoredFile(rec, ModelOrigin.Catalogue);
         }
@@ -658,7 +666,8 @@ public sealed partial class ModelStore : IModelStoreWriter
             // Check every file first, so a refusal leaves the whole model untouched.
             foreach (var f in m.Files)
             {
-                _folder.AssertDeletable(f.Path, f.State == StoredFileState.Partial ? null : f.Size);
+                _folder.AssertDeletable(f.Path, f.State == StoredFileState.Partial ? null : f.Size,
+                    f.State == StoredFileState.Partial ? null : f.FileId);
                 if (f.PartPath is { } part)
                 {
                     _folder.AssertDeletable(part);
@@ -670,7 +679,7 @@ public sealed partial class ModelStore : IModelStoreWriter
             {
                 if (f.State != StoredFileState.Partial)
                 {
-                    _folder.DeleteOwnedFile(f.Path, f.Size);
+                    _folder.DeleteOwnedFile(f.Path, f.Size, f.FileId);
                 }
 
                 if (f.PartPath is { } part)
@@ -897,7 +906,7 @@ public sealed partial class ModelStore : IModelStoreWriter
 
                 try
                 {
-                    old.DeleteOwnedFile(f.Path, f.Size);
+                    old.DeleteOwnedFile(f.Path, f.Size, f.FileId);
                     m.Files.Remove(f);
                 }
                 catch (StoreSafetyException)
@@ -1025,6 +1034,18 @@ public sealed partial class ModelStore : IModelStoreWriter
             || OwnedFolder.IsReservedDeviceName(fileName))
         {
             throw new StoreSafetyException($"'{fileName}' is not a safe model file name.");
+        }
+    }
+
+    private string? TryFileId(string relativePath)
+    {
+        try
+        {
+            return _folder.GetIdentity(relativePath).Id;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            return null; // the size check still applies
         }
     }
 

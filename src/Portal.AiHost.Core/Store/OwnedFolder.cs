@@ -200,9 +200,10 @@ internal sealed class OwnedFolder
     /// <summary>
     /// Deletes one file the caller has found in the manifest. Refuses (throws) unless the marker matches, the path
     /// is inside the store with no links on the way, and, when given, the size still matches what the host
-    /// recorded. Missing files are fine (already gone).
+    /// recorded, and, when given, the file ID still matches (the same file, not a replacement). Missing files are
+    /// fine (already gone).
     /// </summary>
-    public void DeleteOwnedFile(string relativePath, long? expectedSize = null)
+    public void DeleteOwnedFile(string relativePath, long? expectedSize = null, string? expectedFileId = null)
     {
         AssertMarker();
         var full = Resolve(relativePath);
@@ -220,6 +221,11 @@ internal sealed class OwnedFolder
         if (expectedSize is { } size && info.Length != size)
         {
             throw new StoreSafetyException($"'{full}' changed since the host stored it; left in place.");
+        }
+
+        if (expectedFileId is not null && GetIdentity(relativePath).Id is { } id && !string.Equals(id, expectedFileId, StringComparison.Ordinal))
+        {
+            throw new StoreSafetyException($"'{full}' was replaced since the host stored it; left in place.");
         }
 
         File.Delete(full);
@@ -276,7 +282,7 @@ internal sealed class OwnedFolder
     }
 
     /// <summary>Checks that <see cref="DeleteOwnedFile"/> would succeed, without deleting.</summary>
-    public void AssertDeletable(string relativePath, long? expectedSize = null)
+    public void AssertDeletable(string relativePath, long? expectedSize = null, string? expectedFileId = null)
     {
         AssertMarker();
         var full = Resolve(relativePath);
@@ -289,6 +295,12 @@ internal sealed class OwnedFolder
         if (info.Exists && expectedSize is { } size && info.Length != size)
         {
             throw new StoreSafetyException($"'{full}' changed since the host stored it; nothing was removed.");
+        }
+
+        if (info.Exists && expectedFileId is not null && GetIdentity(relativePath).Id is { } id
+            && !string.Equals(id, expectedFileId, StringComparison.Ordinal))
+        {
+            throw new StoreSafetyException($"'{full}' was replaced since the host stored it; nothing was removed.");
         }
     }
 

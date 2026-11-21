@@ -82,6 +82,24 @@ public class ModelStoreTests
     }
 
     [Fact]
+    public async Task RemoveLeavesAFileThatWasReplacedBySameSizeFile()
+    {
+        using var root = new TestRoot();
+        var store = ModelStore.OpenOrCreate(Path.Combine(root.Path, "models"), new FakeDisk());
+        var f = await AddFileAsync(store, "tiny", "tiny.gguf", TestData.RandomBytes(500, 4));
+        // Another program swaps the file for its own file of the same size (a new file ID).
+        var swap = Path.Combine(root.Path, "swap.bin");
+        File.WriteAllBytes(swap, TestData.RandomBytes(500, 5));
+        File.Delete(f.Path);
+        File.Move(swap, f.Path);
+        var theirs = File.ReadAllBytes(f.Path);
+
+        await Assert.ThrowsAsync<StoreSafetyException>(() => store.RemoveAsync("tiny", Ct));
+        Assert.Equal(theirs, File.ReadAllBytes(f.Path));
+        Assert.NotNull(await store.GetAsync("tiny", Ct));
+    }
+
+    [Fact]
     public async Task ForeignFileInModelFolderSurvivesRemove()
     {
         using var root = new TestRoot();
