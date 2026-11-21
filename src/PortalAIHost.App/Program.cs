@@ -60,6 +60,9 @@ public static class AppOptions
     /// <summary>Open this page first: home, models, apps, tryit, settings.</summary>
     public static string? StartPage { get; private set; }
 
+    /// <summary>Folder watched for take-NAME.txt files; each one makes the window save NAME.png (used by automated checks).</summary>
+    public static string? ShotDir { get; private set; }
+
     /// <summary>Treat first-run setup as already done.</summary>
     public static bool SkipFirstRun { get; private set; }
 
@@ -75,6 +78,7 @@ public static class AppOptions
             else if (a.Equals("--pseudo-loc", StringComparison.OrdinalIgnoreCase)) PseudoLoc = true;
             else if (a.Equals("--offscreen", StringComparison.OrdinalIgnoreCase)) OffScreen = true;
             else if (a.Equals("--skip-first-run", StringComparison.OrdinalIgnoreCase)) SkipFirstRun = true;
+ else if (a.StartsWith("--shot-dir=", StringComparison.OrdinalIgnoreCase)) ShotDir = a[11..];
             else if (a.StartsWith("--page=", StringComparison.OrdinalIgnoreCase)) StartPage = a[7..];
         }
     }

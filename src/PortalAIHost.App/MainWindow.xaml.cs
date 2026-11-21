@@ -16,14 +16,60 @@ public sealed partial class MainWindow : Window
     {
         InitializeComponent();
         Title = AppServices.Strings.Get("Vm_AppTitle");
+        SystemBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop();
         Closed += (_, _) => _shell.Dispose();
         AppWindow.Resize(new Windows.Graphics.SizeInt32(1100, 760));
         if (AppOptions.OffScreen)
             AppWindow.Move(new Windows.Graphics.PointInt32(-3000, 100));
+        if (AppOptions.ShotDir is { Length: > 0 } shotDir) StartShotWatcher(shotDir);
         _shell.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(ShellViewModel.ShowFirstRun)) ApplyFirstRun();
         };
+    }
+
+    /// <summary>
+    /// Check support: saves a picture of the window (or the open dialog) whenever a new take-NAME.txt appears in the folder.
+    /// It only writes NAME.png there and never deletes or changes anything.
+    /// </summary>
+    private void StartShotWatcher(string dir)
+    {
+        var done = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var timer = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread().CreateTimer();
+        timer.Interval = TimeSpan.FromMilliseconds(400);
+        timer.Tick += async (_, _) =>
+        {
+            timer.Stop();
+            try
+            {
+                foreach (var f in Directory.EnumerateFiles(dir, "take-*.txt"))
+                {
+                    if (!done.Add(f)) continue;
+                    var name = Path.GetFileNameWithoutExtension(f)["take-".Length..];
+                    var target0 = Path.Combine(dir, name + ".png");
+                    if (File.Exists(target0)) continue; // never overwrite an existing file
+                    FrameworkElement target = AppServices.Dialogs.Current ?? (FrameworkElement)Root;
+                    var rtb = new Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap();
+                    await rtb.RenderAsync(target);
+                    var pixels = await rtb.GetPixelsAsync();
+                    using var stream = new Windows.Storage.Streams.InMemoryRandomAccessStream();
+                    var enc = await Windows.Graphics.Imaging.BitmapEncoder.CreateAsync(Windows.Graphics.Imaging.BitmapEncoder.PngEncoderId, stream);
+                    enc.SetPixelData(Windows.Graphics.Imaging.BitmapPixelFormat.Bgra8, Windows.Graphics.Imaging.BitmapAlphaMode.Premultiplied,
+                        (uint)rtb.PixelWidth, (uint)rtb.PixelHeight, 96, 96, System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeBufferExtensions.ToArray(pixels));
+                    await enc.FlushAsync();
+                    var bytes = new byte[stream.Size];
+                    stream.Seek(0);
+                    await stream.ReadAsync(System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeBufferExtensions.AsBuffer(bytes), (uint)bytes.Length, Windows.Storage.Streams.InputStreamOptions.None);
+                    await File.WriteAllBytesAsync(target0, bytes);
+                }
+            }
+            catch (Exception e) when (e is IOException or UnauthorizedAccessException or InvalidOperationException or System.Runtime.InteropServices.COMException)
+            {
+            }
+            timer.Start();
+        };
+        Closed += (_, _) => timer.Stop();
+        timer.Start();
     }
 
     /// <summary>Connects to the host (starting it if needed) and shows the first page.</summary>

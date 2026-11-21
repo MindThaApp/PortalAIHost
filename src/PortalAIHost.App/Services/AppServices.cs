@@ -98,6 +98,9 @@ public sealed class WinUiDialogService : IDialogService
 
     public WinUiDialogService(IStrings strings) => _s = strings;
 
+    /// <summary>The dialog on screen right now, if any (lets automated checks capture it).</summary>
+    public ContentDialog? Current { get; private set; }
+
     /// <summary>Set by the window once it has content.</summary>
     public XamlRoot? Root { get; set; }
 
@@ -116,10 +119,12 @@ public sealed class WinUiDialogService : IDialogService
                 CloseButtonText = cancelText,
                 DefaultButton = ContentDialogButton.Close,
             };
+            Current = dialog;
             return await dialog.ShowAsync() == ContentDialogResult.Primary;
         }
         finally
         {
+            Current = null;
             _one.Release();
         }
     }
@@ -152,6 +157,7 @@ public sealed class WinUiDialogService : IDialogService
                 DefaultButton = ContentDialogButton.Secondary,
             };
             Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(dialog, _s.Format("Vm_ApprovalTitle", a.AppName));
+            Current = dialog;
             var result = await dialog.ShowAsync();
             return result switch
             {
@@ -162,6 +168,7 @@ public sealed class WinUiDialogService : IDialogService
         }
         finally
         {
+            Current = null;
             _one.Release();
         }
     }
