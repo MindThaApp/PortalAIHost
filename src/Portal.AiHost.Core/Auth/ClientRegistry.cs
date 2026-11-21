@@ -289,10 +289,20 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
     {
         lock (_gate)
         {
+            var before = _data.Denials.ToList();
             var removed = _data.Denials.RemoveAll(d => d.AppId == appId);
             if (removed > 0)
             {
-                SaveLocked();
+                try
+                {
+                    SaveLocked();
+                }
+                catch
+                {
+                    _data.Denials.Clear();
+                    _data.Denials.AddRange(before);
+                    throw;
+                }
             }
 
             foreach (var k in _attempts.Keys.Where(k => k.StartsWith(appId + "|", StringComparison.Ordinal)).ToList())
@@ -349,7 +359,11 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
                 now - written >= _options.LastUsedWriteInterval)
             {
                 _lastUsedWritten[client.TokenId] = now;
-                SaveLocked();
+                if (!TrySaveLocked())
+                {
+                    // Kept in memory and written with the next successful save.
+                    _lastUsedWritten.Remove(client.TokenId);
+                }
             }
 
             return Task.FromResult(new TokenValidation(
@@ -386,8 +400,19 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
         lock (_gate)
         {
             // Removing an app also frees its app id for whichever program the user approves next.
+            var bindings = _data.Bindings.ToList();
             _data.Bindings.RemoveAll(b => b.AppId == appId);
-            var revoked = RevokeLocked(_data.Clients.Where(c => c.AppId == appId).ToList(), "app", forceSave: true);
+            int revoked;
+            try
+            {
+                revoked = RevokeLocked(_data.Clients.Where(c => c.AppId == appId).ToList(), "app", forceSave: true);
+            }
+            catch
+            {
+                _data.Bindings.Clear();
+                _data.Bindings.AddRange(bindings);
+                throw;
+            }
 
             // An approval the app has not collected yet must not hand out a token after the removal.
             ExpireRequestsLocked(r => r.Info.AppId == appId);
@@ -400,9 +425,20 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
     {
         lock (_gate)
         {
+            var bindings = _data.Bindings.ToList();
             _data.Bindings.RemoveAll(b => b.DeviceId == deviceId);
-            var revoked = RevokeLocked(_data.Clients.Where(c => c.DeviceId == deviceId).ToList(), "device",
-                forceSave: true);
+            int revoked;
+            try
+            {
+                revoked = RevokeLocked(_data.Clients.Where(c => c.DeviceId == deviceId).ToList(), "device",
+                    forceSave: true);
+            }
+            catch
+            {
+                _data.Bindings.Clear();
+                _data.Bindings.AddRange(bindings);
+                throw;
+            }
             ExpireRequestsLocked(r => r.DeviceId == deviceId);
             return revoked;
         }
@@ -502,8 +538,7 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
             }
             else
             {
-                entry.Status = AuthStatuses.Denied;
-                entry.FinishedAt = now;
+                var before = _data.Denials.ToList();
                 _data.Denials.RemoveAll(d => d.AppId == entry.Info.AppId && d.DeviceId == entry.DeviceId &&
                     d.CallerKey == entry.CallerKey);
                 _data.Denials.Add(new StoredDenial
@@ -513,7 +548,20 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
                     CallerKey = entry.CallerKey,
                     DeniedUntil = now + _options.DenyCooldown,
                 });
-                SaveLocked();
+                try
+                {
+                    SaveLocked();
+                }
+                catch
+                {
+                    // Not saved: the request stays pending, so the user can decide again.
+                    _data.Denials.Clear();
+                    _data.Denials.AddRange(before);
+                    throw;
+                }
+
+                entry.Status = AuthStatuses.Denied;
+                entry.FinishedAt = now;
                 Audit(AuthAuditKind.Denied, now, entry.Info.AppId, requestId, null, null);
             }
 
@@ -617,21 +665,37 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
     private int RevokeLocked(List<StoredClient> clients, string scope, bool forceSave = false)
     {
         var now = _time.GetUtcNow();
-        var changed = 0;
-        foreach (var c in clients.Where(c => !c.Revoked))
+        var changed = clients.Where(c => !c.Revoked).ToList();
+        foreach (var c in changed)
         {
             c.Revoked = true;
             c.RevokedAt = now;
-            changed++;
+        }
+
+        if (changed.Count > 0 || forceSave)
+        {
+            try
+            {
+                SaveLocked();
+            }
+            catch
+            {
+                foreach (var c in changed)
+                {
+                    c.Revoked = false;
+                    c.RevokedAt = null;
+                }
+
+                throw;
+            }
+        }
+
+        foreach (var c in changed)
+        {
             Audit(AuthAuditKind.TokenRevoked, now, c.AppId, null, c.TokenId, scope);
         }
 
-        if (changed > 0 || forceSave)
-        {
-            SaveLocked();
-        }
-
-        return changed;
+        return changed.Count;
     }
 
     /// <summary>Ends matching pending or approved (not yet collected) requests as expired.</summary>
@@ -717,6 +781,19 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
             : CallerKey(new CallerIdentity(0, client.PackageFamilyName, client.ExePath, client.CallerVerified, true));
 
     private void SaveLocked() => _store.Save(_data);
+
+    private bool TrySaveLocked()
+    {
+        try
+        {
+            SaveLocked();
+            return true;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException)
+        {
+            return false;
+        }
+    }
 
     private TokenValidation Rejected(string? tokenId, string reason, string code)
     {

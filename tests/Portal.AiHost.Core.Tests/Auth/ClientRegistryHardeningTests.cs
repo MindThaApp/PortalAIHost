@@ -138,6 +138,63 @@ public sealed class ClientRegistryHardeningTests : IDisposable
         Assert.Empty(await registry.ListAsync(_ct));
     }
 
+    // ---- 8: failed saves ----
+
+    /// <summary>Holds clients.json open so the atomic replace fails until disposed.</summary>
+    private FileStream LockRegistryFile() =>
+        new(_dir.File(ClientRegistry.FileName), FileMode.Open, FileAccess.Read, FileShare.Read);
+
+    [Fact]
+    public async Task ValidTokenStaysValidWhenLastUsedCannotBeSaved()
+    {
+        using var registry = NewRegistry();
+        var token = await IssueAsync(registry, Real);
+        using (LockRegistryFile())
+        {
+            Assert.True((await registry.ValidateAsync(token, _ct)).IsValid);
+            Assert.True((await registry.ValidateAsync(token, _ct)).IsValid);
+        }
+
+        Assert.True((await registry.ValidateAsync(token, _ct)).IsValid);
+    }
+
+    [Fact]
+    public async Task FailedDenySaveLeavesTheRequestPending()
+    {
+        using var registry = NewRegistry();
+        await IssueAsync(registry, Real, "com.example.other");
+        var info = await registry.CreateRequestAsync(Req(), Real, _ct);
+        using (LockRegistryFile())
+        {
+            await Assert.ThrowsAnyAsync<IOException>(() => registry.DenyAsync(info.RequestId, _ct));
+        }
+
+        Assert.Equal(AuthStatuses.Pending, (await registry.WaitForRequestAsync(info.RequestId, TimeSpan.Zero, _ct))!.Status);
+        var poll = registry.WaitForRequestAsync(info.RequestId, TimeSpan.FromSeconds(25), _ct);
+        await registry.DenyAsync(info.RequestId, _ct);
+        Assert.Equal(AuthStatuses.Denied, (await poll.WaitAsync(TimeSpan.FromSeconds(10)))!.Status);
+    }
+
+    [Fact]
+    public async Task FailedRevokeSaveKeepsMemoryAndDiskInStep()
+    {
+        using var registry = NewRegistry();
+        var token = await IssueAsync(registry, Real);
+        var tokenId = (await registry.ListAsync(_ct)).Single().TokenId;
+        using (LockRegistryFile())
+        {
+            await Assert.ThrowsAnyAsync<IOException>(() => registry.RevokeAsync(tokenId, _ct));
+            Assert.ThrowsAny<IOException>(() => registry.RevokeApp(AppId));
+        }
+
+        Assert.True((await registry.ValidateAsync(token, _ct)).IsValid);
+        await Assert.ThrowsAsync<ApiException>(() => registry.CreateRequestAsync(Req(), Squatter, _ct));
+
+        await registry.RevokeAsync(tokenId, _ct);
+        using var reopened = NewRegistry();
+        Assert.Equal(ErrorCodes.TokenRevoked, (await reopened.ValidateAsync(token, _ct)).ErrorCode);
+    }
+
     // ---- 3: caps on pending requests, pruned rate-limit buckets ----
 
     [Fact]
