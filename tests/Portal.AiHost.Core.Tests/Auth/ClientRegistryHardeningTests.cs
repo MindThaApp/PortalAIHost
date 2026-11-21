@@ -104,6 +104,40 @@ public sealed class ClientRegistryHardeningTests : IDisposable
         await registry.CreateRequestAsync(Req(), Squatter, _ct);
     }
 
+    // ---- 5: revoke before the app collects its token ----
+
+    [Fact]
+    public async Task RevokeAppBeforeCollectionIssuesNoToken()
+    {
+        using var registry = NewRegistry();
+        var pending = await registry.CreateRequestAsync(Req(), Squatter, _ct);
+        var approved = await registry.CreateRequestAsync(Req(), Real, _ct);
+        await registry.ApproveAsync(approved.RequestId, _ct);
+
+        registry.RevokeApp(AppId);
+
+        var poll = await registry.WaitForRequestAsync(approved.RequestId, TimeSpan.Zero, _ct);
+        Assert.Equal(AuthStatuses.Expired, poll!.Status);
+        Assert.Null(poll.Token);
+        Assert.Equal(AuthStatuses.Expired, (await registry.WaitForRequestAsync(pending.RequestId, TimeSpan.Zero, _ct))!.Status);
+        await Assert.ThrowsAsync<ApiException>(() => registry.ApproveAsync(pending.RequestId, _ct));
+        Assert.Empty(await registry.ListAsync(_ct));
+    }
+
+    [Fact]
+    public async Task RevokeDeviceBeforeCollectionIssuesNoToken()
+    {
+        using var registry = NewRegistry();
+        var approved = await registry.CreateRequestAsync(Req(), Real, _ct);
+        await registry.ApproveAsync(approved.RequestId, _ct);
+
+        registry.RevokeDevice(ClientPrincipal.LocalDevice);
+        var poll = await registry.WaitForRequestAsync(approved.RequestId, TimeSpan.Zero, _ct);
+        Assert.Equal(AuthStatuses.Expired, poll!.Status);
+        Assert.Null(poll.Token);
+        Assert.Empty(await registry.ListAsync(_ct));
+    }
+
     // ---- 3: caps on pending requests, pruned rate-limit buckets ----
 
     [Fact]

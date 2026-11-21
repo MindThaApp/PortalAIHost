@@ -387,7 +387,11 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
         {
             // Removing an app also frees its app id for whichever program the user approves next.
             _data.Bindings.RemoveAll(b => b.AppId == appId);
-            return RevokeLocked(_data.Clients.Where(c => c.AppId == appId).ToList(), "app", forceSave: true);
+            var revoked = RevokeLocked(_data.Clients.Where(c => c.AppId == appId).ToList(), "app", forceSave: true);
+
+            // An approval the app has not collected yet must not hand out a token after the removal.
+            ExpireRequestsLocked(r => r.Info.AppId == appId);
+            return revoked;
         }
     }
 
@@ -397,7 +401,10 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
         lock (_gate)
         {
             _data.Bindings.RemoveAll(b => b.DeviceId == deviceId);
-            return RevokeLocked(_data.Clients.Where(c => c.DeviceId == deviceId).ToList(), "device", forceSave: true);
+            var revoked = RevokeLocked(_data.Clients.Where(c => c.DeviceId == deviceId).ToList(), "device",
+                forceSave: true);
+            ExpireRequestsLocked(r => r.DeviceId == deviceId);
+            return revoked;
         }
     }
 
@@ -625,6 +632,22 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
         }
 
         return changed;
+    }
+
+    /// <summary>Ends matching pending or approved (not yet collected) requests as expired.</summary>
+    private void ExpireRequestsLocked(Func<PendingRequest, bool> match)
+    {
+        var now = _time.GetUtcNow();
+        foreach (var (id, r) in _requests)
+        {
+            if (r.Status is AuthStatuses.Pending or AuthStatuses.Approved && match(r))
+            {
+                r.Status = AuthStatuses.Expired;
+                r.FinishedAt = now;
+                r.Signal();
+                Audit(AuthAuditKind.Expired, now, r.Info.AppId, id, null, "revoked");
+            }
+        }
     }
 
     private void PruneLocked(DateTimeOffset now)
