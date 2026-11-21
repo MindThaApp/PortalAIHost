@@ -528,8 +528,7 @@ public sealed class AiHostRuntime : IAsyncDisposable
         {
             HostVersion = _o.HostVersion, InstanceId = _o.InstanceId,
         }, AiHostJsonContext.Default.PingResponse), requiresAuth: false);
-        p.Map("GET", Routes.Status, ctx => Tracked(ctx, c =>
-            c.WriteJsonAsync(200, BuildStatus(c.Principal), AiHostJsonContext.Default.HostStatus)));
+        p.Map("GET", Routes.Status, ctx => Tracked(ctx, StatusAsync));
         p.Map("GET", Routes.Capabilities, ctx => Tracked(ctx, c =>
             c.WriteJsonAsync(200, BuildCapabilities(), AiHostJsonContext.Default.HostCapabilities)));
         p.Map("GET", Routes.Models, ctx => Tracked(ctx, ListModelsAsync));
@@ -553,6 +552,31 @@ public sealed class AiHostRuntime : IAsyncDisposable
             Interlocked.Decrement(ref _inFlight);
         }
     }
+
+    private async Task StatusAsync(ApiContext ctx)
+    {
+        var status = BuildStatus(ctx.Principal);
+        if (ctx.Principal is { } principal && status.Client is { } client)
+        {
+            var clients = await _o.Registry.ListAsync(ctx.Aborted).ConfigureAwait(false);
+            if (clients.FirstOrDefault(c => c.TokenId == principal.TokenId) is { } registered)
+            {
+                status = CopyWithClient(status, new StatusClient
+                {
+                    AppId = client.AppId, TokenId = client.TokenId, ApprovedAt = registered.CreatedAt,
+                });
+            }
+        }
+
+        await ctx.WriteJsonAsync(200, status, AiHostJsonContext.Default.HostStatus).ConfigureAwait(false);
+    }
+
+    private static HostStatus CopyWithClient(HostStatus s, StatusClient client) => new()
+    {
+        ApiVersion = s.ApiVersion, HostVersion = s.HostVersion, InstanceId = s.InstanceId, State = s.State,
+        Client = client, Models = s.Models, Queue = s.Queue, Hardware = s.Hardware,
+        UpgradeAvailable = s.UpgradeAvailable, Sharing = s.Sharing,
+    };
 
     private Task ListModelsAsync(ApiContext ctx)
     {
