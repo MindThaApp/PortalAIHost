@@ -70,7 +70,10 @@ public static class AppOptions
     {
         foreach (var a in args)
         {
-            if (a.StartsWith("--fake", StringComparison.OrdinalIgnoreCase))
+            if (a.StartsWith("--page=", StringComparison.OrdinalIgnoreCase)) StartPage = a[7..];
+#if DEBUG
+            // Development and automated-check switches; Release builds ignore them.
+            else if (a.StartsWith("--fake", StringComparison.OrdinalIgnoreCase))
             {
                 var name = a.Length > 7 && a[6] == '=' ? a[7..] : "loaded";
                 Fake = Enum.TryParse<Services.FakeScenario>(name, true, out var s) ? s : Services.FakeScenario.Loaded;
@@ -78,8 +81,8 @@ public static class AppOptions
             else if (a.Equals("--pseudo-loc", StringComparison.OrdinalIgnoreCase)) PseudoLoc = true;
             else if (a.Equals("--offscreen", StringComparison.OrdinalIgnoreCase)) OffScreen = true;
             else if (a.Equals("--skip-first-run", StringComparison.OrdinalIgnoreCase)) SkipFirstRun = true;
- else if (a.StartsWith("--shot-dir=", StringComparison.OrdinalIgnoreCase)) ShotDir = a[11..];
-            else if (a.StartsWith("--page=", StringComparison.OrdinalIgnoreCase)) StartPage = a[7..];
+            else if (a.StartsWith("--shot-dir=", StringComparison.OrdinalIgnoreCase)) ShotDir = a[11..];
+#endif
         }
     }
 }
