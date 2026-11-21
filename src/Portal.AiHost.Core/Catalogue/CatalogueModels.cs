@@ -10,52 +10,52 @@ namespace Portal.AiHost.Core.Catalogue;
 /// </summary>
 public sealed class ModelCatalogue
 {
-    public int SchemaVersion { get; init; } = 1;
+    public int SchemaVersion { get; set; } = 1;
 
     /// <summary>Monotonic. A copy with a lower version than the last accepted one is a rollback and is ignored.</summary>
     public long CatalogueVersion { get; init; }
 
     public string? Published { get; init; }
 
-    public List<CatalogueEntry> Models { get; init; } = new();
+    public List<CatalogueEntry> Models { get; set; } = new();
 }
 
 public sealed partial class CatalogueEntry
 {
-    public string Id { get; init; } = "";
-    public string DisplayName { get; init; } = "";
-    public string Family { get; init; } = "";
-    public string Maker { get; init; } = "";
+    public string Id { get; set; } = "";
+    public string DisplayName { get; set; } = "";
+    public string Family { get; set; } = "";
+    public string Maker { get; set; } = "";
 
     /// <summary>Engine kind, see <see cref="EngineKinds"/>. Unknown engines are ignored by the host.</summary>
-    public string Engine { get; init; } = EngineKinds.LlamaServer;
+    public string Engine { get; set; } = EngineKinds.LlamaServer;
 
     /// <summary>Model kind, see <see cref="ModelKinds"/> (chat, embedding, transcription). Open set.</summary>
-    public string Kind { get; init; } = ModelKinds.Chat;
+    public string Kind { get; set; } = ModelKinds.Chat;
 
-    public CatalogueLicence Licence { get; init; } = new();
+    public CatalogueLicence Licence { get; set; } = new();
 
     /// <summary>Comparable quality score (higher is better); includes the quantisation penalty.</summary>
     public double Quality { get; init; }
 
     public double ParamsTotalB { get; init; }
     public double ParamsActiveB { get; init; }
-    public string Quant { get; init; } = "";
+    public string Quant { get; set; } = "";
 
     /// <summary>Hugging Face repository, for example "Qwen/Qwen3-8B-GGUF".</summary>
-    public string HfRepo { get; init; } = "";
+    public string HfRepo { get; set; } = "";
 
     /// <summary>Pinned 40-hex commit of <see cref="HfRepo"/>. Every URL must resolve against this commit.</summary>
-    public string HfCommit { get; init; } = "";
+    public string HfCommit { get; set; } = "";
 
     /// <summary>One file, or the parts of a split GGUF in load order (part 1 first).</summary>
-    public List<CatalogueFile> Files { get; init; } = new();
+    public List<CatalogueFile> Files { get; set; } = new();
 
-    public ModelMemory Memory { get; init; } = new();
+    public ModelMemory Memory { get; set; } = new();
     public int ContextMax { get; init; }
     public int ContextDefault { get; init; }
-    public ModelFeatures Features { get; init; } = new();
-    public string MinHostVersion { get; init; } = "1.0.0";
+    public ModelFeatures Features { get; set; } = new();
+    public string MinHostVersion { get; set; } = "1.0.0";
     public RecommendedSampling? RecommendedSampling { get; init; }
 
     /// <summary>Free text for maintainers (sources, which numbers are estimates).</summary>
@@ -83,15 +83,15 @@ public sealed partial class CatalogueEntry
 public sealed partial class CatalogueFile
 {
     /// <summary>Local file name (flat, no folders). Split parts keep their "-0000k-of-0000N.gguf" names.</summary>
-    public string Name { get; init; } = "";
+    public string Name { get; set; } = "";
 
     public long Size { get; init; }
 
     /// <summary>Lower-case hex SHA-256. Anything else (for example a placeholder) fails verification.</summary>
-    public string Sha256 { get; init; } = "";
+    public string Sha256 { get; set; } = "";
 
     /// <summary>HTTPS URLs; the first is the pinned Hugging Face resolve URL, the rest optional mirrors.</summary>
-    public List<string> Urls { get; init; } = new();
+    public List<string> Urls { get; set; } = new();
 
     [JsonIgnore]
     public bool HasVerifiedHash => Sha256Pattern().IsMatch(Sha256);
@@ -102,8 +102,8 @@ public sealed partial class CatalogueFile
 
 public sealed class CatalogueLicence
 {
-    public string Spdx { get; init; } = "";
-    public string Url { get; init; } = "";
+    public string Spdx { get; set; } = "";
+    public string Url { get; set; } = "";
     public bool CommercialOk { get; init; }
 }
 

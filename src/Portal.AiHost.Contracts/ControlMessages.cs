@@ -49,7 +49,7 @@ public static class ControlTypes
 public sealed class ControlEnvelope
 {
     public string? Id { get; init; }
-    public string Type { get; init; } = "";
+    public string Type { get; set; } = "";
     public JsonElement? Payload { get; init; }
 }
 
@@ -61,15 +61,15 @@ public sealed class ShowRequest
 
 public sealed class ControlError
 {
-    public string Code { get; init; } = ErrorCodes.InternalError;
-    public string Message { get; init; } = "";
+    public string Code { get; set; } = ErrorCodes.InternalError;
+    public string Message { get; set; } = "";
 }
 
 public sealed class PendingApproval
 {
-    public string RequestId { get; init; } = "";
-    public string AppId { get; init; } = "";
-    public string AppName { get; init; } = "";
+    public string RequestId { get; set; } = "";
+    public string AppId { get; set; } = "";
+    public string AppName { get; set; } = "";
     public string? AppVersion { get; init; }
 
     /// <summary>Publisher of the calling app (package publisher or file signer), when Windows can tell; null otherwise.</summary>
@@ -77,7 +77,7 @@ public sealed class PendingApproval
     public string? Reason { get; init; }
 
     /// <summary>Verified package name, or an exe path with an "unverified" mark.</summary>
-    public string CallerIdentity { get; init; } = "";
+    public string CallerIdentity { get; set; } = "";
 
     public bool CallerVerified { get; init; }
     public DateTimeOffset ExpiresAt { get; init; }
@@ -85,20 +85,20 @@ public sealed class PendingApproval
 
 public sealed class ApprovalList
 {
-    public List<PendingApproval> Pending { get; init; } = new();
+    public List<PendingApproval> Pending { get; set; } = new();
 }
 
 public sealed class ApprovalDecision
 {
-    public string RequestId { get; init; } = "";
+    public string RequestId { get; set; } = "";
 }
 
 public sealed class ClientSummary
 {
-    public string TokenId { get; init; } = "";
-    public string AppId { get; init; } = "";
-    public string AppName { get; init; } = "";
-    public string DeviceId { get; init; } = "local";
+    public string TokenId { get; set; } = "";
+    public string AppId { get; set; } = "";
+    public string AppName { get; set; } = "";
+    public string DeviceId { get; set; } = "local";
     public DateTimeOffset CreatedAt { get; init; }
     public DateTimeOffset? LastUsedAt { get; init; }
     public bool Revoked { get; init; }
@@ -106,20 +106,20 @@ public sealed class ClientSummary
 
 public sealed class ClientList
 {
-    public List<ClientSummary> Clients { get; init; } = new();
+    public List<ClientSummary> Clients { get; set; } = new();
 }
 
 public sealed class ClientRevoke
 {
-    public string TokenId { get; init; } = "";
+    public string TokenId { get; set; } = "";
 }
 
 public sealed class CatalogueModelSummary
 {
-    public string Id { get; init; } = "";
-    public string DisplayName { get; init; } = "";
-    public string Kind { get; init; } = ModelKinds.Chat;
-    public string Engine { get; init; } = EngineKinds.LlamaServer;
+    public string Id { get; set; } = "";
+    public string DisplayName { get; set; } = "";
+    public string Kind { get; set; } = ModelKinds.Chat;
+    public string Engine { get; set; } = EngineKinds.LlamaServer;
     public long SizeBytes { get; init; }
     public double Quality { get; init; }
     public bool Recommended { get; init; }
@@ -148,7 +148,7 @@ public sealed class CatalogueModelSummary
 
 public sealed class ModelListing
 {
-    public List<CatalogueModelSummary> Models { get; init; } = new();
+    public List<CatalogueModelSummary> Models { get; set; } = new();
 
     /// <summary>Folder the host keeps its models in.</summary>
     public string? ModelsFolder { get; init; }
@@ -168,12 +168,12 @@ public sealed class ModelListing
 
 public sealed class DownloadCommand
 {
-    public string CatalogueId { get; init; } = "";
+    public string CatalogueId { get; set; } = "";
 }
 
 public sealed class RemoveModelCommand
 {
-    public string CatalogueId { get; init; } = "";
+    public string CatalogueId { get; set; } = "";
 
     /// <summary>Earlier models folder to remove from (a listing's store_folder); null for the current folder.</summary>
     public string? StoreFolder { get; init; }
@@ -212,15 +212,15 @@ public static class StartupStates
 
 public sealed class ActivateModelCommand
 {
-    public string CatalogueId { get; init; } = "";
+    public string CatalogueId { get; set; } = "";
 }
 
 public sealed class DownloadProgressEvent
 {
-    public string CatalogueId { get; init; } = "";
+    public string CatalogueId { get; set; } = "";
 
     /// <summary>queued, downloading, paused, verifying, done, failed.</summary>
-    public string State { get; init; } = "queued";
+    public string State { get; set; } = "queued";
 
     public long BytesDone { get; init; }
     public long BytesTotal { get; init; }
@@ -230,10 +230,10 @@ public sealed class DownloadProgressEvent
 
 public sealed class EngineStateEvent
 {
-    public string Kind { get; init; } = ModelKinds.Chat;
+    public string Kind { get; set; } = ModelKinds.Chat;
 
     /// <summary>stopped, starting, loading, ready, stopping, failed.</summary>
-    public string State { get; init; } = "stopped";
+    public string State { get; set; } = "stopped";
 
     public double? Progress { get; init; }
     public string? Message { get; init; }
@@ -244,7 +244,7 @@ public sealed class HostSettings
     public bool StartWithWindows { get; init; }
 
     /// <summary>auto, gpu or cpu.</summary>
-    public string Backend { get; init; } = "auto";
+    public string Backend { get; set; } = "auto";
 
     /// <summary>Folder chosen for models; the host keeps them in its own "Portal AI Host Models" subfolder there.</summary>
     public string? ModelsFolder { get; set; }
@@ -255,31 +255,31 @@ public sealed class HostSettings
     /// </summary>
     public List<string>? PreviousStoreFolders { get; set; }
 
-    public int MaxMemoryPercent { get; init; } = 80;
-    public bool PreventSleepWhileDownloading { get; init; } = true;
+    public int MaxMemoryPercent { get; set; } = 80;
+    public bool PreventSleepWhileDownloading { get; set; } = true;
     public long? BandwidthCapBytesPerSecond { get; init; }
 
     /// <summary>Per model kind: keep loaded and idle timeout.</summary>
-    public Dictionary<string, KindSettings> Kinds { get; init; } = new();
+    public Dictionary<string, KindSettings> Kinds { get; set; } = new();
 }
 
 public sealed class KindSettings
 {
     public bool KeepLoaded { get; init; }
-    public int IdleUnloadSeconds { get; init; } = 600;
+    public int IdleUnloadSeconds { get; set; } = 600;
 }
 
 /// <summary>"Try it" request: a chat request the window sends through the host's own pipeline.</summary>
 public sealed class TryItRequest
 {
-    public ChatCompletionRequest Request { get; init; } = new();
+    public ChatCompletionRequest Request { get; set; } = new();
 }
 
 /// <summary>Answer to status.get and payload of event.status_changed: the HTTP status plus host-only state.</summary>
 public sealed class ControlStatus
 {
     [JsonPropertyName("status")]
-    public HostStatus Status { get; init; } = new();
+    public HostStatus Status { get; set; } = new();
 
     /// <summary>True after two unclean exits in a row: nothing is loaded automatically.</summary>
     [JsonPropertyName("safe_mode")]

@@ -49,7 +49,7 @@ public sealed class SystemDiskInfo : IDiskInfo
 
 internal sealed class StoreMarker
 {
-    public string Kind { get; init; } = OwnedFolder.MarkerKind;
+    public string Kind { get; set; } = OwnedFolder.MarkerKind;
     public Guid StoreId { get; init; }
     public DateTimeOffset Created { get; init; }
 }

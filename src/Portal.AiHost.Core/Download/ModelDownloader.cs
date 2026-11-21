@@ -21,26 +21,26 @@ public interface ISleepBlocker
 public sealed class DownloadOptions
 {
     /// <summary>Sent on every request as "PortalAIHost/&lt;version&gt;". No tokens are ever sent.</summary>
-    public string UserAgent { get; init; } = "PortalAIHost/" + HostVersion();
+    public string UserAgent { get; set; } = "PortalAIHost/" + HostVersion();
 
     /// <summary>Waits between network retries; after the last one, <see cref="RetryEvery"/> repeats.</summary>
-    public IReadOnlyList<TimeSpan> RetryDelays { get; init; } =
+    public IReadOnlyList<TimeSpan> RetryDelays { get; set; } =
         [TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(30), TimeSpan.FromMinutes(2)];
 
-    public TimeSpan RetryEvery { get; init; } = TimeSpan.FromMinutes(10);
+    public TimeSpan RetryEvery { get; set; } = TimeSpan.FromMinutes(10);
 
     /// <summary>Network attempts per part before giving up; null retries until cancelled.</summary>
     public int? MaxAttempts { get; init; }
 
-    public int ParallelParts { get; init; } = 2;
-    public long DiskCheckIntervalBytes { get; init; } = 1L << 30;
-    public long FixedHeadroomBytes { get; init; } = 2L << 30;
-    public double HeadroomFraction { get; init; } = 0.02;
-    public int BufferBytes { get; init; } = 1 << 20;
-    public bool PreventSleep { get; init; } = true;
+    public int ParallelParts { get; set; } = 2;
+    public long DiskCheckIntervalBytes { get; set; } = 1L << 30;
+    public long FixedHeadroomBytes { get; set; } = 2L << 30;
+    public double HeadroomFraction { get; set; } = 0.02;
+    public int BufferBytes { get; set; } = 1 << 20;
+    public bool PreventSleep { get; set; } = true;
 
     /// <summary>Delay function (replaced in tests).</summary>
-    public Func<TimeSpan, CancellationToken, Task> Delay { get; init; } = Task.Delay;
+    public Func<TimeSpan, CancellationToken, Task> Delay { get; set; } = Task.Delay;
 
     private static string HostVersion()
     {
@@ -75,9 +75,9 @@ public sealed class ModelFileDamagedException(string fileName)
 
 internal sealed class ResumeState
 {
-    public string Url { get; init; } = "";
+    public string Url { get; set; } = "";
     public long Size { get; init; }
-    public string Sha256 { get; init; } = "";
+    public string Sha256 { get; set; } = "";
     public string? Etag { get; init; }
     public long BytesDone { get; init; }
 }
