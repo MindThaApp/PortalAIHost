@@ -393,3 +393,60 @@ Everything a chat screen needs is in v1:
   `/host/capabilities` and `/host/status`.
 - **LAN and remote access:** the same endpoints and tokens, over TLS or end-to-end encryption, after one-time
   pairing. Tokens will be tied to a device; existing loopback tokens stay valid for local use.
+
+## 10. Admin control pipe (the host's own window only)
+
+Not for client apps. The window talks to the host over `\.\pipe\PortalAIHost.Control.<UserSID>` (current user
+only). Messages are JSON envelopes `{ "id", "type", "payload" }`; answers are `ok` or `error`
+(`{ "code", "message" }`, codes from section 5). Pushes have no `id`. Field names are snake_case.
+
+**Models**
+
+- `models.list` answers `{ models: [...], models_folder, free_bytes, upgrade_model_id, catalogue_available }`.
+  Each model has `id, display_name, kind, engine, size_bytes, quality, recommended, installed, active,
+  fits_this_pc, reason`, plus:
+  - `existing_copy`: the model is a file the user added in place (used where it is, never deleted);
+  - `download_state`: `downloading`, `paused`, `failed`, or absent when there is no unfinished download;
+  - `bytes_done`: bytes already on disk for an unfinished download;
+  - `store_folder`: absent for the current models folder; set for a model left in an earlier models folder
+    (see "Changing the models folder"). Such a model can only be removed.
+  - `catalogue_available` is `false` when no signed model list could be loaded; only installed models are listed
+    then. A listing without the field means `true`.
+- `downloads.start` / `downloads.resume` `{ catalogue_id }`: start, or continue a paused or failed download from
+  its partial files. Refused up front with an error answer: `feature_disabled` (no model list, or no models
+  folder), `not_found` (not in the list), `invalid_request` (not downloadable, a file the user added, or not
+  enough free space; the message says how much is needed). Later failures arrive as `event.download_progress`
+  with `state` `failed` (or `paused` when the drive is full) and a `message`; no failure is silent.
+- `downloads.pause` keeps the partial files; `downloads.cancel` removes only the unfinished files the host made.
+- `models.remove` `{ catalogue_id, store_folder? }`: removes a model through the store rules: only files the
+  host downloaded and recorded (checked by marker, path, size and file ID) are deleted; a file the user added is
+  only forgotten. Refused (`invalid_request`) while the model is active, still loaded by an engine (for example
+  while the old engine stops after a switch), or downloading. With `store_folder`, it removes from that earlier
+  models folder with the same rules; the folder itself is never deleted.
+- `event.download_progress` `{ catalogue_id, state, bytes_done, bytes_total, eta_seconds, message }`, `state` one
+  of `queued, downloading, paused, verifying, done, failed, cancelled, removed`.
+
+**Status**
+
+- `status.get` answers `{ status, safe_mode, unclean_exits, base_url, upgrade_model_id, on_battery,
+  store_problem }`. `store_problem` is a plain-language reason the models folder could not be opened (a folder
+  without the host's marker, a damaged `store.json`, a missing parent); the folder is left untouched and
+  downloads are off until the setting is changed.
+
+**Settings**
+
+- `settings.get` / `settings.set` carry `HostSettings` (`start_with_windows, backend, models_folder,
+  max_memory_percent, prevent_sleep_while_downloading, bandwidth_cap_bytes_per_second, kinds`, and the host-owned
+  `previous_store_folders`, which `settings.set` ignores).
+- `settings.set` answers `SettingsSaved` `{ models_folder_changed, applies_at_restart, note, folder_refused }`.
+  `folder_refused` is set when the new models folder was refused (missing, FAT32, or inside the current models
+  folder); the other settings were still saved and the models folder stayed as it was.
+
+**Changing the models folder**
+
+- The host keeps models in its own marked subfolder `Portal AI Host Models` inside the chosen folder. The chosen
+  folder must already exist; the subfolder is created at the next host start (never missing parents). An
+  existing `Portal AI Host Models` folder is only used when it carries the host's marker.
+- Nothing is moved or deleted when the folder changes. The previous store folder is kept in
+  `previous_store_folders`; its models stay listed (with `store_folder`) so their space can be freed with
+  `models.remove`.
