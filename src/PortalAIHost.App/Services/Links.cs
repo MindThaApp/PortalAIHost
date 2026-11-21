@@ -5,8 +5,8 @@ public static class Links
 {
     public const string PrivacyUrl = "https://mindthaapp.github.io/portal-ai-host/privacy.html";
 
-    /// <summary>Public issue tracker used for feedback and suggestions.</summary>
-    public const string FeedbackUrl = "https://github.com/MindThaApp/portal-ai-host-privacy/issues";
+    /// <summary>Feedback and suggestions go to the contact address on the privacy page.</summary>
+    public const string FeedbackUrl = "mailto:mindthaapp@gmail.com?subject=Portal%20AI%20Host%20feedback";
 
     public const string LlamaCppUrl = "https://github.com/ggml-org/llama.cpp";
 
