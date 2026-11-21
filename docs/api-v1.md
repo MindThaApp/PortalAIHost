@@ -143,30 +143,31 @@ All errors use the OpenAI shape, with two optional extras:
 ```
 
 `Retry-After` (in seconds) is also set when a retry makes sense. Switch on `code`; the `message` text is not fixed
-and may be localised later.
+and may be localised later. Each code always comes with the same `type` (OpenAI-style), listed below.
 
-| HTTP | `code` | Retry? | Meaning / what to do |
-|---|---|---|---|
-| 400 | `invalid_request` | no | Malformed JSON or field. `param` names the field. |
-| 400 | `unsupported_parameter` | no | For example `n > 1`, image content, or `tools` on a model without tool support. |
-| 400 | `context_length_exceeded` | no | `details`: `prompt_tokens`, `context_tokens`. Trim the history or split the input. |
-| 401 | `auth_required` | no | The bearer token is missing. |
-| 401 | `token_invalid` | no | Unknown token. Delete it and ask the user before requesting again. |
-| 401 | `token_revoked` | no | The user removed access. Delete the token. |
-| 403 | `access_denied` | no | The user denied the access request (24 h cool-down). |
-| 403 | `forbidden_origin` | no | Browser origin or bad `Host` header. |
-| 404 | `not_found` | no | Unknown route or request id. |
-| 404 | `feature_disabled` | no | The endpoint exists in the API but is switched off on this host (for example a future feature). |
-| 413 | `request_too_large` | no | The body is over `max_request_bytes`. |
-| 429 | `queue_full` | yes | Back off for `retry_after_ms`. |
-| 429 | `rate_limited` | yes | Too many access requests. |
-| 503 | `no_model` | no | No model of the needed kind is installed. `details.kind` is `chat` or `embedding`. Fall back and tell the user. |
-| 503 | `model_loading` | yes | Only with `X-Portal-Load: fail`. `details.progress` runs from 0 to 1. |
-| 503 | `engine_restarting` | yes | The engine stopped and is restarting. Retry shortly. |
-| 503 | `insufficient_memory` | no | The model cannot load in the memory available now. Fall back. |
-| 503 | `host_stopping` | no | The host is quitting. Fall back. |
-| 504 | `deadline_exceeded` | no | `details.phase` is `queued`, `loading` or `generating`. |
-| 500 | `engine_error` / `internal_error` | once | Unexpected. Retry at most once, then fall back. |
+| HTTP | `code` | `type` | Retry? | Meaning / what to do |
+|---|---|---|---|---|
+| 400 | `invalid_request` | `invalid_request_error` | no | Malformed JSON or field. `param` names the field. |
+| 400 | `unsupported_parameter` | `invalid_request_error` | no | For example `n > 1`, image content, or `tools` on a model without tool support. |
+| 400 | `context_length_exceeded` | `invalid_request_error` | no | `details`: `prompt_tokens`, `context_tokens`. Trim the history or split the input. |
+| 401 | `auth_required` | `authentication_error` | no | The bearer token is missing. |
+| 401 | `token_invalid` | `authentication_error` | no | Unknown token. Delete it and ask the user before requesting again. |
+| 401 | `token_revoked` | `authentication_error` | no | The user removed access. Delete the token. |
+| 403 | `access_denied` | `permission_error` | no | The user denied the access request (24 h cool-down). |
+| 403 | `forbidden_origin` | `permission_error` | no | Browser origin or bad `Host` header. |
+| 404 | `not_found` | `not_found_error` | no | Unknown route or request id. |
+| 404 | `feature_disabled` | `not_found_error` | no | The endpoint exists in the API but is switched off on this host (for example a future feature). |
+| 413 | `request_too_large` | `invalid_request_error` | no | The body is over `max_request_bytes`. |
+| 429 | `queue_full` | `rate_limit_error` | yes | Back off for `retry_after_ms`. |
+| 429 | `rate_limited` | `rate_limit_error` | yes | Too many access requests. |
+| 503 | `no_model` | `unavailable` | no | No model of the needed kind is installed. `details.kind` is `chat` or `embedding`. Fall back and tell the user. |
+| 503 | `model_loading` | `unavailable` | yes | Only with `X-Portal-Load: fail`. `details.progress` runs from 0 to 1. |
+| 503 | `engine_restarting` | `unavailable` | yes | The engine stopped and is restarting. Retry shortly. |
+| 503 | `insufficient_memory` | `unavailable` | no | The model cannot load in the memory available now. Fall back. |
+| 503 | `host_stopping` | `unavailable` | no | The host is quitting. Fall back. |
+| 504 | `deadline_exceeded` | `timeout` | no | `details.phase` is `queued`, `loading` or `generating`. |
+| 500 | `engine_error` | `server_error` | once | The engine failed unexpectedly. Retry at most once, then fall back. |
+| 500 | `internal_error` | `server_error` | once | Unexpected host error. Retry at most once, then fall back. |
 
 **Streaming errors:** if an error happens after a stream has started (HTTP 200 already sent), the host sends one
 final event `data: {"error":{...}}` and closes the stream **without** `data: [DONE]`.
