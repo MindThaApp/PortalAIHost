@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <AssemblyName>PortalAIHost.Service</AssemblyName>
+    <RootNamespace>PortalAIHost.Service</RootNamespace>
+    <PublishAot>true</PublishAot>
+    <IsAotCompatible>true</IsAotCompatible>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Portal.AiHost.Server\Portal.AiHost.Server.csproj" />
+    <ProjectReference Include="..\Portal.AiHost.Engine\Portal.AiHost.Engine.csproj" />
+    <ProjectReference Include="..\Portal.AiHost.Platform.Windows\Portal.AiHost.Platform.Windows.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Portal.AiHost.Server.Tests" />
+  </ItemGroup>
+</Project>

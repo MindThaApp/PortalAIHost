@@ -519,6 +519,35 @@ public sealed class AiHostRuntime : IAsyncDisposable
         }
     }
 
+    /// <summary>App id the window's "Try it" runs under in the fair queue.</summary>
+    public const string TryItAppId = "host.tryit";
+
+    /// <summary>"Try it" from the window (admin pipe): one non-streaming chat through the same queue and engine.</summary>
+    public async Task<ChatCompletionResponse> TryItChatAsync(ChatCompletionRequest request, CancellationToken ct)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        RequestValidator.ValidateChat(request);
+        var (_, sup) = Require(ModelKinds.Chat);
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(ct, _lifetime.Token);
+        linked.CancelAfter(TimeSpan.FromMilliseconds(ApiLimits.DefaultInteractiveDeadlineMs));
+        Interlocked.Increment(ref _inFlight);
+        try
+        {
+            await using var lease = await _o.Scheduler.AcquireAsync(new SchedulingRequest
+            {
+                AppId = TryItAppId,
+                Kind = ModelKinds.Chat,
+                Deadline = _o.Time.GetUtcNow().AddMilliseconds(ApiLimits.DefaultInteractiveDeadlineMs),
+            }, null, linked.Token).ConfigureAwait(false);
+            await EnsureLoadedAsync(ModelKinds.Chat, linked.Token).ConfigureAwait(false);
+            return await sup.ChatAsync(request, linked.Token).ConfigureAwait(false);
+        }
+        finally
+        {
+            Interlocked.Decrement(ref _inFlight);
+        }
+    }
+
     // ---- endpoints -----------------------------------------------------------------------------
 
     private void MapEndpoints()
