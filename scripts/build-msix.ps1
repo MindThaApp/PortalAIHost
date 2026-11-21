@@ -132,6 +132,17 @@ try {
         if (-not (Test-Path (Join-Path $layout 'PortalAIHost.App.exe'))) { throw 'PortalAIHost.App.exe missing from the App publish.' }
         $pri = Join-Path $layout 'PortalAIHost.App.pri'
         if (Test-Path $pri) { Move-Item $pri (Join-Path $layout 'resources.pri') -Force }
+        # Layout: PortalAIHost.App.exe and PortalAIHost.Service.exe side by side at the package root (the window's
+        # launcher and the host's window lookup both search there), engine\<flavour>\ and catalogue\ beside them.
+        # The host only trusts a signed model list: without catalogue.json.sig it starts with downloads off.
+        $catSrc = Join-Path $repo 'catalogue'
+        if ((Test-Path (Join-Path $catSrc 'catalogue.json')) -and (Test-Path (Join-Path $catSrc 'catalogue.json.sig'))) {
+            $catDest = Join-Path $layout 'catalogue'
+            New-Item -ItemType Directory -Force $catDest | Out-Null
+            Copy-Item (Join-Path $catSrc 'catalogue.json'), (Join-Path $catSrc 'catalogue.json.sig') $catDest
+        }
+        elseif ($Store) { throw 'Store build: catalogue\catalogue.json.sig is missing (sign the model list first).' }
+        else { Write-Warning 'catalogue\catalogue.json.sig is missing: this package has no model list (downloads off).' }
 
         # The host expects engine\<flavour>\llama-server.exe beside its exe; the arm64 CPU build is the "cpu" flavour.
         foreach ($f in $flavours) {
