@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -224,6 +225,56 @@ internal sealed class OwnedFolder
         File.Delete(full);
     }
 
+    /// <summary>
+    /// Opens a host-created file for writing (never creating or truncating it) after the marker and link checks,
+    /// then checks the open handle: exactly one hard link, and the same file ID the host recorded when it created
+    /// the file. Returns the identity so the caller can record it on first use.
+    /// </summary>
+    public FileStream OpenOwnedFileForWrite(string relativePath, string? expectedFileId, out string? fileId, int bufferSize = 4096, bool useAsync = false)
+    {
+        AssertMarker();
+        var full = Resolve(relativePath);
+        var fs = new FileStream(full, FileMode.Open, FileAccess.Write, FileShare.Read, bufferSize, useAsync);
+        try
+        {
+            var (links, id) = FileIdentity.Read(fs.SafeFileHandle);
+            if (links != 1)
+            {
+                throw new StoreSafetyException($"'{full}' has {links} hard links; the host never writes to a linked file.");
+            }
+
+            if (expectedFileId is not null && id is not null && !string.Equals(id, expectedFileId, StringComparison.Ordinal))
+            {
+                throw new StoreSafetyException($"'{full}' was replaced since the host created it; it was not written.");
+            }
+
+            fileId = id;
+            return fs;
+        }
+        catch
+        {
+            fs.Dispose();
+            throw;
+        }
+    }
+
+    /// <summary>File ID and hard-link count of a file inside the store (read-only).</summary>
+    public (uint Links, string? Id) GetIdentity(string relativePath)
+    {
+        var full = Resolve(relativePath);
+        using var fs = new FileStream(full, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        return FileIdentity.Read(fs.SafeFileHandle);
+    }
+
+    /// <summary>Windows reserved device names (con, prn, aux, nul, com1-9, lpt1-9), with any extension.</summary>
+    public static bool IsReservedDeviceName(string name)
+    {
+        var stem = name.Split('.')[0].TrimEnd(' ').ToLowerInvariant();
+        return stem is "con" or "prn" or "aux" or "nul"
+            || (stem.Length == 4 && (stem.StartsWith("com", StringComparison.Ordinal) || stem.StartsWith("lpt", StringComparison.Ordinal))
+                && stem[3] is >= '1' and <= '9');
+    }
+
     /// <summary>Checks that <see cref="DeleteOwnedFile"/> would succeed, without deleting.</summary>
     public void AssertDeletable(string relativePath, long? expectedSize = null)
     {
@@ -297,6 +348,53 @@ internal sealed class OwnedFolder
         }
 
         return true;
+    }
+}
+
+/// <summary>Volume serial + file index and hard-link count of an open file (Windows; elsewhere unknown).</summary>
+internal static partial class FileIdentity
+{
+    [StructLayout(LayoutKind.Sequential)]
+    private struct ByHandleFileInformation
+    {
+        public uint FileAttributes;
+        public uint CreationLow, CreationHigh, AccessLow, AccessHigh, WriteLow, WriteHigh;
+        public uint VolumeSerialNumber;
+        public uint FileSizeHigh, FileSizeLow;
+        public uint NumberOfLinks;
+        public uint FileIndexHigh, FileIndexLow;
+    }
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+#pragma warning disable SYSLIB1054 // blittable signature, no marshalling needed
+    private static extern int GetFileInformationByHandle(nint file, out ByHandleFileInformation info);
+#pragma warning restore SYSLIB1054
+
+    public static (uint Links, string? Id) Read(Microsoft.Win32.SafeHandles.SafeFileHandle handle)
+    {
+        if (!OperatingSystem.IsWindows())
+        {
+            return (1, null);
+        }
+
+        var added = false;
+        try
+        {
+            handle.DangerousAddRef(ref added);
+            if (GetFileInformationByHandle(handle.DangerousGetHandle(), out var info) == 0)
+            {
+                throw new StoreSafetyException("Could not read the identity of a store file; it was not touched.");
+            }
+
+            return (info.NumberOfLinks, $"{info.VolumeSerialNumber:x8}-{info.FileIndexHigh:x8}{info.FileIndexLow:x8}");
+        }
+        finally
+        {
+            if (added)
+            {
+                handle.DangerousRelease();
+            }
+        }
     }
 }
 

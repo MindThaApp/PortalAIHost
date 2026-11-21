@@ -17,6 +17,27 @@ public interface IModelStoreWriter : IModelStore
     /// <summary>Truncates one recorded .part file to zero (restart from scratch) and drops its sidecar.</summary>
     Task ResetPartAsync(string modelId, string partPath, CancellationToken ct);
 
+    /// <summary>Shortens a recorded .part file to <paramref name="length"/> (never lengthens it).</summary>
+    Task TruncatePartAsync(string modelId, string partPath, long length, CancellationToken ct);
+
+    /// <summary>
+    /// Opens a recorded .part file for writing after the ownership, link-count and file-ID checks. Called before
+    /// every write session, so a link planted during hours of retries is refused.
+    /// </summary>
+    Task<FileStream> OpenPartForWriteAsync(string modelId, string partPath, int bufferSize, CancellationToken ct);
+
+    /// <summary>
+    /// If a file already sits at the model file's final name (for example after a crash between the rename and the
+    /// save of store.json) and has the expected size and SHA-256, records it as verified and returns it.
+    /// </summary>
+    Task<StoredFile?> TryAdoptExistingAsync(string modelId, string fileName, string sha256, long size, CancellationToken ct);
+
+    /// <summary>Forgets a catalogue model that has no files left and removes its empty folder.</summary>
+    Task ForgetIfEmptyAsync(string modelId, CancellationToken ct);
+
+    /// <summary>Marks a model as being downloaded; a second download of the same model is refused.</summary>
+    IDisposable AcquireDownload(string modelId);
+
     Task<string?> ReadResumeStateAsync(string modelId, string partPath, CancellationToken ct);
 
     Task WriteResumeStateAsync(string modelId, string partPath, string json, CancellationToken ct);
@@ -63,6 +84,9 @@ internal sealed class ManifestFile
     /// <summary>Store-relative .part path while downloading; its sidecar is the same path plus ".json".</summary>
     public string? PartPath { get; set; }
 
+    /// <summary>Volume + file index of the .part file when the host created it.</summary>
+    public string? PartFileId { get; set; }
+
     public long Size { get; set; }
     public string? Sha256 { get; set; }
     public StoredFileState State { get; set; }
@@ -81,6 +105,7 @@ public sealed partial class ModelStore : IModelStoreWriter
 
     private const long Fat32MaxFile = 4L * 1024 * 1024 * 1024 - 1;
     private readonly SemaphoreSlim _gate = new(1, 1);
+    private readonly HashSet<string> _downloading = new(StringComparer.Ordinal);
     private readonly IDiskInfo _disk;
     private OwnedFolder _folder;
     private StoreManifest _manifest;
@@ -122,8 +147,16 @@ public sealed partial class ModelStore : IModelStoreWriter
         StoreManifest manifest;
         if (File.Exists(folder.ManifestPath))
         {
-            manifest = JsonSerializer.Deserialize(File.ReadAllBytes(folder.ManifestPath), StoreJsonContext.Default.StoreManifest)
-                ?? throw new StoreRefusedException("store.json is empty.");
+            try
+            {
+                manifest = JsonSerializer.Deserialize(File.ReadAllBytes(folder.ManifestPath), StoreJsonContext.Default.StoreManifest)
+                    ?? throw new StoreRefusedException("store.json is empty.");
+            }
+            catch (JsonException ex)
+            {
+                // Never repaired or deleted automatically: the inventory is the only proof of what the host created.
+                throw new StoreRefusedException($"store.json in '{root}' is damaged ({ex.Message}); it was left in place.");
+            }
             if (manifest.StoreId != id)
             {
                 throw new StoreRefusedException("store.json belongs to a different store than the marker.");
@@ -219,11 +252,7 @@ public sealed partial class ModelStore : IModelStoreWriter
     public Task<string> BeginFileAsync(string modelId, string fileName, CancellationToken ct) =>
         Locked(ct, () =>
         {
-            if (!SafeFileName().IsMatch(fileName) || fileName.Contains("..", StringComparison.Ordinal))
-            {
-                throw new StoreSafetyException($"'{fileName}' is not a safe model file name.");
-            }
-
+            AssertSafeFileName(fileName);
             var m = GetOrCreateCatalogueModel(modelId);
             var existing = m.Files.FirstOrDefault(f => f.Name == fileName);
             if (existing is { State: StoredFileState.Partial, PartPath: { } partRel })
@@ -232,7 +261,15 @@ public sealed partial class ModelStore : IModelStoreWriter
                 var partFull = _folder.Resolve(partRel);
                 if (!File.Exists(partFull))
                 {
+                    if (Exists(_folder.Resolve(existing.Path)))
+                    {
+                        throw new StoreSafetyException(
+                            $"'{existing.Path}' already exists; check it with TryAdoptExistingAsync before downloading again.");
+                    }
+
                     CreateEmptyFile(partFull);
+                    existing.PartFileId = _folder.GetIdentity(partRel).Id;
+                    SaveManifest();
                 }
 
                 return partFull;
@@ -246,14 +283,23 @@ public sealed partial class ModelStore : IModelStoreWriter
             _folder.AssertMarker();
             var folderFull = _folder.Resolve(m.Folder!);
             Directory.CreateDirectory(folderFull);
-            var finalFull = UniqueFilePath(folderFull, fileName);
-            var partFullNew = finalFull + ".part";
+            var finalFull = Path.Combine(folderFull, fileName);
+            if (Exists(finalFull))
+            {
+                // The engine loads model files (and split parts) by name, so no "(2)" names: stop instead.
+                throw new StoreSafetyException(
+                    $"'{finalFull}' already exists and is not a file the host recorded. Move it away and try again.");
+            }
+
+            var partFullNew = UniquePartPath(finalFull);
             CreateEmptyFile(partFullNew);
+            var partRelNew = _folder.ToRelative(partFullNew);
             m.Files.Add(new ManifestFile
             {
                 Name = fileName,
                 Path = _folder.ToRelative(finalFull),
-                PartPath = _folder.ToRelative(partFullNew),
+                PartPath = partRelNew,
+                PartFileId = _folder.GetIdentity(partRelNew).Id,
                 State = StoredFileState.Partial,
             });
             SaveManifest();
@@ -267,11 +313,12 @@ public sealed partial class ModelStore : IModelStoreWriter
             _folder.AssertMarker();
             var partFull = _folder.Resolve(f.PartPath!);
             var finalFull = _folder.Resolve(f.Path);
-            if (File.Exists(finalFull) || Directory.Exists(finalFull))
+            if (Exists(finalFull))
             {
-                // Something appeared at the final name: never replace it, pick a new name instead.
-                finalFull = UniqueFilePath(Path.GetDirectoryName(finalFull)!, Path.GetFileName(finalFull));
-                f.Path = _folder.ToRelative(finalFull);
+                // Something appeared at the final name: never replace it and never rename (the engine loads by name).
+                throw new StoreSafetyException(
+                    $"'{finalFull}' appeared while downloading and is not the host's. The download was kept as "
+                    + $"'{Path.GetFileName(partFull)}'; move the other file away and try again.");
             }
 
             File.Move(partFull, finalFull, overwrite: false);
@@ -290,23 +337,188 @@ public sealed partial class ModelStore : IModelStoreWriter
             var (m, f) = FindPart(modelId, partPath);
             _folder.DeleteOwnedFile(f.PartPath!);
             _folder.DeleteOwnedFile(f.PartPath! + ".json");
-            m.Files.Remove(f);
-            if (m.Files.Count == 0)
+            m.Files.Remove(f); // the model record (kind, engine) stays for a retry; see ForgetIfEmptyAsync
+            SaveManifest();
+        });
+
+    public Task ForgetIfEmptyAsync(string modelId, CancellationToken ct) =>
+        Locked(ct, () =>
+        {
+            var m = Find(modelId);
+            if (m is { Origin: ModelOrigin.Catalogue, Files.Count: 0 })
             {
                 _manifest.Models.Remove(m);
                 _folder.TryRemoveEmptyFolder(m.Folder!);
+                SaveManifest();
+            }
+        });
+
+    public IDisposable AcquireDownload(string modelId)
+    {
+        lock (_downloading)
+        {
+            if (!_downloading.Add(modelId))
+            {
+                throw new InvalidOperationException($"'{modelId}' is already being downloaded.");
+            }
+        }
+
+        return new Releaser(() =>
+        {
+            lock (_downloading)
+            {
+                _downloading.Remove(modelId);
+            }
+        });
+    }
+
+    private bool IsDownloading(string modelId)
+    {
+        lock (_downloading)
+        {
+            return _downloading.Contains(modelId);
+        }
+    }
+
+    private sealed class Releaser(Action release) : IDisposable
+    {
+        private Action? _release = release;
+
+        public void Dispose() => Interlocked.Exchange(ref _release, null)?.Invoke();
+    }
+
+    public Task<FileStream> OpenPartForWriteAsync(string modelId, string partPath, int bufferSize, CancellationToken ct) =>
+        Locked(ct, () =>
+        {
+            var (_, f) = FindPart(modelId, partPath);
+            return OpenOwnedPart(f, bufferSize, useAsync: true);
+        });
+
+    public Task TruncatePartAsync(string modelId, string partPath, long length, CancellationToken ct) =>
+        Locked(ct, () =>
+        {
+            var (_, f) = FindPart(modelId, partPath);
+            using (var fs = OpenOwnedPart(f, 4096, useAsync: false))
+            {
+                if (length < fs.Length)
+                {
+                    fs.SetLength(Math.Max(0, length));
+                }
             }
 
-            SaveManifest();
+            if (length <= 0)
+            {
+                _folder.DeleteOwnedFile(f.PartPath! + ".json");
+            }
         });
+
+    private FileStream OpenOwnedPart(ManifestFile f, int bufferSize, bool useAsync)
+    {
+        var fs = _folder.OpenOwnedFileForWrite(f.PartPath!, f.PartFileId, out var id, bufferSize, useAsync);
+        if (f.PartFileId is null && id is not null)
+        {
+            f.PartFileId = id;
+            SaveManifest();
+        }
+
+        return fs;
+    }
+
+    public async Task<StoredFile?> TryAdoptExistingAsync(string modelId, string fileName, string sha256, long size, CancellationToken ct)
+    {
+        AssertSafeFileName(fileName);
+        await _gate.WaitAsync(ct).ConfigureAwait(false);
+        try
+        {
+            var m = Find(modelId);
+            if (m is null || m.Origin != ModelOrigin.Catalogue)
+            {
+                return null;
+            }
+
+            var rec = m.Files.FirstOrDefault(f => f.Name == fileName);
+            if (rec is { State: not StoredFileState.Partial })
+            {
+                return ToStoredFile(rec, ModelOrigin.Catalogue);
+            }
+
+            _folder.AssertMarker();
+            var finalRel = rec?.Path ?? Path.Combine(m.Folder!, fileName);
+            var finalFull = _folder.Resolve(finalRel);
+            var info = new FileInfo(finalFull);
+            if (!info.Exists || info.Length != size || _folder.GetIdentity(finalRel).Links != 1)
+            {
+                return null;
+            }
+
+            var hash = await HashFileAsync(finalFull, ct).ConfigureAwait(false);
+            if (!string.Equals(hash, sha256, StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
+
+            if (rec is null)
+            {
+                rec = new ManifestFile { Name = fileName, Path = finalRel };
+                m.Files.Add(rec);
+            }
+            else if (rec.PartPath is { } part)
+            {
+                _folder.DeleteOwnedFile(part);
+                _folder.DeleteOwnedFile(part + ".json");
+            }
+
+            rec.PartPath = null;
+            rec.PartFileId = null;
+            rec.Size = size;
+            rec.Sha256 = hash;
+            rec.State = StoredFileState.Verified;
+            SaveManifest();
+            return ToStoredFile(rec, ModelOrigin.Catalogue);
+        }
+        finally
+        {
+            _gate.Release();
+        }
+    }
+
+    /// <summary>
+    /// Files inside the host's model folders that store.json does not list (for example an orphan .part left by a
+    /// crash). Report only: they are never deleted or overwritten.
+    /// </summary>
+    public Task<IReadOnlyList<string>> ListUnrecordedFilesAsync(CancellationToken ct) =>
+        Locked<IReadOnlyList<string>>(ct, () =>
+        {
+            var known = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var f in _manifest.Models.Where(m => m.Origin == ModelOrigin.Catalogue).SelectMany(m => m.Files))
+            {
+                known.Add(f.Path);
+                if (f.PartPath is { } p)
+                {
+                    known.Add(p);
+                    known.Add(p + ".json");
+                }
+            }
+
+            var result = new List<string>();
+            foreach (var m in _manifest.Models.Where(m => m.Origin == ModelOrigin.Catalogue && m.Folder is not null))
+            {
+                var dir = _folder.Resolve(m.Folder!);
+                if (Directory.Exists(dir))
+                {
+                    result.AddRange(Directory.EnumerateFiles(dir).Where(f => !known.Contains(_folder.ToRelative(f))));
+                }
+            }
+
+            return result;
+        });
+
 
     public Task ResetPartAsync(string modelId, string partPath, CancellationToken ct) =>
         Locked(ct, () =>
         {
             var (_, f) = FindPart(modelId, partPath);
-            _folder.AssertMarker();
-            var full = _folder.Resolve(f.PartPath!);
-            using (var fs = new FileStream(full, FileMode.Open, FileAccess.Write, FileShare.None))
+            using (var fs = OpenOwnedPart(f, 4096, useAsync: false))
             {
                 fs.SetLength(0);
             }
@@ -391,6 +603,11 @@ public sealed partial class ModelStore : IModelStoreWriter
             if (m.Files.Any(f => f.State == StoredFileState.InUse))
             {
                 throw new InvalidOperationException($"'{modelId}' is in use; stop the engine first.");
+            }
+
+            if (IsDownloading(modelId))
+            {
+                throw new InvalidOperationException($"'{modelId}' is downloading; pause it first.");
             }
 
             if (m.Origin == ModelOrigin.External)
@@ -537,18 +754,29 @@ public sealed partial class ModelStore : IModelStoreWriter
         }
         catch
         {
-            // Undo only what this move created inside the new, freshly marked folder.
-            foreach (var rel in created)
+            // Undo only what this move created inside the new, freshly marked folder. A cleanup problem never hides
+            // the original error; anything left over stays in the new marked folder for the user to see.
+            try
             {
-                target.DeleteOwnedFile(rel);
+                foreach (var rel in created)
+                {
+                    target.DeleteOwnedFile(rel);
+                }
+
+                foreach (var rel in createdFolders)
+                {
+                    target.TryRemoveEmptyFolder(rel);
+                }
+
+                target.TryRetireEmptyStore();
+            }
+            catch (IOException)
+            {
+            }
+            catch (UnauthorizedAccessException)
+            {
             }
 
-            foreach (var rel in createdFolders)
-            {
-                target.TryRemoveEmptyFolder(rel);
-            }
-
-            target.TryRetireEmptyStore();
             throw;
         }
 
@@ -562,76 +790,109 @@ public sealed partial class ModelStore : IModelStoreWriter
     /// store.json, lives in the old marked folder, still has its recorded size, and its copy in the current store is
     /// verified with the same hash. Anything else is left. Returns the paths left in place.
     /// </summary>
-    public Task<IReadOnlyList<string>> RemoveOldCopiesAsync(CancellationToken ct) =>
-        Locked<IReadOnlyList<string>>(ct, () =>
+    public async Task<IReadOnlyList<string>> RemoveOldCopiesAsync(CancellationToken ct)
+    {
+        await _gate.WaitAsync(ct).ConfigureAwait(false);
+        try
         {
-            var prev = _manifest.PreviousStore ?? throw new InvalidOperationException("There is no previous store.");
-            var kept = new List<string>();
-            if (OwnedFolder.ReadMarker(prev.Path) != prev.StoreId)
-            {
-                throw new StoreSafetyException($"The old store '{prev.Path}' no longer carries its marker; nothing was removed.");
-            }
+            return await RemoveOldCopiesCoreAsync(ct).ConfigureAwait(false);
+        }
+        finally
+        {
+            _gate.Release();
+        }
+    }
 
-            var old = new OwnedFolder(prev.Path, prev.StoreId);
-            var oldManifest = File.Exists(old.ManifestPath)
+    private async Task<IReadOnlyList<string>> RemoveOldCopiesCoreAsync(CancellationToken ct)
+    {
+        var prev = _manifest.PreviousStore ?? throw new InvalidOperationException("There is no previous store.");
+        if (prev.StoreId == _folder.StoreId
+            || string.Equals(OwnedFolder.Normalize(prev.Path), _folder.Root, PathComparison))
+        {
+            throw new StoreSafetyException("The previous store is the current store; nothing was removed.");
+        }
+
+        if (OwnedFolder.ReadMarker(prev.Path) != prev.StoreId)
+        {
+            throw new StoreSafetyException($"The old store '{prev.Path}' no longer carries its marker; nothing was removed.");
+        }
+
+        var old = new OwnedFolder(prev.Path, prev.StoreId);
+        StoreManifest? oldManifest;
+        try
+        {
+            oldManifest = File.Exists(old.ManifestPath)
                 ? JsonSerializer.Deserialize(File.ReadAllBytes(old.ManifestPath), StoreJsonContext.Default.StoreManifest)
                 : null;
-            if (oldManifest is null || oldManifest.StoreId != prev.StoreId)
-            {
-                throw new StoreSafetyException("The old store.json is missing or belongs to another store; nothing was removed.");
-            }
+        }
+        catch (JsonException)
+        {
+            oldManifest = null;
+        }
 
-            foreach (var m in oldManifest.Models.Where(m => m.Origin == ModelOrigin.Catalogue))
+        if (oldManifest is null || oldManifest.StoreId != prev.StoreId)
+        {
+            throw new StoreSafetyException("The old store.json is missing, damaged or belongs to another store; nothing was removed.");
+        }
+
+        var kept = new List<string>();
+        foreach (var m in oldManifest.Models.Where(m => m.Origin == ModelOrigin.Catalogue))
+        {
+            foreach (var f in m.Files.ToList())
             {
-                foreach (var f in m.Files.ToList())
+                // The new copy must exist, be recorded as verified, and hash to the old copy's recorded SHA-256.
+                var current = Find(m.Id)?.Files.FirstOrDefault(c => c.Name == f.Name);
+                var copyOk = false;
+                if (current is { State: not StoredFileState.Partial } && f.State != StoredFileState.Partial
+                    && f.Sha256 is not null && current.Size == f.Size
+                    && string.Equals(current.Sha256, f.Sha256, StringComparison.OrdinalIgnoreCase))
                 {
-                    var current = Find(m.Id)?.Files.FirstOrDefault(c => c.Name == f.Name);
-                    var copyOk = current is { State: not StoredFileState.Partial }
-                        && f.State != StoredFileState.Partial
-                        && string.Equals(current.Sha256, f.Sha256, StringComparison.OrdinalIgnoreCase)
-                        && current.Size == f.Size
-                        && new FileInfo(_folder.Resolve(current.Path)) is { Exists: true } ci && ci.Length == current.Size;
-                    if (!copyOk)
-                    {
-                        kept.Add(Path.Combine(old.Root, f.Path));
-                        continue;
-                    }
-
-                    try
-                    {
-                        old.DeleteOwnedFile(f.Path, f.Size);
-                        m.Files.Remove(f);
-                    }
-                    catch (StoreSafetyException)
-                    {
-                        kept.Add(Path.Combine(old.Root, f.Path));
-                    }
+                    var copyPath = _folder.Resolve(current.Path);
+                    copyOk = new FileInfo(copyPath) is { Exists: true } ci && ci.Length == current.Size
+                        && string.Equals(await HashFileAsync(copyPath, ct).ConfigureAwait(false), f.Sha256, StringComparison.OrdinalIgnoreCase);
                 }
 
-                if (m.Files.Count == 0 && m.Folder is not null)
+                if (!copyOk)
                 {
-                    old.TryRemoveEmptyFolder(m.Folder);
+                    kept.Add(Path.Combine(old.Root, f.Path));
+                    continue;
+                }
+
+                try
+                {
+                    old.DeleteOwnedFile(f.Path, f.Size);
+                    m.Files.Remove(f);
+                }
+                catch (StoreSafetyException)
+                {
+                    kept.Add(Path.Combine(old.Root, f.Path));
                 }
             }
 
-            oldManifest.Models.RemoveAll(m => m.Origin == ModelOrigin.External || m.Files.Count == 0);
-            if (oldManifest.Models.Count == 0)
+            if (m.Files.Count == 0 && m.Folder is not null)
             {
-                old.TryRetireEmptyStore();
+                old.TryRemoveEmptyFolder(m.Folder);
             }
-            else
-            {
-                old.ReplaceOwnedFile(OwnedFolder.ManifestFileName, JsonSerializer.SerializeToUtf8Bytes(oldManifest, StoreJsonContext.Default.StoreManifest));
-            }
+        }
 
-            if (kept.Count == 0)
-            {
-                _manifest.PreviousStore = null;
-                SaveManifest();
-            }
+        oldManifest.Models.RemoveAll(m => m.Origin == ModelOrigin.External || m.Files.Count == 0);
+        if (oldManifest.Models.Count == 0)
+        {
+            old.TryRetireEmptyStore();
+        }
+        else
+        {
+            old.ReplaceOwnedFile(OwnedFolder.ManifestFileName, JsonSerializer.SerializeToUtf8Bytes(oldManifest, StoreJsonContext.Default.StoreManifest));
+        }
 
-            return kept;
-        });
+        if (kept.Count == 0)
+        {
+            _manifest.PreviousStore = null;
+            SaveManifest();
+        }
+
+        return kept;
+    }
 
     private static async Task<string> CopyNewAsync(string source, string dest, CancellationToken ct)
     {
@@ -659,7 +920,8 @@ public sealed partial class ModelStore : IModelStoreWriter
 
     private ManifestModel GetOrCreateCatalogueModel(string modelId)
     {
-        if (!SafeFileName().IsMatch(modelId + ".gguf") || modelId.Contains("..", StringComparison.Ordinal))
+        if (!SafeFileName().IsMatch(modelId + ".gguf") || modelId.Contains("..", StringComparison.Ordinal)
+            || OwnedFolder.IsReservedDeviceName(modelId))
         {
             throw new StoreSafetyException($"'{modelId}' is not a safe model id.");
         }
@@ -707,18 +969,25 @@ public sealed partial class ModelStore : IModelStoreWriter
         using var _ = new FileStream(full, FileMode.CreateNew, FileAccess.Write);
     }
 
-    /// <summary>"name.ext", or "name (2).ext" ... when the name, its .part or its sidecar already exists.</summary>
-    private static string UniqueFilePath(string folder, string fileName)
+    /// <summary>"name.gguf.part", or "name.gguf.2.part" ... when an unrecorded .part (or its sidecar) is in the way.</summary>
+    private static string UniquePartPath(string finalFull)
     {
-        var stem = Path.GetFileNameWithoutExtension(fileName);
-        var ext = Path.GetExtension(fileName);
         for (var i = 1; ; i++)
         {
-            var candidate = Path.Combine(folder, i == 1 ? fileName : $"{stem} ({i}){ext}");
-            if (!Exists(candidate) && !Exists(candidate + ".part") && !Exists(candidate + ".part.json"))
+            var candidate = i == 1 ? finalFull + ".part" : $"{finalFull}.{i}.part";
+            if (!Exists(candidate) && !Exists(candidate + ".json") && !Exists(candidate + ".json.tmp"))
             {
                 return candidate;
             }
+        }
+    }
+
+    private static void AssertSafeFileName(string fileName)
+    {
+        if (!SafeFileName().IsMatch(fileName) || fileName.Contains("..", StringComparison.Ordinal)
+            || OwnedFolder.IsReservedDeviceName(fileName))
+        {
+            throw new StoreSafetyException($"'{fileName}' is not a safe model file name.");
         }
     }
 
