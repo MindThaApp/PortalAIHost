@@ -21,6 +21,9 @@
   Unsigned .msixupload for the Store. Needs real identity values (see below).
 .PARAMETER IdentityName / Publisher / PublisherDisplayName
   Override the placeholder identity in the manifest (the Partner Center values). Required with -Store.
+.PARAMETER PlaceholderIdentity
+  With -Store: a dry run that keeps the placeholder identity (and allows a missing catalogue signature) to check that
+  the package and .msixupload build. The file is named *.PLACEHOLDER.msixupload and must never be uploaded.
 .PARAMETER Arm64Jit
   Developer fallback: build the arm64 host without NativeAOT (the arm64 C++ build tools are needed for AOT).
   Refused with -Store.
@@ -35,6 +38,7 @@ param(
     [string]$IdentityName,
     [string]$Publisher,
     [string]$PublisherDisplayName,
+    [switch]$PlaceholderIdentity,
     [switch]$Arm64Jit,
     [switch]$SkipEngineCheck
 )
@@ -60,14 +64,24 @@ if ($Version -notmatch '^\d+\.\d+\.\d+\.\d+$') { throw "Version '$Version' is no
 if ($Store) {
     if ([int]($Version.Split('.')[3]) -ne 0) { throw "Store build: the version revision (4th field) must be 0, got $Version. Bump the 3rd field instead." }
     if ($Arm64Jit) { throw 'Store build: -Arm64Jit is not allowed (the host must be NativeAOT).' }
-    if (-not $IdentityName -or -not $Publisher -or -not $PublisherDisplayName) {
+    if (-not $PlaceholderIdentity -and (-not $IdentityName -or -not $Publisher -or -not $PublisherDisplayName)) {
         throw 'Store build: pass -IdentityName, -Publisher and -PublisherDisplayName from Partner Center.'
     }
+    # Pseudo-localised strings (Strings\qps-ploc, made by -p:PseudoLoc=true) would ship as an extra language.
+    # Release hosts trust only the compiled-in catalogue keys; with none, the packaged app has no model list at all.
+    if (-not $PlaceholderIdentity -and (Select-String -Path (Join-Path $repo 'src\Portal.AiHost.Core\Catalogue\CatalogueVerifier.cs') -Pattern 'PublicKeysSpkiBase64 \{ get; \} = Array\.Empty' -Quiet)) {
+        throw 'Store build: no catalogue public key is compiled in (CatalogueTrust.PublicKeysSpkiBase64 is empty).'
+    }
+    if (Test-Path (Join-Path $appDir 'Strings\qps-ploc')) { throw 'Store build: src\PortalAIHost.App\Strings\qps-ploc exists (pseudo-localisation output); remove it first.' }
 }
+elseif ($PlaceholderIdentity) { throw '-PlaceholderIdentity is only for -Store dry runs.' }
 $identity = $m.SelectSingleNode('/f:Package/f:Identity', $ns)
 $effName = if ($IdentityName) { $IdentityName } else { $identity.GetAttribute('Name') }
 $effPublisher = if ($Publisher) { $Publisher } else { $identity.GetAttribute('Publisher') }
-if ($Store -and ($effName -match 'PLACEHOLDER' -or $effPublisher -match 'PLACEHOLDER')) { throw 'Store build: identity still holds placeholders.' }
+$effDisplay = if ($PublisherDisplayName) { $PublisherDisplayName } else { $m.SelectSingleNode('/f:Package/f:Properties/f:PublisherDisplayName', $ns).InnerText }
+$hasPlaceholder = ($effName + $effPublisher + $effDisplay) -match 'PLACEHOLDER'
+if ($Store -and $hasPlaceholder -and -not $PlaceholderIdentity) { throw 'Store build: identity still holds placeholders.' }
+if ($Store -and $PlaceholderIdentity) { Write-Warning 'Dry run with the placeholder identity: the .msixupload is for checks only, never upload it.' }
 
 # --- engine check -------------------------------------------------------------------------------------------------
 $lock = Get-Content -Raw (Join-Path $repo 'engine\engine.lock.json') | ConvertFrom-Json
@@ -141,7 +155,7 @@ try {
             New-Item -ItemType Directory -Force $catDest | Out-Null
             Copy-Item (Join-Path $catSrc 'catalogue.json'), (Join-Path $catSrc 'catalogue.json.sig') $catDest
         }
-        elseif ($Store) { throw 'Store build: catalogue\catalogue.json.sig is missing (sign the model list first).' }
+        elseif ($Store -and -not $PlaceholderIdentity) { throw 'Store build: catalogue\catalogue.json.sig is missing (sign the model list first).' }
         else { Write-Warning 'catalogue\catalogue.json.sig is missing: this package has no model list (downloads off).' }
 
         # The host expects engine\<flavour>\llama-server.exe beside its exe; the arm64 CPU build is the "cpu" flavour.
@@ -155,17 +169,24 @@ try {
             }
         }
 
-        # Assets: the project's own, or generated placeholders (replace before a Store submission).
+        # Assets: the project's scale/targetsize-qualified logos (rendered from docs\store\logo). The App publish
+        # indexes them into its PRI (resources.pri), which resolves the manifest's unqualified names.
         $assets = Join-Path $layout 'Assets'
-        New-Item -ItemType Directory -Force $assets | Out-Null
         $projAssets = Join-Path $appDir 'Assets'
-        foreach ($l in @(@('StoreLogo.png', 50), @('Square44x44Logo.png', 44), @('Square150x150Logo.png', 150))) {
-            if (Test-Path (Join-Path $projAssets $l[0])) { Copy-Item (Join-Path $projAssets $l[0]) $assets }
-            else { New-PlaceholderLogo (Join-Path $assets $l[0]) $l[1] }
+        if (Test-Path (Join-Path $projAssets 'Square44x44Logo.scale-100.png')) {
+            New-Item -ItemType Directory -Force $assets | Out-Null
+            Copy-Item (Join-Path $projAssets '*.png') $assets
+        }
+        elseif ($Store) { throw 'Store build: src\PortalAIHost.App\Assets has no logos.' }
+        else {
+            New-Item -ItemType Directory -Force $assets | Out-Null
+            foreach ($l in @(@('StoreLogo.png', 50), @('Square44x44Logo.png', 44), @('Square150x150Logo.png', 150))) {
+                New-PlaceholderLogo (Join-Path $assets $l[0]) $l[1]
+            }
         }
 
         # Manifest: architecture + identity overrides + version.
-        [xml]$lm = Get-Content -Raw $manifestSrc
+        $lm = $m.Clone()   # the manifest as read at the start, so every architecture gets the same one
         $lid = $lm.SelectSingleNode('/f:Package/f:Identity', $ns)
         $lid.SetAttribute('ProcessorArchitecture', $a)
         $lid.SetAttribute('Version', $Version)
@@ -190,12 +211,12 @@ try {
     if (-not (Test-Path $bundle)) { throw 'makeappx bundle failed.' }
 
     if ($Store) {
-        $upload = Join-Path $out "PortalAIHost_$Version.msixupload"
+        $upload = Join-Path $out $(if ($PlaceholderIdentity) { "PortalAIHost_$Version.PLACEHOLDER.msixupload" } else { "PortalAIHost_$Version.msixupload" })
         Remove-Item $upload -ErrorAction SilentlyContinue
         $zip = Join-Path $work 'upload.zip'
         Compress-Archive -Path $bundle -DestinationPath $zip
         Move-Item $zip $upload
-        $summary += "Store upload (unsigned): $upload"
+        $summary += "Store upload (unsigned): $upload ({0:N1} MB)" -f ((Get-Item $upload).Length / 1MB)
     }
     else {
         # Throw-away certificate: subject == manifest Publisher. Key lives in the CurrentUser store only for

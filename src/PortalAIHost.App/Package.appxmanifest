@@ -23,11 +23,12 @@
   <Properties>
     <DisplayName>Portal AI Host</DisplayName>
     <PublisherDisplayName>PLACEHOLDER Publisher</PublisherDisplayName>
+    <Description>Runs a local AI model on this PC and shares it with your Portal apps.</Description>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
   <Dependencies>
-    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.22000.0" MaxVersionTested="10.0.26100.0" />
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.22000.0" MaxVersionTested="10.0.26200.0" />
   </Dependencies>
 
   <Resources>
@@ -40,7 +41,17 @@
       <uap:VisualElements DisplayName="Portal AI Host" Description="Local AI for your Portal apps."
                           BackgroundColor="transparent"
                           Square150x150Logo="Assets\Square150x150Logo.png"
-                          Square44x44Logo="Assets\Square44x44Logo.png" />
+                          Square44x44Logo="Assets\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square71x71Logo="Assets\SmallTile.png"
+                         Square310x310Logo="Assets\LargeTile.png" ShortName="Portal AI Host">
+          <uap:ShowNameOnTiles>
+            <uap:ShowOn Tile="square150x150Logo" />
+            <uap:ShowOn Tile="wide310x150Logo" />
+            <uap:ShowOn Tile="square310x310Logo" />
+          </uap:ShowNameOnTiles>
+        </uap:DefaultTile>
+        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+      </uap:VisualElements>
     </Application>
 
     <!-- The host: headless, no Start entry, offered as a startup task, started by the portal-ai-host: protocol. -->
@@ -57,7 +68,9 @@
         </desktop:Extension>
         <!-- Clients may only ask the host to start or to open its window (portal-ai-host:start, portal-ai-host:open). -->
         <uap:Extension Category="windows.protocol">
-          <uap:Protocol Name="portal-ai-host" />
+          <uap:Protocol Name="portal-ai-host">
+            <uap:DisplayName>Portal AI Host</uap:DisplayName>
+          </uap:Protocol>
         </uap:Extension>
       </Extensions>
     </Application>
