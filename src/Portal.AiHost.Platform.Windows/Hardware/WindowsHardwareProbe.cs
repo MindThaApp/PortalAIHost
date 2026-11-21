@@ -47,7 +47,9 @@ public sealed partial class WindowsHardwareProbe : IHardwareProbe
     public MemorySnapshot GetMemory()
     {
         var (total, available) = ReadRam();
-        var free = ReadGpus().Select(a => Math.Max(0, (a.BudgetBytes > 0 ? a.BudgetBytes : a.DedicatedVideoMemory) - a.CurrentUsageBytes)).ToArray();
+        // 0 means unknown (the planner then assumes a conservative share). DXGI CurrentUsage only covers this
+        // process, so the planner also subtracts what the host's own engines hold (CommittedMemory).
+        var free = ReadGpus().Select(a => a.BudgetBytes > 0 ? Math.Max(1, a.BudgetBytes - a.CurrentUsageBytes) : 0).ToArray();
         return new MemorySnapshot(total, available, free);
     }
 

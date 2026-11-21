@@ -10,7 +10,11 @@ public sealed record Recommendation(Candidate? Best, IReadOnlyList<Candidate> Ca
 
 /// <summary>What the recommender needs besides the catalogue and hardware.</summary>
 public sealed record RecommendContext(
-    IReadOnlySet<string> InstalledIds, long StoreFreeBytes, string StoreDriveName = "this drive", PlannerSettings? Settings = null);
+    IReadOnlySet<string> InstalledIds,
+    long StoreFreeBytes,
+    string StoreDriveName = "this drive",
+    PlannerSettings? Settings = null,
+    CommittedMemory? Committed = null);
 
 /// <summary>
 /// Pure recommender: for each catalogue entry of the wanted kind, plan it on this hardware, keep those that fit in
@@ -25,7 +29,7 @@ public static class Recommender
         IEnumerable<CatalogueEntry> catalogue, string kind, HardwareProfile hw, MemorySnapshot mem, RecommendContext ctx)
     {
         var settings = ctx.Settings ?? new PlannerSettings();
-        var budget = MemoryBudget.From(hw, Typical(hw, mem, settings), settings);
+        var budget = MemoryBudget.From(hw, Typical(hw, mem, settings), settings, ctx.Committed);
         var candidates = new List<Candidate>();
         foreach (var e in catalogue.Where(e => e.Kind == kind && CatalogueValidator.IsSupported(e)))
         {
@@ -82,7 +86,7 @@ public static class HardwareRecheck
     {
         var rec = Recommender.Recommend(catalogue, kind, hw, mem, ctx);
         var active = activeModelId is null ? null : catalogue.FirstOrDefault(e => e.Id == activeModelId);
-        var activePlan = active is null ? null : PlacementPlanner.Plan(active, hw, mem, ctx.Settings);
+        var activePlan = active is null ? null : PlacementPlanner.Plan(active, hw, mem, ctx.Settings, ctx.Committed);
         UpgradeOffer? offer = null;
         if (rec.Best is { } best && best.Entry.Id != activeModelId && (active is null || best.Entry.Quality > active.Quality))
         {

@@ -64,15 +64,33 @@ public sealed record PlanResult(
     public int PerSlotContext => Placement is null ? 0 : Placement.ContextTokens / Math.Max(1, Placement.ParallelSlots);
 }
 
+/// <summary>
+/// Memory already taken by engines the host runs (chat and embedding supervisors). DXGI usage figures only cover
+/// the querying process, so the host passes what its engines hold and the planner subtracts it.
+/// </summary>
+public sealed record CommittedMemory(long RamBytes, IReadOnlyList<long> VramBytesPerGpu)
+{
+    public static CommittedMemory None { get; } = new(0, []);
+
+    public long VramFor(int gpuIndex) => gpuIndex < VramBytesPerGpu.Count ? VramBytesPerGpu[gpuIndex] : 0;
+}
+
 /// <summary>Memory budgets for one machine at one moment.</summary>
 public sealed record MemoryBudget(long RamBudgetBytes, GpuProfile? Gpu, long VramBudgetBytes, bool Unified, double GpuBandwidth)
 {
-    public static MemoryBudget From(HardwareProfile hw, MemorySnapshot mem, PlannerSettings s)
+    /// <summary>Share of VRAM assumed free when the live figure is unknown (the desktop uses some).</summary>
+    public const double UnknownVramFreeFraction = 0.8;
+
+    public static MemoryBudget From(HardwareProfile hw, MemorySnapshot mem, PlannerSettings s, CommittedMemory? committed = null)
     {
+        committed ??= CommittedMemory.None;
         var total = hw.RamBytes;
         var headroom = Math.Max(Math.Min(s.MinRamHeadroomBytes, total / 4), (long)(total * s.RamHeadroomFraction));
-        var available = mem.AvailableRamBytes > 0 ? mem.AvailableRamBytes : total;
-        var ram = Math.Max(0, Math.Min(available - headroom, total * s.MaxMemoryPercent / 100));
+
+        // Unknown free RAM (0) is never read as "all free": use the conservative typical figure instead.
+        var typical = total - Math.Max(2L << 30, (long)(total * s.TypicalOtherUseFraction));
+        var available = mem.AvailableRamBytes > 0 ? Math.Min(mem.AvailableRamBytes, total) : typical;
+        var ram = Math.Max(0, Math.Min(available - headroom, total * s.MaxMemoryPercent / 100 - committed.RamBytes));
 
         if (s.Backend == "cpu")
         {
@@ -82,7 +100,7 @@ public sealed record MemoryBudget(long RamBudgetBytes, GpuProfile? Gpu, long Vra
         var unifiedGpu = hw.Gpus.FirstOrDefault(g => g.Vendor.Equals("apple", StringComparison.OrdinalIgnoreCase));
         if (unifiedGpu is not null)
         {
-            var gpuShare = (long)(total * s.UnifiedGpuFraction) - (total - available);
+            var gpuShare = (long)(total * s.UnifiedGpuFraction) - (total - available) - committed.VramFor(0);
             var bw = total >= 64L << 30 ? 400e9 : 250e9;
             return new MemoryBudget(ram, unifiedGpu, Math.Max(0, Math.Min(ram, gpuShare)), true, bw);
         }
@@ -103,9 +121,11 @@ public sealed record MemoryBudget(long RamBudgetBytes, GpuProfile? Gpu, long Vra
         }
 
         var gpu = hw.Gpus[best];
-        var free = best < mem.FreeVramBytesPerGpu.Length ? mem.FreeVramBytesPerGpu[best]
-            : gpu.VramBudgetBytes > 0 ? gpu.VramBudgetBytes : gpu.VramBytes;
-        var vram = Math.Max(0, Math.Min(free, gpu.VramBytes) - (long)(gpu.VramBytes * s.VramReserveFraction));
+        var unknownFree = (long)(gpu.VramBytes * UnknownVramFreeFraction);
+        var free = best < mem.FreeVramBytesPerGpu.Length && mem.FreeVramBytesPerGpu[best] > 0
+            ? mem.FreeVramBytesPerGpu[best]
+            : gpu.VramBudgetBytes > 0 ? Math.Min(gpu.VramBudgetBytes, unknownFree) : unknownFree;
+        var vram = Math.Max(0, Math.Min(free, gpu.VramBytes) - (long)(gpu.VramBytes * s.VramReserveFraction) - committed.VramFor(best));
         return new MemoryBudget(ram, gpu, vram, false, GuessGpuBandwidth(gpu.VramBytes));
     }
 
@@ -128,10 +148,11 @@ public sealed record MemoryBudget(long RamBudgetBytes, GpuProfile? Gpu, long Vra
 /// </summary>
 public static class PlacementPlanner
 {
-    public static PlanResult Plan(CatalogueEntry model, HardwareProfile hw, MemorySnapshot mem, PlannerSettings? settings = null)
+    public static PlanResult Plan(
+        CatalogueEntry model, HardwareProfile hw, MemorySnapshot mem, PlannerSettings? settings = null, CommittedMemory? committed = null)
     {
         settings ??= new PlannerSettings();
-        return Plan(model, MemoryBudget.From(hw, mem, settings), settings);
+        return Plan(model, MemoryBudget.From(hw, mem, settings, committed), settings);
     }
 
     public static PlanResult Plan(CatalogueEntry model, MemoryBudget budget, PlannerSettings settings)
