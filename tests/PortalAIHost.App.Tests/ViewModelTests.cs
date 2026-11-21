@@ -66,7 +66,7 @@ public class ShellTests
     {
         using var rig = new Rig(FakeScenario.SafeMode);
         await rig.Shell.InitializeAsync();
-        var home = new HomeViewModel(rig.Shell, rig.Strings);
+        var home = new HomeViewModel(rig.Shell, rig.Ui, rig.Strings);
         Assert.True(home.SafeMode);
         Assert.Equal("Vm_StateIdle", home.StatusTitle);
     }
@@ -79,18 +79,128 @@ public class HomeTests
     {
         using var rig = new Rig(FakeScenario.Loaded);
         await rig.Shell.InitializeAsync();
-        var home = new HomeViewModel(rig.Shell, rig.Strings);
+        var home = new HomeViewModel(rig.Shell, rig.Ui, rig.Strings);
         Assert.Equal("Vm_StateReady", home.StatusTitle);
-        Assert.StartsWith("Vm_ModelLoaded:", home.ModelLine);
+        Assert.Equal("Vm_HomeLoaded", home.ModelLine);
         Assert.Equal("Vm_QueueSome:1|2", home.QueueLine);
         Assert.False(home.NoHost);
+    }
+
+    private static async Task<(Rig rig, HomeViewModel home)> Open(FakeScenario scenario)
+    {
+        var rig = new Rig(scenario);
+        await rig.Shell.InitializeAsync();
+        var home = new HomeViewModel(rig.Shell, rig.Ui, rig.Strings);
+        await home.LoadAsync();
+        return (rig, home);
+    }
+
+    [Fact]
+    public async Task No_model_shows_the_recommended_model_and_a_download_button()
+    {
+        var (rig, home) = await Open(FakeScenario.Fresh);
+        using var _ = rig;
+        Assert.True(home.ShowOnboarding);
+        Assert.False(home.ShowInstalled);
+        Assert.True(home.HasRecommendation);
+        Assert.Equal("14B model (medium)", home.RecName);
+        Assert.Equal("8.4 GB", home.RecSize);
+        Assert.Contains("Best for your PC", home.RecReason);
+        Assert.False(home.CatalogueUnavailable);
+        Assert.False(home.NotEnoughSpace);
+        Assert.True(home.CanDownload);
+        Assert.False(home.IsDownloading);
+    }
+
+    [Fact]
+    public async Task Download_button_starts_the_download_and_progress_reaches_the_panel()
+    {
+        var (rig, home) = await Open(FakeScenario.Fresh);
+        using var _ = rig;
+        await home.DownloadCommand.ExecuteAsync(null);
+        Assert.True(home.IsDownloading);
+        Assert.False(home.CanDownload);
+        rig.Host.Tick();
+        Assert.True(home.Percent > 0);
+        Assert.StartsWith("Vm_Download", home.ProgressText);
+        for (var i = 0; i < 25; i++) rig.Host.Tick();
+        // The host reports the model as installed: the panel gives way to the status card.
+        await rig.Shell.RefreshAsync();
+        Assert.True(home.ShowInstalled);
+        Assert.False(home.ShowOnboarding);
+    }
+
+    [Fact]
+    public async Task A_running_download_is_shown_when_the_page_opens()
+    {
+        var (rig, home) = await Open(FakeScenario.Downloading);
+        using var _ = rig;
+        Assert.True(home.ShowOnboarding);
+        Assert.True(home.IsDownloading);
+        Assert.False(home.CanDownload);
+        Assert.InRange(home.Percent, 34, 36);
+    }
+
+    [Fact]
+    public async Task Unavailable_catalogue_hides_the_recommendation()
+    {
+        using var rig = new Rig(FakeScenario.Fresh);
+        rig.Host.CatalogueAvailable = false;
+        await rig.Shell.InitializeAsync();
+        var home = new HomeViewModel(rig.Shell, rig.Ui, rig.Strings);
+        await home.LoadAsync();
+        Assert.True(home.CatalogueUnavailable);
+        Assert.False(home.HasRecommendation);
+        Assert.False(home.CanDownload);
+        rig.Host.CatalogueAvailable = true;
+        await home.TryAgainCommand.ExecuteAsync(null);
+        Assert.False(home.CatalogueUnavailable);
+        Assert.True(home.HasRecommendation);
+        Assert.True(home.CanDownload);
+    }
+
+    [Fact]
+    public async Task Not_enough_disk_space_blocks_the_download_and_says_why()
+    {
+        using var rig = new Rig(FakeScenario.Fresh);
+        rig.Host.FreeBytes = 1_000_000_000;
+        await rig.Shell.InitializeAsync();
+        var home = new HomeViewModel(rig.Shell, rig.Ui, rig.Strings);
+        await home.LoadAsync();
+        Assert.True(home.NotEnoughSpace);
+        Assert.False(home.CanDownload);
+        Assert.StartsWith("Vm_HomeNoSpace:8.4 GB|", home.SpaceLine);
+        await home.DownloadCommand.ExecuteAsync(null);
+        Assert.False(home.IsDownloading);
+    }
+
+    [Fact]
+    public async Task Installed_model_shows_the_status_card_with_apps_and_idle_info()
+    {
+        var (rig, home) = await Open(FakeScenario.Loaded);
+        using var _ = rig;
+        Assert.True(home.ShowInstalled);
+        Assert.False(home.ShowOnboarding);
+        Assert.Equal("14B model (medium)", home.ModelName);
+        Assert.Equal("Vm_HomeIdleUnload:10", home.IdleLine);
+        Assert.Equal("Vm_HomeApps:2", home.AppsLine);
+        Assert.True(home.UpgradeAvailable);
+    }
+
+    [Fact]
+    public async Task Installed_but_not_loaded_says_it_loads_on_demand()
+    {
+        var (rig, home) = await Open(FakeScenario.SafeMode);
+        using var _ = rig;
+        Assert.Equal("Vm_HomeUnloaded", home.ModelLine);
+        Assert.True(home.SafeMode);
     }
 
     [Fact]
     public async Task Missing_host_offers_the_start_button()
     {
         using var rig = new Rig(FakeScenario.NoHost);
-        var home = new HomeViewModel(rig.Shell, rig.Strings);
+        var home = new HomeViewModel(rig.Shell, rig.Ui, rig.Strings);
         Assert.True(home.NoHost);
         Assert.True(home.CanStart);
         await home.StartHostCommand.ExecuteAsync(null);

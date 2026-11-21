@@ -16,21 +16,106 @@
                 IsClosable="False"
                 Message="{x:Bind ViewModel.StoreProblem, Mode=OneWay}"
                 IsOpen="{x:Bind ViewModel.HasStoreProblem, Mode=OneWay}" />
-            <Border Style="{StaticResource CardBorder}">
+
+            <!-- The host is not running. -->
+            <Border Style="{StaticResource CardBorder}" Visibility="{x:Bind ViewModel.NoHost, Mode=OneWay}">
                 <StackPanel Spacing="8">
                     <TextBlock Text="{x:Bind ViewModel.StatusTitle, Mode=OneWay}" Style="{StaticResource SubtitleTextBlockStyle}" TextWrapping="Wrap" />
-                    <TextBlock Text="{x:Bind ViewModel.StatusDetail, Mode=OneWay}" TextWrapping="Wrap" Opacity="0.8" />
-                    <StackPanel Spacing="8" Visibility="{x:Bind ViewModel.ShowStatus, Mode=OneWay}">
-                        <TextBlock Text="{x:Bind ViewModel.ModelLine, Mode=OneWay}" TextWrapping="Wrap" />
-                        <TextBlock Text="{x:Bind ViewModel.QueueLine, Mode=OneWay}" TextWrapping="Wrap" />
+                    <TextBlock Text="{x:Bind ViewModel.StatusDetail, Mode=OneWay}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <Button
+                        x:Uid="HomeStartButton"
+                        Style="{StaticResource AccentButtonStyle}"
+                        Command="{x:Bind ViewModel.StartHostCommand}"
+                        IsEnabled="{x:Bind ViewModel.CanStart, Mode=OneWay}" />
+                    <TextBlock Text="{x:Bind ViewModel.StartMessage, Mode=OneWay}" TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+
+            <!-- Running, no model yet: guided first-run panel. -->
+            <StackPanel Spacing="16" Visibility="{x:Bind ViewModel.ShowOnboarding, Mode=OneWay}">
+                <Border Style="{StaticResource CardBorder}">
+                    <StackPanel Spacing="8">
+                        <TextBlock x:Uid="HomeWelcomeTitle" Style="{StaticResource SubtitleTextBlockStyle}" TextWrapping="Wrap" />
+                        <TextBlock x:Uid="HomeWelcomeBody" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                     </StackPanel>
-                    <StackPanel Spacing="8" Visibility="{x:Bind ViewModel.NoHost, Mode=OneWay}">
-                        <Button
-                            x:Uid="HomeStartButton"
-                            Style="{StaticResource AccentButtonStyle}"
-                            Command="{x:Bind ViewModel.StartHostCommand}"
-                            IsEnabled="{x:Bind ViewModel.CanStart, Mode=OneWay}" />
-                        <TextBlock Text="{x:Bind ViewModel.StartMessage, Mode=OneWay}" TextWrapping="Wrap" />
+                </Border>
+
+                <InfoBar
+                    x:Uid="HomeCatalogueBar"
+                    Severity="Warning"
+                    IsClosable="False"
+                    IsOpen="{x:Bind ViewModel.CatalogueUnavailable, Mode=OneWay}">
+                    <InfoBar.ActionButton>
+                        <Button x:Uid="HomeTryAgainButton" Command="{x:Bind ViewModel.TryAgainCommand}" />
+                    </InfoBar.ActionButton>
+                </InfoBar>
+
+                <Border Style="{StaticResource CardBorder}" Visibility="{x:Bind ViewModel.HasRecommendation, Mode=OneWay}">
+                    <StackPanel Spacing="12">
+                        <TextBlock x:Uid="HomeRecommendedLabel" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="{x:Bind ViewModel.RecName, Mode=OneWay}" Style="{StaticResource SubtitleTextBlockStyle}" TextWrapping="Wrap" />
+                            <TextBlock Text="{x:Bind ViewModel.RecSize, Mode=OneWay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            <TextBlock Text="{x:Bind ViewModel.RecReason, Mode=OneWay}" TextWrapping="Wrap" />
+                        </StackPanel>
+                        <InfoBar
+                            x:Uid="HomeNoSpaceBar"
+                            Severity="Error"
+                            IsClosable="False"
+                            Message="{x:Bind ViewModel.SpaceLine, Mode=OneWay}"
+                            IsOpen="{x:Bind ViewModel.NotEnoughSpace, Mode=OneWay}">
+                            <InfoBar.ActionButton>
+                                <Button x:Uid="HomeChangeFolderButton" Click="OnOpenSettings" />
+                            </InfoBar.ActionButton>
+                        </InfoBar>
+                        <StackPanel Spacing="8" Visibility="{x:Bind ViewModel.IsDownloading, Mode=OneWay}">
+                            <ProgressBar Value="{x:Bind ViewModel.Percent, Mode=OneWay}" Maximum="100" />
+                            <TextBlock Text="{x:Bind ViewModel.ProgressText, Mode=OneWay}" TextWrapping="Wrap" />
+                        </StackPanel>
+                        <TextBlock
+                            Text="{x:Bind ViewModel.ProgressText, Mode=OneWay}"
+                            TextWrapping="Wrap"
+                            Visibility="{x:Bind ViewModel.CanDownload, Mode=OneWay}" />
+                        <TextBlock Text="{x:Bind ViewModel.ErrorLine, Mode=OneWay}" TextWrapping="Wrap" />
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Button
+                                x:Uid="HomeDownloadButton"
+                                Style="{StaticResource AccentButtonStyle}"
+                                AutomationProperties.Name="{x:Bind ViewModel.RecAutoDownload, Mode=OneWay}"
+                                Command="{x:Bind ViewModel.DownloadCommand}"
+                                IsEnabled="{x:Bind ViewModel.CanDownload, Mode=OneWay}" />
+                            <HyperlinkButton x:Uid="HomeSeeAllModelsLink" Click="OnSeeModels" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <HyperlinkButton
+                    x:Uid="HomeSeeAllModelsLink2"
+                    Click="OnSeeModels"
+                    Visibility="{x:Bind ViewModel.CatalogueUnavailable, Mode=OneWay}" />
+            </StackPanel>
+
+            <!-- Running with a model: status card. -->
+            <Border Style="{StaticResource CardBorder}" Visibility="{x:Bind ViewModel.ShowInstalled, Mode=OneWay}">
+                <StackPanel Spacing="12">
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="{x:Bind ViewModel.StatusTitle, Mode=OneWay}" Style="{StaticResource SubtitleTextBlockStyle}" TextWrapping="Wrap" />
+                        <TextBlock Text="{x:Bind ViewModel.StatusDetail, Mode=OneWay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                    </StackPanel>
+                    <StackPanel Spacing="2">
+                        <TextBlock x:Uid="HomeActiveModelLabel" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock Text="{x:Bind ViewModel.ModelName, Mode=OneWay}" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="Wrap" />
+                        <TextBlock Text="{x:Bind ViewModel.ModelLine, Mode=OneWay}" TextWrapping="Wrap" />
+                        <TextBlock Text="{x:Bind ViewModel.IdleLine, Mode=OneWay}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+                    <StackPanel Spacing="2">
+                        <TextBlock x:Uid="HomeAppsLabel" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock Text="{x:Bind ViewModel.AppsLine, Mode=OneWay}" TextWrapping="Wrap" />
+                        <HyperlinkButton x:Uid="HomeSeeAppsLink" Click="OnSeeApps" Padding="0,2" />
+                    </StackPanel>
+                    <StackPanel Spacing="2">
+                        <TextBlock x:Uid="HomeRequestsLabel" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock Text="{x:Bind ViewModel.QueueLine, Mode=OneWay}" TextWrapping="Wrap" />
                     </StackPanel>
                 </StackPanel>
             </Border>

@@ -158,6 +158,30 @@
   <data name="Vm_HwGraphics" xml:space="preserve"><value>Graphics: {0}</value></data>
   <data name="Vm_HwCores" xml:space="preserve"><value>Processor cores: {0}</value></data>
   <data name="Vm_HwDisk" xml:space="preserve"><value>Free disk space: {0}</value></data>
+  <data name="HomeWelcomeTitle.Text" xml:space="preserve"><value>Set up your private AI on this PC</value></data>
+  <data name="HomeWelcomeBody.Text" xml:space="preserve"><value>Portal AI Host keeps one AI model on this PC and shares it with your Portal apps, so each app does not need its own copy. Everything runs here: your words never leave this PC, and no cloud account is needed.</value></data>
+  <data name="HomeCatalogueBar.Title" xml:space="preserve"><value>Model list unavailable</value></data>
+  <data name="HomeCatalogueBar.Message" xml:space="preserve"><value>The host could not load a trusted model list, so there is nothing to recommend right now. Check your internet connection and try again.</value></data>
+  <data name="HomeTryAgainButton.Content" xml:space="preserve"><value>Try again</value></data>
+  <data name="HomeRecommendedLabel.Text" xml:space="preserve"><value>RECOMMENDED FOR THIS PC</value></data>
+  <data name="HomeNoSpaceBar.Title" xml:space="preserve"><value>Not enough disk space</value></data>
+  <data name="HomeChangeFolderButton.Content" xml:space="preserve"><value>Change folder in Settings</value></data>
+  <data name="HomeDownloadButton.Content" xml:space="preserve"><value>Download</value></data>
+  <data name="HomeSeeAllModelsLink.Content" xml:space="preserve"><value>See all models</value></data>
+  <data name="HomeSeeAllModelsLink2.Content" xml:space="preserve"><value>See all models</value></data>
+  <data name="HomeActiveModelLabel.Text" xml:space="preserve"><value>ACTIVE MODEL</value></data>
+  <data name="HomeAppsLabel.Text" xml:space="preserve"><value>CONNECTED APPS</value></data>
+  <data name="HomeSeeAppsLink.Content" xml:space="preserve"><value>See devices and apps</value></data>
+  <data name="HomeRequestsLabel.Text" xml:space="preserve"><value>REQUESTS</value></data>
+  <data name="Vm_HomeLoaded" xml:space="preserve"><value>Loaded and ready</value></data>
+  <data name="Vm_HomeLoading" xml:space="preserve"><value>Getting ready...</value></data>
+  <data name="Vm_HomeUnloaded" xml:space="preserve"><value>Not loaded. It loads when an app asks.</value></data>
+  <data name="Vm_HomeKeepLoaded" xml:space="preserve"><value>Stays loaded so answers start fast.</value></data>
+  <data name="Vm_HomeIdleUnload" xml:space="preserve"><value>Frees up memory after {0} minutes without requests.</value></data>
+  <data name="Vm_HomeApps" xml:space="preserve"><value>{0} apps can use this model</value></data>
+  <data name="Vm_HomeApps1" xml:space="preserve"><value>1 app can use this model</value></data>
+  <data name="Vm_HomeAppsNone" xml:space="preserve"><value>No apps connected yet. They ask your permission the first time.</value></data>
+  <data name="Vm_HomeNoSpace" xml:space="preserve"><value>This model needs {0} but only {1} is free. Free up some space, or choose a different models folder in Settings.</value></data>
   <data name="Vm_NoGpu" xml:space="preserve"><value>none found</value></data>
   <data name="Vm_HostMissing" xml:space="preserve"><value>The host program is missing from this install. Reinstall Portal AI Host to fix this.</value></data>
   <data name="Vm_HostMissingTestRun" xml:space="preserve"><value>This is a test run and no host program was found next to the app. The installed host is not started for a test run.</value></data>

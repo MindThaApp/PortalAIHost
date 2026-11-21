@@ -105,10 +105,18 @@ public sealed partial class MainWindow : Window
         AppServices.Dialogs.Root = Root.XamlRoot;
         _shell.ApprovalPresenter = AppServices.Dialogs.ShowApprovalAsync;
         Nav.SelectedItem = Nav.MenuItems[0];
+        AppServices.NavigateTo = SelectPage;
         await _shell.InitializeAsync();
         AppServices.Ui.Post(ApplyFirstRun);
         AppServices.Ui.Post(() => OpenStartPage());
         await _shell.PumpApprovalsAsync();
+    }
+
+    private void SelectPage(string tag)
+    {
+        var item = Nav.MenuItems.Concat(Nav.FooterMenuItems).OfType<NavigationViewItem>().FirstOrDefault(i => (string)i.Tag == tag);
+        if (item is not null) Nav.SelectedItem = item;
+        else Navigate(tag);
     }
 
     private void OpenStartPage()
