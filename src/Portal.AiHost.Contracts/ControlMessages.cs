@@ -188,3 +188,21 @@ public sealed class TryItRequest
 {
     public ChatCompletionRequest Request { get; init; } = new();
 }
+
+/// <summary>Answer to status.get and payload of event.status_changed: the HTTP status plus host-only state.</summary>
+public sealed class ControlStatus
+{
+    [JsonPropertyName("status")]
+    public HostStatus Status { get; init; } = new();
+
+    /// <summary>True after two unclean exits in a row: nothing is loaded automatically.</summary>
+    [JsonPropertyName("safe_mode")]
+    public bool SafeMode { get; init; }
+
+    /// <summary>Unclean exits in a row before this start.</summary>
+    [JsonPropertyName("unclean_exits")]
+    public int UncleanExits { get; init; }
+
+    [JsonPropertyName("base_url")]
+    public string? BaseUrl { get; init; }
+}
