@@ -28,6 +28,31 @@ public class AppStateStoreTests : IDisposable
     }
 
     [Fact]
+    public void Remembers_appearance_and_the_version_whose_news_was_shown()
+    {
+        var store = new AppStateStore(_dir);
+        Assert.Equal(AppearancePrefs.Default, store.Appearance);
+        Assert.Null(store.LastSeenVersion);
+        var prefs = new AppearancePrefs { Theme = ThemeChoice.Dark, Corners = CornerChoice.ExtraRound, TextStep = 2 };
+        store.SaveAppearance(prefs);
+        store.MarkVersionSeen("1.0");
+        store.MarkFirstRunDone();
+        var again = new AppStateStore(_dir);
+        Assert.Equal(prefs, again.Appearance);
+        Assert.Equal("1.0", again.LastSeenVersion);
+        Assert.True(again.FirstRunDone);
+    }
+
+    [Fact]
+    public void An_older_file_with_only_the_first_run_flag_still_reads()
+    {
+        File.WriteAllText(Path.Combine(_dir, AppStateStore.FileName), "{\"firstRunDone\":true}");
+        var store = new AppStateStore(_dir);
+        Assert.True(store.FirstRunDone);
+        Assert.Equal(AppearancePrefs.Default, store.Appearance);
+    }
+
+    [Fact]
     public void A_damaged_file_reads_as_not_done_and_is_not_deleted()
     {
         var path = Path.Combine(_dir, AppStateStore.FileName);

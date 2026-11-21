@@ -3,8 +3,18 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ScrollViewer>
-        <StackPanel Padding="32,24" Spacing="16" MaxWidth="760" HorizontalAlignment="Left">
+        <StackPanel Padding="32,24" Spacing="16" MaxWidth="720" HorizontalAlignment="Left">
             <TextBlock x:Uid="SettingsTitle" Style="{StaticResource TitleTextBlockStyle}" />
+            <InfoBar
+                x:Name="ResultBar"
+                IsOpen="{x:Bind ViewModel.HasMessage, Mode=OneWay}"
+                Message="{x:Bind ViewModel.Message, Mode=OneWay}"
+                IsClosable="False" />
+
+            <Grid>
+                <TextBlock x:Uid="SettingsGeneralHeader" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center" />
+                <HyperlinkButton x:Uid="SettingsResetGeneral" Command="{x:Bind ViewModel.ResetGeneralCommand}" HorizontalAlignment="Right" />
+            </Grid>
             <Border Style="{StaticResource CardBorder}">
                 <StackPanel Spacing="16">
                     <ToggleSwitch
@@ -18,23 +28,43 @@
                         SelectedIndex="{x:Bind ViewModel.IdleIndex, Mode=TwoWay}"
                         IsEnabled="{x:Bind ViewModel.Available, Mode=OneWay}"
                         MinWidth="260" />
-                    <TextBlock x:Uid="SettingsIdleHelp" TextWrapping="Wrap" Opacity="0.8" />
+                    <TextBlock x:Uid="SettingsIdleHelp" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                 </StackPanel>
             </Border>
+
+            <Grid>
+                <TextBlock x:Uid="SettingsModelsHeader" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center" />
+                <HyperlinkButton x:Uid="SettingsResetFolder" Command="{x:Bind ViewModel.ResetFolderCommand}" HorizontalAlignment="Right" />
+            </Grid>
             <Border Style="{StaticResource CardBorder}">
                 <StackPanel Spacing="8">
                     <TextBox
+                        x:Name="FolderBox"
                         x:Uid="SettingsFolder"
-                        Text="{x:Bind ViewModel.ModelsFolder, Mode=TwoWay}"
+                        Text="{x:Bind ViewModel.ModelsFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         PlaceholderText="{x:Bind ViewModel.FolderPlaceholder, Mode=OneWay}"
-                        IsEnabled="{x:Bind ViewModel.Available, Mode=OneWay}" />
-                    <Button
-                        x:Uid="SettingsFolderApply"
-                        Command="{x:Bind ViewModel.ApplyFolderCommand}"
-                        IsEnabled="{x:Bind ViewModel.Available, Mode=OneWay}" />
+                        IsEnabled="{x:Bind ViewModel.Available, Mode=OneWay}"
+                        LostFocus="OnFolderLostFocus"
+                        KeyDown="OnFolderKeyDown" />
+                    <TextBlock x:Uid="SettingsFolderHelp" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Style="{StaticResource CaptionTextBlockStyle}" />
                 </StackPanel>
             </Border>
-            <TextBlock Text="{x:Bind ViewModel.Message, Mode=OneWay}" TextWrapping="Wrap" />
+
+            <Grid>
+                <TextBlock x:Uid="SettingsAppearanceHeader" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center" />
+                <HyperlinkButton x:Uid="SettingsResetAppearance" Command="{x:Bind ViewModel.ResetAppearanceCommand}" HorizontalAlignment="Right" />
+            </Grid>
+            <Border Style="{StaticResource CardBorder}">
+                <StackPanel Spacing="16">
+                    <ComboBox x:Uid="SettingsTheme" ItemsSource="{x:Bind ViewModel.ThemeChoices}" SelectedIndex="{x:Bind ViewModel.ThemeIndex, Mode=TwoWay}" MinWidth="260" />
+                    <ComboBox x:Uid="SettingsMaterial" ItemsSource="{x:Bind ViewModel.MaterialChoices}" SelectedIndex="{x:Bind ViewModel.MaterialIndex, Mode=TwoWay}" MinWidth="260" />
+                    <ComboBox x:Uid="SettingsCorners" ItemsSource="{x:Bind ViewModel.CornerChoices}" SelectedIndex="{x:Bind ViewModel.CornersIndex, Mode=TwoWay}" MinWidth="260" />
+                    <ComboBox x:Uid="SettingsDensity" ItemsSource="{x:Bind ViewModel.DensityChoices}" SelectedIndex="{x:Bind ViewModel.DensityIndex, Mode=TwoWay}" MinWidth="260" />
+                    <ComboBox x:Uid="SettingsTextSize" ItemsSource="{x:Bind ViewModel.TextChoices}" SelectedIndex="{x:Bind ViewModel.TextIndex, Mode=TwoWay}" MinWidth="260" />
+                    <ComboBox x:Uid="SettingsMotion" ItemsSource="{x:Bind ViewModel.MotionChoices}" SelectedIndex="{x:Bind ViewModel.MotionIndex, Mode=TwoWay}" MinWidth="260" />
+                    <TextBlock x:Uid="SettingsAppearanceHelp" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Style="{StaticResource CaptionTextBlockStyle}" />
+                </StackPanel>
+            </Border>
         </StackPanel>
     </ScrollViewer>
 </Page>

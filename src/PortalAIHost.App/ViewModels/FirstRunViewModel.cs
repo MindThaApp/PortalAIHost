@@ -47,8 +47,18 @@ public sealed partial class FirstRunViewModel : ObservableObject, IDisposable
     public bool OnDownload => Step == StepDownload;
     public bool OnStartup => Step == StepStartup;
 
+    public const int StepCount = 4;
+
+    /// <summary>"Step 2 of 4", read out by screen readers.</summary>
+    public string StepLine => _s.Format("Vm_StepOf", Math.Clamp(Step, 0, StepCount - 1) + 1, StepCount);
+
+    /// <summary>Step dots: a filled dot for the current step and open dots for the others.</summary>
+    public string StepDots => string.Join(" ", Enumerable.Range(0, StepCount).Select(i => i == Step ? "●" : "○"));
+
     partial void OnStepChanged(int value)
     {
+        OnPropertyChanged(nameof(StepLine));
+        OnPropertyChanged(nameof(StepDots));
         OnPropertyChanged(nameof(OnCheck));
         OnPropertyChanged(nameof(OnModel));
         OnPropertyChanged(nameof(OnDownload));

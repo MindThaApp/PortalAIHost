@@ -1,18 +1,21 @@
 <Application
     x:Class="PortalAIHost.App.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:svc="using:PortalAIHost.App.Services">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
             </ResourceDictionary.MergedDictionaries>
+            <svc:AppearanceMetrics x:Key="Metrics" />
+            <!-- Cards use theme brushes only, so the Fluent high-contrast branches apply. Radius and padding follow Settings. -->
             <Style x:Key="CardBorder" TargetType="Border">
                 <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
                 <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
                 <Setter Property="BorderThickness" Value="1" />
-                <Setter Property="CornerRadius" Value="8" />
-                <Setter Property="Padding" Value="16" />
+                <Setter Property="CornerRadius" Value="{Binding CardRadius, Source={StaticResource Metrics}}" />
+                <Setter Property="Padding" Value="{Binding CardPadding, Source={StaticResource Metrics}}" />
             </Style>
         </ResourceDictionary>
     </Application.Resources>

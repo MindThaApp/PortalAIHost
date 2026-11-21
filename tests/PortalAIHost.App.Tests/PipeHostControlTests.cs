@@ -291,11 +291,10 @@ public class IntegrationViewModelTests
     public async Task A_new_models_folder_says_old_models_stay()
     {
         using var rig = new Rig(FakeScenario.Loaded);
-        rig.Dialogs.Answer = true;
         var vm = new SettingsViewModel(rig.Shell, rig.Ui, rig.Strings, rig.Dialogs);
         await vm.LoadAsync();
         vm.ModelsFolder = @"Q:\new";
-        await vm.ApplyFolderCommand.ExecuteAsync(null);
+        await vm.CommitFolderCommand.ExecuteAsync(null);
         Assert.StartsWith("Vm_FolderSavedNote:", vm.Message);
     }
 

@@ -180,6 +180,21 @@ public sealed partial class ShellViewModel : ObservableObject, IDisposable
         await RefreshAsync();
     }
 
+    private readonly List<Func<Task>> _flushers = new();
+
+    /// <summary>Registers work that must finish before the window closes (for example a removal still waiting to be sent).</summary>
+    public void AddFlush(Func<Task> flush) { lock (_flushers) _flushers.Add(flush); }
+
+    public void RemoveFlush(Func<Task> flush) { lock (_flushers) _flushers.Remove(flush); }
+
+    /// <summary>Runs every registered flush. Failures are left to each flush to report.</summary>
+    public async Task FlushAsync()
+    {
+        Func<Task>[] all;
+        lock (_flushers) all = _flushers.ToArray();
+        foreach (var f in all) await f().ConfigureAwait(false);
+    }
+
     public void CompleteFirstRun()
     {
         State.MarkFirstRunDone();

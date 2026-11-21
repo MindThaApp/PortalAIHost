@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace PortalAIHost.App.Services;
 
@@ -9,44 +10,81 @@ namespace PortalAIHost.App.Services;
 public sealed class AppStateStore : IAppState
 {
     public const string FileName = "app-state.json";
+    private static readonly JsonSerializerOptions Json = new()
+    {
+        WriteIndented = true,
+        Converters = { new JsonStringEnumConverter() },
+    };
+
     private readonly string _path;
 
     public AppStateStore(string folder)
     {
         _path = Path.Combine(folder, FileName);
-        FirstRunDone = Read();
+        var d = Read();
+        FirstRunDone = d.FirstRunDone;
+        Appearance = d.Appearance ?? AppearancePrefs.Default;
+        LastSeenVersion = d.LastSeenVersion;
     }
 
     public bool FirstRunDone { get; private set; }
+    public AppearancePrefs Appearance { get; private set; }
+    public string? LastSeenVersion { get; private set; }
 
     public void MarkFirstRunDone()
     {
         FirstRunDone = true;
+        Write();
+    }
+
+    public void SaveAppearance(AppearancePrefs prefs)
+    {
+        Appearance = prefs;
+        Write();
+    }
+
+    public void MarkVersionSeen(string version)
+    {
+        LastSeenVersion = version;
+        Write();
+    }
+
+    private sealed class Data
+    {
+        public bool FirstRunDone { get; set; }
+        public AppearancePrefs? Appearance { get; set; }
+        public string? LastSeenVersion { get; set; }
+    }
+
+    private void Write()
+    {
         try
         {
             Directory.CreateDirectory(Path.GetDirectoryName(_path)!);
-            File.WriteAllText(_path, "{\"firstRunDone\":true}");
+            var data = new Data { FirstRunDone = FirstRunDone, Appearance = Appearance, LastSeenVersion = LastSeenVersion };
+            File.WriteAllText(_path, JsonSerializer.Serialize(data, Json));
         }
         catch (IOException)
         {
-            // Not being able to remember this only means the welcome screen shows once more.
+            // Not being able to remember this only means the welcome screen or a choice shows once more.
         }
         catch (UnauthorizedAccessException)
         {
         }
     }
 
-    private bool Read()
+    private Data Read()
     {
         try
         {
-            if (!File.Exists(_path)) return false;
-            using var doc = JsonDocument.Parse(File.ReadAllText(_path));
-            return doc.RootElement.TryGetProperty("firstRunDone", out var v) && v.ValueKind == JsonValueKind.True;
+            if (!File.Exists(_path)) return new Data();
+            var text = File.ReadAllText(_path);
+            // Older files only held {"firstRunDone":true}; missing fields keep their defaults.
+            return JsonSerializer.Deserialize<Data>(text, new JsonSerializerOptions(Json) { PropertyNameCaseInsensitive = true }) ?? new Data();
         }
-        catch (Exception e) when (e is IOException or JsonException or UnauthorizedAccessException)
+        catch (Exception e) when (e is IOException or JsonException or UnauthorizedAccessException or NotSupportedException)
         {
-            return false;
+            return new Data();
         }
     }
 }

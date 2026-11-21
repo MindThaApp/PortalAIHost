@@ -54,8 +54,6 @@
   <data name="SettingsIdleHelp.Text" xml:space="preserve"><value>The model wakes up again the next time an app asks for it. Keeping it loaded answers faster but uses memory all the time.</value></data>
   <data name="SettingsFolder.Header" xml:space="preserve"><value>Folder for downloaded models</value></data>
   <data name="SettingsFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Folder for downloaded models</value></data>
-  <data name="SettingsFolderApply.Content" xml:space="preserve"><value>Use this folder</value></data>
-  <data name="SettingsFolderApply.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Use this folder</value></data>
   <data name="TryItTitle.Text" xml:space="preserve"><value>Try it</value></data>
   <data name="TryItIntro.Text" xml:space="preserve"><value>Ask the model something short to check that it works. Nothing you type here is saved.</value></data>
   <data name="TryItPrompt.Header" xml:space="preserve"><value>Your question</value></data>
@@ -83,8 +81,8 @@
   <data name="FirstRunStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Start Portal AI Host when I sign in to Windows</value></data>
   <data name="FirstRunFinish.Content" xml:space="preserve"><value>Finish</value></data>
   <data name="FirstRunFinish.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Finish</value></data>
-  <data name="FirstRunSkip.Content" xml:space="preserve"><value>Skip setup for now</value></data>
-  <data name="FirstRunSkip.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Skip setup for now</value></data>
+  <data name="FirstRunSkip.Content" xml:space="preserve"><value>Skip for now</value></data>
+  <data name="FirstRunSkip.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Skip for now</value></data>
   <data name="Vm_AppTitle" xml:space="preserve"><value>Portal AI Host</value></data>
   <data name="Vm_NoHostTitle" xml:space="preserve"><value>Portal AI Host is not running</value></data>
   <data name="Vm_NoHostBody" xml:space="preserve"><value>The helper that runs your AI model is switched off. Start it so your apps can use AI.</value></data>
@@ -202,4 +200,104 @@
   <data name="Vm_DefaultFolder" xml:space="preserve"><value>the default folder</value></data>
   <data name="Vm_Publisher" xml:space="preserve"><value>Publisher: {0}</value></data>
   <data name="Vm_PublisherUnknown" xml:space="preserve"><value>Publisher: unknown</value></data>
+  <data name="NavAbout.Content" xml:space="preserve"><value>About</value></data>
+  <data name="NavAbout.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>About</value></data>
+  <data name="AppMenuButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>App menu</value></data>
+  <data name="Vm_AppMenuTip" xml:space="preserve"><value>App menu</value></data>
+  <data name="MenuSettings.Text" xml:space="preserve"><value>Settings</value></data>
+  <data name="MenuShortcuts.Text" xml:space="preserve"><value>Keyboard shortcuts</value></data>
+  <data name="MenuWhatsNew.Text" xml:space="preserve"><value>What's new</value></data>
+  <data name="MenuAbout.Text" xml:space="preserve"><value>About Portal AI Host</value></data>
+  <data name="Vm_ShortcutsTitle" xml:space="preserve"><value>Keyboard shortcuts</value></data>
+  <data name="Vm_ShortcutsBody" xml:space="preserve"><value>Ctrl+1: Home
+Ctrl+2: Models
+Ctrl+3: Devices and apps
+Ctrl+4: Try it
+Ctrl+, : Settings
+F1: About
+Esc: close What's new or a dialog</value></data>
+  <data name="Vm_Close" xml:space="preserve"><value>Close</value></data>
+  <data name="SettingsGeneralHeader.Text" xml:space="preserve"><value>General</value></data>
+  <data name="SettingsResetGeneral.Content" xml:space="preserve"><value>Reset to default</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Reset general settings to default</value></data>
+  <data name="SettingsModelsHeader.Text" xml:space="preserve"><value>Models folder</value></data>
+  <data name="SettingsResetFolder.Content" xml:space="preserve"><value>Reset to default</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Reset models folder to default</value></data>
+  <data name="SettingsFolderHelp.Text" xml:space="preserve"><value>Applies when you press Enter or leave the box. Leave it empty for the default folder. Models you already have are not moved or deleted.</value></data>
+  <data name="SettingsAppearanceHeader.Text" xml:space="preserve"><value>Appearance</value></data>
+  <data name="SettingsResetAppearance.Content" xml:space="preserve"><value>Reset to default</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Reset appearance to default</value></data>
+  <data name="SettingsTheme.Header" xml:space="preserve"><value>Theme</value></data>
+  <data name="SettingsTheme.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Theme</value></data>
+  <data name="SettingsMaterial.Header" xml:space="preserve"><value>Window material</value></data>
+  <data name="SettingsMaterial.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Window material</value></data>
+  <data name="SettingsCorners.Header" xml:space="preserve"><value>Corners</value></data>
+  <data name="SettingsCorners.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Corners</value></data>
+  <data name="SettingsDensity.Header" xml:space="preserve"><value>Density</value></data>
+  <data name="SettingsDensity.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Density</value></data>
+  <data name="SettingsTextSize.Header" xml:space="preserve"><value>Text size</value></data>
+  <data name="SettingsTextSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Text size</value></data>
+  <data name="SettingsMotion.Header" xml:space="preserve"><value>Motion</value></data>
+  <data name="SettingsMotion.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Motion</value></data>
+  <data name="SettingsAppearanceHelp.Text" xml:space="preserve"><value>Changes apply at once. Windows high contrast always uses solid system colours, whatever you pick here. Text size adds to your Windows text scaling.</value></data>
+  <data name="Vm_Theme_System" xml:space="preserve"><value>Use my Windows setting (default)</value></data>
+  <data name="Vm_Theme_Light" xml:space="preserve"><value>Light</value></data>
+  <data name="Vm_Theme_Dark" xml:space="preserve"><value>Dark</value></data>
+  <data name="Vm_Material_Mica" xml:space="preserve"><value>Mica (default)</value></data>
+  <data name="Vm_Material_Acrylic" xml:space="preserve"><value>Acrylic</value></data>
+  <data name="Vm_Material_Solid" xml:space="preserve"><value>Solid</value></data>
+  <data name="Vm_Corners_Rounded" xml:space="preserve"><value>Rounded (default)</value></data>
+  <data name="Vm_Corners_Square" xml:space="preserve"><value>Square</value></data>
+  <data name="Vm_Corners_ExtraRound" xml:space="preserve"><value>Extra round</value></data>
+  <data name="Vm_Density_Compact" xml:space="preserve"><value>Compact</value></data>
+  <data name="Vm_Density_Standard" xml:space="preserve"><value>Standard (default)</value></data>
+  <data name="Vm_Density_Comfortable" xml:space="preserve"><value>Comfortable</value></data>
+  <data name="Vm_Text_Normal" xml:space="preserve"><value>Normal (default)</value></data>
+  <data name="Vm_Text_Larger" xml:space="preserve"><value>Larger</value></data>
+  <data name="Vm_Text_Largest" xml:space="preserve"><value>Largest</value></data>
+  <data name="Vm_Motion_Follow" xml:space="preserve"><value>Follow Windows (default)</value></data>
+  <data name="Vm_Motion_Reduced" xml:space="preserve"><value>Reduced</value></data>
+  <data name="Vm_Motion_Off" xml:space="preserve"><value>Off</value></data>
+  <data name="Vm_FolderNotFull" xml:space="preserve"><value>Type a full folder path, for example D:\Models.</value></data>
+  <data name="AboutTitle.Text" xml:space="preserve"><value>About Portal AI Host</value></data>
+  <data name="Vm_AboutVersion" xml:space="preserve"><value>Portal AI Host version {0}</value></data>
+  <data name="Vm_AboutLicenceState" xml:space="preserve"><value>Free. No account or purchase is needed.</value></data>
+  <data name="Vm_AboutCopyText" xml:space="preserve"><value>Portal AI Host {0}</value></data>
+  <data name="Vm_AboutCopied" xml:space="preserve"><value>Version copied.</value></data>
+  <data name="AboutCopyVersion.Content" xml:space="preserve"><value>Copy version</value></data>
+  <data name="AboutWhatsNew.Content" xml:space="preserve"><value>What's new</value></data>
+  <data name="AboutHelpHeader.Text" xml:space="preserve"><value>Help and privacy</value></data>
+  <data name="AboutFeedback.Content" xml:space="preserve"><value>Send feedback or suggest an idea</value></data>
+  <data name="AboutPrivacy.Content" xml:space="preserve"><value>Privacy policy</value></data>
+  <data name="AboutDataFolder.Content" xml:space="preserve"><value>Open data folder</value></data>
+  <data name="AboutLicencesHeader.Text" xml:space="preserve"><value>Licences</value></data>
+  <data name="Vm_ThirdParty" xml:space="preserve"><value>Portal AI Host includes llama.cpp (MIT licence), which runs the AI models on your PC. Models are downloaded from Hugging Face under their own licences (Apache 2.0 or MIT). The app is built with the Windows App SDK, .NET and the Community Toolkit MVVM library, all under MIT licences.</value></data>
+  <data name="AboutLlamaLink.Content" xml:space="preserve"><value>llama.cpp on GitHub</value></data>
+  <data name="AboutLlamaExpander.Header" xml:space="preserve"><value>llama.cpp licence text</value></data>
+  <data name="Vm_LlamaLicence" xml:space="preserve"><value>MIT License
+
+Copyright (c) 2023-2026 The ggml authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</value></data>
+  <data name="Vm_WhatsNewHeading" xml:space="preserve"><value>What's new in Portal AI Host {0}</value></data>
+  <data name="Vm_Wn1Title" xml:space="preserve"><value>Your own AI, on your PC</value></data>
+  <data name="Vm_Wn1Body" xml:space="preserve"><value>Portal AI Host runs a language model on this PC. Portal apps you approve can use it, and what you type to it stays on your PC.</value></data>
+  <data name="Vm_Wn2Title" xml:space="preserve"><value>A model chosen for your PC</value></data>
+  <data name="Vm_Wn2Body" xml:space="preserve"><value>Get the recommended model in one click, see how big it is, and remove it again to free the space.</value></data>
+  <data name="Vm_Wn3Title" xml:space="preserve"><value>You decide which apps can use it</value></data>
+  <data name="Vm_Wn3Body" xml:space="preserve"><value>Approve a request when an app asks, and remove access at any time. Removing access can be undone for a few seconds.</value></data>
+  <data name="Vm_Wn4Title" xml:space="preserve"><value>Make it yours</value></data>
+  <data name="Vm_Wn4Body" xml:space="preserve"><value>Choose the theme, window material, corner style, density and text size in Settings, with a reset button for each section.</value></data>
+  <data name="Vm_WnShowMe" xml:space="preserve"><value>Show me</value></data>
+  <data name="Vm_WnShowMeName" xml:space="preserve"><value>Show me: {0}</value></data>
+  <data name="WhatsNewDone.Content" xml:space="preserve"><value>Got it</value></data>
+  <data name="Vm_RevokedBar" xml:space="preserve"><value>Access removed for {0}.</value></data>
+  <data name="Vm_AutoUndo" xml:space="preserve"><value>Undo removing access for {0}</value></data>
+  <data name="AppsUndo.Content" xml:space="preserve"><value>Undo</value></data>
+  <data name="Vm_RemoveFrees" xml:space="preserve"><value>This frees {0}.</value></data>
+  <data name="Vm_StepOf" xml:space="preserve"><value>Step {0} of {1}</value></data>
 </root>

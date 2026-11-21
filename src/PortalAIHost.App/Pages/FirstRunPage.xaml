@@ -5,6 +5,8 @@
     <ScrollViewer>
         <StackPanel Padding="48,32" Spacing="16" MaxWidth="720" HorizontalAlignment="Left">
             <TextBlock x:Uid="FirstRunTitle" Style="{StaticResource TitleTextBlockStyle}" />
+            <TextBlock Text="{x:Bind ViewModel.StepDots, Mode=OneWay}" AutomationProperties.Name="{x:Bind ViewModel.StepLine, Mode=OneWay}"
+                       Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
             <TextBlock Text="{x:Bind ViewModel.Error, Mode=OneWay}" TextWrapping="Wrap" />
 
             <Border Style="{StaticResource CardBorder}" Visibility="{x:Bind ViewModel.OnCheck, Mode=OneWay}">
@@ -23,7 +25,7 @@
                     <TextBlock x:Uid="FirstRunModelHeader" Style="{StaticResource SubtitleTextBlockStyle}" />
                     <TextBlock Text="{x:Bind ViewModel.ModelName, Mode=OneWay}" Style="{StaticResource BodyStrongTextBlockStyle}" />
                     <TextBlock Text="{x:Bind ViewModel.ModelReason, Mode=OneWay}" TextWrapping="Wrap" />
-                    <TextBlock Text="{x:Bind ViewModel.ModelSize, Mode=OneWay}" Opacity="0.8" />
+                    <TextBlock Text="{x:Bind ViewModel.ModelSize, Mode=OneWay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                     <TextBlock Text="{x:Bind ViewModel.ExistingLine, Mode=OneWay}" TextWrapping="Wrap" />
                     <Button x:Uid="FirstRunDownload" Command="{x:Bind ViewModel.DownloadCommand}" Style="{StaticResource AccentButtonStyle}" Margin="0,8,0,0" />
                 </StackPanel>

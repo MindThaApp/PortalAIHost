@@ -18,6 +18,8 @@ public static class AppServices
     /// <summary>Opens a page by name (home, models, apps, tryit, settings) and moves the menu selection. Set by the window.</summary>
     public static Action<string>? NavigateTo { get; set; }
     public static IStartupControl Startup { get; private set; } = new UnavailableStartupControl();
+    /// <summary>Applies appearance choices to the open window. Set by the window.</summary>
+    public static IAppearanceApplier? Appearance { get; set; }
 
     public static void Build()
     {
@@ -67,6 +69,10 @@ public static class AppServices
         public FixedAppState(bool done) => FirstRunDone = done;
         public bool FirstRunDone { get; private set; }
         public void MarkFirstRunDone() => FirstRunDone = true;
+        public AppearancePrefs Appearance { get; private set; } = AppearancePrefs.Default;
+        public void SaveAppearance(AppearancePrefs prefs) => Appearance = prefs;
+        public string? LastSeenVersion { get; private set; } = Links.AppVersion; // dev runs never open What's new by themselves
+        public void MarkVersionSeen(string version) => LastSeenVersion = version;
     }
 }
 
@@ -142,6 +148,31 @@ public sealed class WinUiDialogService : IDialogService
             };
             Current = dialog;
             return await dialog.ShowAsync() == ContentDialogResult.Primary;
+        }
+        finally
+        {
+            Current = null;
+            _one.Release();
+        }
+    }
+
+    /// <summary>A short information dialog with one Close button.</summary>
+    public async Task ShowInfoAsync(string title, string body, string closeText)
+    {
+        if (Root is null) return;
+        await _one.WaitAsync();
+        try
+        {
+            var dialog = new ContentDialog
+            {
+                XamlRoot = Root,
+                Title = title,
+                Content = new ScrollViewer { Content = new TextBlock { Text = body, TextWrapping = TextWrapping.Wrap, IsTextSelectionEnabled = true } },
+                CloseButtonText = closeText,
+                DefaultButton = ContentDialogButton.Close,
+            };
+            Current = dialog;
+            await dialog.ShowAsync();
         }
         finally
         {

@@ -5,12 +5,34 @@
     xmlns:ui="using:Microsoft.UI.Xaml.Automation">
     <Grid x:Name="Root">
         <Grid.RowDefinitions>
-            <RowDefinition Height="32" />
+            <RowDefinition Height="40" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid x:Name="TitleBarArea" Grid.Row="0" Background="Transparent">
-            <TextBlock x:Name="TitleText" VerticalAlignment="Center" Margin="16,0,0,0"
-                       Style="{StaticResource CaptionTextBlockStyle}" IsHitTestVisible="False" />
+            <StackPanel Orientation="Horizontal" Margin="8,0,0,0" Spacing="8" VerticalAlignment="Center">
+                <Button x:Name="AppMenuButton" x:Uid="AppMenuButton" Width="32" Height="32" Padding="0"
+                        Background="Transparent" BorderThickness="0" CornerRadius="4">
+                    <Image Source="ms-appx:///Assets/Square44x44Logo.targetsize-24.png" Width="24" Height="24" />
+                    <Button.Flyout>
+                        <MenuFlyout Placement="BottomEdgeAlignedLeft">
+                            <MenuFlyoutItem x:Uid="MenuSettings" Tag="settings" Click="OnMenuPage" KeyboardAcceleratorTextOverride="Ctrl+,">
+                                <MenuFlyoutItem.Icon><SymbolIcon Symbol="Setting" /></MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                            <MenuFlyoutItem x:Uid="MenuShortcuts" Click="OnMenuShortcuts">
+                                <MenuFlyoutItem.Icon><FontIcon Glyph="&#xE765;" /></MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                            <MenuFlyoutItem x:Uid="MenuWhatsNew" Tag="whatsnew" Click="OnMenuPage">
+                                <MenuFlyoutItem.Icon><FontIcon Glyph="&#xE789;" /></MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                            <MenuFlyoutItem x:Uid="MenuAbout" Tag="about" Click="OnMenuPage" KeyboardAcceleratorTextOverride="F1">
+                                <MenuFlyoutItem.Icon><SymbolIcon Symbol="Help" /></MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                        </MenuFlyout>
+                    </Button.Flyout>
+                </Button>
+                <TextBlock x:Name="TitleText" VerticalAlignment="Center"
+                           Style="{StaticResource CaptionTextBlockStyle}" IsHitTestVisible="False" />
+            </StackPanel>
         </Grid>
         <NavigationView
             Grid.Row="1"
@@ -18,7 +40,7 @@
             PaneDisplayMode="Left"
             IsBackButtonVisible="Collapsed"
             IsSettingsVisible="False"
-            OpenPaneLength="220"
+            OpenPaneLength="240"
             SelectionChanged="OnSelectionChanged">
             <NavigationView.MenuItems>
                 <NavigationViewItem x:Uid="NavHome" Tag="home" Icon="Home" />
@@ -28,6 +50,7 @@
             </NavigationView.MenuItems>
             <NavigationView.FooterMenuItems>
                 <NavigationViewItem x:Uid="NavSettings" Tag="settings" Icon="Setting" />
+                <NavigationViewItem x:Uid="NavAbout" Tag="about" Icon="Help" />
             </NavigationView.FooterMenuItems>
             <Frame x:Name="ContentFrame" />
         </NavigationView>

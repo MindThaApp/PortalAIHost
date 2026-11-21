@@ -16,4 +16,17 @@ public sealed partial class AppsPage : Page
     public AppsViewModel ViewModel { get; }
 
     protected override async void OnNavigatedTo(NavigationEventArgs e) => await ViewModel.LoadAsync();
+
+    // Leaving the page makes a removal that is still waiting final, so a removed app never keeps working.
+    protected override async void OnNavigatedFrom(NavigationEventArgs e)
+    {
+        await ViewModel.FlushAsync();
+        ViewModel.Dispose();
+    }
+
+    private void OnUndoKey(Microsoft.UI.Xaml.Input.KeyboardAccelerator sender, Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs args)
+    {
+        args.Handled = true;
+        ViewModel.UndoCommand.Execute(null);
+    }
 }
