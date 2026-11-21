@@ -32,6 +32,9 @@ public sealed class ApiPipeline
     private readonly TimeProvider _time;
     private readonly List<Route> _routes = new();
 
+    /// <summary>Cancelled when the host quits: cancels long polls, and cancellations then answer host_stopping.</summary>
+    public CancellationToken HostStopping { get; set; }
+
     public ApiPipeline(IClientRegistry registry, ApiPipelineOptions? options = null, TimeProvider? time = null)
     {
         ArgumentNullException.ThrowIfNull(registry);
@@ -245,7 +248,8 @@ public sealed class ApiPipeline
             throw new ApiException(ErrorCodes.NotFound, "Unknown or expired access request.");
         }
 
-        var result = await _registry.WaitForRequestAsync(id, TimeSpan.FromMilliseconds(waitMs), context.Aborted)
+        using var poll = CancellationTokenSource.CreateLinkedTokenSource(context.Aborted, HostStopping);
+        var result = await _registry.WaitForRequestAsync(id, TimeSpan.FromMilliseconds(waitMs), poll.Token)
             .ConfigureAwait(false) ?? throw new ApiException(ErrorCodes.NotFound, "Unknown or expired access request.");
 
         await context.WriteJsonAsync(200, new AuthRequestStatus
@@ -281,6 +285,8 @@ public sealed class ApiPipeline
     private ApiException ToApiException(Exception ex) => ex switch
     {
         ApiException api => api,
+        OperationCanceledException when HostStopping.IsCancellationRequested =>
+            new ApiException(ErrorCodes.HostStopping, "Portal AI Host is quitting."),
         EngineCrashedException => new ApiException(ErrorCodes.EngineRestarting,
             "The engine stopped and is restarting. Try again shortly.",
             retryAfterMs: _options.EngineRestartRetryAfterMs),
