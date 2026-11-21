@@ -184,28 +184,57 @@ public static partial class CatalogueValidator
             errors.Add("catalogue_version must be positive");
         }
 
+        if (c.Models is null)
+        {
+            errors.Add("models missing");
+            return errors;
+        }
+
         var ids = new HashSet<string>(StringComparer.Ordinal);
         foreach (var m in c.Models)
         {
-            var p = $"model '{m.Id}'";
-            if (!IdPattern().IsMatch(m.Id))
+            if (m is null)
             {
-                errors.Add($"{p}: id must match {IdPattern()}");
+                errors.Add("null model entry");
+                continue;
             }
 
-            if (!ids.Add(m.Id))
+            var id = m.Id ?? "";
+            var p = $"model '{id}'";
+            if (!IdPattern().IsMatch(id) || Store.OwnedFolder.IsReservedDeviceName(id))
+            {
+                errors.Add($"{p}: id must match {IdPattern()} and not be a reserved device name");
+            }
+
+            if (!ids.Add(id))
             {
                 errors.Add($"{p}: duplicate id");
             }
 
-            if (string.IsNullOrWhiteSpace(m.DisplayName))
+            if (string.IsNullOrWhiteSpace(m.DisplayName) || m.Engine is null || m.Kind is null || m.Quant is null)
             {
-                errors.Add($"{p}: display_name missing");
+                errors.Add($"{p}: display_name, engine, kind and quant are required");
             }
 
-            if (string.IsNullOrWhiteSpace(m.Licence.Spdx) || !m.Licence.Url.StartsWith("https://", StringComparison.Ordinal))
+            if (m.Licence is null || string.IsNullOrWhiteSpace(m.Licence.Spdx)
+                || m.Licence.Url is null || !m.Licence.Url.StartsWith("https://", StringComparison.Ordinal))
             {
                 errors.Add($"{p}: licence spdx and https url required");
+            }
+
+            if (m.Features is null)
+            {
+                errors.Add($"{p}: features must not be null");
+            }
+
+            if (!RepoPattern().IsMatch(m.HfRepo ?? "") || (m.HfRepo ?? "").Contains("..", StringComparison.Ordinal))
+            {
+                errors.Add($"{p}: hf_repo must look like owner/name");
+            }
+
+            if (!CommitOrPlaceholderPattern().IsMatch(m.HfCommit ?? ""))
+            {
+                errors.Add($"{p}: hf_commit must be a 40-hex commit or a PLACEHOLDER- value");
             }
 
             if (m.ParamsTotalB <= 0 || m.ParamsActiveB <= 0 || m.ParamsActiveB > m.ParamsTotalB)
@@ -223,16 +252,22 @@ public static partial class CatalogueValidator
                 errors.Add($"{p}: min_host_version invalid");
             }
 
-            ValidateMemory(m, p, errors);
-            ValidateFiles(m, p, errors);
+            var filesOk = ValidateFiles(m, p, errors);
+            ValidateMemory(m, p, errors, filesOk);
         }
 
         return errors;
     }
 
-    private static void ValidateMemory(CatalogueEntry m, string p, List<string> errors)
+    private static void ValidateMemory(CatalogueEntry m, string p, List<string> errors, bool filesOk)
     {
         var mem = m.Memory;
+        if (mem is null)
+        {
+            errors.Add($"{p}: memory missing");
+            return;
+        }
+
         if (mem.WeightsBytes <= 0 || mem.NLayers <= 0 || mem.KvBytesPer1kCtx <= 0 || mem.ComputeOverheadBytes < 0)
         {
             errors.Add($"{p}: memory weights_bytes, n_layers and kv_bytes_per_1k_ctx must be positive");
@@ -249,25 +284,33 @@ public static partial class CatalogueValidator
             errors.Add($"{p}: expert_bytes set on a dense model");
         }
 
-        if (m.Files.Count > 0 && mem.WeightsBytes > m.TotalBytes * 1.05)
+        if (filesOk && mem.WeightsBytes > m.TotalBytes * 1.05)
         {
             errors.Add($"{p}: weights_bytes larger than the files");
         }
     }
 
-    private static void ValidateFiles(CatalogueEntry m, string p, List<string> errors)
+    /// <summary>Returns true when the file list is structurally usable (no nulls).</summary>
+    private static bool ValidateFiles(CatalogueEntry m, string p, List<string> errors)
     {
-        if (m.Files.Count == 0)
+        if (m.Files is null || m.Files.Count == 0)
         {
             errors.Add($"{p}: no files");
-            return;
+            return false;
+        }
+
+        if (m.Files.Any(f => f is null || f.Name is null || f.Sha256 is null || f.Urls is null || f.Urls.Any(u => u is null)))
+        {
+            errors.Add($"{p}: a file entry is missing name, sha256 or urls");
+            return false;
         }
 
         var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         for (var i = 0; i < m.Files.Count; i++)
         {
             var f = m.Files[i];
-            if (!FileNamePattern().IsMatch(f.Name) || f.Name.Contains("..", StringComparison.Ordinal))
+            if (!FileNamePattern().IsMatch(f.Name) || f.Name.Contains("..", StringComparison.Ordinal)
+                || Store.OwnedFolder.IsReservedDeviceName(f.Name))
             {
                 errors.Add($"{p}: unsafe file name '{f.Name}'");
             }
@@ -305,7 +348,15 @@ public static partial class CatalogueValidator
                 }
             }
         }
+
+        return true;
     }
+
+    [GeneratedRegex("^[A-Za-z0-9][A-Za-z0-9._-]{0,95}/[A-Za-z0-9][A-Za-z0-9._-]{0,95}$")]
+    private static partial Regex RepoPattern();
+
+    [GeneratedRegex("^([0-9a-f]{40}|PLACEHOLDER-[A-Z-]+)$")]
+    private static partial Regex CommitOrPlaceholderPattern();
 
     [GeneratedRegex("^[a-z0-9][a-z0-9._-]{0,63}$")]
     private static partial Regex IdPattern();
