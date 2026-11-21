@@ -68,4 +68,4 @@ it on.
 
 ## Contact
 
-Questions or concerns: open an issue at https://github.com/MindThaApp/portal-ai-host-privacy/issues
+Questions or concerns: mindthaapp@gmail.com

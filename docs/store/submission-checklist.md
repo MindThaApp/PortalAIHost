@@ -14,9 +14,9 @@ Owner steps, in order. Items marked **blocker** stop certification or make the a
    `./scripts/sign-catalogue.ps1 -PrivateKeyPath <path to the private key>` writes `catalogue/catalogue.json.sig`.
    `build-msix.ps1 -Store` refuses to build without it. Commit the `.sig` with the catalogue.
 3. Confirm the app-code items in the compliance findings are done (dev switches gated in Release).
-4. **Privacy page:** create the public repo `MindThaApp/portal-ai-host-privacy` (same pattern as the other Portal
-   apps), publish `docs/store/privacy-policy.md` as its page, enable Issues (the policy's contact link) and check
-   that the URL opens (a 404 fails certification).
+4. **Privacy page:** done. Published at https://mindthaapp.github.io/portal-ai-host/privacy.html (repo
+   `MindThaApp/MindThaApp.github.io`, page `portal-ai-host/privacy.md`). Keep it in step with
+   `docs/store/privacy-policy.md`.
 5. Decide the price (free, or free with a later paid add-on). The listing texts assume free with no purchases.
 
 ## B. Partner Center: reserve and read the identity
@@ -80,7 +80,7 @@ Check before upload:
 1. Pricing and availability: markets (all), price (free), discoverability (public). Free trial: none.
 2. Properties: category Productivity; tick "This product accesses, collects or transmits personal information"
    = **No** (nothing leaves the PC; model downloads carry no personal data). Privacy policy URL: the page from A.4.
-   Support contact: the privacy repo's Issues page or a support page (no personal email). System requirements from
+   Support contact: mindthaapp@gmail.com (the address on the privacy page). System requirements from
    `listing-en.md`.
 3. Age ratings: answer the IARC questionnaire as in `listing-en.md`.
 4. Packages: upload `PortalAIHost_<version>.msixupload`.
