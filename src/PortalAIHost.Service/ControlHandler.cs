@@ -105,6 +105,8 @@ internal sealed class ControlHandler(HostShell shell)
                 return Ok(id, shell.Settings.Current, AiHostJsonContext.Default.HostSettings);
 
             case ControlTypes.SetSettings:
+                // Saved only: memory cap, backend and keep-loaded take effect at the next host start (the planner
+                // and auto-load read them once at startup). Engines already loaded are not touched.
                 shell.Settings.Save(Payload(r, AiHostJsonContext.Default.HostSettings)!);
                 return ControlPipe.Ok(id);
 
