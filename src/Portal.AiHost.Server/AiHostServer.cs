@@ -75,6 +75,10 @@ public sealed class AiHostServer : IAsyncDisposable
 
     public DateTimeOffset StartedAt { get; private set; }
 
+    /// <summary>Every address the listener really bound (tests check they are all loopback).</summary>
+    public IReadOnlyList<string> BoundAddresses =>
+        _app?.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>()?.Addresses.ToList() ?? [];
+
     public static async Task<AiHostServer> StartAsync(AiHostRuntime runtime, AiHostServerOptions options,
         CancellationToken ct = default)
     {
@@ -125,8 +129,16 @@ public sealed class AiHostServer : IAsyncDisposable
 
     private WebApplication Build(int port, bool withIpv6)
     {
-        var builder = WebApplication.CreateSlimBuilder();
-        builder.Logging.ClearProviders();
+        // Empty builder: no appsettings*.json, no environment variables, no command line, so nothing outside this
+        // code can add a listener (for example Kestrel__Endpoints__X__Url=http://0.0.0.0:...). Kestrel core only,
+        // without its configuration binding.
+        var builder = WebApplication.CreateEmptyBuilder(new WebApplicationOptions
+        {
+            ContentRootPath = AppContext.BaseDirectory,
+            Args = [],
+        });
+        builder.Configuration.Sources.Clear();
+        builder.WebHost.UseKestrelCore();
         builder.WebHost.ConfigureKestrel(k =>
         {
             k.AddServerHeader = false;
@@ -147,6 +159,12 @@ public sealed class AiHostServer : IAsyncDisposable
     private async Task HandleAsync(HttpContext http)
     {
         var request = http.Request;
+        if (!RequestGuard.IsLoopbackConnection(http.Connection.RemoteIpAddress, http.Connection.LocalIpAddress))
+        {
+            http.Abort();
+            return;
+        }
+
         if (!RequestGuard.IsAllowedHost(request.Headers.Host.ToString(), Port))
         {
             await WriteErrorAsync(http, ErrorCodes.ForbiddenOrigin, "The Host header is not allowed.").ConfigureAwait(false);

@@ -23,6 +23,11 @@ public static class RequestGuard
             string.Equals(host, "localhost" + suffix, StringComparison.OrdinalIgnoreCase);
     }
 
+    /// <summary>Both ends of the TCP connection must be loopback; anything else is dropped unanswered.</summary>
+    public static bool IsLoopbackConnection(System.Net.IPAddress? remote, System.Net.IPAddress? local) =>
+        remote is not null && local is not null && System.Net.IPAddress.IsLoopback(remote) &&
+        System.Net.IPAddress.IsLoopback(local);
+
     /// <summary>Any Origin header means a browser; no legitimate client sends one.</summary>
     public static bool HasOrigin(HttpRequest request) => request.Headers.ContainsKey("Origin");
 

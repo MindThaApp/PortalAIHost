@@ -7,6 +7,46 @@ namespace Portal.AiHost.Server.Tests;
 
 public sealed class SecurityTests
 {
+    [Fact]
+    public async Task Kestrel_endpoint_config_from_environment_adds_no_listener()
+    {
+        int spare;
+        using (var probe = new TcpListener(IPAddress.Loopback, 0))
+        {
+            probe.Start();
+            spare = ((IPEndPoint)probe.LocalEndpoint).Port;
+        }
+
+        const string variable = "Kestrel__Endpoints__Lan__Url";
+        Environment.SetEnvironmentVariable(variable, "http://0.0.0.0:" + spare);
+        try
+        {
+            await using var host = await TestHost.StartAsync();
+            Assert.NotEmpty(host.Server.BoundAddresses);
+            Assert.All(host.Server.BoundAddresses, a => Assert.True(
+                a.Contains("127.0.0.1", StringComparison.Ordinal) || a.Contains("[::1]", StringComparison.Ordinal), a));
+            using var tcp = new TcpClient();
+            await Assert.ThrowsAnyAsync<SocketException>(() => tcp.ConnectAsync(IPAddress.Loopback, spare));
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable(variable, null);
+        }
+    }
+
+    [Theory]
+    [InlineData("127.0.0.1", "127.0.0.1", true)]
+    [InlineData("::1", "::1", true)]
+    [InlineData("192.168.1.10", "127.0.0.1", false)]
+    [InlineData("127.0.0.1", "192.168.1.5", false)]
+    [InlineData("10.0.0.2", "10.0.0.1", false)]
+    public void Only_loopback_to_loopback_connections_are_served(string remote, string local, bool allowed) =>
+        Assert.Equal(allowed, RequestGuard.IsLoopbackConnection(IPAddress.Parse(remote), IPAddress.Parse(local)));
+
+    [Fact]
+    public void Connection_without_addresses_is_refused() =>
+        Assert.False(RequestGuard.IsLoopbackConnection(null, IPAddress.Loopback));
+
     [Theory]
     [InlineData("evil.example:{0}")]
     [InlineData("127.0.0.1")]
