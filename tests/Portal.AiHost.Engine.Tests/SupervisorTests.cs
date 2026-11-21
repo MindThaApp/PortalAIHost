@@ -226,6 +226,33 @@ public class SupervisorTests
     }
 
     [Fact]
+    public async Task CrashRestartWhileIdleKeepsTheIdleClock()
+    {
+        // An engine killed during the quiet period is restarted, but the restart is not use: it must still
+        // unload on the clock of the last request, not a fresh idle period from the restart.
+        var idle = TimeSpan.FromSeconds(4);
+        var a = new StubAdapter();
+        await using var s = Make(a, Stub.Options(idle: idle));
+        await s.StartAsync(Stub.Spec(), CancellationToken.None);
+        Assert.Equal("hello", (await s.ChatAsync(Stub.Chat(), CancellationToken.None)).Choices[0].Message.Content);
+        var lastRequest = Stopwatch.StartNew();
+        Assert.Equal(0, s.ActiveRequests);
+
+        await Task.Delay(TimeSpan.FromSeconds(2.5));
+        var firstPid = s.ProcessId!.Value;
+        using (var p = Process.GetProcessById(firstPid))
+        {
+            p.Kill();
+        }
+
+        await Stub.WaitFor(() => a.Launches == 2 || s.State == EngineState.Stopped, 8000);
+        await Stub.WaitFor(() => s.State == EngineState.Stopped, 10000);
+        Assert.Equal(2, a.Launches);
+        // Restarting the clock would put the unload at about 2.5 + 4 = 6.5 s; the last request's clock gives about 4-5 s.
+        Assert.True(lastRequest.Elapsed < TimeSpan.FromSeconds(5.8), $"unloaded {lastRequest.Elapsed.TotalSeconds:F1}s after the last request");
+    }
+
+    [Fact]
     public async Task ForwardOnlyAllowsTheProxiedRoutes()
     {
         await using var s = Make(new StubAdapter());

@@ -260,7 +260,7 @@ public sealed class EngineSupervisor : IEngineSupervisor
         },
     };
 
-    private async Task<Run> LaunchCoreAsync(EngineLaunchSpec requested, bool forceCpu, CancellationToken ct)
+    private async Task<Run> LaunchCoreAsync(EngineLaunchSpec requested, bool forceCpu, CancellationToken ct, bool keepIdleClock = false)
     {
         var binary = _o.ResolveBinary(requested, forceCpu);
         var spec = binary.Flavour == RuntimeProbe.Cpu ? ToCpu(requested) : requested;
@@ -343,9 +343,14 @@ public sealed class EngineSupervisor : IEngineSupervisor
             throw;
         }
 
-        lock (_sync)
+        // A crash restart is not use: keep the idle clock where the last request left it, so an engine that
+        // crashes (or is killed) while idle still unloads on time instead of starting a fresh idle period.
+        if (!keepIdleClock)
         {
-            _lastActivityTicks = Stopwatch.GetTimestamp();
+            lock (_sync)
+            {
+                _lastActivityTicks = Stopwatch.GetTimestamp();
+            }
         }
 
         SetState(EngineState.Ready, 1, null, spec);
@@ -690,7 +695,7 @@ public sealed class EngineSupervisor : IEngineSupervisor
                 {
                     await Task.Delay(backoff, token).ConfigureAwait(false);
                     await TearDownRunAsync(crashed).ConfigureAwait(false);
-                    await LaunchCoreAsync(spec, VulkanMarkedBad, token).ConfigureAwait(false);
+                    await LaunchCoreAsync(spec, VulkanMarkedBad, token, keepIdleClock: true).ConfigureAwait(false);
                     return;
                 }
                 catch (OperationCanceledException)
