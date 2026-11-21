@@ -318,6 +318,71 @@ public sealed class FairSchedulerTests : IDisposable
         await running.DisposeAsync();
     }
 
+    [Fact]
+    public async Task ThrowingStartedReportNeitherHangsOthersNorLeaksSlots()
+    {
+        _scheduler.SetSlots(ModelKinds.Chat, 3);
+        var a = await Acquire("app.a");
+        var b = await Acquire("app.b");
+        var c = await Acquire("app.c");
+        var w1 = Acquire("app.w1", progress: new ThrowingProgress(QueueEventKind.Started));
+        var w2 = Acquire("app.w2", progress: new ThrowingProgress(QueueEventKind.Started));
+        var w3 = Acquire("app.w3");
+
+        await a.DisposeAsync();
+        await b.DisposeAsync();
+        await c.DisposeAsync();
+        Assert.True(w1.IsCompletedSuccessfully);
+        Assert.True(w2.IsCompletedSuccessfully);
+        Assert.True(w3.IsCompletedSuccessfully);
+        Assert.Equal(0, _scheduler.Snapshot().Waiting);
+
+        await (await w1).DisposeAsync();
+        await (await w2).DisposeAsync();
+        await (await w3).DisposeAsync();
+        Assert.Equal(0, _scheduler.Snapshot().Running);
+    }
+
+    [Fact]
+    public async Task ThrowingQueuedReportStillQueuesTheRequest()
+    {
+        var running = await Acquire("app.a");
+        var waiting = Acquire("app.b", progress: new ThrowingProgress(QueueEventKind.Queued));
+        Assert.False(waiting.IsCompleted);
+        Assert.Equal(1, _scheduler.Snapshot().Waiting);
+
+        await running.DisposeAsync();
+        var lease = await waiting;
+        await lease.DisposeAsync();
+        Assert.Equal(0, _scheduler.Snapshot().Running);
+    }
+
+    [Fact]
+    public async Task ThrowingReportWhenSlotsGrowStartsEveryWaiter()
+    {
+        var running = await Acquire("app.a");
+        var w1 = Acquire("app.w1", progress: new ThrowingProgress(QueueEventKind.Started));
+        var w2 = Acquire("app.w2");
+        _scheduler.SetSlots(ModelKinds.Chat, 3);
+        Assert.True(w1.IsCompletedSuccessfully);
+        Assert.True(w2.IsCompletedSuccessfully);
+        await running.DisposeAsync();
+        await (await w1).DisposeAsync();
+        await (await w2).DisposeAsync();
+        Assert.Equal(0, _scheduler.Snapshot().Running);
+    }
+
+    private sealed class ThrowingProgress(QueueEventKind kind) : IProgress<QueueEvent>
+    {
+        public void Report(QueueEvent value)
+        {
+            if (value.Kind == kind)
+            {
+                throw new InvalidOperationException("progress handler failed");
+            }
+        }
+    }
+
     private sealed class ListProgress : IProgress<QueueEvent>
     {
         public List<QueueEvent> Events { get; } = new();

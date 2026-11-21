@@ -56,7 +56,7 @@ public sealed class FairScheduler : IScheduler, IDisposable
             return Task.FromCanceled<ISchedulerLease>(ct);
         }
 
-        var notes = new List<Action>();
+        var notes = new Notes();
         Entry entry;
         lock (_gate)
         {
@@ -97,7 +97,7 @@ public sealed class FairScheduler : IScheduler, IDisposable
                 var position = queue.PositionOf(entry);
                 if (progress is not null && queue.Contains(entry))
                 {
-                    notes.Add(() => progress.Report(new QueueEvent(QueueEventKind.Queued, position)));
+                    notes.Report(() => progress.Report(new QueueEvent(QueueEventKind.Queued, position)));
                 }
             }
         }
@@ -137,7 +137,7 @@ public sealed class FairScheduler : IScheduler, IDisposable
     public void SetSlots(string kind, int slots)
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(slots, 1);
-        var notes = new List<Action>();
+        var notes = new Notes();
         lock (_gate)
         {
             var queue = KindLocked(kind);
@@ -151,7 +151,7 @@ public sealed class FairScheduler : IScheduler, IDisposable
     /// <summary>Fails every queued request with host_stopping. Running leases stay valid until disposed.</summary>
     public void Dispose()
     {
-        var notes = new List<Action>();
+        var notes = new Notes();
         lock (_gate)
         {
             if (_disposed)
@@ -188,7 +188,7 @@ public sealed class FairScheduler : IScheduler, IDisposable
     }
 
     /// <summary>Starts as many waiting entries as the slots allow. Called under the lock.</summary>
-    private void DispatchLocked(KindQueue queue, List<Action> notes)
+    private void DispatchLocked(KindQueue queue, Notes notes)
     {
         var now = _time.GetUtcNow();
         while (queue.Running < queue.Slots)
@@ -213,18 +213,26 @@ public sealed class FairScheduler : IScheduler, IDisposable
             queue.Running++;
             var lease = new Lease(this, queue, now - next.EnqueuedAt);
             var e = next;
+            var granted = false;
             notes.Add(() =>
             {
-                if (e.Completion.TrySetResult(lease))
-                {
-                    e.Progress?.Report(new QueueEvent(QueueEventKind.Started, 0));
-                }
-                else
+                granted = e.Completion.TrySetResult(lease);
+                if (!granted)
                 {
                     // Cannot happen (only one path wins under the lock), but never leak a slot.
                     _ = lease.DisposeAsync();
                 }
             });
+            if (e.Progress is { } progress)
+            {
+                notes.Report(() =>
+                {
+                    if (granted)
+                    {
+                        progress.Report(new QueueEvent(QueueEventKind.Started, 0));
+                    }
+                });
+            }
         }
     }
 
@@ -270,7 +278,7 @@ public sealed class FairScheduler : IScheduler, IDisposable
 
     private void OnPromotion(Entry entry)
     {
-        var notes = new List<Action>();
+        var notes = new Notes();
         lock (_gate)
         {
             if (!entry.Queue.Contains(entry))
@@ -287,7 +295,7 @@ public sealed class FairScheduler : IScheduler, IDisposable
 
     private void Release(KindQueue queue)
     {
-        var notes = new List<Action>();
+        var notes = new Notes();
         lock (_gate)
         {
             queue.Running--;
@@ -300,12 +308,40 @@ public sealed class FairScheduler : IScheduler, IDisposable
         Run(notes);
     }
 
-    private static void Run(List<Action> notes)
+    /// <summary>
+    /// Runs the work collected under the lock: every completion first, then each progress report on its own.
+    /// A throwing IProgress can neither stop other requests from starting nor leak a slot.
+    /// </summary>
+    private static void Run(Notes notes)
     {
-        foreach (var n in notes)
+        foreach (var complete in notes.Completions)
         {
-            n();
+            complete();
         }
+
+        foreach (var report in notes.Reports)
+        {
+            try
+            {
+                report();
+            }
+#pragma warning disable CA1031 // A caller's progress handler must not break the scheduler.
+            catch (Exception)
+#pragma warning restore CA1031
+            {
+            }
+        }
+    }
+
+    /// <summary>Completions and progress reports gathered under the lock, run after it is released.</summary>
+    private sealed class Notes
+    {
+        public List<Action> Completions { get; } = new();
+        public List<Action> Reports { get; } = new();
+
+        public void Add(Action completion) => Completions.Add(completion);
+
+        public void Report(Action report) => Reports.Add(report);
     }
 
     private static ApiException DeadlineExceeded() =>
