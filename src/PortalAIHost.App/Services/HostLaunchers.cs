@@ -12,12 +12,19 @@ public interface IStartedProcess : IDisposable
 /// <summary>
 /// Starts the real host: PortalAIHost.Service.exe next to this app, or (packaged, exe not found) the
 /// portal-ai-host:start protocol. Then waits until the control pipe answers. Never kills or replaces a host that
-/// is already running: when the pipe answers first, nothing is started.
+/// is already running: when the pipe answers first, nothing is started. A test run (test data root set) never
+/// uses the protocol, because that would start the installed host on the real data.
 /// </summary>
 public sealed class ProcessHostLauncher : IHostLauncher
 {
     public const string HostExeName = "PortalAIHost.Service.exe";
     public const string HostSubfolder = "host";
+
+    /// <summary>Argument passed to the host: start (or keep) it without asking a running host to show a window.</summary>
+    public const string StartArgument = "portal-ai-host:start";
+
+    /// <summary>Same variable as the host's HostPaths: a test data root for the window and its host.</summary>
+    public const string TestRootVariable = "PORTALAIHOST_TEST_DATA_ROOT";
 
     // Host exit codes (PortalAIHost.Service Program / HostPaths).
     public const int ExitBadTestRoot = 3;
@@ -30,10 +37,14 @@ public sealed class ProcessHostLauncher : IHostLauncher
     private readonly Func<Task<bool>>? _protocolStart;
     private readonly TimeSpan _wait;
     private readonly TimeSpan _poll;
+    private readonly Func<string, string?> _getEnv;
+    private readonly SemaphoreSlim _startGate = new(1, 1);
 
     public ProcessHostLauncher(Func<CancellationToken, Task<bool>> isHostUp, string? baseDirectory = null,
-        Func<string, IStartedProcess?>? start = null, Func<Task<bool>>? protocolStart = null, TimeSpan? wait = null, TimeSpan? poll = null)
+        Func<string, IStartedProcess?>? start = null, Func<Task<bool>>? protocolStart = null, TimeSpan? wait = null, TimeSpan? poll = null,
+        Func<string, string?>? getEnvironment = null)
     {
+        _getEnv = getEnvironment ?? Environment.GetEnvironmentVariable;
         _isHostUp = isHostUp;
         _baseDirectory = baseDirectory ?? AppContext.BaseDirectory;
         _start = start ?? StartProcess;
@@ -45,6 +56,20 @@ public sealed class ProcessHostLauncher : IHostLauncher
     public string? FailureKey { get; private set; }
 
     public async Task<bool> StartHostAsync(CancellationToken ct = default)
+    {
+        // One start at a time: FailureKey belongs to the start that set it.
+        await _startGate.WaitAsync(ct).ConfigureAwait(false);
+        try
+        {
+            return await StartCoreAsync(ct).ConfigureAwait(false);
+        }
+        finally
+        {
+            _startGate.Release();
+        }
+    }
+
+    private async Task<bool> StartCoreAsync(CancellationToken ct)
     {
         FailureKey = null;
         if (await _isHostUp(ct).ConfigureAwait(false))
@@ -64,6 +89,11 @@ public sealed class ProcessHostLauncher : IHostLauncher
                 FailureKey = "Vm_StartFailed";
                 return false;
             }
+        }
+        else if (!string.IsNullOrEmpty(_getEnv(TestRootVariable)))
+        {
+            FailureKey = "Vm_HostMissingTestRun";
+            return false;
         }
         else if (_protocolStart is null || !await _protocolStart().ConfigureAwait(false))
         {
@@ -115,12 +145,14 @@ public sealed class ProcessHostLauncher : IHostLauncher
         try
         {
             // The child inherits this process's environment, so a test data root set for the window reaches the host.
-            var p = Process.Start(new ProcessStartInfo(exe)
+            var info = new ProcessStartInfo(exe)
             {
                 UseShellExecute = false,
                 CreateNoWindow = true,
                 WorkingDirectory = Path.GetDirectoryName(exe)!,
-            });
+            };
+            info.ArgumentList.Add(StartArgument); // never ask an already running host to show its window
+            var p = Process.Start(info);
             return p is null ? null : new StartedProcess(p);
         }
         catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException or IOException)

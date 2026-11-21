@@ -208,9 +208,24 @@ public class ProcessHostLauncherTests
     {
         var empty = Path.Combine(Path.GetTempPath(), "pah-app-tests", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(empty);
-        var launcher = new ProcessHostLauncher(_ => Task.FromResult(false), empty, protocolStart: () => Task.FromResult(false));
+        var launcher = new ProcessHostLauncher(_ => Task.FromResult(false), empty, protocolStart: () => Task.FromResult(false),
+            getEnvironment: _ => null);
         Assert.False(await launcher.StartHostAsync());
         Assert.Equal("Vm_HostMissing", launcher.FailureKey);
+    }
+
+    [Fact]
+    public async Task A_test_run_never_starts_the_installed_host_by_protocol()
+    {
+        var empty = Path.Combine(Path.GetTempPath(), "pah-app-tests", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(empty);
+        var protocolCalls = 0;
+        var launcher = new ProcessHostLauncher(_ => Task.FromResult(false), empty,
+            protocolStart: () => { protocolCalls++; return Task.FromResult(true); },
+            getEnvironment: n => n == ProcessHostLauncher.TestRootVariable ? empty : null);
+        Assert.False(await launcher.StartHostAsync());
+        Assert.Equal(0, protocolCalls);
+        Assert.Equal("Vm_HostMissingTestRun", launcher.FailureKey);
     }
 }
 

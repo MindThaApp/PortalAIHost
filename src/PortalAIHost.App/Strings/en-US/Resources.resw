@@ -157,6 +157,7 @@
   <data name="Vm_HwDisk" xml:space="preserve"><value>Free disk space: {0}</value></data>
   <data name="Vm_NoGpu" xml:space="preserve"><value>none found</value></data>
   <data name="Vm_HostMissing" xml:space="preserve"><value>The host program is missing from this install. Reinstall Portal AI Host to fix this.</value></data>
+  <data name="Vm_HostMissingTestRun" xml:space="preserve"><value>This is a test run and no host program was found next to the app. The installed host is not started for a test run.</value></data>
   <data name="Vm_StartTimedOut" xml:space="preserve"><value>The host started but did not answer in time. Wait a moment, then try again.</value></data>
   <data name="Vm_HostExitTestRoot" xml:space="preserve"><value>The host refused to start: the test data folder is missing or not marked as a test folder.</value></data>
   <data name="Vm_HostExitStartFailed" xml:space="preserve"><value>The host could not start. Restart your PC and try again. If it keeps happening, reinstall Portal AI Host.</value></data>

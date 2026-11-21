@@ -176,8 +176,9 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
             if (_channel is null && await _factory.TryConnectAsync(ct).ConfigureAwait(false) is { } fresh)
             {
                 fresh.EventReceived += OnEvent;
-                fresh.Disconnected += () => Drop(fresh);
                 Volatile.Write(ref _channel, fresh);
+                // After the channel is stored, so a connection that already ended is dropped at once (Drop matches it).
+                fresh.Disconnected += () => Drop(fresh);
             }
 
             return _channel;

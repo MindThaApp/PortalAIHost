@@ -69,16 +69,69 @@ public sealed class PipeControlChannelFactory : IControlChannelFactory
 public sealed class PipeControlChannel : IControlChannel
 {
     private readonly ControlPipeClient _client;
+    private readonly object _sync = new();
+    private Action? _disconnected;
+    private bool _isDisconnected;
 
     public PipeControlChannel(ControlPipeClient client)
     {
         _client = client;
         _client.EventReceived += (_, e) => EventReceived?.Invoke(e);
-        _client.Disconnected += (_, _) => Disconnected?.Invoke();
+        _client.Disconnected += (_, _) => OnDisconnected();
+        if (!_client.IsConnected)
+        {
+            OnDisconnected(); // the pipe broke before this channel listened
+        }
     }
 
     public event Action<ControlEnvelope>? EventReceived;
-    public event Action? Disconnected;
+
+    /// <summary>Raised once. A handler added after the connection ended runs straight away, so no end is missed.</summary>
+    public event Action? Disconnected
+    {
+        add
+        {
+            bool already;
+            lock (_sync)
+            {
+                already = _isDisconnected;
+                if (!already)
+                {
+                    _disconnected += value;
+                }
+            }
+
+            if (already)
+            {
+                value?.Invoke();
+            }
+        }
+        remove
+        {
+            lock (_sync)
+            {
+                _disconnected -= value;
+            }
+        }
+    }
+
+    private void OnDisconnected()
+    {
+        Action? handlers;
+        lock (_sync)
+        {
+            if (_isDisconnected)
+            {
+                return;
+            }
+
+            _isDisconnected = true;
+            handlers = _disconnected;
+            _disconnected = null;
+        }
+
+        handlers?.Invoke();
+    }
 
     public async Task<ControlEnvelope> ExchangeAsync(string type, JsonElement? payload, CancellationToken ct)
     {
