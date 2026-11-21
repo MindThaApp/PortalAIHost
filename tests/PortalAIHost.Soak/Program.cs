@@ -211,12 +211,13 @@ internal static class Soak
             if (handleGrowth > 50) failures.Add($"handles grew by {handleGrowth} (limit 50)");
             if (counts.Unexpected > 0) failures.Add($"{counts.Unexpected} requests ended in an unexpected state");
             if (counts.Ok == 0) failures.Add("no request succeeded");
-            if (!double.IsNaN(p95) && p95 > 2.0) failures.Add($"interactive p95 time-to-first-token {p95:F2}s (limit 2)");
+            if (double.IsNaN(p95)) failures.Add("interactive time-to-first-token was not measured (no warm streamed token)");
+            else if (p95 > 2.0) failures.Add($"interactive p95 time-to-first-token {p95:F2}s (limit 2)");
             if (unloadChecked == 0 && o.Minutes * 60 > o.ActiveSeconds + o.IdleSeconds + 60) failures.Add("no idle-unload window was observed");
             var pass = failures.Count == 0;
             var line = $"{(pass ? "PASS" : "FAIL")} mode={o.Mode} min={o.Minutes} slope={slopeMbPerHour:F2}MB/h handles+{handleGrowth} " +
                        $"req ok={counts.Ok} cancelled={counts.Cancelled} typed-errors={counts.Typed} unexpected={counts.Unexpected} " +
-                       $"ttft-p95={p95:F2}s kills={killed} maxEngines={maxEngines}" + (pass ? "" : " :: " + string.Join("; ", failures));
+                       $"ttft-p95={p95:F2}s ttft-n={ttft.Count} kills={killed} maxEngines={maxEngines}" + (pass ? "" : " :: " + string.Join("; ", failures));
             Log(line);
             var rep = new StringBuilder(log.ToString());
             rep.AppendLine("minute,private_bytes,handles,threads,engines");
@@ -287,7 +288,9 @@ internal static class Soak
                                 var first = true;
                                 await foreach (var d in a.Client.StreamChatAsync(req, opt, cts.Token))
                                 {
-                                    if (first && d.Text is not null)
+                                    // A reasoning model (Qwen3) streams its first tokens as reasoning text, so either kind is
+                                    // the first token; progress comments carry neither.
+                                    if (first && (d.Text is { Length: > 0 } || d.ReasoningText is { Length: > 0 }))
                                     {
                                         first = false;
                                         if (!cold) lock (ttft) ttft.Add(sw.Elapsed.TotalSeconds);
