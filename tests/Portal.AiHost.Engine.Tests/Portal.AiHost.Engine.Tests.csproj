@@ -7,7 +7,9 @@
     <PackageReference Include="xunit.v3.mtp-v2" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Portal.AiHost.Core\Portal.AiHost.Core.csproj" />
+    <Compile Remove="StubChild\**" />
+    <ProjectReference Include="..\..\src\Portal.AiHost.Engine\Portal.AiHost.Engine.csproj" />
     <ProjectReference Include="..\Portal.AiHost.FakeEngine\Portal.AiHost.FakeEngine.csproj" />
+    <ProjectReference Include="StubChild\StubChild.csproj" />
   </ItemGroup>
 </Project>

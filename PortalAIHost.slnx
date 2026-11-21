@@ -2,6 +2,7 @@
   <Folder Name="/src/">
     <Project Path="src/Portal.AiHost.Contracts/Portal.AiHost.Contracts.csproj" />
     <Project Path="src/Portal.AiHost.Core/Portal.AiHost.Core.csproj" />
+    <Project Path="src/Portal.AiHost.Engine/Portal.AiHost.Engine.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Portal.AiHost.FakeEngine/Portal.AiHost.FakeEngine.csproj" />
