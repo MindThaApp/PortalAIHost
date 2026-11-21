@@ -8,5 +8,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Portal.AiHost.Contracts\Portal.AiHost.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\Portal.AiHost.Client\Portal.AiHost.Client.csproj" />
   </ItemGroup>
 </Project>

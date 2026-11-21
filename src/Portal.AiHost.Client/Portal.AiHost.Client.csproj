@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsAotCompatible>true</IsAotCompatible>
+    <JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <RootNamespace>Portal.AiHost.Client</RootNamespace>
+
+    <PackageId>Portal.AiHost.Client</PackageId>
+    <Version>1.0.0-preview.1</Version>
+    <Authors>MindThaApp</Authors>
+    <Description>Client library for Portal AI Host: finds the local host, gets user-approved access, and calls its OpenAI-compatible chat and embeddings API, with retry and a local-model fallback.</Description>
+    <PackageTags>portal;local-ai;llm;openai-compatible;client</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/MindThaApp/PortalAIHost</RepositoryUrl>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)..\..\builds\nuget\</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Contracts ships inside this package so consumers need only one reference. -->
+    <ProjectReference Include="..\Portal.AiHost.Contracts\Portal.AiHost.Contracts.csproj" PrivateAssets="all" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);IncludeContractsAssembly</TargetsForTfmSpecificBuildOutput>
+  </PropertyGroup>
+  <Target Name="IncludeContractsAssembly">
+    <ItemGroup>
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths)"
+                            Condition="'%(ReferenceCopyLocalPaths.ReferenceSourceTarget)' == 'ProjectReference'" />
+    </ItemGroup>
+  </Target>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Portal.AiHost.Client.Tests" />
+  </ItemGroup>
+</Project>
