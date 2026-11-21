@@ -17,7 +17,7 @@ public class CatalogueTests
 
     private static byte[] WithVersion(long version) =>
         Encoding.UTF8.GetBytes(Encoding.UTF8.GetString(TestData.SeedCatalogueBytes())
-            .Replace("\"catalogue_version\": 1,", $"\"catalogue_version\": {version},", StringComparison.Ordinal));
+            .Replace("\"catalogue_version\": 2,", $"\"catalogue_version\": {version},", StringComparison.Ordinal));
 
     [Fact]
     public void SeedCatalogueIsValid()
@@ -33,13 +33,13 @@ public class CatalogueTests
     }
 
     [Fact]
-    public void SeedPlaceholdersFailVerification()
+    public void SeedEntriesArePinnedAndVerified()
     {
         var (catalogue, _) = CatalogueValidator.Parse(TestData.SeedCatalogueBytes());
         Assert.All(catalogue!.Models, m =>
         {
-            Assert.False(m.IsDownloadable);
-            Assert.All(m.Files, f => Assert.False(f.HasVerifiedHash));
+            Assert.True(m.IsDownloadable);
+            Assert.All(m.Files, f => Assert.True(f.HasVerifiedHash));
         });
     }
 

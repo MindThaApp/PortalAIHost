@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "catalogue_version": 1,
+  "catalogue_version": 2,
   "published": "2026-11-21",
   "models": [
     {
@@ -20,14 +20,14 @@
       "params_active_b": 3.3,
       "quant": "Q4_K_M",
       "hf_repo": "unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF",
-      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "hf_commit": "eea7b2be5805a5f151f8847ede8e5f9a9284bf77",
       "files": [
         {
           "name": "Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf",
           "size": 18556686752,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "sha256": "6c997b8af17debdfb01d890214400ccbab00db6acc0ba8da5de1cc906c4774d0",
           "urls": [
-            "https://huggingface.co/unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf"
+            "https://huggingface.co/unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF/resolve/eea7b2be5805a5f151f8847ede8e5f9a9284bf77/Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf"
           ]
         }
       ],
@@ -47,7 +47,7 @@
         "reasoning": false
       },
       "min_host_version": "1.0.0",
-      "notes": "Hashes and commit are placeholders: pin and hash before release. Exact file size from the HF file listing; layer and KV numbers from the model config (unverified). Non-thinking."
+      "notes": "Commit, sizes and SHA-256 pinned from the Hugging Face file listing. Layer and KV numbers from the model config (unverified). Non-thinking."
     },
     {
       "id": "glm-4.7-flash-q4km",
@@ -66,21 +66,21 @@
       "params_active_b": 3,
       "quant": "Q4_K_M",
       "hf_repo": "unsloth/GLM-4.7-Flash-GGUF",
-      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "hf_commit": "0d32489ecb9db6d2a4fc93bd27ef01519f95474d",
       "files": [
         {
           "name": "GLM-4.7-Flash-Q4_K_M.gguf",
-          "size": 18300000000,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 18312339808,
+          "sha256": "29837ed2c0fc5f51981adf8ac8083fcf80743c598381f13e9f06cbad0498b174",
           "urls": [
-            "https://huggingface.co/unsloth/GLM-4.7-Flash-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/GLM-4.7-Flash-Q4_K_M.gguf"
+            "https://huggingface.co/unsloth/GLM-4.7-Flash-GGUF/resolve/0d32489ecb9db6d2a4fc93bd27ef01519f95474d/GLM-4.7-Flash-Q4_K_M.gguf"
           ]
         }
       ],
       "memory": {
-        "weights_bytes": 18300000000,
+        "weights_bytes": 18312339808,
         "non_expert_bytes": 1500000000,
-        "expert_bytes": 16800000000,
+        "expert_bytes": 16812339808,
         "n_layers": 47,
         "kv_bytes_per_1k_ctx": 94371840,
         "compute_overhead_bytes": 800000000
@@ -93,7 +93,7 @@
         "reasoning": true
       },
       "min_host_version": "1.0.0",
-      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates. llama.cpp architecture not yet confirmed."
+      "notes": "Commit, sizes and SHA-256 pinned from the Hugging Face file listing. Layer, KV and expert numbers are estimates. llama.cpp architecture not yet confirmed."
     },
     {
       "id": "granite-4.0-h-small-q4km",
@@ -112,21 +112,21 @@
       "params_active_b": 9,
       "quant": "Q4_K_M",
       "hf_repo": "ibm-granite/granite-4.0-h-small-GGUF",
-      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "hf_commit": "6522095069a86fc3186b8632850e4373dd850cac",
       "files": [
         {
           "name": "granite-4.0-h-small-Q4_K_M.gguf",
-          "size": 19500000000,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 19476621984,
+          "sha256": "23c6019f2e6fa56eb8872ecf8d9d1e4b2ebf3c087fb5275257ea07602d2a38b6",
           "urls": [
-            "https://huggingface.co/ibm-granite/granite-4.0-h-small-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/granite-4.0-h-small-Q4_K_M.gguf"
+            "https://huggingface.co/ibm-granite/granite-4.0-h-small-GGUF/resolve/6522095069a86fc3186b8632850e4373dd850cac/granite-4.0-h-small-Q4_K_M.gguf"
           ]
         }
       ],
       "memory": {
-        "weights_bytes": 19500000000,
+        "weights_bytes": 19476621984,
         "non_expert_bytes": 2500000000,
-        "expert_bytes": 17000000000,
+        "expert_bytes": 16976621984,
         "n_layers": 40,
         "kv_bytes_per_1k_ctx": 16777216,
         "compute_overhead_bytes": 800000000
@@ -139,7 +139,7 @@
         "reasoning": false
       },
       "min_host_version": "1.0.0",
-      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates. Hybrid Mamba: few attention layers, small KV."
+      "notes": "Commit, sizes and SHA-256 pinned from the Hugging Face file listing. Layer, KV and expert numbers are estimates. Hybrid Mamba: few attention layers, small KV."
     },
     {
       "id": "gpt-oss-20b",
@@ -158,21 +158,21 @@
       "params_active_b": 3.6,
       "quant": "Q4_K_M",
       "hf_repo": "unsloth/gpt-oss-20b-GGUF",
-      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "hf_commit": "d449b42d93e1c2c7bda5312f5c25c8fb91dfa9b4",
       "files": [
         {
           "name": "gpt-oss-20b-Q4_K_M.gguf",
-          "size": 11600000000,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 11624759488,
+          "sha256": "c27536640e410032865dc68781d80a08b98f8db5e93575919af8ccc0568aeb4f",
           "urls": [
-            "https://huggingface.co/unsloth/gpt-oss-20b-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/gpt-oss-20b-Q4_K_M.gguf"
+            "https://huggingface.co/unsloth/gpt-oss-20b-GGUF/resolve/d449b42d93e1c2c7bda5312f5c25c8fb91dfa9b4/gpt-oss-20b-Q4_K_M.gguf"
           ]
         }
       ],
       "memory": {
-        "weights_bytes": 11600000000,
+        "weights_bytes": 11624759488,
         "non_expert_bytes": 1500000000,
-        "expert_bytes": 10100000000,
+        "expert_bytes": 10124759488,
         "n_layers": 24,
         "kv_bytes_per_1k_ctx": 50331648,
         "compute_overhead_bytes": 600000000
@@ -185,7 +185,7 @@
         "reasoning": true
       },
       "min_host_version": "1.0.0",
-      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates. Needs the harmony chat format."
+      "notes": "Commit, sizes and SHA-256 pinned from the Hugging Face file listing. Layer, KV and expert numbers are estimates. Needs the harmony chat format."
     },
     {
       "id": "mistral-small-3.2-24b-q4km",
@@ -204,19 +204,19 @@
       "params_active_b": 24,
       "quant": "Q4_K_M",
       "hf_repo": "unsloth/Mistral-Small-3.2-24B-Instruct-2506-GGUF",
-      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "hf_commit": "b750ec2299225e492f1bd27cab88a0a595fa848f",
       "files": [
         {
           "name": "Mistral-Small-3.2-24B-Instruct-2506-Q4_K_M.gguf",
-          "size": 14300000000,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 14333922848,
+          "sha256": "a3cc56310807ed0d145eaf9f018ccda9ae7ad8edb41ec870aa2454b0d4700b3c",
           "urls": [
-            "https://huggingface.co/unsloth/Mistral-Small-3.2-24B-Instruct-2506-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Mistral-Small-3.2-24B-Instruct-2506-Q4_K_M.gguf"
+            "https://huggingface.co/unsloth/Mistral-Small-3.2-24B-Instruct-2506-GGUF/resolve/b750ec2299225e492f1bd27cab88a0a595fa848f/Mistral-Small-3.2-24B-Instruct-2506-Q4_K_M.gguf"
           ]
         }
       ],
       "memory": {
-        "weights_bytes": 14300000000,
+        "weights_bytes": 14333922848,
         "non_expert_bytes": 0,
         "expert_bytes": 0,
         "n_layers": 40,
@@ -231,7 +231,7 @@
         "reasoning": false
       },
       "min_host_version": "1.0.0",
-      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates."
+      "notes": "Commit, sizes and SHA-256 pinned from the Hugging Face file listing. Layer, KV and expert numbers are estimates."
     },
     {
       "id": "qwen3-14b-q4km",
@@ -250,14 +250,14 @@
       "params_active_b": 14.8,
       "quant": "Q4_K_M",
       "hf_repo": "Qwen/Qwen3-14B-GGUF",
-      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "hf_commit": "530227a7d994db8eca5ab5ced2fb692b614357fd",
       "files": [
         {
           "name": "Qwen3-14B-Q4_K_M.gguf",
           "size": 9001752960,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "sha256": "500a8806e85ee9c83f3ae08420295592451379b4f8cf2d0f41c15dffeb6b81f0",
           "urls": [
-            "https://huggingface.co/Qwen/Qwen3-14B-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Qwen3-14B-Q4_K_M.gguf"
+            "https://huggingface.co/Qwen/Qwen3-14B-GGUF/resolve/530227a7d994db8eca5ab5ced2fb692b614357fd/Qwen3-14B-Q4_K_M.gguf"
           ]
         }
       ],
@@ -277,7 +277,7 @@
         "reasoning": true
       },
       "min_host_version": "1.0.0",
-      "notes": "Hashes and commit are placeholders: pin and hash before release. Exact file size from the HF file listing; layer and KV numbers from the model config (unverified)."
+      "notes": "Commit, sizes and SHA-256 pinned from the Hugging Face file listing. Layer and KV numbers from the model config (unverified)."
     },
     {
       "id": "phi-4-q4k",
@@ -296,14 +296,14 @@
       "params_active_b": 14.7,
       "quant": "Q4_K",
       "hf_repo": "microsoft/phi-4-gguf",
-      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "hf_commit": "6edc2ef6664b739a8e11e62f2672ff6afe0c15ac",
       "files": [
         {
           "name": "phi-4-Q4_K.gguf",
           "size": 9053114560,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "sha256": "5652b9be0ea4ae2842130d04fe31bc869fcb99a2b7106c53b4e754a343fd688f",
           "urls": [
-            "https://huggingface.co/microsoft/phi-4-gguf/resolve/PLACEHOLDER-UNPINNED-COMMIT/phi-4-Q4_K.gguf"
+            "https://huggingface.co/microsoft/phi-4-gguf/resolve/6edc2ef6664b739a8e11e62f2672ff6afe0c15ac/phi-4-Q4_K.gguf"
           ]
         }
       ],
@@ -323,7 +323,7 @@
         "reasoning": false
       },
       "min_host_version": "1.0.0",
-      "notes": "Hashes and commit are placeholders: pin and hash before release. Exact file size from the HF file listing; layer and KV numbers from the model config (unverified). No Q4_K_M published; Q4_K used."
+      "notes": "Commit, sizes and SHA-256 pinned from the Hugging Face file listing. Layer and KV numbers from the model config (unverified). No Q4_K_M published; Q4_K used."
     },
     {
       "id": "qwen3-8b-q4km",
@@ -342,14 +342,14 @@
       "params_active_b": 8.2,
       "quant": "Q4_K_M",
       "hf_repo": "Qwen/Qwen3-8B-GGUF",
-      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "hf_commit": "7c41481f57cb95916b40956ab2f0b139b296d974",
       "files": [
         {
           "name": "Qwen3-8B-Q4_K_M.gguf",
           "size": 5027783488,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "sha256": "d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785",
           "urls": [
-            "https://huggingface.co/Qwen/Qwen3-8B-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Qwen3-8B-Q4_K_M.gguf"
+            "https://huggingface.co/Qwen/Qwen3-8B-GGUF/resolve/7c41481f57cb95916b40956ab2f0b139b296d974/Qwen3-8B-Q4_K_M.gguf"
           ]
         }
       ],
@@ -369,7 +369,7 @@
         "reasoning": true
       },
       "min_host_version": "1.0.0",
-      "notes": "Hashes and commit are placeholders: pin and hash before release. Exact file size from the HF file listing; layer and KV numbers from the model config (unverified)."
+      "notes": "Commit, sizes and SHA-256 pinned from the Hugging Face file listing. Layer and KV numbers from the model config (unverified)."
     },
     {
       "id": "olmo-3-7b-instruct-q4km",
@@ -388,19 +388,19 @@
       "params_active_b": 7.3,
       "quant": "Q4_K_M",
       "hf_repo": "unsloth/Olmo-3-7B-Instruct-GGUF",
-      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "hf_commit": "a2a9ae53f5a95087616b3f45ca96e9d2631344ee",
       "files": [
         {
           "name": "Olmo-3-7B-Instruct-Q4_K_M.gguf",
-          "size": 4470000000,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 4471602048,
+          "sha256": "0de0bc63fae8a73a48e167be48f149c9544bd4af61d223cd3f331c6ea664c5c4",
           "urls": [
-            "https://huggingface.co/unsloth/Olmo-3-7B-Instruct-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Olmo-3-7B-Instruct-Q4_K_M.gguf"
+            "https://huggingface.co/unsloth/Olmo-3-7B-Instruct-GGUF/resolve/a2a9ae53f5a95087616b3f45ca96e9d2631344ee/Olmo-3-7B-Instruct-Q4_K_M.gguf"
           ]
         }
       ],
       "memory": {
-        "weights_bytes": 4470000000,
+        "weights_bytes": 4471602048,
         "non_expert_bytes": 0,
         "expert_bytes": 0,
         "n_layers": 32,
@@ -415,7 +415,7 @@
         "reasoning": false
       },
       "min_host_version": "1.0.0",
-      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates. llama.cpp architecture not yet confirmed."
+      "notes": "Commit, sizes and SHA-256 pinned from the Hugging Face file listing. Layer, KV and expert numbers are estimates. llama.cpp architecture not yet confirmed."
     },
     {
       "id": "granite-4.0-h-tiny-q4km",
@@ -434,21 +434,21 @@
       "params_active_b": 1,
       "quant": "Q4_K_M",
       "hf_repo": "ibm-granite/granite-4.0-h-tiny-GGUF",
-      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "hf_commit": "240a43d5efe7bdcfa4205b0019bb95e4cc6e5315",
       "files": [
         {
           "name": "granite-4.0-h-tiny-Q4_K_M.gguf",
-          "size": 4230000000,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 4230976352,
+          "sha256": "5a38b08c441ae1adbafb1d2b8a7167e0d48734d83af68b268cefea1eec553dcd",
           "urls": [
-            "https://huggingface.co/ibm-granite/granite-4.0-h-tiny-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/granite-4.0-h-tiny-Q4_K_M.gguf"
+            "https://huggingface.co/ibm-granite/granite-4.0-h-tiny-GGUF/resolve/240a43d5efe7bdcfa4205b0019bb95e4cc6e5315/granite-4.0-h-tiny-Q4_K_M.gguf"
           ]
         }
       ],
       "memory": {
-        "weights_bytes": 4230000000,
+        "weights_bytes": 4230976352,
         "non_expert_bytes": 800000000,
-        "expert_bytes": 3430000000,
+        "expert_bytes": 3430976352,
         "n_layers": 40,
         "kv_bytes_per_1k_ctx": 8388608,
         "compute_overhead_bytes": 300000000
@@ -461,7 +461,7 @@
         "reasoning": false
       },
       "min_host_version": "1.0.0",
-      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates."
+      "notes": "Commit, sizes and SHA-256 pinned from the Hugging Face file listing. Layer, KV and expert numbers are estimates."
     },
     {
       "id": "qwen3-4b-q4km",
@@ -480,14 +480,14 @@
       "params_active_b": 4.0,
       "quant": "Q4_K_M",
       "hf_repo": "Qwen/Qwen3-4B-GGUF",
-      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "hf_commit": "bc640142c66e1fdd12af0bd68f40445458f3869b",
       "files": [
         {
           "name": "Qwen3-4B-Q4_K_M.gguf",
           "size": 2497280256,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "sha256": "7485fe6f11af29433bc51cab58009521f205840f5b4ae3a32fa7f92e8534fdf5",
           "urls": [
-            "https://huggingface.co/Qwen/Qwen3-4B-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Qwen3-4B-Q4_K_M.gguf"
+            "https://huggingface.co/Qwen/Qwen3-4B-GGUF/resolve/bc640142c66e1fdd12af0bd68f40445458f3869b/Qwen3-4B-Q4_K_M.gguf"
           ]
         }
       ],
@@ -507,7 +507,7 @@
         "reasoning": true
       },
       "min_host_version": "1.0.0",
-      "notes": "Hashes and commit are placeholders: pin and hash before release. Exact file size from the HF file listing; layer and KV numbers from the model config (unverified)."
+      "notes": "Commit, sizes and SHA-256 pinned from the Hugging Face file listing. Layer and KV numbers from the model config (unverified)."
     },
     {
       "id": "phi-4-mini-instruct-q4km",
@@ -526,19 +526,19 @@
       "params_active_b": 3.8,
       "quant": "Q4_K_M",
       "hf_repo": "unsloth/Phi-4-mini-instruct-GGUF",
-      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "hf_commit": "78eb92a46fc37e6b524df991ed9aca9bc6aa7b80",
       "files": [
         {
           "name": "Phi-4-mini-instruct-Q4_K_M.gguf",
-          "size": 2490000000,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 2491874272,
+          "sha256": "88c00229914083cd112853aab84ed51b87bdf6b9ce42f532d8c85c7c63b1730a",
           "urls": [
-            "https://huggingface.co/unsloth/Phi-4-mini-instruct-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Phi-4-mini-instruct-Q4_K_M.gguf"
+            "https://huggingface.co/unsloth/Phi-4-mini-instruct-GGUF/resolve/78eb92a46fc37e6b524df991ed9aca9bc6aa7b80/Phi-4-mini-instruct-Q4_K_M.gguf"
           ]
         }
       ],
       "memory": {
-        "weights_bytes": 2490000000,
+        "weights_bytes": 2491874272,
         "non_expert_bytes": 0,
         "expert_bytes": 0,
         "n_layers": 32,
@@ -553,7 +553,7 @@
         "reasoning": false
       },
       "min_host_version": "1.0.0",
-      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates."
+      "notes": "Commit, sizes and SHA-256 pinned from the Hugging Face file listing. Layer, KV and expert numbers are estimates."
     },
     {
       "id": "smollm3-3b-q4km",
@@ -572,19 +572,19 @@
       "params_active_b": 3.1,
       "quant": "Q4_K_M",
       "hf_repo": "unsloth/SmolLM3-3B-GGUF",
-      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "hf_commit": "a7bc17204c8a326d6bd6e466e076959eddae2025",
       "files": [
         {
           "name": "SmolLM3-3B-Q4_K_M.gguf",
-          "size": 1920000000,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 1915306528,
+          "sha256": "4de907d2d388a5508fb7cb443a06effe14cce3518b0a78d3bdd9e74d9edce989",
           "urls": [
-            "https://huggingface.co/unsloth/SmolLM3-3B-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/SmolLM3-3B-Q4_K_M.gguf"
+            "https://huggingface.co/unsloth/SmolLM3-3B-GGUF/resolve/a7bc17204c8a326d6bd6e466e076959eddae2025/SmolLM3-3B-Q4_K_M.gguf"
           ]
         }
       ],
       "memory": {
-        "weights_bytes": 1920000000,
+        "weights_bytes": 1915306528,
         "non_expert_bytes": 0,
         "expert_bytes": 0,
         "n_layers": 36,
@@ -599,7 +599,7 @@
         "reasoning": false
       },
       "min_host_version": "1.0.0",
-      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates."
+      "notes": "Commit, sizes and SHA-256 pinned from the Hugging Face file listing. Layer, KV and expert numbers are estimates."
     },
     {
       "id": "qwen3-next-80b-a3b-instruct-q4km",
@@ -618,21 +618,21 @@
       "params_active_b": 3,
       "quant": "Q4_K_M",
       "hf_repo": "Qwen/Qwen3-Next-80B-A3B-Instruct-GGUF",
-      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "hf_commit": "4c8630cf7af926a9c5095cb4bbbbc65d36e20f77",
       "files": [
         {
           "name": "Qwen3-Next-80B-A3B-Instruct-Q4_K_M.gguf",
-          "size": 48400000000,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 48410988384,
+          "sha256": "d103b2733ec1012a52d01edda66b7e5c24ae50508c9f99f5297ea459ef3c061a",
           "urls": [
-            "https://huggingface.co/Qwen/Qwen3-Next-80B-A3B-Instruct-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Qwen3-Next-80B-A3B-Instruct-Q4_K_M.gguf"
+            "https://huggingface.co/Qwen/Qwen3-Next-80B-A3B-Instruct-GGUF/resolve/4c8630cf7af926a9c5095cb4bbbbc65d36e20f77/Qwen3-Next-80B-A3B-Instruct-Q4_K_M.gguf"
           ]
         }
       ],
       "memory": {
-        "weights_bytes": 48400000000,
+        "weights_bytes": 48410988384,
         "non_expert_bytes": 3000000000,
-        "expert_bytes": 45400000000,
+        "expert_bytes": 45410988384,
         "n_layers": 48,
         "kv_bytes_per_1k_ctx": 25165824,
         "compute_overhead_bytes": 1200000000
@@ -645,7 +645,7 @@
         "reasoning": false
       },
       "min_host_version": "1.0.0",
-      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates. Hybrid attention; needs a recent llama.cpp build."
+      "notes": "Commit, sizes and SHA-256 pinned from the Hugging Face file listing. Layer, KV and expert numbers are estimates. Hybrid attention; needs a recent llama.cpp build."
     },
     {
       "id": "gpt-oss-120b-mxfp4",
@@ -664,21 +664,21 @@
       "params_active_b": 5.1,
       "quant": "MXFP4",
       "hf_repo": "ggml-org/gpt-oss-120b-GGUF",
-      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "hf_commit": "f59990363fbbb67f01bce03e5e7bf0929e3e320b",
       "files": [
         {
-          "name": "gpt-oss-120b-mxfp4.gguf",
-          "size": 63400000000,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "name": "gpt-oss-120b-MXFP4.gguf",
+          "size": 63387346208,
+          "sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
           "urls": [
-            "https://huggingface.co/ggml-org/gpt-oss-120b-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/gpt-oss-120b-mxfp4.gguf"
+            "https://huggingface.co/ggml-org/gpt-oss-120b-GGUF/resolve/f59990363fbbb67f01bce03e5e7bf0929e3e320b/gpt-oss-120b-MXFP4.gguf"
           ]
         }
       ],
       "memory": {
-        "weights_bytes": 63400000000,
+        "weights_bytes": 63387346208,
         "non_expert_bytes": 2500000000,
-        "expert_bytes": 60900000000,
+        "expert_bytes": 60887346208,
         "n_layers": 36,
         "kv_bytes_per_1k_ctx": 75497472,
         "compute_overhead_bytes": 1200000000
@@ -691,7 +691,7 @@
         "reasoning": true
       },
       "min_host_version": "1.0.0",
-      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates. Needs the harmony chat format. Check whether the repo splits the file before pinning."
+      "notes": "Commit, sizes and SHA-256 pinned from the Hugging Face file listing. Layer, KV and expert numbers are estimates. Needs the harmony chat format. Check whether the repo splits the file before pinning."
     },
     {
       "id": "glm-4.5-air-q4km",
@@ -710,29 +710,29 @@
       "params_active_b": 12,
       "quant": "Q4_K_M",
       "hf_repo": "unsloth/GLM-4.5-Air-GGUF",
-      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "hf_commit": "506d64aa8c5cfe9dbbf00bc7a15739438f83204d",
       "files": [
         {
           "name": "GLM-4.5-Air-Q4_K_M-00001-of-00002.gguf",
-          "size": 36500000000,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 50000746752,
+          "sha256": "3e7e5d25a6db33b7c90f8c5203d6f490d6c0a4f04a46f228af0e33727db5df5e",
           "urls": [
-            "https://huggingface.co/unsloth/GLM-4.5-Air-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q4_K_M/GLM-4.5-Air-Q4_K_M-00001-of-00002.gguf"
+            "https://huggingface.co/unsloth/GLM-4.5-Air-GGUF/resolve/506d64aa8c5cfe9dbbf00bc7a15739438f83204d/Q4_K_M/GLM-4.5-Air-Q4_K_M-00001-of-00002.gguf"
           ]
         },
         {
           "name": "GLM-4.5-Air-Q4_K_M-00002-of-00002.gguf",
-          "size": 36500000000,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 22975001632,
+          "sha256": "ac6e50523d45c53faf3bf72d8fe109f3dd54bc6abe98a7773a3636112ead82a6",
           "urls": [
-            "https://huggingface.co/unsloth/GLM-4.5-Air-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q4_K_M/GLM-4.5-Air-Q4_K_M-00002-of-00002.gguf"
+            "https://huggingface.co/unsloth/GLM-4.5-Air-GGUF/resolve/506d64aa8c5cfe9dbbf00bc7a15739438f83204d/Q4_K_M/GLM-4.5-Air-Q4_K_M-00002-of-00002.gguf"
           ]
         }
       ],
       "memory": {
-        "weights_bytes": 73000000000,
+        "weights_bytes": 72975748384,
         "non_expert_bytes": 4000000000,
-        "expert_bytes": 69000000000,
+        "expert_bytes": 68975748384,
         "n_layers": 46,
         "kv_bytes_per_1k_ctx": 192937984,
         "compute_overhead_bytes": 1500000000
@@ -745,7 +745,7 @@
         "reasoning": true
       },
       "min_host_version": "1.0.0",
-      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates. Part sizes split evenly from the total."
+      "notes": "Commit, sizes and SHA-256 pinned from the Hugging Face file listing. Layer, KV and expert numbers are estimates."
     },
     {
       "id": "qwen3.5-122b-a10b-q4km",
@@ -764,37 +764,37 @@
       "params_active_b": 10,
       "quant": "Q4_K_M",
       "hf_repo": "unsloth/Qwen3.5-122B-A10B-GGUF",
-      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "hf_commit": "51eab4d59d53f573fb9206cb3ce613f1d0aa392b",
       "files": [
         {
           "name": "Qwen3.5-122B-A10B-Q4_K_M-00001-of-00003.gguf",
-          "size": 25500000000,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 10943552,
+          "sha256": "467c9bd92ea518539cf75bf5a5fbfbd35e9a0b40d766ccaa67bf120e12041df3",
           "urls": [
-            "https://huggingface.co/unsloth/Qwen3.5-122B-A10B-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q4_K_M/Qwen3.5-122B-A10B-Q4_K_M-00001-of-00003.gguf"
+            "https://huggingface.co/unsloth/Qwen3.5-122B-A10B-GGUF/resolve/51eab4d59d53f573fb9206cb3ce613f1d0aa392b/Q4_K_M/Qwen3.5-122B-A10B-Q4_K_M-00001-of-00003.gguf"
           ]
         },
         {
           "name": "Qwen3.5-122B-A10B-Q4_K_M-00002-of-00003.gguf",
-          "size": 25500000000,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 49968146912,
+          "sha256": "90db14846413aebdac365b57206441437cac5f7e5037d94b325f0167f902e6e7",
           "urls": [
-            "https://huggingface.co/unsloth/Qwen3.5-122B-A10B-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q4_K_M/Qwen3.5-122B-A10B-Q4_K_M-00002-of-00003.gguf"
+            "https://huggingface.co/unsloth/Qwen3.5-122B-A10B-GGUF/resolve/51eab4d59d53f573fb9206cb3ce613f1d0aa392b/Q4_K_M/Qwen3.5-122B-A10B-Q4_K_M-00002-of-00003.gguf"
           ]
         },
         {
           "name": "Qwen3.5-122B-A10B-Q4_K_M-00003-of-00003.gguf",
-          "size": 25500000000,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 26557874144,
+          "sha256": "e3c24b8ebec070bb4f69ea0aca25a16531da7440cd515529953e046882901f97",
           "urls": [
-            "https://huggingface.co/unsloth/Qwen3.5-122B-A10B-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q4_K_M/Qwen3.5-122B-A10B-Q4_K_M-00003-of-00003.gguf"
+            "https://huggingface.co/unsloth/Qwen3.5-122B-A10B-GGUF/resolve/51eab4d59d53f573fb9206cb3ce613f1d0aa392b/Q4_K_M/Qwen3.5-122B-A10B-Q4_K_M-00003-of-00003.gguf"
           ]
         }
       ],
       "memory": {
-        "weights_bytes": 76500000000,
+        "weights_bytes": 76536964608,
         "non_expert_bytes": 5000000000,
-        "expert_bytes": 71500000000,
+        "expert_bytes": 71536964608,
         "n_layers": 48,
         "kv_bytes_per_1k_ctx": 50331648,
         "compute_overhead_bytes": 1500000000
@@ -807,7 +807,7 @@
         "reasoning": true
       },
       "min_host_version": "1.0.0",
-      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates. Thinking on by default. Part sizes split evenly from the total."
+      "notes": "Commit, sizes and SHA-256 pinned from the Hugging Face file listing. Layer, KV and expert numbers are estimates. Thinking on by default."
     },
     {
       "id": "minimax-m2-q3km",
@@ -826,37 +826,37 @@
       "params_active_b": 10,
       "quant": "Q3_K_M",
       "hf_repo": "unsloth/MiniMax-M2-GGUF",
-      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "hf_commit": "06e952eab9e8e136847e9df067a0032582696778",
       "files": [
         {
           "name": "MiniMax-M2-Q3_K_M-00001-of-00003.gguf",
-          "size": 36433333333,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 49504480480,
+          "sha256": "40d9ea886ac2e9888552840701ee82f8dfc37b73b1e96395b35fbd9042ab57b6",
           "urls": [
-            "https://huggingface.co/unsloth/MiniMax-M2-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q3_K_M/MiniMax-M2-Q3_K_M-00001-of-00003.gguf"
+            "https://huggingface.co/unsloth/MiniMax-M2-GGUF/resolve/06e952eab9e8e136847e9df067a0032582696778/Q3_K_M/MiniMax-M2-Q3_K_M-00001-of-00003.gguf"
           ]
         },
         {
           "name": "MiniMax-M2-Q3_K_M-00002-of-00003.gguf",
-          "size": 36433333333,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 49334194016,
+          "sha256": "b80a4c11d09e8639dcf357c84949603d136b1612716e0e8c86beaf8a43550023",
           "urls": [
-            "https://huggingface.co/unsloth/MiniMax-M2-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q3_K_M/MiniMax-M2-Q3_K_M-00002-of-00003.gguf"
+            "https://huggingface.co/unsloth/MiniMax-M2-GGUF/resolve/06e952eab9e8e136847e9df067a0032582696778/Q3_K_M/MiniMax-M2-Q3_K_M-00002-of-00003.gguf"
           ]
         },
         {
           "name": "MiniMax-M2-Q3_K_M-00003-of-00003.gguf",
-          "size": 36433333334,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 10433807776,
+          "sha256": "33049eb5e87055e2d868a5931ff0b4cc4d40274bd8b886f2a271cdf9c3836743",
           "urls": [
-            "https://huggingface.co/unsloth/MiniMax-M2-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q3_K_M/MiniMax-M2-Q3_K_M-00003-of-00003.gguf"
+            "https://huggingface.co/unsloth/MiniMax-M2-GGUF/resolve/06e952eab9e8e136847e9df067a0032582696778/Q3_K_M/MiniMax-M2-Q3_K_M-00003-of-00003.gguf"
           ]
         }
       ],
       "memory": {
-        "weights_bytes": 109300000000,
+        "weights_bytes": 109272482272,
         "non_expert_bytes": 6000000000,
-        "expert_bytes": 103300000000,
+        "expert_bytes": 103272482272,
         "n_layers": 62,
         "kv_bytes_per_1k_ctx": 260046848,
         "compute_overhead_bytes": 2000000000
@@ -869,7 +869,7 @@
         "reasoning": true
       },
       "min_host_version": "1.0.0",
-      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates. Part count assumed; part sizes split evenly."
+      "notes": "Commit, sizes and SHA-256 pinned from the Hugging Face file listing. Layer, KV and expert numbers are estimates."
     },
     {
       "id": "minimax-m2-q4km",
@@ -888,37 +888,37 @@
       "params_active_b": 10,
       "quant": "Q4_K_M",
       "hf_repo": "unsloth/MiniMax-M2-GGUF",
-      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "hf_commit": "06e952eab9e8e136847e9df067a0032582696778",
       "files": [
         {
           "name": "MiniMax-M2-Q4_K_M-00001-of-00003.gguf",
-          "size": 46100000000,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 49386415584,
+          "sha256": "ed85df4bed999b9c30ecaef9edc3217206b2e6b0e304e52bbf0c737e4c1fc919",
           "urls": [
-            "https://huggingface.co/unsloth/MiniMax-M2-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q4_K_M/MiniMax-M2-Q4_K_M-00001-of-00003.gguf"
+            "https://huggingface.co/unsloth/MiniMax-M2-GGUF/resolve/06e952eab9e8e136847e9df067a0032582696778/Q4_K_M/MiniMax-M2-Q4_K_M-00001-of-00003.gguf"
           ]
         },
         {
           "name": "MiniMax-M2-Q4_K_M-00002-of-00003.gguf",
-          "size": 46100000000,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 49712985440,
+          "sha256": "4a25cc6787ace8cec20f1799151bbd3b43d7e9c2bf20a3e73b91a2c8693bf355",
           "urls": [
-            "https://huggingface.co/unsloth/MiniMax-M2-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q4_K_M/MiniMax-M2-Q4_K_M-00002-of-00003.gguf"
+            "https://huggingface.co/unsloth/MiniMax-M2-GGUF/resolve/06e952eab9e8e136847e9df067a0032582696778/Q4_K_M/MiniMax-M2-Q4_K_M-00002-of-00003.gguf"
           ]
         },
         {
           "name": "MiniMax-M2-Q4_K_M-00003-of-00003.gguf",
-          "size": 46100000000,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 39242984096,
+          "sha256": "58369de8424f885ae73de33343260574623d40e21741dd27e31510e4b184867d",
           "urls": [
-            "https://huggingface.co/unsloth/MiniMax-M2-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q4_K_M/MiniMax-M2-Q4_K_M-00003-of-00003.gguf"
+            "https://huggingface.co/unsloth/MiniMax-M2-GGUF/resolve/06e952eab9e8e136847e9df067a0032582696778/Q4_K_M/MiniMax-M2-Q4_K_M-00003-of-00003.gguf"
           ]
         }
       ],
       "memory": {
-        "weights_bytes": 138300000000,
+        "weights_bytes": 138342385120,
         "non_expert_bytes": 6000000000,
-        "expert_bytes": 132300000000,
+        "expert_bytes": 132342385120,
         "n_layers": 62,
         "kv_bytes_per_1k_ctx": 260046848,
         "compute_overhead_bytes": 2000000000
@@ -931,7 +931,7 @@
         "reasoning": true
       },
       "min_host_version": "1.0.0",
-      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates. Part sizes split evenly from the total."
+      "notes": "Commit, sizes and SHA-256 pinned from the Hugging Face file listing. Layer, KV and expert numbers are estimates."
     },
     {
       "id": "qwen3-235b-a22b-instruct-2507-q3km",
@@ -950,37 +950,37 @@
       "params_active_b": 22,
       "quant": "Q3_K_M",
       "hf_repo": "unsloth/Qwen3-235B-A22B-Instruct-2507-GGUF",
-      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "hf_commit": "437d6915c5c512869e4cf8b16b840bbe3fb172bc",
       "files": [
         {
           "name": "Qwen3-235B-A22B-Instruct-2507-Q3_K_M-00001-of-00003.gguf",
-          "size": 37466666666,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 49807634144,
+          "sha256": "73ce02906e97757d3b188973af4b8089f08cd333310ed16f9409e9d4a89f9ba5",
           "urls": [
-            "https://huggingface.co/unsloth/Qwen3-235B-A22B-Instruct-2507-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q3_K_M/Qwen3-235B-A22B-Instruct-2507-Q3_K_M-00001-of-00003.gguf"
+            "https://huggingface.co/unsloth/Qwen3-235B-A22B-Instruct-2507-GGUF/resolve/437d6915c5c512869e4cf8b16b840bbe3fb172bc/Q3_K_M/Qwen3-235B-A22B-Instruct-2507-Q3_K_M-00001-of-00003.gguf"
           ]
         },
         {
           "name": "Qwen3-235B-A22B-Instruct-2507-Q3_K_M-00002-of-00003.gguf",
-          "size": 37466666666,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 49667089568,
+          "sha256": "bbe267c2b76fd67c8c03eb5b71bcd486a6d3504d920fc78cccf8ff66ab33d7fc",
           "urls": [
-            "https://huggingface.co/unsloth/Qwen3-235B-A22B-Instruct-2507-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q3_K_M/Qwen3-235B-A22B-Instruct-2507-Q3_K_M-00002-of-00003.gguf"
+            "https://huggingface.co/unsloth/Qwen3-235B-A22B-Instruct-2507-GGUF/resolve/437d6915c5c512869e4cf8b16b840bbe3fb172bc/Q3_K_M/Qwen3-235B-A22B-Instruct-2507-Q3_K_M-00002-of-00003.gguf"
           ]
         },
         {
           "name": "Qwen3-235B-A22B-Instruct-2507-Q3_K_M-00003-of-00003.gguf",
-          "size": 37466666668,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 12972656480,
+          "sha256": "bab752451066fa180ee0cb5e80d24f5eddbc42435eebefd85b4fe528b2d5250c",
           "urls": [
-            "https://huggingface.co/unsloth/Qwen3-235B-A22B-Instruct-2507-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q3_K_M/Qwen3-235B-A22B-Instruct-2507-Q3_K_M-00003-of-00003.gguf"
+            "https://huggingface.co/unsloth/Qwen3-235B-A22B-Instruct-2507-GGUF/resolve/437d6915c5c512869e4cf8b16b840bbe3fb172bc/Q3_K_M/Qwen3-235B-A22B-Instruct-2507-Q3_K_M-00003-of-00003.gguf"
           ]
         }
       ],
       "memory": {
-        "weights_bytes": 112400000000,
+        "weights_bytes": 112447380192,
         "non_expert_bytes": 8000000000,
-        "expert_bytes": 104400000000,
+        "expert_bytes": 104447380192,
         "n_layers": 94,
         "kv_bytes_per_1k_ctx": 197132288,
         "compute_overhead_bytes": 2500000000
@@ -993,7 +993,7 @@
         "reasoning": false
       },
       "min_host_version": "1.0.0",
-      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates. Non-thinking. Part sizes split evenly."
+      "notes": "Commit, sizes and SHA-256 pinned from the Hugging Face file listing. Layer, KV and expert numbers are estimates. Non-thinking."
     },
     {
       "id": "qwen3-235b-a22b-instruct-2507-q4km",
@@ -1012,37 +1012,37 @@
       "params_active_b": 22,
       "quant": "Q4_K_M",
       "hf_repo": "unsloth/Qwen3-235B-A22B-Instruct-2507-GGUF",
-      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "hf_commit": "437d6915c5c512869e4cf8b16b840bbe3fb172bc",
       "files": [
         {
           "name": "Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00001-of-00003.gguf",
-          "size": 47400000000,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 49944699040,
+          "sha256": "5dc744396d0b116215e0b97fbfb74b3e0945f24857ba976c258e4edd15eed558",
           "urls": [
-            "https://huggingface.co/unsloth/Qwen3-235B-A22B-Instruct-2507-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q4_K_M/Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00001-of-00003.gguf"
+            "https://huggingface.co/unsloth/Qwen3-235B-A22B-Instruct-2507-GGUF/resolve/437d6915c5c512869e4cf8b16b840bbe3fb172bc/Q4_K_M/Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00001-of-00003.gguf"
           ]
         },
         {
           "name": "Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00002-of-00003.gguf",
-          "size": 47400000000,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 49930349824,
+          "sha256": "a9a9213792b6f56663cab014b958909c986cafd8ba59c1fef9257858dc879683",
           "urls": [
-            "https://huggingface.co/unsloth/Qwen3-235B-A22B-Instruct-2507-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q4_K_M/Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00002-of-00003.gguf"
+            "https://huggingface.co/unsloth/Qwen3-235B-A22B-Instruct-2507-GGUF/resolve/437d6915c5c512869e4cf8b16b840bbe3fb172bc/Q4_K_M/Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00002-of-00003.gguf"
           ]
         },
         {
           "name": "Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00003-of-00003.gguf",
-          "size": 47400000000,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "size": 42279026016,
+          "sha256": "b12aa8ceb940f0ccfd3aa00dbbe6d2faf3792185758a1cad08f8ffba2124d8bc",
           "urls": [
-            "https://huggingface.co/unsloth/Qwen3-235B-A22B-Instruct-2507-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q4_K_M/Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00003-of-00003.gguf"
+            "https://huggingface.co/unsloth/Qwen3-235B-A22B-Instruct-2507-GGUF/resolve/437d6915c5c512869e4cf8b16b840bbe3fb172bc/Q4_K_M/Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00003-of-00003.gguf"
           ]
         }
       ],
       "memory": {
-        "weights_bytes": 142200000000,
+        "weights_bytes": 142154074880,
         "non_expert_bytes": 8000000000,
-        "expert_bytes": 134200000000,
+        "expert_bytes": 134154074880,
         "n_layers": 94,
         "kv_bytes_per_1k_ctx": 197132288,
         "compute_overhead_bytes": 2500000000
@@ -1055,7 +1055,7 @@
         "reasoning": false
       },
       "min_host_version": "1.0.0",
-      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates. Non-thinking. Part sizes split evenly."
+      "notes": "Commit, sizes and SHA-256 pinned from the Hugging Face file listing. Layer, KV and expert numbers are estimates. Non-thinking."
     },
     {
       "id": "nomic-embed-text-v1.5-q8",
@@ -1074,14 +1074,14 @@
       "params_active_b": 0.137,
       "quant": "Q8_0",
       "hf_repo": "nomic-ai/nomic-embed-text-v1.5-GGUF",
-      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "hf_commit": "0188c9bf409793f810680a5a431e7b899c46104c",
       "files": [
         {
           "name": "nomic-embed-text-v1.5.Q8_0.gguf",
           "size": 146146432,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "sha256": "3e24342164b3d94991ba9692fdc0dd08e3fd7362e0aacc396a9a5c54a544c3b7",
           "urls": [
-            "https://huggingface.co/nomic-ai/nomic-embed-text-v1.5-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/nomic-embed-text-v1.5.Q8_0.gguf"
+            "https://huggingface.co/nomic-ai/nomic-embed-text-v1.5-GGUF/resolve/0188c9bf409793f810680a5a431e7b899c46104c/nomic-embed-text-v1.5.Q8_0.gguf"
           ]
         }
       ],
@@ -1101,7 +1101,7 @@
         "reasoning": false
       },
       "min_host_version": "1.0.0",
-      "notes": "Hashes and commit are placeholders: pin and hash before release. Exact file size from the HF file listing; layer and KV numbers from the model config (unverified). Needs search_document:/search_query: prefixes."
+      "notes": "Commit, sizes and SHA-256 pinned from the Hugging Face file listing. Layer and KV numbers from the model config (unverified). Needs search_document:/search_query: prefixes."
     },
     {
       "id": "qwen3-embedding-0.6b-q8",
@@ -1112,7 +1112,7 @@
       "kind": "embedding",
       "licence": {
         "spdx": "Apache-2.0",
-        "url": "https://huggingface.co/Qwen/Qwen3-Embedding-0.6B/blob/main/LICENSE",
+        "url": "https://huggingface.co/Qwen/Qwen3-Embedding-0.6B",
         "commercial_ok": true
       },
       "quality": 60,
@@ -1120,14 +1120,14 @@
       "params_active_b": 0.6,
       "quant": "Q8_0",
       "hf_repo": "Qwen/Qwen3-Embedding-0.6B-GGUF",
-      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "hf_commit": "370f27d7550e0def9b39c1f16d3fbaa13aa67728",
       "files": [
         {
           "name": "Qwen3-Embedding-0.6B-Q8_0.gguf",
           "size": 639150592,
-          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "sha256": "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439",
           "urls": [
-            "https://huggingface.co/Qwen/Qwen3-Embedding-0.6B-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Qwen3-Embedding-0.6B-Q8_0.gguf"
+            "https://huggingface.co/Qwen/Qwen3-Embedding-0.6B-GGUF/resolve/370f27d7550e0def9b39c1f16d3fbaa13aa67728/Qwen3-Embedding-0.6B-Q8_0.gguf"
           ]
         }
       ],
@@ -1147,7 +1147,7 @@
         "reasoning": false
       },
       "min_host_version": "1.0.0",
-      "notes": "Hashes and commit are placeholders: pin and hash before release. Exact file size from the HF file listing; layer and KV numbers from the model config (unverified). More multilingual than nomic."
+      "notes": "Commit, sizes and SHA-256 pinned from the Hugging Face file listing. Layer and KV numbers from the model config (unverified). More multilingual than nomic."
     }
   ]
 }

@@ -277,7 +277,10 @@ public class ModelDownloaderTests
     {
         using var root = new TestRoot();
         await using var server = new RangeServer();
-        var (catalogue, _) = CatalogueValidator.Parse(TestData.SeedCatalogueBytes());
+        var unpinned = System.Text.RegularExpressions.Regex.Replace(
+            System.Text.Encoding.UTF8.GetString(TestData.SeedCatalogueBytes()),
+            "\"sha256\": \"[0-9a-f]{64}\"", "\"sha256\": \"PLACEHOLDER-UNVERIFIED-SHA256\"");
+        var (catalogue, _) = CatalogueValidator.Parse(System.Text.Encoding.UTF8.GetBytes(unpinned));
         var store = ModelStore.OpenOrCreate(Path.Combine(root.Path, "models"), new FakeDisk());
         using var http = server.CreateClient();
         var downloader = new ModelDownloader(http, store, new FakeDisk(), Fast());
