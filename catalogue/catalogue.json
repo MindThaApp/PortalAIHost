@@ -1,0 +1,1153 @@
+{
+  "schema_version": 1,
+  "catalogue_version": 1,
+  "published": "2026-11-21",
+  "models": [
+    {
+      "id": "qwen3-30b-a3b-instruct-2507-q4km",
+      "display_name": "Qwen3 30B-A3B Instruct 2507",
+      "family": "qwen3",
+      "maker": "Alibaba Qwen",
+      "engine": "llama-server",
+      "kind": "chat",
+      "licence": {
+        "spdx": "Apache-2.0",
+        "url": "https://huggingface.co/Qwen/Qwen3-30B-A3B-Instruct-2507/blob/main/LICENSE",
+        "commercial_ok": true
+      },
+      "quality": 70,
+      "params_total_b": 30.5,
+      "params_active_b": 3.3,
+      "quant": "Q4_K_M",
+      "hf_repo": "unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF",
+      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "files": [
+        {
+          "name": "Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf",
+          "size": 18556686752,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 18556686752,
+        "non_expert_bytes": 1200000000,
+        "expert_bytes": 17356686752,
+        "n_layers": 48,
+        "kv_bytes_per_1k_ctx": 100663296,
+        "compute_overhead_bytes": 800000000
+      },
+      "context_max": 262144,
+      "context_default": 8192,
+      "features": {
+        "tools": true,
+        "json_schema": true,
+        "reasoning": false
+      },
+      "min_host_version": "1.0.0",
+      "notes": "Hashes and commit are placeholders: pin and hash before release. Exact file size from the HF file listing; layer and KV numbers from the model config (unverified). Non-thinking."
+    },
+    {
+      "id": "glm-4.7-flash-q4km",
+      "display_name": "GLM-4.7-Flash",
+      "family": "glm",
+      "maker": "Zhipu AI",
+      "engine": "llama-server",
+      "kind": "chat",
+      "licence": {
+        "spdx": "MIT",
+        "url": "https://huggingface.co/zai-org/GLM-4.7-Flash",
+        "commercial_ok": true
+      },
+      "quality": 68,
+      "params_total_b": 31,
+      "params_active_b": 3,
+      "quant": "Q4_K_M",
+      "hf_repo": "unsloth/GLM-4.7-Flash-GGUF",
+      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "files": [
+        {
+          "name": "GLM-4.7-Flash-Q4_K_M.gguf",
+          "size": 18300000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/unsloth/GLM-4.7-Flash-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/GLM-4.7-Flash-Q4_K_M.gguf"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 18300000000,
+        "non_expert_bytes": 1500000000,
+        "expert_bytes": 16800000000,
+        "n_layers": 47,
+        "kv_bytes_per_1k_ctx": 94371840,
+        "compute_overhead_bytes": 800000000
+      },
+      "context_max": 131072,
+      "context_default": 8192,
+      "features": {
+        "tools": true,
+        "json_schema": true,
+        "reasoning": true
+      },
+      "min_host_version": "1.0.0",
+      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates. llama.cpp architecture not yet confirmed."
+    },
+    {
+      "id": "granite-4.0-h-small-q4km",
+      "display_name": "Granite 4.0 H Small",
+      "family": "granite-4.0",
+      "maker": "IBM",
+      "engine": "llama-server",
+      "kind": "chat",
+      "licence": {
+        "spdx": "Apache-2.0",
+        "url": "https://huggingface.co/ibm-granite/granite-4.0-h-small",
+        "commercial_ok": true
+      },
+      "quality": 64,
+      "params_total_b": 32,
+      "params_active_b": 9,
+      "quant": "Q4_K_M",
+      "hf_repo": "ibm-granite/granite-4.0-h-small-GGUF",
+      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "files": [
+        {
+          "name": "granite-4.0-h-small-Q4_K_M.gguf",
+          "size": 19500000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/ibm-granite/granite-4.0-h-small-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/granite-4.0-h-small-Q4_K_M.gguf"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 19500000000,
+        "non_expert_bytes": 2500000000,
+        "expert_bytes": 17000000000,
+        "n_layers": 40,
+        "kv_bytes_per_1k_ctx": 16777216,
+        "compute_overhead_bytes": 800000000
+      },
+      "context_max": 131072,
+      "context_default": 8192,
+      "features": {
+        "tools": true,
+        "json_schema": true,
+        "reasoning": false
+      },
+      "min_host_version": "1.0.0",
+      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates. Hybrid Mamba: few attention layers, small KV."
+    },
+    {
+      "id": "gpt-oss-20b",
+      "display_name": "gpt-oss 20B",
+      "family": "gpt-oss",
+      "maker": "OpenAI",
+      "engine": "llama-server",
+      "kind": "chat",
+      "licence": {
+        "spdx": "Apache-2.0",
+        "url": "https://huggingface.co/openai/gpt-oss-20b",
+        "commercial_ok": true
+      },
+      "quality": 63,
+      "params_total_b": 21,
+      "params_active_b": 3.6,
+      "quant": "Q4_K_M",
+      "hf_repo": "unsloth/gpt-oss-20b-GGUF",
+      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "files": [
+        {
+          "name": "gpt-oss-20b-Q4_K_M.gguf",
+          "size": 11600000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/unsloth/gpt-oss-20b-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/gpt-oss-20b-Q4_K_M.gguf"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 11600000000,
+        "non_expert_bytes": 1500000000,
+        "expert_bytes": 10100000000,
+        "n_layers": 24,
+        "kv_bytes_per_1k_ctx": 50331648,
+        "compute_overhead_bytes": 600000000
+      },
+      "context_max": 131072,
+      "context_default": 8192,
+      "features": {
+        "tools": true,
+        "json_schema": true,
+        "reasoning": true
+      },
+      "min_host_version": "1.0.0",
+      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates. Needs the harmony chat format."
+    },
+    {
+      "id": "mistral-small-3.2-24b-q4km",
+      "display_name": "Mistral Small 3.2 24B",
+      "family": "mistral-small",
+      "maker": "Mistral AI",
+      "engine": "llama-server",
+      "kind": "chat",
+      "licence": {
+        "spdx": "Apache-2.0",
+        "url": "https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506",
+        "commercial_ok": true
+      },
+      "quality": 66,
+      "params_total_b": 24,
+      "params_active_b": 24,
+      "quant": "Q4_K_M",
+      "hf_repo": "unsloth/Mistral-Small-3.2-24B-Instruct-2506-GGUF",
+      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "files": [
+        {
+          "name": "Mistral-Small-3.2-24B-Instruct-2506-Q4_K_M.gguf",
+          "size": 14300000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/unsloth/Mistral-Small-3.2-24B-Instruct-2506-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Mistral-Small-3.2-24B-Instruct-2506-Q4_K_M.gguf"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 14300000000,
+        "non_expert_bytes": 0,
+        "expert_bytes": 0,
+        "n_layers": 40,
+        "kv_bytes_per_1k_ctx": 167772160,
+        "compute_overhead_bytes": 600000000
+      },
+      "context_max": 131072,
+      "context_default": 8192,
+      "features": {
+        "tools": true,
+        "json_schema": true,
+        "reasoning": false
+      },
+      "min_host_version": "1.0.0",
+      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates."
+    },
+    {
+      "id": "qwen3-14b-q4km",
+      "display_name": "Qwen3 14B",
+      "family": "qwen3",
+      "maker": "Alibaba Qwen",
+      "engine": "llama-server",
+      "kind": "chat",
+      "licence": {
+        "spdx": "Apache-2.0",
+        "url": "https://huggingface.co/Qwen/Qwen3-14B/blob/main/LICENSE",
+        "commercial_ok": true
+      },
+      "quality": 62,
+      "params_total_b": 14.8,
+      "params_active_b": 14.8,
+      "quant": "Q4_K_M",
+      "hf_repo": "Qwen/Qwen3-14B-GGUF",
+      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "files": [
+        {
+          "name": "Qwen3-14B-Q4_K_M.gguf",
+          "size": 9001752960,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/Qwen/Qwen3-14B-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Qwen3-14B-Q4_K_M.gguf"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 9001752960,
+        "non_expert_bytes": 0,
+        "expert_bytes": 0,
+        "n_layers": 40,
+        "kv_bytes_per_1k_ctx": 167772160,
+        "compute_overhead_bytes": 500000000
+      },
+      "context_max": 32768,
+      "context_default": 8192,
+      "features": {
+        "tools": true,
+        "json_schema": true,
+        "reasoning": true
+      },
+      "min_host_version": "1.0.0",
+      "notes": "Hashes and commit are placeholders: pin and hash before release. Exact file size from the HF file listing; layer and KV numbers from the model config (unverified)."
+    },
+    {
+      "id": "phi-4-q4k",
+      "display_name": "Phi-4 14B",
+      "family": "phi-4",
+      "maker": "Microsoft",
+      "engine": "llama-server",
+      "kind": "chat",
+      "licence": {
+        "spdx": "MIT",
+        "url": "https://huggingface.co/microsoft/phi-4/blob/main/LICENSE",
+        "commercial_ok": true
+      },
+      "quality": 58,
+      "params_total_b": 14.7,
+      "params_active_b": 14.7,
+      "quant": "Q4_K",
+      "hf_repo": "microsoft/phi-4-gguf",
+      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "files": [
+        {
+          "name": "phi-4-Q4_K.gguf",
+          "size": 9053114560,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/microsoft/phi-4-gguf/resolve/PLACEHOLDER-UNPINNED-COMMIT/phi-4-Q4_K.gguf"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 9053114560,
+        "non_expert_bytes": 0,
+        "expert_bytes": 0,
+        "n_layers": 40,
+        "kv_bytes_per_1k_ctx": 209715200,
+        "compute_overhead_bytes": 500000000
+      },
+      "context_max": 16384,
+      "context_default": 8192,
+      "features": {
+        "tools": true,
+        "json_schema": true,
+        "reasoning": false
+      },
+      "min_host_version": "1.0.0",
+      "notes": "Hashes and commit are placeholders: pin and hash before release. Exact file size from the HF file listing; layer and KV numbers from the model config (unverified). No Q4_K_M published; Q4_K used."
+    },
+    {
+      "id": "qwen3-8b-q4km",
+      "display_name": "Qwen3 8B",
+      "family": "qwen3",
+      "maker": "Alibaba Qwen",
+      "engine": "llama-server",
+      "kind": "chat",
+      "licence": {
+        "spdx": "Apache-2.0",
+        "url": "https://huggingface.co/Qwen/Qwen3-8B/blob/main/LICENSE",
+        "commercial_ok": true
+      },
+      "quality": 52,
+      "params_total_b": 8.2,
+      "params_active_b": 8.2,
+      "quant": "Q4_K_M",
+      "hf_repo": "Qwen/Qwen3-8B-GGUF",
+      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "files": [
+        {
+          "name": "Qwen3-8B-Q4_K_M.gguf",
+          "size": 5027783488,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/Qwen/Qwen3-8B-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Qwen3-8B-Q4_K_M.gguf"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 5027783488,
+        "non_expert_bytes": 0,
+        "expert_bytes": 0,
+        "n_layers": 36,
+        "kv_bytes_per_1k_ctx": 150994944,
+        "compute_overhead_bytes": 400000000
+      },
+      "context_max": 32768,
+      "context_default": 8192,
+      "features": {
+        "tools": true,
+        "json_schema": true,
+        "reasoning": true
+      },
+      "min_host_version": "1.0.0",
+      "notes": "Hashes and commit are placeholders: pin and hash before release. Exact file size from the HF file listing; layer and KV numbers from the model config (unverified)."
+    },
+    {
+      "id": "olmo-3-7b-instruct-q4km",
+      "display_name": "Olmo 3 7B Instruct",
+      "family": "olmo-3",
+      "maker": "Ai2",
+      "engine": "llama-server",
+      "kind": "chat",
+      "licence": {
+        "spdx": "Apache-2.0",
+        "url": "https://huggingface.co/allenai/Olmo-3-7B-Instruct",
+        "commercial_ok": true
+      },
+      "quality": 47,
+      "params_total_b": 7.3,
+      "params_active_b": 7.3,
+      "quant": "Q4_K_M",
+      "hf_repo": "unsloth/Olmo-3-7B-Instruct-GGUF",
+      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "files": [
+        {
+          "name": "Olmo-3-7B-Instruct-Q4_K_M.gguf",
+          "size": 4470000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/unsloth/Olmo-3-7B-Instruct-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Olmo-3-7B-Instruct-Q4_K_M.gguf"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 4470000000,
+        "non_expert_bytes": 0,
+        "expert_bytes": 0,
+        "n_layers": 32,
+        "kv_bytes_per_1k_ctx": 536870912,
+        "compute_overhead_bytes": 400000000
+      },
+      "context_max": 65536,
+      "context_default": 8192,
+      "features": {
+        "tools": true,
+        "json_schema": true,
+        "reasoning": false
+      },
+      "min_host_version": "1.0.0",
+      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates. llama.cpp architecture not yet confirmed."
+    },
+    {
+      "id": "granite-4.0-h-tiny-q4km",
+      "display_name": "Granite 4.0 H Tiny",
+      "family": "granite-4.0",
+      "maker": "IBM",
+      "engine": "llama-server",
+      "kind": "chat",
+      "licence": {
+        "spdx": "Apache-2.0",
+        "url": "https://huggingface.co/ibm-granite/granite-4.0-h-tiny",
+        "commercial_ok": true
+      },
+      "quality": 44,
+      "params_total_b": 7,
+      "params_active_b": 1,
+      "quant": "Q4_K_M",
+      "hf_repo": "ibm-granite/granite-4.0-h-tiny-GGUF",
+      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "files": [
+        {
+          "name": "granite-4.0-h-tiny-Q4_K_M.gguf",
+          "size": 4230000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/ibm-granite/granite-4.0-h-tiny-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/granite-4.0-h-tiny-Q4_K_M.gguf"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 4230000000,
+        "non_expert_bytes": 800000000,
+        "expert_bytes": 3430000000,
+        "n_layers": 40,
+        "kv_bytes_per_1k_ctx": 8388608,
+        "compute_overhead_bytes": 300000000
+      },
+      "context_max": 131072,
+      "context_default": 8192,
+      "features": {
+        "tools": true,
+        "json_schema": true,
+        "reasoning": false
+      },
+      "min_host_version": "1.0.0",
+      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates."
+    },
+    {
+      "id": "qwen3-4b-q4km",
+      "display_name": "Qwen3 4B",
+      "family": "qwen3",
+      "maker": "Alibaba Qwen",
+      "engine": "llama-server",
+      "kind": "chat",
+      "licence": {
+        "spdx": "Apache-2.0",
+        "url": "https://huggingface.co/Qwen/Qwen3-4B/blob/main/LICENSE",
+        "commercial_ok": true
+      },
+      "quality": 40,
+      "params_total_b": 4.0,
+      "params_active_b": 4.0,
+      "quant": "Q4_K_M",
+      "hf_repo": "Qwen/Qwen3-4B-GGUF",
+      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "files": [
+        {
+          "name": "Qwen3-4B-Q4_K_M.gguf",
+          "size": 2497280256,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/Qwen/Qwen3-4B-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Qwen3-4B-Q4_K_M.gguf"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 2497280256,
+        "non_expert_bytes": 0,
+        "expert_bytes": 0,
+        "n_layers": 36,
+        "kv_bytes_per_1k_ctx": 150994944,
+        "compute_overhead_bytes": 300000000
+      },
+      "context_max": 32768,
+      "context_default": 4096,
+      "features": {
+        "tools": true,
+        "json_schema": true,
+        "reasoning": true
+      },
+      "min_host_version": "1.0.0",
+      "notes": "Hashes and commit are placeholders: pin and hash before release. Exact file size from the HF file listing; layer and KV numbers from the model config (unverified)."
+    },
+    {
+      "id": "phi-4-mini-instruct-q4km",
+      "display_name": "Phi-4 mini 3.8B",
+      "family": "phi-4",
+      "maker": "Microsoft",
+      "engine": "llama-server",
+      "kind": "chat",
+      "licence": {
+        "spdx": "MIT",
+        "url": "https://huggingface.co/microsoft/Phi-4-mini-instruct",
+        "commercial_ok": true
+      },
+      "quality": 37,
+      "params_total_b": 3.8,
+      "params_active_b": 3.8,
+      "quant": "Q4_K_M",
+      "hf_repo": "unsloth/Phi-4-mini-instruct-GGUF",
+      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "files": [
+        {
+          "name": "Phi-4-mini-instruct-Q4_K_M.gguf",
+          "size": 2490000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/unsloth/Phi-4-mini-instruct-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Phi-4-mini-instruct-Q4_K_M.gguf"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 2490000000,
+        "non_expert_bytes": 0,
+        "expert_bytes": 0,
+        "n_layers": 32,
+        "kv_bytes_per_1k_ctx": 134217728,
+        "compute_overhead_bytes": 300000000
+      },
+      "context_max": 131072,
+      "context_default": 4096,
+      "features": {
+        "tools": true,
+        "json_schema": true,
+        "reasoning": false
+      },
+      "min_host_version": "1.0.0",
+      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates."
+    },
+    {
+      "id": "smollm3-3b-q4km",
+      "display_name": "SmolLM3 3B",
+      "family": "smollm3",
+      "maker": "Hugging Face",
+      "engine": "llama-server",
+      "kind": "chat",
+      "licence": {
+        "spdx": "Apache-2.0",
+        "url": "https://huggingface.co/HuggingFaceTB/SmolLM3-3B",
+        "commercial_ok": true
+      },
+      "quality": 34,
+      "params_total_b": 3.1,
+      "params_active_b": 3.1,
+      "quant": "Q4_K_M",
+      "hf_repo": "unsloth/SmolLM3-3B-GGUF",
+      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "files": [
+        {
+          "name": "SmolLM3-3B-Q4_K_M.gguf",
+          "size": 1920000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/unsloth/SmolLM3-3B-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/SmolLM3-3B-Q4_K_M.gguf"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 1920000000,
+        "non_expert_bytes": 0,
+        "expert_bytes": 0,
+        "n_layers": 36,
+        "kv_bytes_per_1k_ctx": 75497472,
+        "compute_overhead_bytes": 300000000
+      },
+      "context_max": 65536,
+      "context_default": 4096,
+      "features": {
+        "tools": true,
+        "json_schema": true,
+        "reasoning": false
+      },
+      "min_host_version": "1.0.0",
+      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates."
+    },
+    {
+      "id": "qwen3-next-80b-a3b-instruct-q4km",
+      "display_name": "Qwen3-Next 80B-A3B Instruct",
+      "family": "qwen3-next",
+      "maker": "Alibaba Qwen",
+      "engine": "llama-server",
+      "kind": "chat",
+      "licence": {
+        "spdx": "Apache-2.0",
+        "url": "https://huggingface.co/Qwen/Qwen3-Next-80B-A3B-Instruct",
+        "commercial_ok": true
+      },
+      "quality": 78,
+      "params_total_b": 80,
+      "params_active_b": 3,
+      "quant": "Q4_K_M",
+      "hf_repo": "Qwen/Qwen3-Next-80B-A3B-Instruct-GGUF",
+      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "files": [
+        {
+          "name": "Qwen3-Next-80B-A3B-Instruct-Q4_K_M.gguf",
+          "size": 48400000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/Qwen/Qwen3-Next-80B-A3B-Instruct-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Qwen3-Next-80B-A3B-Instruct-Q4_K_M.gguf"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 48400000000,
+        "non_expert_bytes": 3000000000,
+        "expert_bytes": 45400000000,
+        "n_layers": 48,
+        "kv_bytes_per_1k_ctx": 25165824,
+        "compute_overhead_bytes": 1200000000
+      },
+      "context_max": 262144,
+      "context_default": 8192,
+      "features": {
+        "tools": true,
+        "json_schema": true,
+        "reasoning": false
+      },
+      "min_host_version": "1.0.0",
+      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates. Hybrid attention; needs a recent llama.cpp build."
+    },
+    {
+      "id": "gpt-oss-120b-mxfp4",
+      "display_name": "gpt-oss 120B",
+      "family": "gpt-oss",
+      "maker": "OpenAI",
+      "engine": "llama-server",
+      "kind": "chat",
+      "licence": {
+        "spdx": "Apache-2.0",
+        "url": "https://huggingface.co/openai/gpt-oss-120b",
+        "commercial_ok": true
+      },
+      "quality": 77,
+      "params_total_b": 117,
+      "params_active_b": 5.1,
+      "quant": "MXFP4",
+      "hf_repo": "ggml-org/gpt-oss-120b-GGUF",
+      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "files": [
+        {
+          "name": "gpt-oss-120b-mxfp4.gguf",
+          "size": 63400000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/ggml-org/gpt-oss-120b-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/gpt-oss-120b-mxfp4.gguf"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 63400000000,
+        "non_expert_bytes": 2500000000,
+        "expert_bytes": 60900000000,
+        "n_layers": 36,
+        "kv_bytes_per_1k_ctx": 75497472,
+        "compute_overhead_bytes": 1200000000
+      },
+      "context_max": 131072,
+      "context_default": 8192,
+      "features": {
+        "tools": true,
+        "json_schema": true,
+        "reasoning": true
+      },
+      "min_host_version": "1.0.0",
+      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates. Needs the harmony chat format. Check whether the repo splits the file before pinning."
+    },
+    {
+      "id": "glm-4.5-air-q4km",
+      "display_name": "GLM-4.5-Air",
+      "family": "glm",
+      "maker": "Zhipu AI",
+      "engine": "llama-server",
+      "kind": "chat",
+      "licence": {
+        "spdx": "MIT",
+        "url": "https://huggingface.co/zai-org/GLM-4.5-Air",
+        "commercial_ok": true
+      },
+      "quality": 79,
+      "params_total_b": 106,
+      "params_active_b": 12,
+      "quant": "Q4_K_M",
+      "hf_repo": "unsloth/GLM-4.5-Air-GGUF",
+      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "files": [
+        {
+          "name": "GLM-4.5-Air-Q4_K_M-00001-of-00002.gguf",
+          "size": 36500000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/unsloth/GLM-4.5-Air-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q4_K_M/GLM-4.5-Air-Q4_K_M-00001-of-00002.gguf"
+          ]
+        },
+        {
+          "name": "GLM-4.5-Air-Q4_K_M-00002-of-00002.gguf",
+          "size": 36500000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/unsloth/GLM-4.5-Air-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q4_K_M/GLM-4.5-Air-Q4_K_M-00002-of-00002.gguf"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 73000000000,
+        "non_expert_bytes": 4000000000,
+        "expert_bytes": 69000000000,
+        "n_layers": 46,
+        "kv_bytes_per_1k_ctx": 192937984,
+        "compute_overhead_bytes": 1500000000
+      },
+      "context_max": 131072,
+      "context_default": 8192,
+      "features": {
+        "tools": true,
+        "json_schema": true,
+        "reasoning": true
+      },
+      "min_host_version": "1.0.0",
+      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates. Part sizes split evenly from the total."
+    },
+    {
+      "id": "qwen3.5-122b-a10b-q4km",
+      "display_name": "Qwen3.5 122B-A10B",
+      "family": "qwen3.5",
+      "maker": "Alibaba Qwen",
+      "engine": "llama-server",
+      "kind": "chat",
+      "licence": {
+        "spdx": "Apache-2.0",
+        "url": "https://huggingface.co/Qwen/Qwen3.5-122B-A10B",
+        "commercial_ok": true
+      },
+      "quality": 84,
+      "params_total_b": 122,
+      "params_active_b": 10,
+      "quant": "Q4_K_M",
+      "hf_repo": "unsloth/Qwen3.5-122B-A10B-GGUF",
+      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "files": [
+        {
+          "name": "Qwen3.5-122B-A10B-Q4_K_M-00001-of-00003.gguf",
+          "size": 25500000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/unsloth/Qwen3.5-122B-A10B-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q4_K_M/Qwen3.5-122B-A10B-Q4_K_M-00001-of-00003.gguf"
+          ]
+        },
+        {
+          "name": "Qwen3.5-122B-A10B-Q4_K_M-00002-of-00003.gguf",
+          "size": 25500000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/unsloth/Qwen3.5-122B-A10B-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q4_K_M/Qwen3.5-122B-A10B-Q4_K_M-00002-of-00003.gguf"
+          ]
+        },
+        {
+          "name": "Qwen3.5-122B-A10B-Q4_K_M-00003-of-00003.gguf",
+          "size": 25500000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/unsloth/Qwen3.5-122B-A10B-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q4_K_M/Qwen3.5-122B-A10B-Q4_K_M-00003-of-00003.gguf"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 76500000000,
+        "non_expert_bytes": 5000000000,
+        "expert_bytes": 71500000000,
+        "n_layers": 48,
+        "kv_bytes_per_1k_ctx": 50331648,
+        "compute_overhead_bytes": 1500000000
+      },
+      "context_max": 262144,
+      "context_default": 8192,
+      "features": {
+        "tools": true,
+        "json_schema": true,
+        "reasoning": true
+      },
+      "min_host_version": "1.0.0",
+      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates. Thinking on by default. Part sizes split evenly from the total."
+    },
+    {
+      "id": "minimax-m2-q3km",
+      "display_name": "MiniMax-M2 (Q3)",
+      "family": "minimax-m2",
+      "maker": "MiniMax",
+      "engine": "llama-server",
+      "kind": "chat",
+      "licence": {
+        "spdx": "MIT",
+        "url": "https://huggingface.co/MiniMaxAI/MiniMax-M2",
+        "commercial_ok": true
+      },
+      "quality": 83,
+      "params_total_b": 230,
+      "params_active_b": 10,
+      "quant": "Q3_K_M",
+      "hf_repo": "unsloth/MiniMax-M2-GGUF",
+      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "files": [
+        {
+          "name": "MiniMax-M2-Q3_K_M-00001-of-00003.gguf",
+          "size": 36433333333,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/unsloth/MiniMax-M2-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q3_K_M/MiniMax-M2-Q3_K_M-00001-of-00003.gguf"
+          ]
+        },
+        {
+          "name": "MiniMax-M2-Q3_K_M-00002-of-00003.gguf",
+          "size": 36433333333,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/unsloth/MiniMax-M2-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q3_K_M/MiniMax-M2-Q3_K_M-00002-of-00003.gguf"
+          ]
+        },
+        {
+          "name": "MiniMax-M2-Q3_K_M-00003-of-00003.gguf",
+          "size": 36433333334,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/unsloth/MiniMax-M2-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q3_K_M/MiniMax-M2-Q3_K_M-00003-of-00003.gguf"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 109300000000,
+        "non_expert_bytes": 6000000000,
+        "expert_bytes": 103300000000,
+        "n_layers": 62,
+        "kv_bytes_per_1k_ctx": 260046848,
+        "compute_overhead_bytes": 2000000000
+      },
+      "context_max": 196608,
+      "context_default": 8192,
+      "features": {
+        "tools": true,
+        "json_schema": true,
+        "reasoning": true
+      },
+      "min_host_version": "1.0.0",
+      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates. Part count assumed; part sizes split evenly."
+    },
+    {
+      "id": "minimax-m2-q4km",
+      "display_name": "MiniMax-M2",
+      "family": "minimax-m2",
+      "maker": "MiniMax",
+      "engine": "llama-server",
+      "kind": "chat",
+      "licence": {
+        "spdx": "MIT",
+        "url": "https://huggingface.co/MiniMaxAI/MiniMax-M2",
+        "commercial_ok": true
+      },
+      "quality": 87,
+      "params_total_b": 230,
+      "params_active_b": 10,
+      "quant": "Q4_K_M",
+      "hf_repo": "unsloth/MiniMax-M2-GGUF",
+      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "files": [
+        {
+          "name": "MiniMax-M2-Q4_K_M-00001-of-00003.gguf",
+          "size": 46100000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/unsloth/MiniMax-M2-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q4_K_M/MiniMax-M2-Q4_K_M-00001-of-00003.gguf"
+          ]
+        },
+        {
+          "name": "MiniMax-M2-Q4_K_M-00002-of-00003.gguf",
+          "size": 46100000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/unsloth/MiniMax-M2-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q4_K_M/MiniMax-M2-Q4_K_M-00002-of-00003.gguf"
+          ]
+        },
+        {
+          "name": "MiniMax-M2-Q4_K_M-00003-of-00003.gguf",
+          "size": 46100000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/unsloth/MiniMax-M2-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q4_K_M/MiniMax-M2-Q4_K_M-00003-of-00003.gguf"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 138300000000,
+        "non_expert_bytes": 6000000000,
+        "expert_bytes": 132300000000,
+        "n_layers": 62,
+        "kv_bytes_per_1k_ctx": 260046848,
+        "compute_overhead_bytes": 2000000000
+      },
+      "context_max": 196608,
+      "context_default": 8192,
+      "features": {
+        "tools": true,
+        "json_schema": true,
+        "reasoning": true
+      },
+      "min_host_version": "1.0.0",
+      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates. Part sizes split evenly from the total."
+    },
+    {
+      "id": "qwen3-235b-a22b-instruct-2507-q3km",
+      "display_name": "Qwen3 235B-A22B Instruct 2507 (Q3)",
+      "family": "qwen3",
+      "maker": "Alibaba Qwen",
+      "engine": "llama-server",
+      "kind": "chat",
+      "licence": {
+        "spdx": "Apache-2.0",
+        "url": "https://huggingface.co/Qwen/Qwen3-235B-A22B-Instruct-2507",
+        "commercial_ok": true
+      },
+      "quality": 86,
+      "params_total_b": 235,
+      "params_active_b": 22,
+      "quant": "Q3_K_M",
+      "hf_repo": "unsloth/Qwen3-235B-A22B-Instruct-2507-GGUF",
+      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "files": [
+        {
+          "name": "Qwen3-235B-A22B-Instruct-2507-Q3_K_M-00001-of-00003.gguf",
+          "size": 37466666666,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/unsloth/Qwen3-235B-A22B-Instruct-2507-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q3_K_M/Qwen3-235B-A22B-Instruct-2507-Q3_K_M-00001-of-00003.gguf"
+          ]
+        },
+        {
+          "name": "Qwen3-235B-A22B-Instruct-2507-Q3_K_M-00002-of-00003.gguf",
+          "size": 37466666666,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/unsloth/Qwen3-235B-A22B-Instruct-2507-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q3_K_M/Qwen3-235B-A22B-Instruct-2507-Q3_K_M-00002-of-00003.gguf"
+          ]
+        },
+        {
+          "name": "Qwen3-235B-A22B-Instruct-2507-Q3_K_M-00003-of-00003.gguf",
+          "size": 37466666668,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/unsloth/Qwen3-235B-A22B-Instruct-2507-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q3_K_M/Qwen3-235B-A22B-Instruct-2507-Q3_K_M-00003-of-00003.gguf"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 112400000000,
+        "non_expert_bytes": 8000000000,
+        "expert_bytes": 104400000000,
+        "n_layers": 94,
+        "kv_bytes_per_1k_ctx": 197132288,
+        "compute_overhead_bytes": 2500000000
+      },
+      "context_max": 262144,
+      "context_default": 8192,
+      "features": {
+        "tools": true,
+        "json_schema": true,
+        "reasoning": false
+      },
+      "min_host_version": "1.0.0",
+      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates. Non-thinking. Part sizes split evenly."
+    },
+    {
+      "id": "qwen3-235b-a22b-instruct-2507-q4km",
+      "display_name": "Qwen3 235B-A22B Instruct 2507",
+      "family": "qwen3",
+      "maker": "Alibaba Qwen",
+      "engine": "llama-server",
+      "kind": "chat",
+      "licence": {
+        "spdx": "Apache-2.0",
+        "url": "https://huggingface.co/Qwen/Qwen3-235B-A22B-Instruct-2507",
+        "commercial_ok": true
+      },
+      "quality": 90,
+      "params_total_b": 235,
+      "params_active_b": 22,
+      "quant": "Q4_K_M",
+      "hf_repo": "unsloth/Qwen3-235B-A22B-Instruct-2507-GGUF",
+      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "files": [
+        {
+          "name": "Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00001-of-00003.gguf",
+          "size": 47400000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/unsloth/Qwen3-235B-A22B-Instruct-2507-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q4_K_M/Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00001-of-00003.gguf"
+          ]
+        },
+        {
+          "name": "Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00002-of-00003.gguf",
+          "size": 47400000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/unsloth/Qwen3-235B-A22B-Instruct-2507-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q4_K_M/Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00002-of-00003.gguf"
+          ]
+        },
+        {
+          "name": "Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00003-of-00003.gguf",
+          "size": 47400000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/unsloth/Qwen3-235B-A22B-Instruct-2507-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Q4_K_M/Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00003-of-00003.gguf"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 142200000000,
+        "non_expert_bytes": 8000000000,
+        "expert_bytes": 134200000000,
+        "n_layers": 94,
+        "kv_bytes_per_1k_ctx": 197132288,
+        "compute_overhead_bytes": 2500000000
+      },
+      "context_max": 262144,
+      "context_default": 8192,
+      "features": {
+        "tools": true,
+        "json_schema": true,
+        "reasoning": false
+      },
+      "min_host_version": "1.0.0",
+      "notes": "Hashes and commit are placeholders: pin and hash before release. Sizes from the model card listing; layer, KV and expert numbers are estimates. Non-thinking. Part sizes split evenly."
+    },
+    {
+      "id": "nomic-embed-text-v1.5-q8",
+      "display_name": "nomic-embed-text v1.5",
+      "family": "nomic-embed",
+      "maker": "Nomic AI",
+      "engine": "llama-server",
+      "kind": "embedding",
+      "licence": {
+        "spdx": "Apache-2.0",
+        "url": "https://huggingface.co/nomic-ai/nomic-embed-text-v1.5",
+        "commercial_ok": true
+      },
+      "quality": 50,
+      "params_total_b": 0.137,
+      "params_active_b": 0.137,
+      "quant": "Q8_0",
+      "hf_repo": "nomic-ai/nomic-embed-text-v1.5-GGUF",
+      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "files": [
+        {
+          "name": "nomic-embed-text-v1.5.Q8_0.gguf",
+          "size": 146146432,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/nomic-ai/nomic-embed-text-v1.5-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/nomic-embed-text-v1.5.Q8_0.gguf"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 146146432,
+        "non_expert_bytes": 0,
+        "expert_bytes": 0,
+        "n_layers": 12,
+        "kv_bytes_per_1k_ctx": 37748736,
+        "compute_overhead_bytes": 100000000
+      },
+      "context_max": 8192,
+      "context_default": 2048,
+      "features": {
+        "tools": false,
+        "json_schema": false,
+        "reasoning": false
+      },
+      "min_host_version": "1.0.0",
+      "notes": "Hashes and commit are placeholders: pin and hash before release. Exact file size from the HF file listing; layer and KV numbers from the model config (unverified). Needs search_document:/search_query: prefixes."
+    },
+    {
+      "id": "qwen3-embedding-0.6b-q8",
+      "display_name": "Qwen3 Embedding 0.6B",
+      "family": "qwen3-embedding",
+      "maker": "Alibaba Qwen",
+      "engine": "llama-server",
+      "kind": "embedding",
+      "licence": {
+        "spdx": "Apache-2.0",
+        "url": "https://huggingface.co/Qwen/Qwen3-Embedding-0.6B/blob/main/LICENSE",
+        "commercial_ok": true
+      },
+      "quality": 60,
+      "params_total_b": 0.6,
+      "params_active_b": 0.6,
+      "quant": "Q8_0",
+      "hf_repo": "Qwen/Qwen3-Embedding-0.6B-GGUF",
+      "hf_commit": "PLACEHOLDER-UNPINNED-COMMIT",
+      "files": [
+        {
+          "name": "Qwen3-Embedding-0.6B-Q8_0.gguf",
+          "size": 639150592,
+          "sha256": "PLACEHOLDER-UNVERIFIED-SHA256",
+          "urls": [
+            "https://huggingface.co/Qwen/Qwen3-Embedding-0.6B-GGUF/resolve/PLACEHOLDER-UNPINNED-COMMIT/Qwen3-Embedding-0.6B-Q8_0.gguf"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 639150592,
+        "non_expert_bytes": 0,
+        "expert_bytes": 0,
+        "n_layers": 28,
+        "kv_bytes_per_1k_ctx": 117440512,
+        "compute_overhead_bytes": 150000000
+      },
+      "context_max": 32768,
+      "context_default": 8192,
+      "features": {
+        "tools": false,
+        "json_schema": false,
+        "reasoning": false
+      },
+      "min_host_version": "1.0.0",
+      "notes": "Hashes and commit are placeholders: pin and hash before release. Exact file size from the HF file listing; layer and KV numbers from the model config (unverified). More multilingual than nomic."
+    }
+  ]
+}

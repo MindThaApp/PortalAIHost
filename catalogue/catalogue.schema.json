@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mindthaapp.github.io/portal-ai-host-catalogue/catalogue.schema.json",
+  "title": "Portal AI Host model catalogue",
+  "type": "object",
+  "required": ["schema_version", "catalogue_version", "models"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "catalogue_version": { "type": "integer", "minimum": 1, "description": "Monotonic; lower versions are rejected as rollbacks." },
+    "published": { "type": "string" },
+    "models": { "type": "array", "items": { "$ref": "#/$defs/entry" } }
+  },
+  "$defs": {
+    "entry": {
+      "type": "object",
+      "required": ["id", "display_name", "engine", "kind", "licence", "quality", "params_total_b", "params_active_b",
+                   "quant", "hf_repo", "hf_commit", "files", "memory", "context_max", "context_default"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$" },
+        "display_name": { "type": "string", "minLength": 1 },
+        "family": { "type": "string" },
+        "maker": { "type": "string" },
+        "engine": { "type": "string", "description": "llama-server today; unknown engines are ignored." },
+        "kind": { "type": "string", "description": "chat, embedding or transcription (speech); open set." },
+        "licence": {
+          "type": "object",
+          "required": ["spdx", "url", "commercial_ok"],
+          "properties": {
+            "spdx": { "type": "string", "minLength": 1 },
+            "url": { "type": "string", "pattern": "^https://" },
+            "commercial_ok": { "type": "boolean" }
+          }
+        },
+        "quality": { "type": "number", "description": "Comparable score including the quantisation penalty." },
+        "params_total_b": { "type": "number", "exclusiveMinimum": 0 },
+        "params_active_b": { "type": "number", "exclusiveMinimum": 0 },
+        "quant": { "type": "string" },
+        "hf_repo": { "type": "string" },
+        "hf_commit": { "type": "string", "description": "40-hex pinned commit; anything else makes the entry non-downloadable." },
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "description": "One file, or the parts of a split GGUF in order (-00001-of-0000N.gguf first).",
+          "items": {
+            "type": "object",
+            "required": ["name", "size", "sha256", "urls"],
+            "properties": {
+              "name": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,199}\\.(gguf|bin)$" },
+              "size": { "type": "integer", "minimum": 1 },
+              "sha256": { "type": "string", "description": "64 lower-case hex; a placeholder fails verification." },
+              "urls": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^https://" } }
+            }
+          }
+        },
+        "memory": {
+          "type": "object",
+          "required": ["weights_bytes", "n_layers", "kv_bytes_per_1k_ctx", "compute_overhead_bytes"],
+          "properties": {
+            "weights_bytes": { "type": "integer", "minimum": 1 },
+            "non_expert_bytes": { "type": "integer", "minimum": 0 },
+            "expert_bytes": { "type": "integer", "minimum": 0 },
+            "embed_output_bytes": { "type": "integer", "minimum": 0 },
+            "n_layers": { "type": "integer", "minimum": 1 },
+            "kv_bytes_per_1k_ctx": { "type": "integer", "minimum": 0, "description": "f16 KV for 1,024 tokens over all layers." },
+            "compute_overhead_bytes": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "context_max": { "type": "integer", "minimum": 1 },
+        "context_default": { "type": "integer", "minimum": 1 },
+        "features": {
+          "type": "object",
+          "properties": {
+            "tools": { "type": "boolean" },
+            "json_schema": { "type": "boolean" },
+            "reasoning": { "type": "boolean" }
+          }
+        },
+        "min_host_version": { "type": "string" },
+        "recommended_sampling": {
+          "type": "object",
+          "properties": {
+            "temperature": { "type": "number" },
+            "top_p": { "type": "number" },
+            "top_k": { "type": "integer" },
+            "min_p": { "type": "number" }
+          }
+        },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}
