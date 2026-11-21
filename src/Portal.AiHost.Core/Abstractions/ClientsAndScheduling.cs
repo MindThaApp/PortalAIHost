@@ -31,7 +31,13 @@ public sealed record AccessRequestInfo(
     DateTimeOffset ExpiresAt);
 
 /// <summary>Outcome of an access request poll. Token is non-null once, when first approved and collected.</summary>
-public sealed record AccessRequestResult(string Status, string? Token, string? TokenId, string? AppId);
+public sealed record AccessRequestResult(string Status, string? Token, string? TokenId, string? AppId)
+{
+    /// <summary>Never prints the token, so logging a result cannot leak it.</summary>
+    public override string ToString() =>
+        $"AccessRequestResult {{ Status = {Status}, Token = {(Token is null ? "null" : "[redacted]")}, " +
+        $"TokenId = {TokenId}, AppId = {AppId} }}";
+}
 
 public sealed record RegisteredClient(
     string TokenId,
