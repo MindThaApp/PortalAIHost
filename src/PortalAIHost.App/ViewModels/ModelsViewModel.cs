@@ -19,6 +19,7 @@ public sealed partial class ModelRowViewModel : ObservableObject
         _s = strings;
         Id = m.Id;
         Name = m.DisplayName;
+        SizeBytes = m.SizeBytes;
         SizeText = Fmt.Bytes(m.SizeBytes);
         QualityText = Fmt.Stars(m.Quality);
         QualityName = strings.Format("Vm_QualityName", Math.Round(m.Quality, 1));
@@ -40,7 +41,17 @@ public sealed partial class ModelRowViewModel : ObservableObject
 
     public string Id { get; }
     public string Name { get; }
+    public long SizeBytes { get; }
     public string SizeText { get; }
+
+    /// <summary>
+    /// "This frees 4.2 GB." from the listing's file size. Empty for a model added in place (the host only takes it
+    /// off the list and the file stays), or when the size is not known.
+    /// </summary>
+    public string FreesText => ExistingCopy || SizeBytes <= 0 ? "" : _s.Format("Vm_RemoveFrees", Fmt.Bytes(SizeBytes));
+
+    /// <summary>Body of the remove confirmation: what is removed, then how much space it gives back.</summary>
+    public string RemoveBody => FreesText.Length == 0 ? _s.Format("Vm_RemoveBody", Name) : _s.Format("Vm_RemoveBody", Name) + "\n\n" + FreesText;
     public string QualityText { get; }
     public string QualityName { get; }
     public string Reason { get; }
@@ -200,7 +211,7 @@ public sealed partial class ModelsViewModel : ObservableObject, IDisposable
     public async Task RemoveAsync(ModelRowViewModel row)
     {
         // The host deletes only files it downloaded (store rules); the window only asks, after a confirmation.
-        var ok = await _dialogs.ConfirmAsync(_s.Get("Vm_RemoveTitle"), _s.Format("Vm_RemoveBody", row.Name), _s.Get("Vm_RemoveYes"), _s.Get("Vm_Cancel"));
+        var ok = await _dialogs.ConfirmAsync(_s.Get("Vm_RemoveTitle"), row.RemoveBody, _s.Get("Vm_RemoveYes"), _s.Get("Vm_Cancel"));
         if (!ok) return;
         var removed = row.StoreFolder is { } old
             ? await Run(() => _shell.Host.RemoveOldModelAsync(row.Id, old))

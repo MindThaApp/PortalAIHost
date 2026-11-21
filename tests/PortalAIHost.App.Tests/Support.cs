@@ -31,6 +31,16 @@ internal sealed class MemoryState : IAppState
 {
     public bool FirstRunDone { get; private set; }
     public void MarkFirstRunDone() => FirstRunDone = true;
+    public AppearancePrefs Appearance { get; private set; } = AppearancePrefs.Default;
+    public void SaveAppearance(AppearancePrefs prefs) => Appearance = prefs;
+    public string? LastSeenVersion { get; private set; }
+    public void MarkVersionSeen(string version) => LastSeenVersion = version;
+}
+
+internal sealed class RecordingAppearance : IAppearanceApplier
+{
+    public List<AppearancePrefs> Applied { get; } = new();
+    public void Apply(AppearancePrefs prefs) => Applied.Add(prefs);
 }
 
 internal sealed class Rig : IDisposable

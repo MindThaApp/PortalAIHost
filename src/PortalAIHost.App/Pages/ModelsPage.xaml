@@ -38,9 +38,9 @@
                                         <TextBlock Text="{x:Bind Name}" Style="{StaticResource BodyStrongTextBlockStyle}" />
                                         <TextBlock Text="{x:Bind Badge, Mode=OneWay}" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
                                     </StackPanel>
-                                    <TextBlock Text="{x:Bind Reason}" TextWrapping="Wrap" Opacity="0.8" />
+                                    <TextBlock Text="{x:Bind Reason}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                                     <StackPanel Orientation="Horizontal" Spacing="12">
-                                        <TextBlock Text="{x:Bind SizeText}" Opacity="0.8" />
+                                        <TextBlock Text="{x:Bind SizeText}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                                         <TextBlock Text="{x:Bind QualityText}" AutomationProperties.Name="{x:Bind QualityName}" />
                                     </StackPanel>
                                     <TextBlock x:Uid="ModelTooBig" Visibility="{x:Bind TooBig, Mode=OneWay}" TextWrapping="Wrap" />
@@ -60,7 +60,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <TextBlock Text="{x:Bind ViewModel.StorageLine, Mode=OneWay}" TextWrapping="Wrap" Opacity="0.8" IsTextSelectionEnabled="True" />
+            <TextBlock Text="{x:Bind ViewModel.StorageLine, Mode=OneWay}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" IsTextSelectionEnabled="True" />
         </StackPanel>
     </ScrollViewer>
 </Page>

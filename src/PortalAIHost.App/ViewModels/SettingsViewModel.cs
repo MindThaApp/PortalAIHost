@@ -6,42 +6,143 @@ using PortalAIHost.App.Services;
 
 namespace PortalAIHost.App.ViewModels;
 
-/// <summary>Settings page. Every change is sent to the host straight away.</summary>
+/// <summary>Settings page. Every change applies straight away: it is checked, then saved. There is no Apply button.</summary>
 public sealed partial class SettingsViewModel : ObservableObject
 {
     public const int KeepLoadedIndex = 0;
     public const int FiveMinutesIndex = 1;
     public const int TenMinutesIndex = 2;
 
+    public const int MessageInfo = 0;
+    public const int MessageSuccess = 1;
+    public const int MessageWarning = 2;
+    public const int MessageError = 3;
+
     private readonly ShellViewModel _shell;
     private readonly IUiDispatcher _ui;
     private readonly IStrings _s;
-    private readonly IDialogService _dialogs;
     private readonly IStartupControl _startup;
+    private readonly IAppearanceApplier? _applier;
     private HostSettings _current = new();
     private bool _loading;
+    private bool _appearanceLoading;
 
-    public SettingsViewModel(ShellViewModel shell, IUiDispatcher ui, IStrings strings, IDialogService dialogs, IStartupControl? startup = null)
+    public SettingsViewModel(ShellViewModel shell, IUiDispatcher ui, IStrings strings, IDialogService dialogs, IStartupControl? startup = null, IAppearanceApplier? applier = null)
     {
         _startup = startup ?? new UnavailableStartupControl();
+        _applier = applier;
         _shell = shell;
         _ui = ui;
         _s = strings;
-        _dialogs = dialogs;
+        _ = dialogs;
         IdleChoices = new[] { _s.Get("Vm_Idle_Keep"), _s.Get("Vm_Idle_5"), _s.Get("Vm_Idle_10") };
+        ThemeChoices = Names("Vm_Theme_", "System", "Light", "Dark");
+        MaterialChoices = Names("Vm_Material_", "Mica", "Acrylic", "Solid");
+        CornerChoices = Names("Vm_Corners_", "Rounded", "Square", "ExtraRound");
+        DensityChoices = Names("Vm_Density_", "Compact", "Standard", "Comfortable");
+        TextChoices = Names("Vm_Text_", "Normal", "Larger", "Largest");
+        MotionChoices = Names("Vm_Motion_", "Follow", "Reduced", "Off");
+        ShowAppearance(shell.State.Appearance);
     }
 
+    private string[] Names(string prefix, params string[] keys) => keys.Select(k => _s.Get(prefix + k)).ToArray();
+
     public IReadOnlyList<string> IdleChoices { get; }
+    public IReadOnlyList<string> ThemeChoices { get; }
+    public IReadOnlyList<string> MaterialChoices { get; }
+    public IReadOnlyList<string> CornerChoices { get; }
+    public IReadOnlyList<string> DensityChoices { get; }
+    public IReadOnlyList<string> TextChoices { get; }
+    public IReadOnlyList<string> MotionChoices { get; }
 
     [ObservableProperty] private bool _startWithWindows;
     [ObservableProperty] private int _idleIndex = TenMinutesIndex;
     [ObservableProperty] private string _modelsFolder = "";
     [ObservableProperty] private string _folderPlaceholder = "";
     [ObservableProperty] private string _message = "";
+    [ObservableProperty] private int _messageKind;
+    [ObservableProperty] private bool _hasMessage;
     [ObservableProperty] private bool _available;
     [ObservableProperty] private string _startupState = StartupStates.Unavailable;
     [ObservableProperty] private bool _startupChangeable;
     [ObservableProperty] private string _startupNote = "";
+    [ObservableProperty] private int _themeIndex;
+    [ObservableProperty] private int _materialIndex;
+    [ObservableProperty] private int _cornersIndex;
+    [ObservableProperty] private int _densityIndex;
+    [ObservableProperty] private int _textIndex;
+    [ObservableProperty] private int _motionIndex;
+
+    partial void OnMessageChanged(string value) => HasMessage = value.Length > 0;
+
+    private void Say(string text, int kind)
+    {
+        MessageKind = kind;
+        Message = text;
+    }
+
+    private void ShowAppearance(AppearancePrefs p)
+    {
+        _appearanceLoading = true;
+        ThemeIndex = (int)p.Theme;
+        MaterialIndex = (int)p.Material;
+        CornersIndex = (int)p.Corners;
+        DensityIndex = (int)p.Density;
+        TextIndex = Math.Clamp(p.TextStep, 0, 2);
+        MotionIndex = (int)p.Motion;
+        _appearanceLoading = false;
+    }
+
+    private AppearancePrefs ReadAppearance() => new()
+    {
+        Theme = (ThemeChoice)Math.Clamp(ThemeIndex, 0, 2),
+        Material = (MaterialChoice)Math.Clamp(MaterialIndex, 0, 2),
+        Corners = (CornerChoice)Math.Clamp(CornersIndex, 0, 2),
+        Density = (DensityChoice)Math.Clamp(DensityIndex, 0, 2),
+        TextStep = Math.Clamp(TextIndex, 0, 2),
+        Motion = (MotionChoice)Math.Clamp(MotionIndex, 0, 2),
+    };
+
+    private void AppearanceEdited()
+    {
+        if (_appearanceLoading) return;
+        var prefs = ReadAppearance();
+        _shell.State.SaveAppearance(prefs);
+        _applier?.Apply(prefs);
+    }
+
+    partial void OnThemeIndexChanged(int value) => AppearanceEdited();
+    partial void OnMaterialIndexChanged(int value) => AppearanceEdited();
+    partial void OnCornersIndexChanged(int value) => AppearanceEdited();
+    partial void OnDensityIndexChanged(int value) => AppearanceEdited();
+    partial void OnTextIndexChanged(int value) => AppearanceEdited();
+    partial void OnMotionIndexChanged(int value) => AppearanceEdited();
+
+    /// <summary>Puts every appearance choice back to the design defaults.</summary>
+    [RelayCommand]
+    private void ResetAppearance()
+    {
+        ShowAppearance(AppearancePrefs.Default);
+        _shell.State.SaveAppearance(AppearancePrefs.Default);
+        _applier?.Apply(AppearancePrefs.Default);
+    }
+
+    /// <summary>Puts start with Windows and the idle time back to their defaults.</summary>
+    [RelayCommand]
+    private void ResetGeneral()
+    {
+        IdleIndex = TenMinutesIndex;
+        StartWithWindows = false;
+    }
+
+    /// <summary>Goes back to the default models folder. Models already downloaded are not moved or deleted.</summary>
+    [RelayCommand]
+    private async Task ResetFolderAsync()
+    {
+        if (string.IsNullOrEmpty(_current.ModelsFolder) && ModelsFolder.Length == 0) return;
+        ModelsFolder = "";
+        await SaveAsync("");
+    }
 
     private void ApplyStartup(string state)
     {
@@ -83,7 +184,7 @@ public sealed partial class SettingsViewModel : ObservableObject
         }
         catch (HostUnavailableException)
         {
-            _ui.Post(() => { Available = false; Message = _s.Get("Vm_NoHostTitle"); });
+            _ui.Post(() => { Available = false; Say(_s.Get("Vm_NoHostTitle"), MessageError); });
         }
     }
 
@@ -111,6 +212,7 @@ public sealed partial class SettingsViewModel : ObservableObject
         });
         await SaveAsync().ConfigureAwait(false);
     }
+
     partial void OnIdleIndexChanged(int value) { if (!_loading && value >= 0) _ = SaveAsync(); }
 
     /// <summary>Builds the settings to send: the current ones with only the changed fields replaced.</summary>
@@ -147,38 +249,42 @@ public sealed partial class SettingsViewModel : ObservableObject
                 if (saved.FolderRefused is { } refused)
                 {
                     _current.ModelsFolder = old; // the host kept the old folder
-                    Message = _s.Format("Vm_FolderRefused", refused);
+                    ModelsFolder = old ?? "";
+                    Say(_s.Format("Vm_FolderRefused", refused), MessageError);
                     return;
                 }
 
                 var target = string.IsNullOrEmpty(next.ModelsFolder)
                     ? _s.Get("Vm_DefaultFolder")
                     : Path.Combine(next.ModelsFolder, HostFolders.ModelsSubfolder);
-                Message = saved.ModelsFolderChanged
-                    ? _s.Format("Vm_FolderSavedNote", string.IsNullOrEmpty(old) ? _s.Get("Vm_DefaultFolder") : Path.Combine(old, HostFolders.ModelsSubfolder), target)
-                    : _s.Get("Vm_Saved");
+                if (saved.ModelsFolderChanged)
+                    Say(_s.Format("Vm_FolderSavedNote", string.IsNullOrEmpty(old) ? _s.Get("Vm_DefaultFolder") : Path.Combine(old, HostFolders.ModelsSubfolder), target), MessageSuccess);
+                else
+                    Message = "";
             });
         }
         catch (HostUnavailableException)
         {
-            _ui.Post(() => Message = _s.Get("Vm_SaveFailed"));
+            _ui.Post(() => Say(_s.Get("Vm_SaveFailed"), MessageError));
         }
         catch (HostRequestException ex)
         {
-            _ui.Post(() => Message = ex.Message);
+            _ui.Post(() => Say(ex.Message, MessageError));
         }
     }
 
-    /// <summary>Asks the host to use another models folder. Nothing is moved or deleted by the window.</summary>
+    /// <summary>
+    /// Applies the typed models folder straight away: checks that it is a full path, then asks the host, which checks
+    /// it again and answers. The window never moves or deletes anything.
+    /// </summary>
     [RelayCommand]
-    private async Task ApplyFolderAsync()
+    private async Task CommitFolderAsync()
     {
         var folder = ModelsFolder.Trim();
-        if (folder.Length == 0 || folder == _current.ModelsFolder) return;
-        var ok = await _dialogs.ConfirmAsync(_s.Get("Vm_FolderTitle"), _s.Format("Vm_FolderBody", folder), _s.Get("Vm_FolderYes"), _s.Get("Vm_Cancel"));
-        if (!ok)
+        if (folder == (_current.ModelsFolder ?? "")) return;
+        if (folder.Length > 0 && !Path.IsPathFullyQualified(folder))
         {
-            ModelsFolder = _current.ModelsFolder ?? "";
+            Say(_s.Get("Vm_FolderNotFull"), MessageError);
             return;
         }
         await SaveAsync(folder);

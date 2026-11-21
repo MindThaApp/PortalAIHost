@@ -4,8 +4,16 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:PortalAIHost.App.ViewModels">
     <ScrollViewer>
-        <StackPanel Padding="32,24" Spacing="16" MaxWidth="760" HorizontalAlignment="Left">
+        <StackPanel Padding="32,24" Spacing="16" MaxWidth="720" HorizontalAlignment="Left">
+            <StackPanel.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Z" Modifiers="Control" Invoked="OnUndoKey" />
+            </StackPanel.KeyboardAccelerators>
             <TextBlock x:Uid="AppsTitle" Style="{StaticResource TitleTextBlockStyle}" />
+            <InfoBar IsOpen="{x:Bind ViewModel.HasUndo, Mode=OneWay}" Message="{x:Bind ViewModel.RevokedLine, Mode=OneWay}" Severity="Informational" IsClosable="False">
+                <InfoBar.ActionButton>
+                    <Button x:Uid="AppsUndo" Command="{x:Bind ViewModel.UndoCommand}" AutomationProperties.Name="{x:Bind ViewModel.UndoLabel, Mode=OneWay}" />
+                </InfoBar.ActionButton>
+            </InfoBar>
             <TextBlock Text="{x:Bind ViewModel.ErrorLine, Mode=OneWay}" TextWrapping="Wrap" />
             <StackPanel Spacing="8" Visibility="{x:Bind ViewModel.HasPending, Mode=OneWay}">
                 <TextBlock x:Uid="AppsWaitingHeader" Style="{StaticResource SubtitleTextBlockStyle}" />
@@ -20,7 +28,7 @@
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Spacing="4">
                                         <TextBlock Text="{x:Bind Name}" Style="{StaticResource BodyStrongTextBlockStyle}" />
-                                        <TextBlock Text="{x:Bind IdentityText}" TextWrapping="Wrap" Opacity="0.8" />
+                                        <TextBlock Text="{x:Bind IdentityText}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
                                         <Button x:Uid="AppAllow" AutomationProperties.Name="{x:Bind AutoAllow}" Command="{x:Bind AllowCommand}" Style="{StaticResource AccentButtonStyle}" />
@@ -45,8 +53,8 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Spacing="4">
                                     <TextBlock Text="{x:Bind Name}" Style="{StaticResource BodyStrongTextBlockStyle}" />
-                                    <TextBlock Text="{x:Bind AddedText}" Opacity="0.8" />
-                                    <TextBlock Text="{x:Bind LastUsedText}" Opacity="0.8" />
+                                    <TextBlock Text="{x:Bind AddedText}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                    <TextBlock Text="{x:Bind LastUsedText}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                                 </StackPanel>
                                 <Button Grid.Column="1" x:Uid="AppRevoke" AutomationProperties.Name="{x:Bind AutoRevoke}" Command="{x:Bind RevokeCommand}" VerticalAlignment="Center" />
                             </Grid>

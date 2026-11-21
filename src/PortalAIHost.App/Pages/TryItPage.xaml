@@ -5,7 +5,7 @@
     <ScrollViewer>
         <StackPanel Padding="32,24" Spacing="16" MaxWidth="760" HorizontalAlignment="Left">
             <TextBlock x:Uid="TryItTitle" Style="{StaticResource TitleTextBlockStyle}" />
-            <TextBlock x:Uid="TryItIntro" TextWrapping="Wrap" Opacity="0.8" />
+            <TextBlock x:Uid="TryItIntro" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
             <TextBox
                 x:Uid="TryItPrompt"
                 Text="{x:Bind ViewModel.Prompt, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

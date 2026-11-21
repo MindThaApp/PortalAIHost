@@ -128,4 +128,12 @@ public interface IAppState
 {
     bool FirstRunDone { get; }
     void MarkFirstRunDone();
+
+    /// <summary>How the window looks (theme, material, corners, density, text size, motion).</summary>
+    AppearancePrefs Appearance { get; }
+    void SaveAppearance(AppearancePrefs prefs);
+
+    /// <summary>Version whose What's new was last shown, or null when none was.</summary>
+    string? LastSeenVersion { get; }
+    void MarkVersionSeen(string version);
 }

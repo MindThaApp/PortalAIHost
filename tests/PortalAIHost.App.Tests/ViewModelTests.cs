@@ -281,6 +281,32 @@ public class ModelsTests
     }
 
     [Fact]
+    public async Task The_remove_question_says_how_much_space_it_frees()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        var vm = Make(rig);
+        await vm.LoadAsync();
+        var row = vm.Models.First(m => m.Id == "chat-14b");
+        Assert.True(row.SizeBytes > 0);
+        Assert.Equal("Vm_RemoveFrees:" + Fmt.Bytes(row.SizeBytes), row.FreesText);
+        Assert.Contains("Vm_RemoveBody:", row.RemoveBody);
+        Assert.EndsWith(row.FreesText, row.RemoveBody);
+    }
+
+    [Fact]
+    public void A_model_added_in_place_frees_nothing_because_its_file_stays()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        var vm = Make(rig);
+        var summary = new CatalogueModelSummary { Id = "mine", DisplayName = "Mine", SizeBytes = 4_000_000_000, Installed = true };
+        var row = new ModelRowViewModel(vm, rig.Strings, summary, existingCopy: true);
+        Assert.Equal("", row.FreesText);
+        Assert.Equal("Vm_RemoveBody:Mine", row.RemoveBody);
+        var downloaded = new ModelRowViewModel(vm, rig.Strings, summary, existingCopy: false);
+        Assert.NotEqual("", downloaded.FreesText);
+    }
+
+    [Fact]
     public async Task Models_that_do_not_fit_are_flagged_and_upgrade_is_offered()
     {
         using var rig = new Rig(FakeScenario.Loaded);
@@ -294,18 +320,100 @@ public class ModelsTests
 
 public class AppsTests
 {
+    /// <summary>A delay the test releases by hand, so the undo time never depends on a clock.</summary>
+    private sealed class HandDelay
+    {
+        private readonly TaskCompletionSource _gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        public Task Wait(TimeSpan _, CancellationToken ct)
+        {
+            ct.Register(() => _gate.TrySetCanceled(ct));
+            return _gate.Task;
+        }
+        public void Elapse() => _gate.TrySetResult();
+    }
+
+    private static async Task<(AppsViewModel vm, HandDelay timer, Task revoke)> RevokeFirstAsync(Rig rig)
+    {
+        var timer = new HandDelay();
+        var vm = new AppsViewModel(rig.Shell, rig.Ui, rig.Strings, rig.Dialogs, timer.Wait);
+        await vm.LoadAsync();
+        var revoke = vm.Clients[0].RevokeCommand.ExecuteAsync(null);
+        return (vm, timer, revoke);
+    }
+
     [Fact]
-    public async Task Revoking_asks_first_and_only_removes_on_yes()
+    public async Task Revoking_hides_the_app_at_once_without_asking_and_without_telling_the_host_yet()
     {
         using var rig = new Rig(FakeScenario.Loaded);
-        var vm = new AppsViewModel(rig.Shell, rig.Ui, rig.Strings, rig.Dialogs);
+        var (vm, _, _) = await RevokeFirstAsync(rig);
+        Assert.Equal(0, rig.Dialogs.Asked);
+        Assert.Single(vm.Clients);
+        Assert.True(vm.HasUndo);
+        Assert.StartsWith("Vm_RevokedBar:", vm.RevokedLine);
+        Assert.Equal(2, (await rig.Host.ListClientsAsync()).Count); // still allowed until the undo time ends
+    }
+
+    [Fact]
+    public async Task The_host_revokes_when_the_undo_time_ends()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        var (vm, timer, revoke) = await RevokeFirstAsync(rig);
+        timer.Elapse();
+        await revoke;
+        Assert.Single(await rig.Host.ListClientsAsync());
+        Assert.Single(vm.Clients);
+        Assert.False(vm.HasUndo);
+    }
+
+    [Fact]
+    public async Task Undo_brings_the_app_back_in_place_and_the_host_is_never_asked()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        var name = (await rig.Host.ListClientsAsync())[0].AppName;
+        var (vm, timer, revoke) = await RevokeFirstAsync(rig);
+        vm.UndoCommand.Execute(null);
+        await revoke; // the waiting call ends quietly
+        timer.Elapse();
+        Assert.Equal(2, vm.Clients.Count);
+        Assert.Equal(name, vm.Clients[0].Name);
+        Assert.False(vm.HasUndo);
+        Assert.Equal(2, (await rig.Host.ListClientsAsync()).Count);
+    }
+
+    [Fact]
+    public async Task Closing_the_page_or_window_sends_a_removal_that_is_still_waiting()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        var (vm, _, _) = await RevokeFirstAsync(rig);
+        await rig.Shell.FlushAsync();
+        Assert.Single(await rig.Host.ListClientsAsync());
+        Assert.False(vm.HasUndo);
+        vm.UndoCommand.Execute(null); // too late: nothing comes back that the host has revoked
+        Assert.Single(vm.Clients);
+    }
+
+    [Fact]
+    public async Task A_second_removal_makes_the_first_final()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        var timer = new HandDelay();
+        var vm = new AppsViewModel(rig.Shell, rig.Ui, rig.Strings, rig.Dialogs, timer.Wait);
         await vm.LoadAsync();
-        Assert.Equal(2, vm.Clients.Count);
-        rig.Dialogs.Answer = false;
-        await vm.Clients[0].RevokeCommand.ExecuteAsync(null);
-        Assert.Equal(2, vm.Clients.Count);
-        rig.Dialogs.Answer = true;
-        await vm.Clients[0].RevokeCommand.ExecuteAsync(null);
+        var first = vm.Clients[0];
+        _ = first.RevokeCommand.ExecuteAsync(null);
+        _ = vm.Clients[0].RevokeCommand.ExecuteAsync(null);
+        Assert.Empty(vm.Clients);
+        Assert.Single(await rig.Host.ListClientsAsync()); // the first is gone for good, the second still waits
+        await rig.Shell.FlushAsync();
+        Assert.Empty(await rig.Host.ListClientsAsync());
+    }
+
+    [Fact]
+    public async Task A_page_reload_does_not_show_an_app_that_is_waiting_to_be_removed()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        var (vm, _, _) = await RevokeFirstAsync(rig);
+        await vm.LoadAsync();
         Assert.Single(vm.Clients);
     }
 
@@ -363,21 +471,135 @@ public class SettingsTests
     }
 
     [Fact]
-    public async Task Folder_change_needs_a_yes_and_is_only_a_request_to_the_host()
+    public async Task Folder_change_applies_live_as_a_request_to_the_host_without_asking()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        var vm = new SettingsViewModel(rig.Shell, rig.Ui, rig.Strings, rig.Dialogs);
+        await vm.LoadAsync();
+        vm.ModelsFolder = @"E:\new";
+        await vm.CommitFolderCommand.ExecuteAsync(null);
+        Assert.Equal(0, rig.Dialogs.Asked);
+        Assert.Equal(@"E:\new", (await rig.Host.GetSettingsAsync()).ModelsFolder);
+        Assert.True(vm.HasMessage);
+        Assert.Equal(SettingsViewModel.MessageSuccess, vm.MessageKind);
+    }
+
+    [Fact]
+    public async Task A_folder_that_is_not_a_full_path_is_rejected_before_it_reaches_the_host()
     {
         using var rig = new Rig(FakeScenario.Loaded);
         var vm = new SettingsViewModel(rig.Shell, rig.Ui, rig.Strings, rig.Dialogs);
         await vm.LoadAsync();
         var original = (await rig.Host.GetSettingsAsync()).ModelsFolder;
-        vm.ModelsFolder = @"E:\new";
-        rig.Dialogs.Answer = false;
-        await vm.ApplyFolderCommand.ExecuteAsync(null);
+        vm.ModelsFolder = "models";
+        await vm.CommitFolderCommand.ExecuteAsync(null);
         Assert.Equal(original, (await rig.Host.GetSettingsAsync()).ModelsFolder);
-        Assert.Equal(original, vm.ModelsFolder);
+        Assert.Equal("Vm_FolderNotFull", vm.Message);
+        Assert.Equal(SettingsViewModel.MessageError, vm.MessageKind);
+    }
+
+    [Fact]
+    public async Task Unchanged_folder_text_sends_nothing()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        var vm = new SettingsViewModel(rig.Shell, rig.Ui, rig.Strings, rig.Dialogs);
+        await vm.LoadAsync();
+        await vm.CommitFolderCommand.ExecuteAsync(null);
+        Assert.False(vm.HasMessage);
+    }
+
+    [Fact]
+    public async Task Reset_models_folder_goes_back_to_the_default_folder()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        var vm = new SettingsViewModel(rig.Shell, rig.Ui, rig.Strings, rig.Dialogs);
+        await vm.LoadAsync();
         vm.ModelsFolder = @"E:\new";
-        rig.Dialogs.Answer = true;
-        await vm.ApplyFolderCommand.ExecuteAsync(null);
-        Assert.Equal(@"E:\new", (await rig.Host.GetSettingsAsync()).ModelsFolder);
+        await vm.CommitFolderCommand.ExecuteAsync(null);
+        await vm.ResetFolderCommand.ExecuteAsync(null);
+        Assert.Equal("", vm.ModelsFolder);
+        Assert.Equal("", (await rig.Host.GetSettingsAsync()).ModelsFolder);
+    }
+
+    [Fact]
+    public async Task Reset_general_restores_idle_time_and_start_with_windows()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        var vm = new SettingsViewModel(rig.Shell, rig.Ui, rig.Strings, rig.Dialogs);
+        await vm.LoadAsync();
+        vm.IdleIndex = SettingsViewModel.KeepLoadedIndex;
+        vm.StartWithWindows = true;
+        vm.ResetGeneralCommand.Execute(null);
+        Assert.Equal(SettingsViewModel.TenMinutesIndex, vm.IdleIndex);
+        Assert.False(vm.StartWithWindows);
+        var saved = await rig.Host.GetSettingsAsync();
+        Assert.False(saved.Kinds[ModelKinds.Chat].KeepLoaded);
+        Assert.False(saved.StartWithWindows);
+    }
+
+    [Fact]
+    public void Appearance_choices_apply_and_are_remembered_at_once()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        var applier = new RecordingAppearance();
+        var vm = new SettingsViewModel(rig.Shell, rig.Ui, rig.Strings, rig.Dialogs, null, applier);
+        Assert.Empty(applier.Applied);
+        vm.ThemeIndex = (int)ThemeChoice.Dark;
+        vm.CornersIndex = (int)CornerChoice.Square;
+        Assert.Equal(2, applier.Applied.Count);
+        Assert.Equal(ThemeChoice.Dark, applier.Applied[^1].Theme);
+        Assert.Equal(CornerChoice.Square, applier.Applied[^1].Corners);
+        Assert.Equal(CornerChoice.Square, rig.State.Appearance.Corners);
+    }
+
+    [Fact]
+    public void Reset_appearance_puts_every_choice_back_to_the_defaults()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        var applier = new RecordingAppearance();
+        var vm = new SettingsViewModel(rig.Shell, rig.Ui, rig.Strings, rig.Dialogs, null, applier);
+        vm.ThemeIndex = (int)ThemeChoice.Light;
+        vm.MaterialIndex = (int)MaterialChoice.Solid;
+        vm.DensityIndex = (int)DensityChoice.Compact;
+        vm.TextIndex = 2;
+        vm.MotionIndex = (int)MotionChoice.Off;
+        vm.ResetAppearanceCommand.Execute(null);
+        Assert.Equal(AppearancePrefs.Default, applier.Applied[^1]);
+        Assert.Equal(AppearancePrefs.Default, rig.State.Appearance);
+        Assert.Equal(0, vm.ThemeIndex);
+        Assert.Equal(0, vm.TextIndex);
+    }
+
+    [Fact]
+    public void Saved_appearance_is_shown_when_the_page_opens()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        rig.State.SaveAppearance(new AppearancePrefs { Theme = ThemeChoice.Dark, Density = DensityChoice.Comfortable });
+        var applier = new RecordingAppearance();
+        var vm = new SettingsViewModel(rig.Shell, rig.Ui, rig.Strings, rig.Dialogs, null, applier);
+        Assert.Equal((int)ThemeChoice.Dark, vm.ThemeIndex);
+        Assert.Equal((int)DensityChoice.Comfortable, vm.DensityIndex);
+        Assert.Empty(applier.Applied); // showing saved choices must not re-apply or re-save them
+    }
+}
+
+public class AppearanceMathTests
+{
+    [Fact]
+    public void Defaults_match_the_design_tokens()
+    {
+        Assert.Equal(8, AppearanceMath.CardRadius(CornerChoice.Rounded));
+        Assert.Equal(16, AppearanceMath.CardPadding(DensityChoice.Standard));
+        Assert.Equal(14, AppearanceMath.BodyFontSize(0));
+    }
+
+    [Fact]
+    public void Reduced_motion_follows_either_the_choice_or_windows()
+    {
+        Assert.False(AppearanceMath.ReducedMotion(MotionChoice.FollowWindows, true));
+        Assert.True(AppearanceMath.ReducedMotion(MotionChoice.FollowWindows, false));
+        Assert.True(AppearanceMath.ReducedMotion(MotionChoice.Reduced, true));
+        Assert.True(AppearanceMath.ReducedMotion(MotionChoice.Off, true));
     }
 }
 

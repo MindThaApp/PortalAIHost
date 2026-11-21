@@ -7,23 +7,40 @@ using PortalAIHost.App.ViewModels;
 
 namespace PortalAIHost.App;
 
-public sealed partial class MainWindow : Window
+public sealed partial class MainWindow : Window, IAppearanceApplier
 {
     private readonly ShellViewModel _shell = AppServices.Shell;
+    private readonly Windows.UI.ViewManagement.UISettings _uiSettings = new();
+    private readonly Windows.UI.ViewManagement.AccessibilitySettings _access = new();
     private bool _firstRunShown;
+    private AppearancePrefs _prefs = AppearancePrefs.Default;
 
     public MainWindow()
     {
         InitializeComponent();
         Title = AppServices.Strings.Get("Vm_AppTitle");
-        SystemBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop();
         TitleText.Text = Title;
+        Microsoft.UI.Xaml.Controls.ToolTipService.SetToolTip(AppMenuButton, AppServices.Strings.Get("Vm_AppMenuTip"));
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(TitleBarArea);
         Root.ActualThemeChanged += (_, _) => ApplyTitleBarColours();
-        Root.Loaded += (_, _) => ApplyTitleBarColours();
-        ApplyTitleBarColours();
-        Closed += (_, _) => _shell.Dispose();
+        Root.Loaded += (_, _) => { ApplyTitleBarColours(); UpdateCaptionRegions(); };
+        Root.SizeChanged += (_, _) => UpdateCaptionRegions();
+        AppMenuButton.SizeChanged += (_, _) => UpdateCaptionRegions();
+        AppServices.Appearance = this;
+        Apply(_shell.State.Appearance);
+        // Windows high contrast can change while the window is open: switch materials and caption colours with it.
+        // (AccessibilitySettings.HighContrastChanged cannot be subscribed to in an unpackaged run; UISettings can.)
+        try { _uiSettings.ColorValuesChanged += (_, _) => AppServices.Ui.Post(() => Apply(_prefs)); }
+        catch (System.Runtime.InteropServices.COMException) { }
+        AddShortcuts();
+        Closed += (_, _) =>
+        {
+            // A removal of app access still waiting out its undo time is sent now, so it is never lost.
+            try { Task.Run(_shell.FlushAsync).Wait(TimeSpan.FromSeconds(3)); }
+            catch (AggregateException) { }
+            _shell.Dispose();
+        };
         AppWindow.Resize(new Windows.Graphics.SizeInt32(1100, 760));
         if (AppOptions.OffScreen)
             AppWindow.Move(new Windows.Graphics.PointInt32(-3000, 100));
@@ -38,12 +55,25 @@ public sealed partial class MainWindow : Window
     private void ApplyTitleBarColours()
     {
         if (!AppWindowTitleBar.IsCustomizationSupported()) return;
+        var tb = AppWindow.TitleBar;
+        if (_access.HighContrast)
+        {
+            // High contrast: leave the caption buttons to the system colours.
+            tb.ButtonBackgroundColor = null;
+            tb.ButtonInactiveBackgroundColor = null;
+            tb.ButtonForegroundColor = null;
+            tb.ButtonInactiveForegroundColor = null;
+            tb.ButtonHoverBackgroundColor = null;
+            tb.ButtonHoverForegroundColor = null;
+            tb.ButtonPressedBackgroundColor = null;
+            tb.ButtonPressedForegroundColor = null;
+            return;
+        }
         var dark = Root.ActualTheme == ElementTheme.Dark;
         var fg = dark ? Microsoft.UI.Colors.White : Microsoft.UI.Colors.Black;
         var hover = dark ? Windows.UI.Color.FromArgb(0x20, 255, 255, 255) : Windows.UI.Color.FromArgb(0x18, 0, 0, 0);
         var press = dark ? Windows.UI.Color.FromArgb(0x38, 255, 255, 255) : Windows.UI.Color.FromArgb(0x30, 0, 0, 0);
         var inactive = dark ? Windows.UI.Color.FromArgb(0xFF, 0x9A, 0x9A, 0x9A) : Windows.UI.Color.FromArgb(0xFF, 0x70, 0x70, 0x70);
-        var tb = AppWindow.TitleBar;
         tb.ButtonBackgroundColor = Microsoft.UI.Colors.Transparent;
         tb.ButtonInactiveBackgroundColor = Microsoft.UI.Colors.Transparent;
         tb.ButtonForegroundColor = fg;
@@ -53,6 +83,67 @@ public sealed partial class MainWindow : Window
         tb.ButtonPressedBackgroundColor = press;
         tb.ButtonPressedForegroundColor = fg;
     }
+
+    /// <summary>Applies theme, material, corners, density, text size and motion to the window. Called live from Settings.</summary>
+    public void Apply(AppearancePrefs prefs)
+    {
+        _prefs = prefs;
+        Root.RequestedTheme = prefs.Theme switch
+        {
+            ThemeChoice.Light => ElementTheme.Light,
+            ThemeChoice.Dark => ElementTheme.Dark,
+            _ => ElementTheme.Default,
+        };
+        // High contrast and the solid choice use a plain system background, never a see-through material.
+        var plain = _access.HighContrast || prefs.Material == MaterialChoice.Solid;
+        SystemBackdrop = plain ? null : prefs.Material == MaterialChoice.Acrylic
+            ? new Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop()
+            : new Microsoft.UI.Xaml.Media.MicaBackdrop();
+        Root.Background = plain ? (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["SolidBackgroundFillColorBaseBrush"] : null;
+        AppearanceMetrics.Instance.Set(prefs);
+        ContentFrame.FontSize = AppearanceMath.BodyFontSize(prefs.TextStep);
+        ApplyTitleBarColours();
+    }
+
+    private bool ReducedMotion => AppearanceMath.ReducedMotion(_prefs.Motion, _uiSettings.AnimationsEnabled);
+
+    /// <summary>The app-menu button must stay clickable inside the draggable title strip.</summary>
+    private void UpdateCaptionRegions()
+    {
+        if (!AppWindowTitleBar.IsCustomizationSupported() || AppMenuButton.XamlRoot is null) return;
+        var scale = AppMenuButton.XamlRoot.RasterizationScale;
+        var p = AppMenuButton.TransformToVisual(null).TransformPoint(new Windows.Foundation.Point(0, 0));
+        var rect = new Windows.Graphics.RectInt32((int)(p.X * scale), (int)(p.Y * scale),
+            (int)(AppMenuButton.ActualWidth * scale), (int)(AppMenuButton.ActualHeight * scale));
+        Microsoft.UI.Input.InputNonClientPointerSource.GetForWindowId(AppWindow.Id)
+            .SetRegionRects(Microsoft.UI.Input.NonClientRegionKind.Passthrough, [rect]);
+    }
+
+    /// <summary>Ctrl+1 to Ctrl+4 pick a page, Ctrl+comma opens Settings, F1 opens About.</summary>
+    private void AddShortcuts()
+    {
+        void Add(Windows.System.VirtualKey key, Windows.System.VirtualKeyModifiers mods, string page)
+        {
+            var a = new Microsoft.UI.Xaml.Input.KeyboardAccelerator { Key = key, Modifiers = mods };
+            a.Invoked += (_, e) => { e.Handled = true; if (!_shell.ShowFirstRun) SelectPage(page); };
+            Root.KeyboardAccelerators.Add(a);
+        }
+        var ctrl = Windows.System.VirtualKeyModifiers.Control;
+        Add(Windows.System.VirtualKey.Number1, ctrl, "home");
+        Add(Windows.System.VirtualKey.Number2, ctrl, "models");
+        Add(Windows.System.VirtualKey.Number3, ctrl, "apps");
+        Add(Windows.System.VirtualKey.Number4, ctrl, "tryit");
+        Add((Windows.System.VirtualKey)188, ctrl, "settings"); // comma
+        Add(Windows.System.VirtualKey.F1, Windows.System.VirtualKeyModifiers.None, "about");
+    }
+
+    private void OnMenuPage(object sender, RoutedEventArgs e)
+    {
+        if (!_shell.ShowFirstRun && sender is FrameworkElement { Tag: string tag }) SelectPage(tag);
+    }
+
+    private async void OnMenuShortcuts(object sender, RoutedEventArgs e) =>
+        await AppServices.Dialogs.ShowInfoAsync(AppServices.Strings.Get("Vm_ShortcutsTitle"), AppServices.Strings.Get("Vm_ShortcutsBody"), AppServices.Strings.Get("Vm_Close"));
 
     /// <summary>
     /// Check support: saves a picture of the window (or the open dialog) whenever a new take-NAME.txt appears in the folder.
@@ -116,15 +207,25 @@ public sealed partial class MainWindow : Window
     {
         var item = Nav.MenuItems.Concat(Nav.FooterMenuItems).OfType<NavigationViewItem>().FirstOrDefault(i => (string)i.Tag == tag);
         if (item is not null) Nav.SelectedItem = item;
-        else Navigate(tag);
+        else
+        {
+            Nav.SelectedItem = null; // pages outside the menu (What's new) leave no menu row selected
+            Navigate(tag);
+        }
     }
 
     private void OpenStartPage()
     {
+        if (_shell.ShowFirstRun) return;
         var tag = AppOptions.StartPage;
-        if (tag is null || _shell.ShowFirstRun) return;
-        var item = Nav.MenuItems.Concat(Nav.FooterMenuItems).OfType<NavigationViewItem>().FirstOrDefault(i => (string)i.Tag == tag);
-        if (item is not null) Nav.SelectedItem = item;
+        if (tag is null)
+        {
+            // One screen at launch: What's new opens once after an update, never together with the welcome.
+            if (_shell.State.LastSeenVersion == Links.WhatsNewVersion) return;
+            _shell.State.MarkVersionSeen(Links.WhatsNewVersion);
+            tag = "whatsnew";
+        }
+        SelectPage(tag);
     }
 
     private void ApplyFirstRun()
@@ -138,6 +239,7 @@ public sealed partial class MainWindow : Window
         else if (!_shell.ShowFirstRun && _firstRunShown)
         {
             _firstRunShown = false;
+            _shell.State.MarkVersionSeen(Links.WhatsNewVersion);
             Nav.IsPaneVisible = true;
             Nav.SelectedItem = Nav.MenuItems[0];
             ContentFrame.Navigate(typeof(HomePage));
@@ -151,7 +253,7 @@ public sealed partial class MainWindow : Window
         Navigate((string)item.Tag);
     }
 
-    /// <summary>Opens a page by name: home, models, apps, tryit or settings.</summary>
+    /// <summary>Opens a page by name: home, models, apps, tryit, settings, about or whatsnew.</summary>
     public void Navigate(string tag)
     {
         var page = tag switch
@@ -160,8 +262,15 @@ public sealed partial class MainWindow : Window
             "apps" => typeof(AppsPage),
             "tryit" => typeof(TryItPage),
             "settings" => typeof(SettingsPage),
+            "about" => typeof(AboutPage),
+            "whatsnew" => typeof(WhatsNewPage),
             _ => typeof(HomePage),
         };
-        if (ContentFrame.CurrentSourcePageType != page) ContentFrame.Navigate(page);
+        if (ContentFrame.CurrentSourcePageType == page) return;
+        // Slides are skipped when Windows animations are off or the user chose reduced motion.
+        Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo info = ReducedMotion
+            ? new Microsoft.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo()
+            : new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo();
+        ContentFrame.Navigate(page, null, info);
     }
 }

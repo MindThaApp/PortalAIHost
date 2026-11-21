@@ -11,6 +11,10 @@ public sealed partial class FirstRunPage : Page
     {
         ViewModel = new FirstRunViewModel(AppServices.Shell, AppServices.Ui, AppServices.Strings);
         InitializeComponent();
+        // Esc means Skip for now, like in every Portal welcome.
+        var esc = new Microsoft.UI.Xaml.Input.KeyboardAccelerator { Key = Windows.System.VirtualKey.Escape };
+        esc.Invoked += (_, e) => { e.Handled = true; ViewModel.SkipCommand.Execute(null); };
+        KeyboardAccelerators.Add(esc);
     }
 
     public FirstRunViewModel ViewModel { get; }
