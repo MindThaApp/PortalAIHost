@@ -1,0 +1,4 @@
+# Engine binaries are fetched by scripts/fetch-engine.ps1 and never committed.
+*
+!.gitignore
+!engine.lock.json

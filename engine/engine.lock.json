@@ -1,0 +1,27 @@
+{
+  "source": "https://github.com/ggml-org/llama.cpp/releases/download",
+  "tag": "b12600",
+  "builds": [
+    {
+      "flavour": "vulkan",
+      "arch": "x64",
+      "asset": "llama-b12600-bin-win-vulkan-x64.zip",
+      "sha256": "cca8bf28bf4193d0b7d674e8498bec8c8b82fb8fbd09a97759b79f542d984906",
+      "size": 38857771
+    },
+    {
+      "flavour": "cpu",
+      "arch": "x64",
+      "asset": "llama-b12600-bin-win-cpu-x64.zip",
+      "sha256": "a31a14f1630408422228d02ff2a3fc41c06a6b3b3849d8d2782c37f0f6e30951",
+      "size": 25012254
+    },
+    {
+      "flavour": "cpu-arm64",
+      "arch": "arm64",
+      "asset": "llama-b12600-bin-win-cpu-arm64.zip",
+      "sha256": "0c9fc349a8864809af711b0309e3c014fcc7824cfcac4ac78ded55d238f3d2d5",
+      "size": 13129579
+    }
+  ]
+}
