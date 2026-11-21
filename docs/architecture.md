@@ -373,3 +373,9 @@ parallel. Each package owns only the listed paths, and changes to another packag
 4. The default idle unload time (proposed: 10 min, 5 min on battery).
 5. Catalogue hosting on GitHub Pages and the owner holding the offline signing key.
 6. Whether tool calling is promised in v1 (proposed: passthrough, flagged per model, best effort).
+
+## 12. Open items
+
+1. `scripts/sign-catalogue.ps1` reads an unencrypted PEM private key, and it neither checks the signing key against
+   `CatalogueTrust` nor checks that `catalogue_version` is higher than the published copy before signing. Decide on a
+   password-protected key (or a hardware key) and add both checks before the first published catalogue.
