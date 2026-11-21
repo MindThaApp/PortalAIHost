@@ -8,6 +8,11 @@
             <TextBlock x:Uid="ModelsTitle" Style="{StaticResource TitleTextBlockStyle}" />
             <TextBlock Text="{x:Bind ViewModel.ErrorLine, Mode=OneWay}" TextWrapping="Wrap" />
             <InfoBar
+                x:Uid="ModelsCatalogueBar"
+                Severity="Warning"
+                IsClosable="False"
+                IsOpen="{x:Bind ViewModel.CatalogueUnavailable, Mode=OneWay}" />
+            <InfoBar
                 x:Uid="ModelsExistingBar"
                 Severity="Success"
                 IsClosable="False"
@@ -48,6 +53,7 @@
                                     <Button x:Uid="ModelResume" AutomationProperties.Name="{x:Bind AutoResume}" Command="{x:Bind ResumeCommand}" Visibility="{x:Bind CanResume, Mode=OneWay}" HorizontalAlignment="Stretch" />
                                     <Button x:Uid="ModelCancel" AutomationProperties.Name="{x:Bind AutoCancel}" Command="{x:Bind CancelCommand}" Visibility="{x:Bind CanCancel, Mode=OneWay}" HorizontalAlignment="Stretch" />
                                     <Button x:Uid="ModelUse" AutomationProperties.Name="{x:Bind AutoUse}" Command="{x:Bind ActivateCommand}" Visibility="{x:Bind CanActivate, Mode=OneWay}" HorizontalAlignment="Stretch" />
+                                    <Button x:Uid="ModelRemove" AutomationProperties.Name="{x:Bind AutoRemove}" Command="{x:Bind RemoveCommand}" Visibility="{x:Bind CanRemove, Mode=OneWay}" HorizontalAlignment="Stretch" />
                                 </StackPanel>
                             </Grid>
                         </Border>

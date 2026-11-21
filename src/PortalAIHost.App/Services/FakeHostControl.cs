@@ -186,6 +186,29 @@ public sealed class FakeHostControl : IHostControl, IDisposable
         return Task.CompletedTask;
     }
 
+    public Task ResumeDownloadAsync(string catalogueId, CancellationToken ct = default) => StartDownloadAsync(catalogueId, ct);
+
+    public int RemoveCalls { get; private set; }
+
+    public Task RemoveModelAsync(string catalogueId, CancellationToken ct = default)
+    {
+        lock (_gate)
+        {
+            RemoveCalls++;
+            _downloads.Remove(catalogueId);
+            var i = _models.FindIndex(m => m.Id == catalogueId);
+            if (i >= 0) _models[i] = With(_models[i], installed: false, active: false);
+            if (_activeId == catalogueId) _activeId = null;
+        }
+        return Task.CompletedTask;
+    }
+
+    private static CatalogueModelSummary With(CatalogueModelSummary m, bool installed, bool active) => new()
+    {
+        Id = m.Id, DisplayName = m.DisplayName, Kind = m.Kind, Engine = m.Engine, SizeBytes = m.SizeBytes, Quality = m.Quality,
+        Recommended = m.Recommended, Installed = installed, Active = active, FitsThisPc = m.FitsThisPc, Reason = m.Reason,
+    };
+
     public Task CancelDownloadAsync(string catalogueId, CancellationToken ct = default)
     {
         lock (_gate) _downloads.Remove(catalogueId);
@@ -205,10 +228,15 @@ public sealed class FakeHostControl : IHostControl, IDisposable
         lock (_gate) return Task.FromResult(_settings);
     }
 
-    public Task SetSettingsAsync(HostSettings settings, CancellationToken ct = default)
+    public Task<SettingsSaved> SetSettingsAsync(HostSettings settings, CancellationToken ct = default)
     {
-        lock (_gate) _settings = settings;
-        return Task.CompletedTask;
+        bool moved;
+        lock (_gate)
+        {
+            moved = !string.Equals(_settings.ModelsFolder, settings.ModelsFolder, StringComparison.OrdinalIgnoreCase);
+            _settings = settings;
+        }
+        return Task.FromResult(new SettingsSaved { ModelsFolderChanged = moved, AppliesAtRestart = moved });
     }
 
     public async IAsyncEnumerable<string> TryItAsync(string prompt, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct = default)

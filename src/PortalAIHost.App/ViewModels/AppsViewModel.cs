@@ -62,6 +62,10 @@ public static class ApprovalText
     public static string Identity(IStrings s, PendingApproval a) => a.CallerVerified
         ? s.Format("Vm_Verified", a.CallerIdentity)
         : s.Format("Vm_Unverified", a.CallerIdentity);
+
+    public static string Publisher(IStrings s, PendingApproval a) => string.IsNullOrWhiteSpace(a.Publisher)
+        ? s.Get("Vm_PublisherUnknown")
+        : s.Format("Vm_Publisher", a.Publisher);
 }
 
 /// <summary>Devices and apps page: who may use the host, and who is asking.</summary>

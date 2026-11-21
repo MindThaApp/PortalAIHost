@@ -22,6 +22,12 @@ public static class ControlTypes
     public const string StartDownload = "downloads.start";
     public const string PauseDownload = "downloads.pause";
     public const string CancelDownload = "downloads.cancel";
+
+    /// <summary>Continues a paused or failed download from the partial file. downloads.start does the same for a paused model.</summary>
+    public const string ResumeDownload = "downloads.resume";
+
+    /// <summary>Removes an installed or unfinished model through the model store rules (host-created files only; external models are only forgotten).</summary>
+    public const string RemoveModel = "models.remove";
     public const string ActivateModel = "models.activate";
     public const string GetSettings = "settings.get";
     public const string SetSettings = "settings.set";
@@ -65,6 +71,9 @@ public sealed class PendingApproval
     public string AppId { get; init; } = "";
     public string AppName { get; init; } = "";
     public string? AppVersion { get; init; }
+
+    /// <summary>Publisher of the calling app (package publisher or file signer), when Windows can tell; null otherwise.</summary>
+    public string? Publisher { get; init; }
     public string? Reason { get; init; }
 
     /// <summary>Verified package name, or an exe path with an "unverified" mark.</summary>
@@ -118,6 +127,15 @@ public sealed class CatalogueModelSummary
     public bool Active { get; init; }
     public bool FitsThisPc { get; init; }
 
+    /// <summary>True when the host found this model already on the PC (a file added in place) instead of downloading it.</summary>
+    public bool ExistingCopy { get; init; }
+
+    /// <summary>Download state when not finished: "downloading", "paused", "failed", or null when there is no partial download.</summary>
+    public string? DownloadState { get; init; }
+
+    /// <summary>Bytes already on disk for an unfinished download (resume continues from here).</summary>
+    public long BytesDone { get; init; }
+
     /// <summary>Plain-language reason from the recommender.</summary>
     public string? Reason { get; init; }
 }
@@ -125,11 +143,53 @@ public sealed class CatalogueModelSummary
 public sealed class ModelListing
 {
     public List<CatalogueModelSummary> Models { get; init; } = new();
+
+    /// <summary>Folder the host keeps its models in.</summary>
+    public string? ModelsFolder { get; init; }
+
+    /// <summary>Free bytes on the drive of <see cref="ModelsFolder"/>.</summary>
+    public long FreeBytes { get; init; }
+
+    /// <summary>Catalogue id of the recommended upgrade over the active chat model, or null.</summary>
+    public string? UpgradeModelId { get; init; }
+
+    /// <summary>False when no trusted, signed model list could be loaded: only installed models are listed.</summary>
+    public bool CatalogueAvailable { get; init; }
 }
 
 public sealed class DownloadCommand
 {
     public string CatalogueId { get; init; } = "";
+}
+
+public sealed class RemoveModelCommand
+{
+    public string CatalogueId { get; init; } = "";
+}
+
+/// <summary>Answer to settings.set.</summary>
+public sealed class SettingsSaved
+{
+    /// <summary>True when the models folder changed. Models already downloaded are not moved or deleted.</summary>
+    public bool ModelsFolderChanged { get; init; }
+
+    /// <summary>True when some saved values only apply after the host restarts.</summary>
+    public bool AppliesAtRestart { get; init; }
+
+    /// <summary>Plain-language note for the window, for example where the old models stay.</summary>
+    public string? Note { get; init; }
+}
+
+/// <summary>Start-with-Windows states (Windows StartupTask). The window reads and changes these itself.</summary>
+public static class StartupStates
+{
+    public const string Enabled = "enabled";
+    public const string Disabled = "disabled";
+    public const string DisabledByUser = "disabled_by_user";
+    public const string DisabledByPolicy = "disabled_by_policy";
+    public const string EnabledByPolicy = "enabled_by_policy";
+    /// <summary>Not a packaged install (for example a development run): start with Windows cannot be set.</summary>
+    public const string Unavailable = "unavailable";
 }
 
 public sealed class ActivateModelCommand
@@ -205,4 +265,12 @@ public sealed class ControlStatus
 
     [JsonPropertyName("base_url")]
     public string? BaseUrl { get; init; }
+
+    /// <summary>Catalogue id of the recommended upgrade over the active chat model, or null.</summary>
+    [JsonPropertyName("upgrade_model_id")]
+    public string? UpgradeModelId { get; init; }
+
+    /// <summary>True while the PC runs on battery (idle unload uses the shorter timeout).</summary>
+    [JsonPropertyName("on_battery")]
+    public bool OnBattery { get; init; }
 }

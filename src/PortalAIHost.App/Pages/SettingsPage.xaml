@@ -10,7 +10,8 @@
                     <ToggleSwitch
                         x:Uid="SettingsStartWithWindows"
                         IsOn="{x:Bind ViewModel.StartWithWindows, Mode=TwoWay}"
-                        IsEnabled="{x:Bind ViewModel.Available, Mode=OneWay}" />
+                        IsEnabled="{x:Bind ViewModel.StartupChangeable, Mode=OneWay}" />
+                    <TextBlock Text="{x:Bind ViewModel.StartupNote, Mode=OneWay}" TextWrapping="Wrap" Style="{StaticResource CaptionTextBlockStyle}" />
                     <ComboBox
                         x:Uid="SettingsIdle"
                         ItemsSource="{x:Bind ViewModel.IdleChoices}"

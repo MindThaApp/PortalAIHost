@@ -17,6 +17,7 @@
     <Compile Include="..\..\src\PortalAIHost.App\Services\HostTypes.cs" Link="App\Services\HostTypes.cs" />
     <Compile Include="..\..\src\PortalAIHost.App\Services\FakeHostControl.cs" Link="App\Services\FakeHostControl.cs" />
     <Compile Include="..\..\src\PortalAIHost.App\Services\PipeHostControl.cs" Link="App\Services\PipeHostControl.cs" />
+    <Compile Include="..\..\src\PortalAIHost.App\Services\ControlChannel.cs" Link="App\Services\ControlChannel.cs" />
     <Compile Include="..\..\src\PortalAIHost.App\Services\HostLaunchers.cs" Link="App\Services\HostLaunchers.cs" />
     <Compile Include="..\..\src\PortalAIHost.App\Services\AppStateStore.cs" Link="App\Services\AppStateStore.cs" />
     <Compile Include="..\..\src\PortalAIHost.App\Services\PseudoLoc.cs" Link="App\Services\PseudoLoc.cs" />

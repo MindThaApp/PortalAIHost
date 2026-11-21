@@ -17,11 +17,13 @@ public sealed partial class SettingsViewModel : ObservableObject
     private readonly IUiDispatcher _ui;
     private readonly IStrings _s;
     private readonly IDialogService _dialogs;
+    private readonly IStartupControl _startup;
     private HostSettings _current = new();
     private bool _loading;
 
-    public SettingsViewModel(ShellViewModel shell, IUiDispatcher ui, IStrings strings, IDialogService dialogs)
+    public SettingsViewModel(ShellViewModel shell, IUiDispatcher ui, IStrings strings, IDialogService dialogs, IStartupControl? startup = null)
     {
+        _startup = startup ?? new UnavailableStartupControl();
         _shell = shell;
         _ui = ui;
         _s = strings;
@@ -36,17 +38,37 @@ public sealed partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private string _modelsFolder = "";
     [ObservableProperty] private string _message = "";
     [ObservableProperty] private bool _available;
+    [ObservableProperty] private string _startupState = StartupStates.Unavailable;
+    [ObservableProperty] private bool _startupChangeable;
+    [ObservableProperty] private string _startupNote = "";
+
+    private void ApplyStartup(string state)
+    {
+        StartupState = state;
+        StartupChangeable = state is StartupStates.Enabled or StartupStates.Disabled;
+        StartupNote = state switch
+        {
+            StartupStates.Unavailable => _s.Get("Vm_Startup_Unavailable"),
+            StartupStates.DisabledByUser => _s.Get("Vm_Startup_DisabledByUser"),
+            StartupStates.DisabledByPolicy or StartupStates.EnabledByPolicy => _s.Get("Vm_Startup_Policy"),
+            _ => "",
+        };
+    }
 
     public async Task LoadAsync()
     {
         try
         {
             var s = await _shell.Host.GetSettingsAsync().ConfigureAwait(false);
+            var startup = await _startup.GetStateAsync().ConfigureAwait(false);
             _ui.Post(() =>
             {
                 _loading = true;
                 _current = s;
-                StartWithWindows = s.StartWithWindows;
+                ApplyStartup(startup);
+                // Windows owns the real state (Task Manager can turn it off); the saved value only mirrors it.
+                StartWithWindows = startup is StartupStates.Unavailable ? s.StartWithWindows
+                    : startup is StartupStates.Enabled or StartupStates.EnabledByPolicy;
                 IdleIndex = IndexFor(s);
                 ModelsFolder = s.ModelsFolder ?? "";
                 Available = true;
@@ -67,7 +89,23 @@ public sealed partial class SettingsViewModel : ObservableObject
         return k.IdleUnloadSeconds <= 300 ? FiveMinutesIndex : TenMinutesIndex;
     }
 
-    partial void OnStartWithWindowsChanged(bool value) { if (!_loading) _ = SaveAsync(); }
+    partial void OnStartWithWindowsChanged(bool value) { if (!_loading) _ = ChangeStartupAsync(value); }
+
+    private async Task ChangeStartupAsync(bool value)
+    {
+        var state = await _startup.SetEnabledAsync(value).ConfigureAwait(false);
+        _ui.Post(() =>
+        {
+            ApplyStartup(state);
+            if (state is not StartupStates.Unavailable && (state == StartupStates.Enabled) != value)
+            {
+                _loading = true;
+                StartWithWindows = state == StartupStates.Enabled;
+                _loading = false;
+            }
+        });
+        await SaveAsync().ConfigureAwait(false);
+    }
     partial void OnIdleIndexChanged(int value) { if (!_loading && value >= 0) _ = SaveAsync(); }
 
     /// <summary>Builds the settings to send: the current ones with only the changed fields replaced.</summary>
@@ -96,12 +134,23 @@ public sealed partial class SettingsViewModel : ObservableObject
         var next = Build(folder);
         try
         {
-            await _shell.Host.SetSettingsAsync(next).ConfigureAwait(false);
-            _ui.Post(() => { _current = next; Message = _s.Get("Vm_Saved"); });
+            var old = _current.ModelsFolder;
+            var saved = await _shell.Host.SetSettingsAsync(next).ConfigureAwait(false);
+            _ui.Post(() =>
+            {
+                _current = next;
+                Message = saved.ModelsFolderChanged
+                    ? _s.Format("Vm_FolderSavedNote", string.IsNullOrEmpty(old) ? _s.Get("Vm_DefaultFolder") : old)
+                    : _s.Get("Vm_Saved");
+            });
         }
         catch (HostUnavailableException)
         {
             _ui.Post(() => Message = _s.Get("Vm_SaveFailed"));
+        }
+        catch (HostRequestException ex)
+        {
+            _ui.Post(() => Message = ex.Message);
         }
     }
 

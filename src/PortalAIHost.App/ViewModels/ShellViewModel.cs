@@ -107,7 +107,7 @@ public sealed partial class ShellViewModel : ObservableObject, IDisposable
             _ui.Post(() =>
             {
                 Starting = false;
-                StartMessage = Snapshot.Connected ? "" : _strings.Get("Vm_StartFailed");
+                StartMessage = Snapshot.Connected ? "" : _strings.Get(_launcher.FailureKey ?? "Vm_StartFailed");
             });
         }
     }

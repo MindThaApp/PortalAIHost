@@ -32,6 +32,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Portal.AiHost.Contracts\Portal.AiHost.Contracts.csproj" />
+    <ProjectReference Include="..\Portal.AiHost.Platform.Windows\Portal.AiHost.Platform.Windows.csproj" />
   </ItemGroup>
   <!-- Pseudo-localisation: build with -p:PseudoLoc=true to replace the English text with accented, longer text. -->
   <Target Name="PseudoLocalise" BeforeTargets="BeforeBuild;PrepareForBuild" Condition="'$(PseudoLoc)' == 'true'">

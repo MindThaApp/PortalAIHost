@@ -31,6 +31,9 @@
   <data name="ModelResume.Content" xml:space="preserve"><value>Resume</value></data>
   <data name="ModelCancel.Content" xml:space="preserve"><value>Stop</value></data>
   <data name="ModelUse.Content" xml:space="preserve"><value>Use this model</value></data>
+  <data name="ModelRemove.Content" xml:space="preserve"><value>Remove</value></data>
+  <data name="ModelsCatalogueBar.Title" xml:space="preserve"><value>Model list unavailable</value></data>
+  <data name="ModelsCatalogueBar.Message" xml:space="preserve"><value>The host could not load a trusted model list, so new models cannot be downloaded right now. Models already on this PC still work.</value></data>
   <data name="AppsTitle.Text" xml:space="preserve"><value>Devices and apps</value></data>
   <data name="AppsWaitingHeader.Text" xml:space="preserve"><value>Waiting for your answer</value></data>
   <data name="AppsApprovedHeader.Text" xml:space="preserve"><value>Apps that can use your AI host</value></data>
@@ -153,4 +156,21 @@
   <data name="Vm_HwCores" xml:space="preserve"><value>Processor cores: {0}</value></data>
   <data name="Vm_HwDisk" xml:space="preserve"><value>Free disk space: {0}</value></data>
   <data name="Vm_NoGpu" xml:space="preserve"><value>none found</value></data>
+  <data name="Vm_HostMissing" xml:space="preserve"><value>The host program is missing from this install. Reinstall Portal AI Host to fix this.</value></data>
+  <data name="Vm_StartTimedOut" xml:space="preserve"><value>The host started but did not answer in time. Wait a moment, then try again.</value></data>
+  <data name="Vm_HostExitTestRoot" xml:space="preserve"><value>The host refused to start: the test data folder is missing or not marked as a test folder.</value></data>
+  <data name="Vm_HostExitStartFailed" xml:space="preserve"><value>The host could not start. Restart your PC and try again. If it keeps happening, reinstall Portal AI Host.</value></data>
+  <data name="Vm_HostExitOtherUser" xml:space="preserve"><value>Another Windows user on this PC is already running Portal AI Host. Ask them to quit it, or sign in as that user.</value></data>
+  <data name="Vm_CatalogueUnavailable" xml:space="preserve"><value>Model list unavailable: the host could not load a trusted model list. Models already on this PC still work.</value></data>
+  <data name="Vm_RemoveTitle" xml:space="preserve"><value>Remove this model?</value></data>
+  <data name="Vm_RemoveBody" xml:space="preserve"><value>{0} will be removed from this PC. Only files the host downloaded are deleted; a model file you added yourself is only taken off the list and stays where it is.</value></data>
+  <data name="Vm_RemoveYes" xml:space="preserve"><value>Remove</value></data>
+  <data name="Vm_AutoRemove" xml:space="preserve"><value>Remove {0}</value></data>
+  <data name="Vm_FolderSavedNote" xml:space="preserve"><value>Saved. New downloads go to the new folder after the host restarts. Models already downloaded are not moved or deleted; they stay in {0}.</value></data>
+  <data name="Vm_Startup_Unavailable" xml:space="preserve"><value>Start with Windows is only available in the installed app.</value></data>
+  <data name="Vm_Startup_DisabledByUser" xml:space="preserve"><value>Start with Windows was turned off in Task Manager. Turn it back on there (Startup apps).</value></data>
+  <data name="Vm_Startup_Policy" xml:space="preserve"><value>Start with Windows is set by your organisation.</value></data>
+  <data name="Vm_DefaultFolder" xml:space="preserve"><value>the default folder</value></data>
+  <data name="Vm_Publisher" xml:space="preserve"><value>Publisher: {0}</value></data>
+  <data name="Vm_PublisherUnknown" xml:space="preserve"><value>Publisher: unknown</value></data>
 </root>

@@ -10,6 +10,12 @@ namespace PortalAIHost.App.Services;
 public sealed record HostSnapshot(bool Connected, HostStatus? Status, bool SafeMode)
 {
     public static HostSnapshot NoHost { get; } = new(false, null, false);
+
+    /// <summary>Catalogue id of a recommended upgrade over the active chat model, or null.</summary>
+    public string? UpgradeModelId { get; init; }
+
+    /// <summary>Unclean exits in a row that led to safe mode.</summary>
+    public int UncleanExits { get; init; }
 }
 
 /// <summary>The model list plus the storage facts the Models page shows.</summary>
@@ -23,7 +29,11 @@ public sealed record ModelCatalogView(
     IReadOnlySet<string> ExistingCopyIds,
     string StorageFolder,
     long FreeBytes,
-    string? UpgradeModelId);
+    string? UpgradeModelId)
+{
+    /// <summary>False when the host has no trusted model list: only installed models are shown.</summary>
+    public bool CatalogueAvailable { get; init; } = true;
+}
 
 /// <summary>Raised by a host control when the host cannot be reached.</summary>
 public sealed class HostUnavailableException : Exception
@@ -48,10 +58,16 @@ public interface IHostControl
     Task<ModelCatalogView> ListModelsAsync(CancellationToken ct = default);
     Task StartDownloadAsync(string catalogueId, CancellationToken ct = default);
     Task PauseDownloadAsync(string catalogueId, CancellationToken ct = default);
+    /// <summary>Continues a paused or failed download from its partial file.</summary>
+    Task ResumeDownloadAsync(string catalogueId, CancellationToken ct = default);
+    /// <summary>Stops a download and has the host remove the partial files it made.</summary>
     Task CancelDownloadAsync(string catalogueId, CancellationToken ct = default);
+    /// <summary>Has the host remove a model (its own files only; a file added in place is only forgotten).</summary>
+    Task RemoveModelAsync(string catalogueId, CancellationToken ct = default);
     Task ActivateModelAsync(string catalogueId, CancellationToken ct = default);
     Task<HostSettings> GetSettingsAsync(CancellationToken ct = default);
-    Task SetSettingsAsync(HostSettings settings, CancellationToken ct = default);
+    /// <summary>Saves settings. A new models folder never moves or deletes the models already downloaded.</summary>
+    Task<SettingsSaved> SetSettingsAsync(HostSettings settings, CancellationToken ct = default);
 
     /// <summary>Streams the reply text of a short chat request in pieces.</summary>
     IAsyncEnumerable<string> TryItAsync(string prompt, CancellationToken ct = default);
@@ -62,6 +78,25 @@ public interface IHostLauncher
 {
     /// <summary>Returns true when a start was requested. The caller retries the connection afterwards.</summary>
     Task<bool> StartHostAsync(CancellationToken ct = default);
+
+    /// <summary>Resource key of a plain-language reason for the last failed start, or null.</summary>
+    string? FailureKey { get; }
+}
+
+/// <summary>Start with Windows (a Windows StartupTask). States are <see cref="StartupStates"/> values.</summary>
+public interface IStartupControl
+{
+    Task<string> GetStateAsync();
+
+    /// <summary>Asks Windows to turn it on or off and returns the resulting state. Windows may refuse (disabled by the user in Task Manager).</summary>
+    Task<string> SetEnabledAsync(bool enabled);
+}
+
+/// <summary>Start with Windows for builds that are not packaged: always unavailable.</summary>
+public sealed class UnavailableStartupControl : IStartupControl
+{
+    public Task<string> GetStateAsync() => Task.FromResult(StartupStates.Unavailable);
+    public Task<string> SetEnabledAsync(bool enabled) => Task.FromResult(StartupStates.Unavailable);
 }
 
 /// <summary>Runs work on the UI thread. View models never touch window types directly.</summary>

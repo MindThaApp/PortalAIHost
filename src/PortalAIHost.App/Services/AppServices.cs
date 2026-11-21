@@ -15,6 +15,7 @@ public static class AppServices
     public static WinUiDialogService Dialogs { get; private set; } = null!;
     public static IHostControl Host { get; private set; } = null!;
     public static ShellViewModel Shell { get; private set; } = null!;
+    public static IStartupControl Startup { get; private set; } = new UnavailableStartupControl();
 
     public static void Build()
     {
@@ -33,12 +34,30 @@ public static class AppServices
         }
         else
         {
-            Host = new PipeHostControl();
-            launcher = new ProcessHostLauncher();
+            var pipe = new PipeHostControl(new PipeControlChannelFactory());
+            Host = pipe;
+            launcher = new ProcessHostLauncher(
+                async ct => (await pipe.GetStatusAsync(ct).ConfigureAwait(false)).Connected,
+                protocolStart: StartByProtocolAsync);
+            Startup = new WindowsStartupControl();
             stateFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PortalAIHost", "app");
         }
         IAppState state = AppOptions.SkipFirstRun ? new FixedAppState(true) : new AppStateStore(stateFolder);
         Shell = new ShellViewModel(Host, launcher, Ui, Strings, state);
+    }
+
+    /// <summary>Packaged installs register portal-ai-host:start; unpackaged runs have nothing to launch.</summary>
+    private static async Task<bool> StartByProtocolAsync()
+    {
+        try
+        {
+            _ = Windows.ApplicationModel.Package.Current;
+            return await Windows.System.Launcher.LaunchUriAsync(new Uri("portal-ai-host:start"));
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or System.Runtime.InteropServices.COMException)
+        {
+            return false;
+        }
     }
 
     private sealed class FixedAppState : IAppState
@@ -140,6 +159,7 @@ public sealed class WinUiDialogService : IDialogService
             panel.Children.Add(new TextBlock { Text = _s.Format("Vm_ApprovalBody", a.AppName), TextWrapping = TextWrapping.Wrap });
             if (!string.IsNullOrWhiteSpace(a.Reason))
                 panel.Children.Add(new TextBlock { Text = _s.Format("Vm_ApprovalReason", a.Reason), TextWrapping = TextWrapping.Wrap });
+            panel.Children.Add(new TextBlock { Text = ApprovalText.Publisher(_s, a), TextWrapping = TextWrapping.Wrap });
             panel.Children.Add(new TextBlock
             {
                 Text = ApprovalText.Identity(_s, a),

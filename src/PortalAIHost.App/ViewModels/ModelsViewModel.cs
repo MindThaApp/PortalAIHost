@@ -28,7 +28,12 @@ public sealed partial class ModelRowViewModel : ObservableObject
         Active = m.Active;
         FitsThisPc = m.FitsThisPc;
         ExistingCopy = existingCopy;
-        State = m.Installed ? "done" : "none";
+        State = m.Installed ? "done" : m.DownloadState ?? "none";
+        if (!m.Installed && m.DownloadState is not null && m.SizeBytes > 0)
+        {
+            Percent = 100.0 * m.BytesDone / m.SizeBytes;
+            ProgressText = m.DownloadState == "paused" ? _s.Format("Vm_Paused", (int)Percent) : "";
+        }
         Refresh();
     }
 
@@ -46,6 +51,7 @@ public sealed partial class ModelRowViewModel : ObservableObject
     public string AutoResume => _s.Format("Vm_AutoResume", Name);
     public string AutoCancel => _s.Format("Vm_AutoCancel", Name);
     public string AutoUse => _s.Format("Vm_AutoUse", Name);
+    public string AutoRemove => _s.Format("Vm_AutoRemove", Name);
 
     [ObservableProperty] private bool _installed;
     [ObservableProperty] private bool _active;
@@ -58,6 +64,7 @@ public sealed partial class ModelRowViewModel : ObservableObject
     [ObservableProperty] private bool _canResume;
     [ObservableProperty] private bool _canCancel;
     [ObservableProperty] private bool _canActivate;
+    [ObservableProperty] private bool _canRemove;
     [ObservableProperty] private bool _showProgress;
     [ObservableProperty] private bool _tooBig;
 
@@ -66,6 +73,7 @@ public sealed partial class ModelRowViewModel : ObservableObject
         State = e.State;
         Percent = e.BytesTotal > 0 ? 100.0 * e.BytesDone / e.BytesTotal : 0;
         if (e.State == "done") Installed = true;
+        if (e.State == "removed") { Installed = false; State = "none"; Percent = 0; }
         ProgressText = e.State switch
         {
             "downloading" => e.EtaSeconds is { } eta
@@ -89,6 +97,7 @@ public sealed partial class ModelRowViewModel : ObservableObject
         CanCancel = State is "downloading" or "paused" or "queued";
         CanDownload = !Installed && State == "none";
         CanActivate = Installed && !Active;
+        CanRemove = Installed && !Active && !busy;
         TooBig = !FitsThisPc && !Installed;
         Badge = Active ? _s.Get("Vm_InUse") : Installed ? _s.Get("Vm_Installed") : Recommended ? _s.Get("Vm_BestForYou") : "";
     }
@@ -98,7 +107,8 @@ public sealed partial class ModelRowViewModel : ObservableObject
 
     [RelayCommand] private Task DownloadAsync() => _owner.StartAsync(this);
     [RelayCommand] private Task PauseAsync() => _owner.PauseAsync(this);
-    [RelayCommand] private Task ResumeAsync() => _owner.StartAsync(this);
+    [RelayCommand] private Task ResumeAsync() => _owner.ResumeAsync(this);
+    [RelayCommand] private Task RemoveAsync() => _owner.RemoveAsync(this);
     [RelayCommand] private Task CancelAsync() => _owner.CancelAsync(this);
     [RelayCommand] private Task ActivateAsync() => _owner.ActivateAsync(this);
 }
@@ -129,6 +139,7 @@ public sealed partial class ModelsViewModel : ObservableObject, IDisposable
     [ObservableProperty] private string _errorLine = "";
     [ObservableProperty] private bool _hasExisting;
     [ObservableProperty] private bool _hasUpgrade;
+    [ObservableProperty] private bool _catalogueUnavailable;
 
     public async Task LoadAsync()
     {
@@ -141,11 +152,16 @@ public sealed partial class ModelsViewModel : ObservableObject, IDisposable
         {
             _ui.Post(() => { Models.Clear(); ErrorLine = _s.Get("Vm_NoHostTitle"); });
         }
+        catch (HostRequestException ex)
+        {
+            _ui.Post(() => { Models.Clear(); ErrorLine = ex.Message; });
+        }
     }
 
     private void Fill(ModelCatalogView view)
     {
         ErrorLine = "";
+        CatalogueUnavailable = !view.CatalogueAvailable;
         Models.Clear();
         foreach (var m in view.Models)
             Models.Add(new ModelRowViewModel(this, _s, m, view.ExistingCopyIds.Contains(m.Id)));
@@ -167,6 +183,15 @@ public sealed partial class ModelsViewModel : ObservableObject, IDisposable
 
     public Task StartAsync(ModelRowViewModel row) => Run(() => _shell.Host.StartDownloadAsync(row.Id));
     public Task PauseAsync(ModelRowViewModel row) => Run(() => _shell.Host.PauseDownloadAsync(row.Id));
+    public Task ResumeAsync(ModelRowViewModel row) => Run(() => _shell.Host.ResumeDownloadAsync(row.Id));
+
+    public async Task RemoveAsync(ModelRowViewModel row)
+    {
+        // The host deletes only files it downloaded (store rules); the window only asks, after a confirmation.
+        var ok = await _dialogs.ConfirmAsync(_s.Get("Vm_RemoveTitle"), _s.Format("Vm_RemoveBody", row.Name), _s.Get("Vm_RemoveYes"), _s.Get("Vm_Cancel"));
+        if (!ok) return;
+        if (await Run(() => _shell.Host.RemoveModelAsync(row.Id))) await LoadAsync();
+    }
 
     public async Task CancelAsync(ModelRowViewModel row)
     {
@@ -183,17 +208,23 @@ public sealed partial class ModelsViewModel : ObservableObject, IDisposable
         await LoadAsync();
     }
 
-    private async Task Run(Func<Task> call)
+    private async Task<bool> Run(Func<Task> call)
     {
         try
         {
             await call().ConfigureAwait(false);
             _ui.Post(() => ErrorLine = "");
+            return true;
         }
         catch (HostUnavailableException)
         {
             _ui.Post(() => ErrorLine = _s.Get("Vm_NoHostTitle"));
         }
+        catch (HostRequestException ex)
+        {
+            _ui.Post(() => ErrorLine = ex.Message);
+        }
+        return false;
     }
 
     public void Dispose() => _shell.Host.DownloadProgress -= OnProgress;
