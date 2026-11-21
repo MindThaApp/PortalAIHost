@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.22000.0</TargetPlatformMinVersion>
+    <SupportedOSPlatformVersion>10.0.22000.0</SupportedOSPlatformVersion>
+    <RootNamespace>PortalAIHost.App</RootNamespace>
+    <AssemblyName>PortalAIHost</AssemblyName>
+    <Platforms>x64;ARM64</Platforms>
+    <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
+    <UseWinUI>true</UseWinUI>
+    <Platform Condition="'$(Platform)' == ''">x64</Platform>
+    <!-- Unpackaged for now; the package manifest is owned by the packaging work. -->
+    <WindowsPackageType>None</WindowsPackageType>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <SelfContained>true</SelfContained>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <NoWarn>$(NoWarn);MVVMTK0045</NoWarn>
+    <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == '' and '$(Platform)' == 'x64'">win-x64</RuntimeIdentifier>
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == '' and '$(Platform)' == 'ARM64'">win-arm64</RuntimeIdentifier>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.WindowsAppSDK.WinUI" VersionOverride="2.3.9" />
+    <PackageReference Include="Microsoft.WindowsAppSDK.Foundation" VersionOverride="2.3.12" />
+    <PackageReference Include="Microsoft.WindowsAppSDK.InteractiveExperiences" VersionOverride="2.1.9" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" VersionOverride="10.0.28000.2705" />
+    <PackageReference Include="CommunityToolkit.Mvvm" VersionOverride="8.4.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Portal.AiHost.Contracts\Portal.AiHost.Contracts.csproj" />
+  </ItemGroup>
+  <!-- Pseudo-localisation: build with -p:PseudoLoc=true to replace the English text with accented, longer text. -->
+  <Target Name="PseudoLocalise" BeforeTargets="BeforeBuild;PrepareForBuild" Condition="'$(PseudoLoc)' == 'true'">
+    <Exec Command="python &quot;$(MSBuildProjectDirectory)\tools\pseudo-loc.py&quot; &quot;$(MSBuildProjectDirectory)\Strings\en-US\Resources.resw&quot; &quot;$(MSBuildProjectDirectory)\Strings\qps-ploc\Resources.resw&quot;" />
+  </Target>
+</Project>

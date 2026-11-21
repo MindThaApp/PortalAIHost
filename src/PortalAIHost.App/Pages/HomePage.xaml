@@ -1,0 +1,39 @@
+<Page
+    x:Class="PortalAIHost.App.Pages.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer>
+        <StackPanel Padding="32,24" Spacing="16" MaxWidth="760" HorizontalAlignment="Left">
+            <TextBlock x:Uid="HomeTitle" Style="{StaticResource TitleTextBlockStyle}" />
+            <InfoBar
+                x:Uid="HomeSafeModeBar"
+                Severity="Warning"
+                IsClosable="False"
+                IsOpen="{x:Bind ViewModel.SafeMode, Mode=OneWay}" />
+            <Border Style="{StaticResource CardBorder}">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="{x:Bind ViewModel.StatusTitle, Mode=OneWay}" Style="{StaticResource SubtitleTextBlockStyle}" TextWrapping="Wrap" />
+                    <TextBlock Text="{x:Bind ViewModel.StatusDetail, Mode=OneWay}" TextWrapping="Wrap" Opacity="0.8" />
+                    <StackPanel Spacing="8" Visibility="{x:Bind ViewModel.ShowStatus, Mode=OneWay}">
+                        <TextBlock Text="{x:Bind ViewModel.ModelLine, Mode=OneWay}" TextWrapping="Wrap" />
+                        <TextBlock Text="{x:Bind ViewModel.QueueLine, Mode=OneWay}" TextWrapping="Wrap" />
+                    </StackPanel>
+                    <StackPanel Spacing="8" Visibility="{x:Bind ViewModel.NoHost, Mode=OneWay}">
+                        <Button
+                            x:Uid="HomeStartButton"
+                            Style="{StaticResource AccentButtonStyle}"
+                            Command="{x:Bind ViewModel.StartHostCommand}"
+                            IsEnabled="{x:Bind ViewModel.CanStart, Mode=OneWay}" />
+                        <TextBlock Text="{x:Bind ViewModel.StartMessage, Mode=OneWay}" TextWrapping="Wrap" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource CardBorder}" Visibility="{x:Bind ViewModel.UpgradeAvailable, Mode=OneWay}">
+                <StackPanel Spacing="8">
+                    <TextBlock x:Uid="HomeUpgradeText" TextWrapping="Wrap" />
+                    <Button x:Uid="HomeSeeModelsButton" Click="OnSeeModels" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

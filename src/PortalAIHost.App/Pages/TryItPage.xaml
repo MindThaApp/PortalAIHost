@@ -1,0 +1,31 @@
+<Page
+    x:Class="PortalAIHost.App.Pages.TryItPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer>
+        <StackPanel Padding="32,24" Spacing="16" MaxWidth="760" HorizontalAlignment="Left">
+            <TextBlock x:Uid="TryItTitle" Style="{StaticResource TitleTextBlockStyle}" />
+            <TextBlock x:Uid="TryItIntro" TextWrapping="Wrap" Opacity="0.8" />
+            <TextBox
+                x:Uid="TryItPrompt"
+                Text="{x:Bind ViewModel.Prompt, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                AcceptsReturn="True"
+                TextWrapping="Wrap"
+                MinHeight="96" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button x:Uid="TryItSend" Command="{x:Bind ViewModel.SendCommand}" Style="{StaticResource AccentButtonStyle}" />
+                <Button x:Uid="TryItStop" Command="{x:Bind ViewModel.StopCommand}" />
+                <ProgressRing IsActive="{x:Bind ViewModel.IsBusy, Mode=OneWay}" Width="24" Height="24" />
+            </StackPanel>
+            <TextBlock Text="{x:Bind ViewModel.Error, Mode=OneWay}" TextWrapping="Wrap" />
+            <Border Style="{StaticResource CardBorder}">
+                <TextBlock
+                    x:Uid="TryItReply"
+                    Text="{x:Bind ViewModel.Reply, Mode=OneWay}"
+                    TextWrapping="Wrap"
+                    IsTextSelectionEnabled="True"
+                    MinHeight="80" />
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <NoWarn>$(NoWarn);MVVMTK0045</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="xunit.v3.mtp-v2" />
+    <PackageReference Include="CommunityToolkit.Mvvm" VersionOverride="8.4.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Portal.AiHost.Contracts\Portal.AiHost.Contracts.csproj" />
+  </ItemGroup>
+  <!-- The view models and host services contain no window types, so they are compiled straight into the tests. -->
+  <ItemGroup>
+    <Compile Include="..\..\src\PortalAIHost.App\ViewModels\*.cs" Link="App\ViewModels\%(Filename)%(Extension)" />
+    <Compile Include="..\..\src\PortalAIHost.App\Services\HostTypes.cs" Link="App\Services\HostTypes.cs" />
+    <Compile Include="..\..\src\PortalAIHost.App\Services\FakeHostControl.cs" Link="App\Services\FakeHostControl.cs" />
+    <Compile Include="..\..\src\PortalAIHost.App\Services\PipeHostControl.cs" Link="App\Services\PipeHostControl.cs" />
+    <Compile Include="..\..\src\PortalAIHost.App\Services\HostLaunchers.cs" Link="App\Services\HostLaunchers.cs" />
+    <Compile Include="..\..\src\PortalAIHost.App\Services\AppStateStore.cs" Link="App\Services\AppStateStore.cs" />
+    <Compile Include="..\..\src\PortalAIHost.App\Services\PseudoLoc.cs" Link="App\Services\PseudoLoc.cs" />
+  </ItemGroup>
+</Project>
