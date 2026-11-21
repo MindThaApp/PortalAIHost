@@ -357,6 +357,14 @@ parallel. Each package owns only the listed paths, and changes to another packag
 - **Releases.** Store builds use version revision field 0. Two unclean exits trigger safe mode. Test windows are
   handled as the lessons file says.
 
+**Open security items** (known gaps, not yet fixed):
+- **Caller verification (WP4).** "verified" means only that the calling process has a package family name; the
+  package signer is not checked. The process-id fallback, used when neither a package name nor an exe path is
+  known, can match a reused process id. The caller's integrity level is not checked.
+- **HTTP adapter limits (WP5).** The `Host` header allowlist, and a body limit enforced while the body is read
+  (chunked bodies included), belong in the Kestrel adapter. `ApiPipeline` only checks the size of a body it is
+  handed.
+
 ## 11. Open questions for the owner
 
 1. Store name and identity reservation. The package family name is baked into client discovery.
