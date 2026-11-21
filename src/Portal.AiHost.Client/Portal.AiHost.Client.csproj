@@ -26,10 +26,9 @@
   <PropertyGroup>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);IncludeContractsAssembly</TargetsForTfmSpecificBuildOutput>
   </PropertyGroup>
-  <Target Name="IncludeContractsAssembly">
+  <Target Name="IncludeContractsAssembly" DependsOnTargets="ResolveReferences">
     <ItemGroup>
-      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths)"
-                            Condition="'%(ReferenceCopyLocalPaths.ReferenceSourceTarget)' == 'ProjectReference'" />
+      <BuildOutputInPackage Include="@(ReferencePath)" Condition="'%(ReferencePath.ReferenceSourceTarget)' == 'ProjectReference'" />
     </ItemGroup>
   </Target>
 
