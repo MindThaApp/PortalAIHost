@@ -233,9 +233,9 @@ public static partial class CatalogueValidator
     private static void ValidateMemory(CatalogueEntry m, string p, List<string> errors)
     {
         var mem = m.Memory;
-        if (mem.WeightsBytes <= 0 || mem.NLayers <= 0 || mem.KvBytesPer1kCtx < 0 || mem.ComputeOverheadBytes < 0)
+        if (mem.WeightsBytes <= 0 || mem.NLayers <= 0 || mem.KvBytesPer1kCtx <= 0 || mem.ComputeOverheadBytes < 0)
         {
-            errors.Add($"{p}: memory weights_bytes, n_layers must be positive");
+            errors.Add($"{p}: memory weights_bytes, n_layers and kv_bytes_per_1k_ctx must be positive");
             return;
         }
 

@@ -42,6 +42,12 @@ public sealed record PlannerSettings
     /// <summary>Share of a GPU's nominal bandwidth reached during generation.</summary>
     public double GpuEfficiency { get; init; } = 0.7;
 
+    /// <summary>
+    /// Recommendations (what to download) assume at least this share of RAM is taken by Windows and other apps
+    /// (minimum 2 GB), so they do not flip with whatever happens to be open. Load-time planning uses live memory.
+    /// </summary>
+    public double TypicalOtherUseFraction { get; init; } = 0.25;
+
     /// <summary>Chat models slower than this are not recommended.</summary>
     public double MinTokensPerSecond { get; init; } = 8;
 }

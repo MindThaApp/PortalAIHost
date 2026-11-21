@@ -153,7 +153,7 @@
         "url": "https://huggingface.co/openai/gpt-oss-20b",
         "commercial_ok": true
       },
-      "quality": 63,
+      "quality": 61,
       "params_total_b": 21,
       "params_active_b": 3.6,
       "quant": "Q4_K_M",

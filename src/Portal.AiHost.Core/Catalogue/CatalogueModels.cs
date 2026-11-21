@@ -125,6 +125,7 @@ public sealed class ModelMemory
     public int NLayers { get; init; }
 
     /// <summary>KV cache for 1,024 tokens of context at f16, over all layers.</summary>
+    [JsonPropertyName("kv_bytes_per_1k_ctx")]
     public long KvBytesPer1kCtx { get; init; }
 
     /// <summary>Compute buffers on the device that runs the model.</summary>

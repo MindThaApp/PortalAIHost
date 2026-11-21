@@ -25,7 +25,7 @@ public static class Recommender
         IEnumerable<CatalogueEntry> catalogue, string kind, HardwareProfile hw, MemorySnapshot mem, RecommendContext ctx)
     {
         var settings = ctx.Settings ?? new PlannerSettings();
-        var budget = MemoryBudget.From(hw, mem, settings);
+        var budget = MemoryBudget.From(hw, Typical(hw, mem, settings), settings);
         var candidates = new List<Candidate>();
         foreach (var e in catalogue.Where(e => e.Kind == kind && CatalogueValidator.IsSupported(e)))
         {
@@ -48,6 +48,14 @@ public static class Recommender
             .ThenBy(c => c.Entry.Id, StringComparer.Ordinal)
             .FirstOrDefault();
         return new Recommendation(best, candidates);
+    }
+
+    /// <summary>Live free RAM, capped at total minus the typical use by Windows and other apps.</summary>
+    public static MemorySnapshot Typical(HardwareProfile hw, MemorySnapshot mem, PlannerSettings settings)
+    {
+        var reserve = Math.Max(2L << 30, (long)(hw.RamBytes * settings.TypicalOtherUseFraction));
+        var available = mem.AvailableRamBytes > 0 ? mem.AvailableRamBytes : hw.RamBytes;
+        return mem with { AvailableRamBytes = Math.Max(0, Math.Min(available, hw.RamBytes - reserve)) };
     }
 }
 
