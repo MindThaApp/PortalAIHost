@@ -115,6 +115,7 @@ public sealed class FakeHostControl : IHostControl, IDisposable
 
     public Task<IReadOnlyList<PendingApproval>> ListApprovalsAsync(CancellationToken ct = default)
     {
+        Require();
         lock (_gate) return Task.FromResult<IReadOnlyList<PendingApproval>>(_pending.ToList());
     }
 
@@ -140,6 +141,7 @@ public sealed class FakeHostControl : IHostControl, IDisposable
 
     public Task<IReadOnlyList<ClientSummary>> ListClientsAsync(CancellationToken ct = default)
     {
+        Require();
         lock (_gate) return Task.FromResult<IReadOnlyList<ClientSummary>>(_clients.Where(c => !c.Revoked).ToList());
     }
 
@@ -151,6 +153,7 @@ public sealed class FakeHostControl : IHostControl, IDisposable
 
     public Task<ModelCatalogView> ListModelsAsync(CancellationToken ct = default)
     {
+        Require();
         lock (_gate)
         {
             IReadOnlySet<string> existing = Scenario == FakeScenario.Fresh ? new HashSet<string> { "chat-8b" } : new HashSet<string>();
@@ -161,20 +164,25 @@ public sealed class FakeHostControl : IHostControl, IDisposable
 
     public Task StartDownloadAsync(string catalogueId, CancellationToken ct = default)
     {
+        DownloadProgressEvent ev;
         lock (_gate)
         {
             var total = _models.First(m => m.Id == catalogueId).SizeBytes;
             var done = _downloads.TryGetValue(catalogueId, out var old) ? old.BytesDone : 0;
             _downloads[catalogueId] = Make(catalogueId, "downloading", done, total);
+            ev = _downloads[catalogueId];
         }
+        DownloadProgress?.Invoke(ev);
         return Task.CompletedTask;
     }
 
     public Task PauseDownloadAsync(string catalogueId, CancellationToken ct = default)
     {
+        DownloadProgressEvent? ev = null;
         lock (_gate)
             if (_downloads.TryGetValue(catalogueId, out var d))
-                _downloads[catalogueId] = Make(catalogueId, "paused", d.BytesDone, d.BytesTotal);
+                _downloads[catalogueId] = ev = Make(catalogueId, "paused", d.BytesDone, d.BytesTotal);
+        if (ev is not null) DownloadProgress?.Invoke(ev);
         return Task.CompletedTask;
     }
 
@@ -193,6 +201,7 @@ public sealed class FakeHostControl : IHostControl, IDisposable
 
     public Task<HostSettings> GetSettingsAsync(CancellationToken ct = default)
     {
+        Require();
         lock (_gate) return Task.FromResult(_settings);
     }
 
@@ -204,6 +213,7 @@ public sealed class FakeHostControl : IHostControl, IDisposable
 
     public async IAsyncEnumerable<string> TryItAsync(string prompt, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct = default)
     {
+        Require();
         foreach (var word in ("This is a sample reply from the practice host. You asked: " + prompt).Split(' '))
         {
             await Task.Delay(40, ct).ConfigureAwait(false);
@@ -212,6 +222,12 @@ public sealed class FakeHostControl : IHostControl, IDisposable
     }
 
     public void Dispose() => _timer?.Dispose();
+
+    private void Require()
+    {
+        lock (_gate)
+            if (!_connected) throw new HostUnavailableException();
+    }
 
     private HostSnapshot Snapshot()
     {

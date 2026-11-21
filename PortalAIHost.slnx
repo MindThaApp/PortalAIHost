@@ -15,6 +15,7 @@
     <Project Path="tests/Portal.AiHost.Engine.Tests/Portal.AiHost.Engine.Tests.csproj" />
     <Project Path="tests/Portal.AiHost.Server.Tests/Portal.AiHost.Server.Tests.csproj" />
     <Project Path="tests/Portal.AiHost.Client.Tests/Portal.AiHost.Client.Tests.csproj" />
+    <Project Path="tests/PortalAIHost.App.Tests/PortalAIHost.App.Tests.csproj" />
   </Folder>
 </Solution>
 
