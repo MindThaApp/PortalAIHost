@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="NavHome.Content" xml:space="preserve"><value>Home</value></data>
+  <data name="NavHome.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Home</value></data>
+  <data name="NavModels.Content" xml:space="preserve"><value>Models</value></data>
+  <data name="NavModels.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Models</value></data>
+  <data name="NavApps.Content" xml:space="preserve"><value>Devices and apps</value></data>
+  <data name="NavApps.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Devices and apps</value></data>
+  <data name="NavTryIt.Content" xml:space="preserve"><value>Try it</value></data>
+  <data name="NavTryIt.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Try it</value></data>
+  <data name="NavSettings.Content" xml:space="preserve"><value>Settings</value></data>
+  <data name="NavSettings.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Settings</value></data>
+  <data name="HomeTitle.Text" xml:space="preserve"><value>Home</value></data>
+  <data name="HomeSafeModeBar.Title" xml:space="preserve"><value>Safe mode</value></data>
+  <data name="HomeSafeModeBar.Message" xml:space="preserve"><value>The host closed unexpectedly more than once, so it started with careful settings. Your apps still work. If this keeps happening, restart your PC.</value></data>
+  <data name="HomeStartButton.Content" xml:space="preserve"><value>Start Portal AI Host</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Start Portal AI Host</value></data>
+  <data name="HomeUpgradeText.Text" xml:space="preserve"><value>A better model is available for your PC. Your current model stays until the new one is ready.</value></data>
+  <data name="HomeSeeModelsButton.Content" xml:space="preserve"><value>See models</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>See models</value></data>
+  <data name="ModelsTitle.Text" xml:space="preserve"><value>Models</value></data>
+  <data name="ModelsExistingBar.Title" xml:space="preserve"><value>Found an existing copy</value></data>
+  <data name="ModelsUpgradeBar.Title" xml:space="preserve"><value>A better model is available</value></data>
+  <data name="ModelTooBig.Text" xml:space="preserve"><value>This one may be too big for this PC.</value></data>
+  <data name="ModelDownload.Content" xml:space="preserve"><value>Download</value></data>
+  <data name="ModelPause.Content" xml:space="preserve"><value>Pause</value></data>
+  <data name="ModelResume.Content" xml:space="preserve"><value>Resume</value></data>
+  <data name="ModelCancel.Content" xml:space="preserve"><value>Stop</value></data>
+  <data name="ModelUse.Content" xml:space="preserve"><value>Use this model</value></data>
+  <data name="AppsTitle.Text" xml:space="preserve"><value>Devices and apps</value></data>
+  <data name="AppsWaitingHeader.Text" xml:space="preserve"><value>Waiting for your answer</value></data>
+  <data name="AppsApprovedHeader.Text" xml:space="preserve"><value>Apps that can use your AI host</value></data>
+  <data name="AppsNone.Text" xml:space="preserve"><value>No apps have been allowed yet. When an app asks to use the host, you will be asked here.</value></data>
+  <data name="AppAllow.Content" xml:space="preserve"><value>Allow</value></data>
+  <data name="AppDeny.Content" xml:space="preserve"><value>Deny</value></data>
+  <data name="AppRevoke.Content" xml:space="preserve"><value>Remove access</value></data>
+  <data name="SettingsTitle.Text" xml:space="preserve"><value>Settings</value></data>
+  <data name="SettingsStartWithWindows.Header" xml:space="preserve"><value>Start with Windows</value></data>
+  <data name="SettingsStartWithWindows.OnContent" xml:space="preserve"><value>On</value></data>
+  <data name="SettingsStartWithWindows.OffContent" xml:space="preserve"><value>Off</value></data>
+  <data name="SettingsStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Start with Windows</value></data>
+  <data name="SettingsIdle.Header" xml:space="preserve"><value>Free up memory when idle</value></data>
+  <data name="SettingsIdle.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Free up memory when idle</value></data>
+  <data name="SettingsIdleHelp.Text" xml:space="preserve"><value>The model wakes up again the next time an app asks for it. Keeping it loaded answers faster but uses memory all the time.</value></data>
+  <data name="SettingsFolder.Header" xml:space="preserve"><value>Folder for downloaded models</value></data>
+  <data name="SettingsFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Folder for downloaded models</value></data>
+  <data name="SettingsFolderApply.Content" xml:space="preserve"><value>Use this folder</value></data>
+  <data name="SettingsFolderApply.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Use this folder</value></data>
+  <data name="TryItTitle.Text" xml:space="preserve"><value>Try it</value></data>
+  <data name="TryItIntro.Text" xml:space="preserve"><value>Ask the model something short to check that it works. Nothing you type here is saved.</value></data>
+  <data name="TryItPrompt.Header" xml:space="preserve"><value>Your question</value></data>
+  <data name="TryItPrompt.PlaceholderText" xml:space="preserve"><value>For example: Write one sentence about the sea.</value></data>
+  <data name="TryItPrompt.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Your question</value></data>
+  <data name="TryItSend.Content" xml:space="preserve"><value>Ask</value></data>
+  <data name="TryItSend.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ask</value></data>
+  <data name="TryItStop.Content" xml:space="preserve"><value>Stop</value></data>
+  <data name="TryItStop.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Stop</value></data>
+  <data name="TryItReply.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>The reply</value></data>
+  <data name="FirstRunTitle.Text" xml:space="preserve"><value>Welcome to Portal AI Host</value></data>
+  <data name="FirstRunCheckHeader.Text" xml:space="preserve"><value>Step 1 of 3: Checking your PC</value></data>
+  <data name="FirstRunNext.Content" xml:space="preserve"><value>Continue</value></data>
+  <data name="FirstRunNext.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Continue</value></data>
+  <data name="FirstRunModelHeader.Text" xml:space="preserve"><value>Step 2 of 3: The best model for your PC</value></data>
+  <data name="FirstRunDownload.Content" xml:space="preserve"><value>Download this model</value></data>
+  <data name="FirstRunDownload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Download this model</value></data>
+  <data name="FirstRunDownloadHeader.Text" xml:space="preserve"><value>Downloading your model</value></data>
+  <data name="FirstRunRetry.Content" xml:space="preserve"><value>Try again</value></data>
+  <data name="FirstRunRetry.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Try again</value></data>
+  <data name="FirstRunStartupHeader.Text" xml:space="preserve"><value>Step 3 of 3: Start with Windows</value></data>
+  <data name="FirstRunStartWithWindows.Header" xml:space="preserve"><value>Start Portal AI Host when I sign in to Windows</value></data>
+  <data name="FirstRunStartWithWindows.OnContent" xml:space="preserve"><value>On</value></data>
+  <data name="FirstRunStartWithWindows.OffContent" xml:space="preserve"><value>Off</value></data>
+  <data name="FirstRunStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Start Portal AI Host when I sign in to Windows</value></data>
+  <data name="FirstRunFinish.Content" xml:space="preserve"><value>Finish</value></data>
+  <data name="FirstRunFinish.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Finish</value></data>
+  <data name="FirstRunSkip.Content" xml:space="preserve"><value>Skip setup for now</value></data>
+  <data name="FirstRunSkip.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Skip setup for now</value></data>
+  <data name="Vm_AppTitle" xml:space="preserve"><value>Portal AI Host</value></data>
+  <data name="Vm_NoHostTitle" xml:space="preserve"><value>Portal AI Host is not running</value></data>
+  <data name="Vm_NoHostBody" xml:space="preserve"><value>The helper that runs your AI model is switched off. Start it so your apps can use AI.</value></data>
+  <data name="Vm_Starting" xml:space="preserve"><value>Starting...</value></data>
+  <data name="Vm_StartFailed" xml:space="preserve"><value>Could not start the host. Try opening Portal AI Host again from the Start menu.</value></data>
+  <data name="Vm_StateReady" xml:space="preserve"><value>Ready</value></data>
+  <data name="Vm_StateBusy" xml:space="preserve"><value>Busy answering</value></data>
+  <data name="Vm_StateLoading" xml:space="preserve"><value>Getting the model ready</value></data>
+  <data name="Vm_StateIdle" xml:space="preserve"><value>Resting. The model wakes up when an app asks.</value></data>
+  <data name="Vm_StateNoModel" xml:space="preserve"><value>No model yet</value></data>
+  <data name="Vm_StateDownloading" xml:space="preserve"><value>Downloading a model</value></data>
+  <data name="Vm_StateError" xml:space="preserve"><value>Something went wrong</value></data>
+  <data name="Vm_HostVersion" xml:space="preserve"><value>Host version {0}</value></data>
+  <data name="Vm_ModelNone" xml:space="preserve"><value>No model installed yet</value></data>
+  <data name="Vm_ModelLoaded" xml:space="preserve"><value>{0} is loaded and ready</value></data>
+  <data name="Vm_ModelLoading" xml:space="preserve"><value>Loading {0}...</value></data>
+  <data name="Vm_ModelUnloaded" xml:space="preserve"><value>{0} is installed. It loads when an app asks.</value></data>
+  <data name="Vm_QueueEmpty" xml:space="preserve"><value>No requests waiting</value></data>
+  <data name="Vm_QueueSome" xml:space="preserve"><value>{0} running, {1} waiting</value></data>
+  <data name="Vm_QualityName" xml:space="preserve"><value>Quality {0} out of 5</value></data>
+  <data name="Vm_DownloadProgress" xml:space="preserve"><value>{0} of {1}</value></data>
+  <data name="Vm_DownloadEta" xml:space="preserve"><value>{0} of {1}, about {2} min left</value></data>
+  <data name="Vm_Paused" xml:space="preserve"><value>Paused at {0}%</value></data>
+  <data name="Vm_Verifying" xml:space="preserve"><value>Checking the download...</value></data>
+  <data name="Vm_Queued" xml:space="preserve"><value>Waiting to start...</value></data>
+  <data name="Vm_DownloadFailed" xml:space="preserve"><value>The download did not finish. {0}</value></data>
+  <data name="Vm_DownloadDone" xml:space="preserve"><value>Download complete.</value></data>
+  <data name="Vm_InUse" xml:space="preserve"><value>In use</value></data>
+  <data name="Vm_Installed" xml:space="preserve"><value>Installed</value></data>
+  <data name="Vm_BestForYou" xml:space="preserve"><value>Best for your PC</value></data>
+  <data name="Vm_StorageLine" xml:space="preserve"><value>Models are stored in {0} ({1} free).</value></data>
+  <data name="Vm_ExistingCopy" xml:space="preserve"><value>A copy of {0} is already on this PC. The host will use it instead of downloading it again.</value></data>
+  <data name="Vm_UpgradeOffer" xml:space="preserve"><value>{0} is a better fit. Your current model stays until the new one is ready.</value></data>
+  <data name="Vm_CancelDlTitle" xml:space="preserve"><value>Stop this download?</value></data>
+  <data name="Vm_CancelDlBody" xml:space="preserve"><value>The part that was already downloaded will be discarded.</value></data>
+  <data name="Vm_CancelDlYes" xml:space="preserve"><value>Stop download</value></data>
+  <data name="Vm_CancelDlKeep" xml:space="preserve"><value>Keep downloading</value></data>
+  <data name="Vm_AutoDownload" xml:space="preserve"><value>Download {0}</value></data>
+  <data name="Vm_AutoPause" xml:space="preserve"><value>Pause {0}</value></data>
+  <data name="Vm_AutoResume" xml:space="preserve"><value>Resume {0}</value></data>
+  <data name="Vm_AutoCancel" xml:space="preserve"><value>Stop downloading {0}</value></data>
+  <data name="Vm_AutoUse" xml:space="preserve"><value>Use {0}</value></data>
+  <data name="Vm_Added" xml:space="preserve"><value>Added {0}</value></data>
+  <data name="Vm_LastUsed" xml:space="preserve"><value>Last used {0}</value></data>
+  <data name="Vm_NeverUsed" xml:space="preserve"><value>Not used yet</value></data>
+  <data name="Vm_AutoRevoke" xml:space="preserve"><value>Remove access for {0}</value></data>
+  <data name="Vm_AutoAllow" xml:space="preserve"><value>Allow {0}</value></data>
+  <data name="Vm_AutoDeny" xml:space="preserve"><value>Deny {0}</value></data>
+  <data name="Vm_RevokeTitle" xml:space="preserve"><value>Remove access for {0}?</value></data>
+  <data name="Vm_RevokeBody" xml:space="preserve"><value>{0} will stop working with the AI host until you allow it again.</value></data>
+  <data name="Vm_RevokeYes" xml:space="preserve"><value>Remove access</value></data>
+  <data name="Vm_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Vm_Verified" xml:space="preserve"><value>Verified app ({0})</value></data>
+  <data name="Vm_Unverified" xml:space="preserve"><value>Not verified. It runs from {0}. Only allow it if you started it yourself.</value></data>
+  <data name="Vm_ApprovalTitle" xml:space="preserve"><value>Let {0} use your AI host?</value></data>
+  <data name="Vm_ApprovalBody" xml:space="preserve"><value>{0} wants to use the AI model on this PC.</value></data>
+  <data name="Vm_ApprovalReason" xml:space="preserve"><value>It says: {0}</value></data>
+  <data name="Vm_Allow" xml:space="preserve"><value>Allow</value></data>
+  <data name="Vm_Deny" xml:space="preserve"><value>Deny</value></data>
+  <data name="Vm_Later" xml:space="preserve"><value>Decide later</value></data>
+  <data name="Vm_Idle_Keep" xml:space="preserve"><value>Keep the model loaded</value></data>
+  <data name="Vm_Idle_5" xml:space="preserve"><value>After 5 minutes</value></data>
+  <data name="Vm_Idle_10" xml:space="preserve"><value>After 10 minutes</value></data>
+  <data name="Vm_Saved" xml:space="preserve"><value>Saved</value></data>
+  <data name="Vm_SaveFailed" xml:space="preserve"><value>Could not save. Is the host running?</value></data>
+  <data name="Vm_FolderTitle" xml:space="preserve"><value>Use this folder for models?</value></data>
+  <data name="Vm_FolderBody" xml:space="preserve"><value>The host will use {0} for models. Models you already have are not moved or deleted.</value></data>
+  <data name="Vm_FolderYes" xml:space="preserve"><value>Use folder</value></data>
+  <data name="Vm_TryFailed" xml:space="preserve"><value>The host could not answer: {0}</value></data>
+  <data name="Vm_HwMemory" xml:space="preserve"><value>Memory: {0}</value></data>
+  <data name="Vm_HwGraphics" xml:space="preserve"><value>Graphics: {0}</value></data>
+  <data name="Vm_HwCores" xml:space="preserve"><value>Processor cores: {0}</value></data>
+  <data name="Vm_HwDisk" xml:space="preserve"><value>Free disk space: {0}</value></data>
+  <data name="Vm_NoGpu" xml:space="preserve"><value>none found</value></data>
+</root>

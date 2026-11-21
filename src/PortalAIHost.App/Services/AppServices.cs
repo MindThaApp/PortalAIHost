@@ -1,0 +1,168 @@
+using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.Windows.ApplicationModel.Resources;
+using Portal.AiHost.Contracts.Control;
+using PortalAIHost.App.ViewModels;
+
+namespace PortalAIHost.App.Services;
+
+/// <summary>Builds and holds the few shared services. The window and pages read from here.</summary>
+public static class AppServices
+{
+    public static IUiDispatcher Ui { get; private set; } = null!;
+    public static IStrings Strings { get; private set; } = null!;
+    public static WinUiDialogService Dialogs { get; private set; } = null!;
+    public static IHostControl Host { get; private set; } = null!;
+    public static ShellViewModel Shell { get; private set; } = null!;
+
+    public static void Build()
+    {
+        Ui = new WinUiDispatcher(DispatcherQueue.GetForCurrentThread());
+        Strings = new ResourceStrings(AppOptions.PseudoLoc);
+        Dialogs = new WinUiDialogService(Strings);
+        IHostLauncher launcher;
+        string stateFolder;
+        if (AppOptions.Fake is { } scenario)
+        {
+            var fake = new FakeHostControl(scenario);
+            Host = fake;
+            launcher = new FakeHostLauncher(fake, succeeds: false);
+            // A fake run never reads or writes the real app folder.
+            stateFolder = Path.Combine(Path.GetTempPath(), "PortalAIHost.fake-" + Environment.ProcessId);
+        }
+        else
+        {
+            Host = new PipeHostControl();
+            launcher = new ProcessHostLauncher();
+            stateFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PortalAIHost", "app");
+        }
+        IAppState state = AppOptions.SkipFirstRun ? new FixedAppState(true) : new AppStateStore(stateFolder);
+        Shell = new ShellViewModel(Host, launcher, Ui, Strings, state);
+    }
+
+    private sealed class FixedAppState : IAppState
+    {
+        public FixedAppState(bool done) => FirstRunDone = done;
+        public bool FirstRunDone { get; private set; }
+        public void MarkFirstRunDone() => FirstRunDone = true;
+    }
+}
+
+public sealed class WinUiDispatcher : IUiDispatcher
+{
+    private readonly DispatcherQueue _queue;
+
+    public WinUiDispatcher(DispatcherQueue queue) => _queue = queue;
+
+    public void Post(Action action)
+    {
+        if (_queue.HasThreadAccess) action();
+        else _queue.TryEnqueue(() => action());
+    }
+}
+
+/// <summary>Reads text from Strings\en-US\Resources.resw. With --pseudo-loc every value is made longer and accented.</summary>
+public sealed class ResourceStrings : IStrings
+{
+    private readonly ResourceLoader _loader = new();
+    private readonly bool _pseudo;
+
+    public ResourceStrings(bool pseudo) => _pseudo = pseudo;
+
+    public string Get(string key)
+    {
+        var text = _loader.GetString(key);
+        if (string.IsNullOrEmpty(text)) return key;
+        return _pseudo ? PseudoLoc.Convert(text) : text;
+    }
+
+    public string Format(string key, params object[] args)
+    {
+        try
+        {
+            return string.Format(Get(key), args);
+        }
+        catch (FormatException)
+        {
+            return Get(key);
+        }
+    }
+}
+
+/// <summary>Shows confirmation and approval dialogs one at a time (WinUI allows only one open dialog).</summary>
+public sealed class WinUiDialogService : IDialogService
+{
+    private readonly IStrings _s;
+    private readonly SemaphoreSlim _one = new(1, 1);
+
+    public WinUiDialogService(IStrings strings) => _s = strings;
+
+    /// <summary>Set by the window once it has content.</summary>
+    public XamlRoot? Root { get; set; }
+
+    public async Task<bool> ConfirmAsync(string title, string body, string confirmText, string cancelText)
+    {
+        if (Root is null) return false;
+        await _one.WaitAsync();
+        try
+        {
+            var dialog = new ContentDialog
+            {
+                XamlRoot = Root,
+                Title = title,
+                Content = new TextBlock { Text = body, TextWrapping = TextWrapping.Wrap },
+                PrimaryButtonText = confirmText,
+                CloseButtonText = cancelText,
+                DefaultButton = ContentDialogButton.Close,
+            };
+            return await dialog.ShowAsync() == ContentDialogResult.Primary;
+        }
+        finally
+        {
+            _one.Release();
+        }
+    }
+
+    /// <summary>The access prompt: app name, verified state, Allow or Deny. Closing it without a choice leaves the request waiting.</summary>
+    public async Task<bool?> ShowApprovalAsync(PendingApproval a)
+    {
+        if (Root is null) return null;
+        await _one.WaitAsync();
+        try
+        {
+            var panel = new StackPanel { Spacing = 10 };
+            panel.Children.Add(new TextBlock { Text = _s.Format("Vm_ApprovalBody", a.AppName), TextWrapping = TextWrapping.Wrap });
+            if (!string.IsNullOrWhiteSpace(a.Reason))
+                panel.Children.Add(new TextBlock { Text = _s.Format("Vm_ApprovalReason", a.Reason), TextWrapping = TextWrapping.Wrap });
+            panel.Children.Add(new TextBlock
+            {
+                Text = ApprovalText.Identity(_s, a),
+                TextWrapping = TextWrapping.Wrap,
+                FontWeight = a.CallerVerified ? Microsoft.UI.Text.FontWeights.Normal : Microsoft.UI.Text.FontWeights.SemiBold,
+            });
+            var dialog = new ContentDialog
+            {
+                XamlRoot = Root,
+                Title = _s.Format("Vm_ApprovalTitle", a.AppName),
+                Content = panel,
+                PrimaryButtonText = _s.Get("Vm_Allow"),
+                SecondaryButtonText = _s.Get("Vm_Deny"),
+                CloseButtonText = _s.Get("Vm_Later"),
+                DefaultButton = ContentDialogButton.Secondary,
+            };
+            Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(dialog, _s.Format("Vm_ApprovalTitle", a.AppName));
+            var result = await dialog.ShowAsync();
+            return result switch
+            {
+                ContentDialogResult.Primary => true,
+                ContentDialogResult.Secondary => false,
+                _ => null,
+            };
+        }
+        finally
+        {
+            _one.Release();
+        }
+    }
+}

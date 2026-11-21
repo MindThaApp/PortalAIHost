@@ -5,6 +5,7 @@
     <Project Path="src/Portal.AiHost.Engine/Portal.AiHost.Engine.csproj" />
     <Project Path="src/Portal.AiHost.Client/Portal.AiHost.Client.csproj" />
     <Project Path="src/Portal.AiHost.Platform.Windows/Portal.AiHost.Platform.Windows.csproj" />
+    <Project Path="src/PortalAIHost.App/PortalAIHost.App.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Portal.AiHost.FakeEngine/Portal.AiHost.FakeEngine.csproj" />

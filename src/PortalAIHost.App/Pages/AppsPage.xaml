@@ -1,0 +1,59 @@
+<Page
+    x:Class="PortalAIHost.App.Pages.AppsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:PortalAIHost.App.ViewModels">
+    <ScrollViewer>
+        <StackPanel Padding="32,24" Spacing="16" MaxWidth="760" HorizontalAlignment="Left">
+            <TextBlock x:Uid="AppsTitle" Style="{StaticResource TitleTextBlockStyle}" />
+            <TextBlock Text="{x:Bind ViewModel.ErrorLine, Mode=OneWay}" TextWrapping="Wrap" />
+            <StackPanel Spacing="8" Visibility="{x:Bind ViewModel.HasPending, Mode=OneWay}">
+                <TextBlock x:Uid="AppsWaitingHeader" Style="{StaticResource SubtitleTextBlockStyle}" />
+                <ItemsControl ItemsSource="{x:Bind ViewModel.Pending}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:PendingRowViewModel">
+                            <Border Style="{StaticResource CardBorder}" Margin="0,0,0,10">
+                                <Grid ColumnSpacing="16">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="{x:Bind Name}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                                        <TextBlock Text="{x:Bind IdentityText}" TextWrapping="Wrap" Opacity="0.8" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                        <Button x:Uid="AppAllow" AutomationProperties.Name="{x:Bind AutoAllow}" Command="{x:Bind AllowCommand}" Style="{StaticResource AccentButtonStyle}" />
+                                        <Button x:Uid="AppDeny" AutomationProperties.Name="{x:Bind AutoDeny}" Command="{x:Bind DenyCommand}" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+            <TextBlock x:Uid="AppsApprovedHeader" Style="{StaticResource SubtitleTextBlockStyle}" />
+            <TextBlock x:Uid="AppsNone" Visibility="{x:Bind ViewModel.NoClients, Mode=OneWay}" TextWrapping="Wrap" />
+            <ItemsControl ItemsSource="{x:Bind ViewModel.Clients}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ClientRowViewModel">
+                        <Border Style="{StaticResource CardBorder}" Margin="0,0,0,10">
+                            <Grid ColumnSpacing="16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="{x:Bind Name}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                                    <TextBlock Text="{x:Bind AddedText}" Opacity="0.8" />
+                                    <TextBlock Text="{x:Bind LastUsedText}" Opacity="0.8" />
+                                </StackPanel>
+                                <Button Grid.Column="1" x:Uid="AppRevoke" AutomationProperties.Name="{x:Bind AutoRevoke}" Command="{x:Bind RevokeCommand}" VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

@@ -1,0 +1,26 @@
+<Window
+    x:Class="PortalAIHost.App.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ui="using:Microsoft.UI.Xaml.Automation">
+    <Grid x:Name="Root">
+        <NavigationView
+            x:Name="Nav"
+            PaneDisplayMode="Left"
+            IsBackButtonVisible="Collapsed"
+            IsSettingsVisible="False"
+            OpenPaneLength="220"
+            SelectionChanged="OnSelectionChanged">
+            <NavigationView.MenuItems>
+                <NavigationViewItem x:Uid="NavHome" Tag="home" Icon="Home" />
+                <NavigationViewItem x:Uid="NavModels" Tag="models" Icon="Download" />
+                <NavigationViewItem x:Uid="NavApps" Tag="apps" Icon="Contact" />
+                <NavigationViewItem x:Uid="NavTryIt" Tag="tryit" Icon="Message" />
+            </NavigationView.MenuItems>
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem x:Uid="NavSettings" Tag="settings" Icon="Setting" />
+            </NavigationView.FooterMenuItems>
+            <Frame x:Name="ContentFrame" />
+        </NavigationView>
+    </Grid>
+</Window>
