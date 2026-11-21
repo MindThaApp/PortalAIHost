@@ -10,6 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Portal.AiHost.Core\Portal.AiHost.Core.csproj" />
     <ProjectReference Include="..\..\src\Portal.AiHost.Server\Portal.AiHost.Server.csproj" />
+    <ProjectReference Include="..\..\src\PortalAIHost.Service\PortalAIHost.Service.csproj" />
     <ProjectReference Include="..\Portal.AiHost.FakeEngine\Portal.AiHost.FakeEngine.csproj" />
   </ItemGroup>
 </Project>
