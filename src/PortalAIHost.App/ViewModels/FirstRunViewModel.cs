@@ -50,6 +50,9 @@ public sealed partial class FirstRunViewModel : ObservableObject, IDisposable
     /// <summary>Raised when the window should close, after Finish or Skip. The window then marks the welcome as done.</summary>
     public event Action? CloseRequested;
 
+    public bool HasExisting => !string.IsNullOrEmpty(ExistingLine);
+    partial void OnExistingLineChanged(string value) => OnPropertyChanged(nameof(HasExisting));
+
     public bool OnWelcome => Step == StepWelcome;
     public bool OnModel => Step == StepModel;
     public bool OnWhere => Step == StepWhere;
