@@ -62,6 +62,8 @@ public sealed partial class WelcomeWindow : Window
         ViewModel.CloseRequested += () => Close();
         Closed += OnClosed;
         AddKeys();
+        // When the page is taller than the window (large text), the body takes Tab so the arrow keys and Page Down can scroll it.
+        BodyScroll.LayoutUpdated += (_, _) => BodyScroll.IsTabStop = BodyScroll.ScrollableHeight > 0;
         UpdateDots();
         Root.ActualThemeChanged += (_, _) => ApplyTitleBarColours();
         Root.Loaded += async (_, _) =>
@@ -217,7 +219,14 @@ public sealed partial class WelcomeWindow : Window
         var panel = _panels[Math.Clamp(step, 0, _panels.Length - 1)];
         AnnounceStep(step);
         // Focus the first thing to act on: Download when it is offered, otherwise Next.
-        DispatcherQueue.TryEnqueue(() => (step == FirstRunViewModel.StepModel && ViewModel.ShowOffer ? DownloadButton : NextButton).Focus(FocusState.Programmatic));
+        DispatcherQueue.TryEnqueue(() =>
+        {
+            var first = step == FirstRunViewModel.StepModel && ViewModel.ShowOffer ? DownloadButton : NextButton;
+            first.Focus(FocusState.Programmatic);
+            // With large text the button can sit below the fold: scroll it into view once the step has laid out.
+            DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
+                first.StartBringIntoView(new BringIntoViewOptions { AnimationDesired = false }));
+        });
         var move = (TranslateTransform)panel.RenderTransform;
         if (ReducedMotion)
         {
