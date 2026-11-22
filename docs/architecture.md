@@ -301,7 +301,7 @@ catalogue/  engine/engine.lock.json  scripts/ (fetch-engine, sign-catalogue, bui
   - **Load:** three simulated apps (interactive stream, batch, embeddings), 10 % random cancels, a 60 s idle timeout
     (about 15 unload/load cycles), two injected engine kills, one OOM-ladder trip.
   - **Sampled every 30 s:** host private bytes, handles, threads, and engine processes (matched by full command line).
-  - **PASS when:** the private-bytes slope (min 10-60) is under 5 MB/h; handles grow by 50 or fewer; no engine is
+  - **PASS when:** the private-bytes slope (min 20-60, after warm-up) is under 5 MB/h; handles grow by 50 or fewer; no engine is
     left after each unload or at the end; every request ends in an expected state; interactive p95 queue wait is 2 s
     or less under batch load. A FakeEngine variant runs in routine checks.
 - **Acceptance (spec section 11):** a two-app fairness test (Server.Tests), a memory-cap test (Core.Tests) and the

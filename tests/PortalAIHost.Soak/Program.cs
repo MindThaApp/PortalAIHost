@@ -201,7 +201,8 @@ internal static class Soak
             foreach (var (_, c) in apps) c.Dispose();
 
             // Criteria.
-            var from = Math.Min(10.0, o.Minutes * 0.3);
+            // Skip the warm-up: the model and caches settle in the first ~15 minutes of a real run.
+            var from = Math.Min(20.0, o.Minutes * 0.35);
             var steady = samples.Where(s => s.Minute >= from).ToList();
             var slopeMbPerHour = steady.Count >= 3 ? Slope(steady) * 60 / (1024 * 1024) : double.NaN;
             var handleGrowth = steady.Count >= 2 ? steady[^1].Handles - steady[0].Handles : 0;
