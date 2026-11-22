@@ -13,7 +13,7 @@ Capture after the new look is final. Rules (Store lessons):
 
 Real captures of this build, real hardware detection and a real model answering (no `--fake`), fresh test data
 roots, no personal paths. Files are in `docs/store/screenshots/1.0.1/`; each has a `-dark` copy. Captions are up
-to 200 characters. Images 1 to 3 are the Welcome window centred on a neutral 1366x768 canvas; images 4 to 7 are the
+to 200 characters. Images 1 to 3 are the Welcome window centred on a neutral 1366x768 canvas; images 4 to 6 are the
 main window at exactly 1366x768 (host version 1.0.1, a small test model loaded).
 
 | # | File | What it shows | Caption |
@@ -22,16 +22,15 @@ main window at exactly 1366x768 (host version 1.0.1, a small test model loaded).
 | 2 | `02-pick-a-model.png` | Welcome step 2, "Pick a model": the recommended model for this PC with its reason, size and your PC's memory, graphics and free disk space | It checks your PC and recommends the model that suits it best, with the size and how fast it should answer. Download it now or choose later. |
 | 3 | `03-where-it-lives.png` | Welcome step 3: where it lives in the tray, the "you will be asked" note and the Start with Windows switch | It waits quietly in the tray and always asks before a Portal app can use it. Starting with Windows is your choice. |
 | 4 | `04-home.png` | Home: status "Ready", host version 1.0.1, the active model loaded, no apps connected yet, no requests waiting | Home shows at a glance that your AI model is loaded and ready, which model is in use, and whether any apps are waiting for your say-so. |
-| 5 | `05-try-it-answer.png` | Try it after an answer: the question, and the reply with its key word shown in bold; "Nothing you type here is saved" | Check that it works: ask something short and read the reply here. Nothing you type in Try it is saved. |
+| 5 | `05-try-it-answer.png` | Try it after an answer: a short question and a formatted reply, a numbered list with bold titles; "Nothing you type here is saved" | Check that it works: ask something short and read the reply here. Nothing you type in Try it is saved. |
 | 6 | `06-models.png` | Models: the list for this PC, the best choice marked, size, speed and quality for each, a Download button, and the "A better model is available" note | Models lists what suits your PC, with size, speed and quality. The best choice is marked, and you are told when a better model is available. |
-| 7 | `07-approval-prompt.png` | The access prompt over Home: who is asking, the reason given, the verified publisher line, and Allow / Don't allow / Decide later | Apps have to ask first. You see who is asking and why, and you choose Allow, Don't allow or Decide later. |
 
 Notes for Partner Center:
-- The prompt in image 7 comes from a real request made by PowerShell, so it shows a real verified publisher.
+- There is no access-prompt image in this set: a test app that is not a Portal app correctly reads "Not a Portal app", which is not a good Store image.
 - Settings is not recaptured: its page, text and layout are unchanged since 1.0, so the 1.0 Settings image is
   still accurate for 1.0.1. A new capture from an unpackaged test build would show a test folder path and the
   "only available in the installed app" note, which the Store build does not have.
-- The 1.0 images of Home, Try it and the prompt show host version 1.0.0 and "Deny"; use the 1.0.1 images above
+- The 1.0 images of Home and Try it show host version 1.0.0 and "Deny"; use the 1.0.1 images above
   instead.
 
 ## Plan for a full set
