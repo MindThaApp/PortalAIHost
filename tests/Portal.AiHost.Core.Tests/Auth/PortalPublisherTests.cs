@@ -75,4 +75,31 @@ public class PortalPublisherTests
         // A Portal flag without a package identity is never passed on.
         Assert.False(ApprovalPrompts.ToControl(Request(claimsPortal)).CallerPortalApp);
     }
+
+    [Fact]
+    public void Store_package_shows_its_own_publisher_name()
+    {
+        Assert.Equal("MindtheApp", PortalPublisher.DisplayPublisher(3, " MindtheApp "));
+        Assert.Equal("Microsoft Corporation", PortalPublisher.DisplayPublisher(2, "Microsoft Corporation"));
+    }
+
+    [Theory]
+    [InlineData(4)] // Developer Mode, unsigned: can claim any publisher name
+    [InlineData(5)]
+    [InlineData(1)]
+    [InlineData(0)]
+    [InlineData(6)]
+    public void Dev_mode_package_claiming_a_publisher_shows_none(int origin)
+    {
+        Assert.Null(PortalPublisher.DisplayPublisher(origin, "MindtheApp"));
+    }
+
+    [Fact]
+    public void Unpackaged_unknown_or_unresolved_names_show_no_publisher()
+    {
+        Assert.Null(PortalPublisher.DisplayPublisher(null, "MindtheApp"));
+        Assert.Null(PortalPublisher.DisplayPublisher(3, null));
+        Assert.Null(PortalPublisher.DisplayPublisher(3, "  "));
+        Assert.Null(PortalPublisher.DisplayPublisher(3, "ms-resource:PublisherName"));
+    }
 }

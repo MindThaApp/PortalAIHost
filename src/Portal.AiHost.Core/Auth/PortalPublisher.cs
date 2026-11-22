@@ -37,6 +37,24 @@ public static class PortalPublisher
         return string.Equals(packageFamilyName[(underscore + 1)..], Id, StringComparison.OrdinalIgnoreCase);
     }
 
+    /// <summary>Windows package origins whose publisher name comes from a trusted source: Inbox (2) and Store (3).</summary>
+    public static bool IsTrustedOrigin(int origin) => origin is 2 or 3;
+
+    /// <summary>
+    /// The publisher to show for a caller: the package's own display name, and only for a Store or Inbox package.
+    /// Anything else (unpackaged, Developer Mode, unknown origin, no name) shows no publisher.
+    /// </summary>
+    public static string? DisplayPublisher(int? origin, string? packagePublisherDisplayName)
+    {
+        if (origin is not { } o || !IsTrustedOrigin(o) || string.IsNullOrWhiteSpace(packagePublisherDisplayName))
+        {
+            return null;
+        }
+
+        var name = packagePublisherDisplayName.Trim();
+        return name.StartsWith("ms-resource:", StringComparison.OrdinalIgnoreCase) ? null : name;
+    }
+
     /// <summary>
     /// Windows package publisher id: the first 8 bytes of SHA-256 over the UTF-16LE publisher string, written as
     /// 13 base32 characters (alphabet without i, l, o, u).

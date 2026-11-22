@@ -238,24 +238,12 @@ internal sealed class ControlHandler(HostShell shell)
         return null;
     }
 
-    /// <summary>Publisher from the caller's file version info, only for a verified caller; otherwise unknown.</summary>
-    internal static string? PublisherOf(CallerIdentity caller)
-    {
-        if (!caller.Verified || caller.ExePath is not { Length: > 0 } exe)
-        {
-            return null;
-        }
-
-        try
-        {
-            var company = System.Diagnostics.FileVersionInfo.GetVersionInfo(exe).CompanyName;
-            return string.IsNullOrWhiteSpace(company) ? null : company.Trim();
-        }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException)
-        {
-            return null;
-        }
-    }
+    /// <summary>
+    /// Publisher shown in the approval prompt: the display name from a Store or Inbox package, set by the identity
+    /// resolver. Never taken from the caller's own file version info, which any exe can fill in.
+    /// </summary>
+    internal static string? PublisherOf(CallerIdentity caller) =>
+        caller.Verified && !string.IsNullOrWhiteSpace(caller.PackagePublisher) ? caller.PackagePublisher : null;
 
     internal static PendingApproval ToPending(AccessRequestInfo info) => new()
     {

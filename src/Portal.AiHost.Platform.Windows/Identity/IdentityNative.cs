@@ -69,6 +69,9 @@ internal static unsafe partial class IdentityNative
     [LibraryImport("kernel32.dll")]
     public static partial int GetPackageFullName(nint process, ref uint length, char* fullName);
 
+    [LibraryImport("kernel32.dll", StringMarshalling = StringMarshalling.Utf16)]
+    public static partial int GetPackagePathByFullName(string packageFullName, ref uint pathLength, char* path);
+
     /// <summary>PackageOrigin_Store: the package was installed from the Microsoft Store.</summary>
     public const int PackageOriginStore = 3;
 

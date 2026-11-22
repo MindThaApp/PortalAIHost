@@ -47,8 +47,17 @@ public sealed class WindowsCallerIdentityResolver : ICallerIdentityResolver
             var exe = ImagePath(handle);
             var user = ProcessUser(handle);
             var sameUser = user is not null && _hostUser is not null && user.Equals(_hostUser);
-            var portal = pfn is not null && PortalPublisher.IsPortalPackage(pfn, InstalledFromStore(handle));
-            return new CallerIdentity(processId, pfn, exe, Verified: pfn is not null, SameUser: sameUser, PortalApp: portal);
+            var fullName = PackageFullName(handle);
+            int? origin = fullName is null ? null : OriginOf(fullName);
+            var portal = pfn is not null && PortalPublisher.IsPortalPackage(pfn, origin == IdentityNative.PackageOriginStore);
+            string? publisher = null;
+            if (fullName is not null && origin is { } o && PortalPublisher.IsTrustedOrigin(o))
+            {
+                publisher = PortalPublisher.DisplayPublisher(o, ManifestPublisher(fullName));
+            }
+
+            return new CallerIdentity(processId, pfn, exe, Verified: pfn is not null, SameUser: sameUser,
+                PortalApp: portal, PackagePublisher: publisher);
         }
         finally
         {
@@ -77,14 +86,13 @@ public sealed class WindowsCallerIdentityResolver : ICallerIdentityResolver
         return rc == 0 && length > 0 ? new string(buffer, 0, (int)length - 1) : null;
     }
 
-    /// <summary>True only when Windows reports the process's package as installed from the Microsoft Store.</summary>
-    private static unsafe bool InstalledFromStore(nint process)
+    private static unsafe string? PackageFullName(nint process)
     {
         uint length = 0;
         var rc = IdentityNative.GetPackageFullName(process, ref length, null);
         if (rc != (int)IdentityNative.ErrorInsufficientBuffer || length == 0 || length > 1024)
         {
-            return false;
+            return null;
         }
 
         var buffer = new char[length];
@@ -93,26 +101,64 @@ public sealed class WindowsCallerIdentityResolver : ICallerIdentityResolver
             rc = IdentityNative.GetPackageFullName(process, ref length, p);
         }
 
-        if (rc != 0 || length == 0)
-        {
-            return false;
-        }
-
-        return IsStoreOrigin(new string(buffer, 0, (int)length - 1));
+        return rc == 0 && length > 0 ? new string(buffer, 0, (int)length - 1) : null;
     }
 
-    /// <summary>True only when Windows reports the package as installed from the Microsoft Store.</summary>
-    internal static bool IsStoreOrigin(string packageFullName)
+    /// <summary>The package origin Windows reports, or null when it cannot be determined.</summary>
+    internal static int? OriginOf(string packageFullName)
     {
         try
         {
-            return IdentityNative.GetStagedPackageOrigin(packageFullName, out var origin) == 0 &&
-                   origin == IdentityNative.PackageOriginStore;
+            return IdentityNative.GetStagedPackageOrigin(packageFullName, out var origin) == 0 ? origin : null;
         }
         catch (Exception ex) when (ex is EntryPointNotFoundException or DllNotFoundException)
         {
-            return false;
+            return null;
         }
+    }
+
+    /// <summary>True only when Windows reports the package as installed from the Microsoft Store.</summary>
+    internal static bool IsStoreOrigin(string packageFullName) =>
+        OriginOf(packageFullName) == IdentityNative.PackageOriginStore;
+
+    /// <summary>Publisher display name from the installed package's own manifest (read only), or null.</summary>
+    private static unsafe string? ManifestPublisher(string packageFullName)
+    {
+        try
+        {
+            uint length = 0;
+            var rc = IdentityNative.GetPackagePathByFullName(packageFullName, ref length, null);
+            if (rc != (int)IdentityNative.ErrorInsufficientBuffer || length == 0 || length > 2048)
+            {
+                return null;
+            }
+
+            var buffer = new char[length];
+            fixed (char* p = buffer)
+            {
+                rc = IdentityNative.GetPackagePathByFullName(packageFullName, ref length, p);
+            }
+
+            if (rc != 0 || length == 0)
+            {
+                return null;
+            }
+
+            var manifest = Path.Combine(new string(buffer, 0, (int)length - 1), "AppxManifest.xml");
+            return PublisherFromManifest(File.ReadAllText(manifest));
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or System.Xml.XmlException)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>Package/Properties/PublisherDisplayName from a manifest, or null when absent.</summary>
+    internal static string? PublisherFromManifest(string manifestXml)
+    {
+        var doc = System.Xml.Linq.XDocument.Parse(manifestXml);
+        var props = doc.Root?.Elements().FirstOrDefault(e => e.Name.LocalName == "Properties");
+        return props?.Elements().FirstOrDefault(e => e.Name.LocalName == "PublisherDisplayName")?.Value;
     }
 
     private static unsafe string? ImagePath(nint process)

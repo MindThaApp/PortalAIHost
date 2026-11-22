@@ -444,6 +444,17 @@ public sealed class ModelControlTests
     {
         Assert.Null(ControlHandler.PublisherOf(new CallerIdentity(1, null, Environment.ProcessPath, Verified: false, SameUser: true)));
     }
+
+    [Fact]
+    public void Publisher_comes_only_from_the_package_never_the_exe()
+    {
+        // The exe of this test process has its own CompanyName; it must not leak into the prompt.
+        var unpackaged = new CallerIdentity(1, null, Environment.ProcessPath, Verified: false, SameUser: true);
+        Assert.Null(ControlHandler.PublisherOf(unpackaged));
+        var devMode = new CallerIdentity(1, "MindtheApp.Fake_24e29cj9741rt", Environment.ProcessPath, Verified: true, SameUser: true);
+        Assert.Null(ControlHandler.PublisherOf(devMode));
+        Assert.Equal("MindtheApp", ControlHandler.PublisherOf(devMode with { PackagePublisher = "MindtheApp" }));
+    }
 }
 
 internal static class ShellTestExtensions
