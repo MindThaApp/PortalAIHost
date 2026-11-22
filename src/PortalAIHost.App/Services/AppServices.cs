@@ -200,13 +200,21 @@ public sealed class WinUiDialogService : IDialogService
             panel.Children.Add(new TextBlock { Text = _s.Format("Vm_ApprovalBody", a.AppName), TextWrapping = TextWrapping.Wrap });
             if (!string.IsNullOrWhiteSpace(a.Reason))
                 panel.Children.Add(new TextBlock { Text = _s.Format("Vm_ApprovalReason", a.Reason), TextWrapping = TextWrapping.Wrap });
-            panel.Children.Add(new TextBlock { Text = ApprovalText.Publisher(_s, a), TextWrapping = TextWrapping.Wrap });
+            if (ApprovalText.PublisherLine(_s, a) is { Length: > 0 } publisher)
+                panel.Children.Add(new TextBlock { Text = publisher, TextWrapping = TextWrapping.Wrap });
             panel.Children.Add(new TextBlock
             {
-                Text = ApprovalText.Identity(_s, a),
+                Text = ApprovalText.IdentityShort(_s, a),
                 TextWrapping = TextWrapping.Wrap,
                 FontWeight = a.CallerVerified ? Microsoft.UI.Text.FontWeights.Normal : Microsoft.UI.Text.FontWeights.SemiBold,
             });
+            if (a.CallerVerified && !string.IsNullOrWhiteSpace(a.CallerIdentity))
+                panel.Children.Add(new Expander
+                {
+                    Header = _s.Get("Vm_ApprovalDetails"),
+                    Content = new TextBlock { Text = a.CallerIdentity, TextWrapping = TextWrapping.Wrap, IsTextSelectionEnabled = true },
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                });
             var dialog = new ContentDialog
             {
                 XamlRoot = Root,

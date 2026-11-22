@@ -63,6 +63,15 @@ public static class ApprovalText
         ? s.Format("Vm_Verified", a.CallerIdentity)
         : s.Format("Vm_Unverified", a.CallerIdentity);
 
+    /// <summary>For the access prompt: a verified app is just called a verified Portal app; the raw id goes under Details.</summary>
+    public static string IdentityShort(IStrings s, PendingApproval a) => a.CallerVerified
+        ? s.Get("Vm_VerifiedShort")
+        : s.Format("Vm_Unverified", a.CallerIdentity);
+
+    /// <summary>The publisher line, or empty when the app is verified and has no publisher to show.</summary>
+    public static string PublisherLine(IStrings s, PendingApproval a) =>
+        a.CallerVerified && string.IsNullOrWhiteSpace(a.Publisher) ? "" : Publisher(s, a);
+
     public static string Publisher(IStrings s, PendingApproval a) => string.IsNullOrWhiteSpace(a.Publisher)
         ? s.Get("Vm_PublisherUnknown")
         : s.Format("Vm_Publisher", a.Publisher);

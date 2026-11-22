@@ -9,14 +9,15 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ScrollViewer x:Name="BodyScroll" Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsTabStop="False">
+        <ScrollViewer x:Name="BodyScroll" Grid.Row="0" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" IsTabStop="False">
             <StackPanel>
-        <StackPanel Padding="32,16,32,0" Spacing="4" HorizontalAlignment="Center">
-            <Image Source="ms-appx:///Assets/Square150x150Logo.scale-200.png" Width="56" Height="56" HorizontalAlignment="Center"
-                   AutomationProperties.AccessibilityView="Raw" />
-            <TextBlock x:Name="HeroTitle" x:Uid="WelcomeTitle" Style="{StaticResource TitleTextBlockStyle}" HorizontalAlignment="Center"
-                       TextWrapping="Wrap" TextAlignment="Center" AutomationProperties.HeadingLevel="Level1" />
-        </StackPanel>
+            <StackPanel x:Name="Hero" Padding="32,16,32,4" Spacing="12" Orientation="Horizontal" HorizontalAlignment="Center"
+                        Visibility="{x:Bind ViewModel.OnWelcome, Mode=OneWay}">
+                <Image Source="ms-appx:///Assets/Square150x150Logo.scale-200.png" Width="40" Height="40" VerticalAlignment="Center"
+                       AutomationProperties.AccessibilityView="Raw" />
+                <TextBlock x:Name="HeroTitle" x:Uid="WelcomeTitle" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center"
+                           TextWrapping="NoWrap" AutomationProperties.HeadingLevel="Level1" />
+            </StackPanel>
             <Grid Padding="48,8,48,8" MaxWidth="720">
                 <!-- Step 1: what it does -->
                 <StackPanel x:Name="Panel0" Spacing="16" Visibility="{x:Bind ViewModel.OnWelcome, Mode=OneWay}">
@@ -76,16 +77,16 @@
                             </StackPanel>
                             <!-- The recommended model -->
                             <StackPanel Spacing="6" Visibility="{x:Bind ViewModel.HasModel, Mode=OneWay}">
-                                <TextBlock Text="{x:Bind ViewModel.ModelName, Mode=OneWay}" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="Wrap" />
+                                <TextBlock Text="{x:Bind ViewModel.ModelLabel, Mode=OneWay}" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="Wrap" />
                                 <TextBlock Text="{x:Bind ViewModel.ModelReason, Mode=OneWay}" TextWrapping="Wrap" />
-                                <TextBlock Text="{x:Bind ViewModel.ModelSize, Mode=OneWay}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                <TextBlock x:Name="SizeLine" Text="{x:Bind ViewModel.ModelDetail, Mode=OneWay}" TextWrapping="Wrap" FontSize="13" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                                 <TextBlock Text="{x:Bind ViewModel.ExistingLine, Mode=OneWay}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                             </StackPanel>
                             <TextBlock x:Uid="WelcomeNoModel" TextWrapping="Wrap" Visibility="{x:Bind ViewModel.ShowNoModel, Mode=OneWay}" />
                             <!-- Download choice -->
                             <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4,0,0" Visibility="{x:Bind ViewModel.ShowOffer, Mode=OneWay}">
-                                <Button x:Name="DownloadButton" x:Uid="WelcomeDownload" Command="{x:Bind ViewModel.DownloadCommand}" Style="{StaticResource AccentButtonStyle}" />
-                                <Button x:Uid="WelcomeChooseLater" Command="{x:Bind ViewModel.NextCommand}" />
+                                <Button x:Name="DownloadButton" x:Uid="WelcomeDownload" Command="{x:Bind ViewModel.DownloadCommand}" />
+                                <Button x:Uid="WelcomeChooseLater" Command="{x:Bind ViewModel.ChooseLaterCommand}" />
                             </StackPanel>
                             <!-- Download progress -->
                             <StackPanel Spacing="8" Visibility="{x:Bind ViewModel.ShowProgress, Mode=OneWay}">
@@ -98,9 +99,9 @@
                     </Border>
 
                     <StackPanel Spacing="2" Visibility="{x:Bind ViewModel.HasModel, Mode=OneWay}">
-                        <TextBlock Text="{x:Bind ViewModel.MemoryLine, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                        <TextBlock Text="{x:Bind ViewModel.GraphicsLine, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                        <TextBlock Text="{x:Bind ViewModel.DiskLine, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock Text="{x:Bind ViewModel.MemoryLine, Mode=OneWay}" FontSize="13" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock Text="{x:Bind ViewModel.GraphicsLine, Mode=OneWay}" FontSize="13" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock Text="{x:Bind ViewModel.DiskLine, Mode=OneWay}" FontSize="13" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                     </StackPanel>
                 </StackPanel>
 
@@ -131,6 +132,7 @@
                             <TextBlock x:Uid="WelcomeAskBody" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                         </StackPanel>
                     </Grid>
+                    <TextBlock x:Uid="WelcomeLaterNote" TextWrapping="Wrap" Visibility="{x:Bind ViewModel.ShowLaterNote, Mode=OneWay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                     <ToggleSwitch x:Name="StartupToggle" x:Uid="WelcomeStartWithWindows" IsOn="{x:Bind ViewModel.StartWithWindows, Mode=OneWay}" Toggled="OnStartupToggled" />
                 </StackPanel>
             </Grid>
@@ -138,8 +140,12 @@
         </ScrollViewer>
 
         <!-- Step dots -->
-        <StackPanel x:Name="Dots" Grid.Row="1" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center" Margin="0,8,0,8">
-            <Ellipse Width="8" Height="8" /><Ellipse Width="8" Height="8" /><Ellipse Width="8" Height="8" />
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center" Margin="0,8,0,8">
+            <StackPanel x:Name="Dots" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                <Ellipse Width="8" Height="8" /><Ellipse Width="8" Height="8" /><Ellipse Width="8" Height="8" />
+            </StackPanel>
+            <TextBlock x:Name="StepText" Text="{x:Bind ViewModel.StepLine, Mode=OneWay}" FontSize="13" VerticalAlignment="Center"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
         </StackPanel>
 
         <!-- Skip on the left, Back and Next on the right -->

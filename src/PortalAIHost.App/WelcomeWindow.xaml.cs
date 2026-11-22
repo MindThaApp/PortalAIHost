@@ -54,7 +54,6 @@ public sealed partial class WelcomeWindow : Window
         Closed += OnClosed;
         AddKeys();
         UpdateDots();
-        UpdateNextStyle();
         Root.Loaded += async (_, _) =>
         {
             AutomationProperties_SetDots();
@@ -92,7 +91,9 @@ public sealed partial class WelcomeWindow : Window
         SkipButton.FontSize = 14 * k;
         BackButton.FontSize = 14 * k;
         NextButton.FontSize = 14 * k;
-        HeroTitle.FontSize = 28 * k;
+        HeroTitle.FontSize = 20 * Math.Min(k, 1.5);
+        StepText.FontSize = 13 * k;
+        SizeLine.FontSize = 13 * k;
         Head0.FontSize = 20 * k;
         Head1.FontSize = 20 * k;
         Head2.FontSize = 20 * k;
@@ -123,24 +124,11 @@ public sealed partial class WelcomeWindow : Window
         {
             case nameof(FirstRunViewModel.Step):
                 UpdateDots();
-                UpdateNextStyle();
                 AutomationProperties_SetDots();
                 Arrive(ViewModel.Step, ViewModel.Step >= _lastStep ? 1 : -1);
                 _lastStep = ViewModel.Step;
                 break;
-            case nameof(FirstRunViewModel.DownloadStarted):
-            case nameof(FirstRunViewModel.Checking):
-            case nameof(FirstRunViewModel.HasModel):
-                UpdateNextStyle();
-                break;
         }
-    }
-
-    /// <summary>One filled accent button per surface: Download leads on the model step until it is chosen; otherwise Next does.</summary>
-    private void UpdateNextStyle()
-    {
-        var downloadLeads = ViewModel.OnModel && ViewModel.ShowOffer;
-        NextButton.Style = downloadLeads ? null : (Style)Application.Current.Resources["AccentButtonStyle"];
     }
 
     private void UpdateDots()
@@ -148,7 +136,7 @@ public sealed partial class WelcomeWindow : Window
         for (var i = 0; i < Dots.Children.Count; i++)
         {
             var dot = (Ellipse)Dots.Children[i];
-            dot.Fill = (Brush)Application.Current.Resources[i == ViewModel.Step ? "AccentFillColorDefaultBrush" : "TextFillColorTertiaryBrush"];
+            dot.Fill = (Brush)Application.Current.Resources[i == ViewModel.Step ? "AccentFillColorDefaultBrush" : "TextFillColorSecondaryBrush"];
         }
     }
 
@@ -156,6 +144,8 @@ public sealed partial class WelcomeWindow : Window
     private void Arrive(int step, int direction)
     {
         var panel = _panels[Math.Clamp(step, 0, _panels.Length - 1)];
+        // Focus the first thing to act on: Download when it is offered, otherwise Next.
+        DispatcherQueue.TryEnqueue(() => (step == FirstRunViewModel.StepModel && ViewModel.ShowOffer ? DownloadButton : NextButton).Focus(FocusState.Programmatic));
         var move = (TranslateTransform)panel.RenderTransform;
         if (ReducedMotion)
         {

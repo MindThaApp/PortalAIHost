@@ -39,7 +39,7 @@ public sealed class FakeHostControl : IHostControl, IDisposable
         _models = new()
         {
             Model("qwen3-30b", "Qwen3 30B (large)", 18_000_000_000, 90, fits: false, "Needs more memory than this PC has free."),
-            Model("chat-14b", "14B model (medium)", 9_000_000_000, 80, fits: true, "Best for your PC: good answers, and minutes in about 3 minutes.", recommended: true),
+            Model("chat-14b", "14B model (medium)", 9_000_000_000, 80, fits: true, "Runs well on your graphics card and memory, about 14 words a second.", recommended: true),
             Model("chat-8b", "8B model (small)", 5_000_000_000, 60, fits: true, "Quick and light. A good choice if you also play games."),
             Model("chat-3b", "3B model (tiny)", 2_500_000_000, 40, fits: true, "Works on any PC, but answers are simpler."),
         };

@@ -96,6 +96,14 @@
   <data name="WelcomeSkip.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Skip the welcome</value></data>
   <data name="WelcomeBack.Content" xml:space="preserve"><value>Back</value></data>
   <data name="WelcomeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Back</value></data>
+  <data name="Vm_VerifiedShort" xml:space="preserve"><value>Verified Portal app</value></data>
+  <data name="Vm_ApprovalDetails" xml:space="preserve"><value>Details</value></data>
+  <data name="Vm_WelcomeRecommended" xml:space="preserve"><value>Recommended: {0} model</value></data>
+  <data name="Vm_WelcomeSmall" xml:space="preserve"><value>Small</value></data>
+  <data name="Vm_WelcomeMedium" xml:space="preserve"><value>Medium</value></data>
+  <data name="Vm_WelcomeLarge" xml:space="preserve"><value>Large</value></data>
+  <data name="Vm_WelcomeDetail" xml:space="preserve"><value>{0}, {1}</value></data>
+  <data name="WelcomeLaterNote.Text" xml:space="preserve"><value>You can pick a model later in Models.</value></data>
   <data name="Vm_WelcomeTitle" xml:space="preserve"><value>Welcome to Portal AI Host</value></data>
   <data name="Vm_WelcomeNext" xml:space="preserve"><value>Next</value></data>
   <data name="Vm_WelcomeFinish" xml:space="preserve"><value>Finish</value></data>
@@ -154,9 +162,9 @@
   <data name="Vm_Cancel" xml:space="preserve"><value>Cancel</value></data>
   <data name="Vm_Verified" xml:space="preserve"><value>Verified app ({0})</value></data>
   <data name="Vm_Unverified" xml:space="preserve"><value>Not verified. It runs from {0}. Only allow it if you started it yourself.</value></data>
-  <data name="Vm_ApprovalTitle" xml:space="preserve"><value>Let {0} use your AI host?</value></data>
+  <data name="Vm_ApprovalTitle" xml:space="preserve"><value>Let {0} use AI on this PC?</value></data>
   <data name="Vm_ApprovalBody" xml:space="preserve"><value>{0} wants to use the AI model on this PC.</value></data>
-  <data name="Vm_ApprovalReason" xml:space="preserve"><value>It says: {0}</value></data>
+  <data name="Vm_ApprovalReason" xml:space="preserve"><value>Reason given: {0}</value></data>
   <data name="Vm_Allow" xml:space="preserve"><value>Allow</value></data>
   <data name="Vm_Deny" xml:space="preserve"><value>Deny</value></data>
   <data name="Vm_Later" xml:space="preserve"><value>Decide later</value></data>

@@ -64,6 +64,21 @@ public sealed partial class FirstRunViewModel : ObservableObject, IDisposable
 
     public bool ShowProgress => DownloadStarted;
     public bool ShowRetry => DownloadFailed;
+    /// <summary>"Recommended: Medium model": a friendly label that leads, with the technical name and size below it.</summary>
+    [ObservableProperty] private string _modelLabel = "";
+
+    /// <summary>Technical name and size on one quiet line.</summary>
+    public string ModelDetail => ModelName.Length == 0 ? ModelSize : _s.Format("Vm_WelcomeDetail", ModelName, ModelSize);
+
+    [ObservableProperty] private bool _choseLater;
+
+    /// <summary>Shown on the last step after "Choose later", unless a download was started.</summary>
+    public bool ShowLaterNote => ChoseLater && !DownloadStarted;
+
+    partial void OnChoseLaterChanged(bool value) => OnPropertyChanged(nameof(ShowLaterNote));
+    partial void OnModelNameChanged(string value) => OnPropertyChanged(nameof(ModelDetail));
+    partial void OnModelSizeChanged(string value) => OnPropertyChanged(nameof(ModelDetail));
+
     public bool HasError => Error.Length > 0;
 
     public string NextText => _s.Get(IsLast ? "Vm_WelcomeFinish" : "Vm_WelcomeNext");
@@ -84,7 +99,7 @@ public sealed partial class FirstRunViewModel : ObservableObject, IDisposable
 
     partial void OnCheckingChanged(bool value) { OnPropertyChanged(nameof(ShowOffer)); OnPropertyChanged(nameof(ShowNoModel)); }
     partial void OnHasModelChanged(bool value) { OnPropertyChanged(nameof(ShowOffer)); OnPropertyChanged(nameof(ShowNoModel)); }
-    partial void OnDownloadStartedChanged(bool value) { OnPropertyChanged(nameof(ShowOffer)); OnPropertyChanged(nameof(ShowProgress)); }
+    partial void OnDownloadStartedChanged(bool value) { OnPropertyChanged(nameof(ShowLaterNote)); OnPropertyChanged(nameof(ShowOffer)); OnPropertyChanged(nameof(ShowProgress)); }
     partial void OnErrorChanged(string value) => OnPropertyChanged(nameof(HasError));
     partial void OnDownloadFailedChanged(bool value) => OnPropertyChanged(nameof(ShowRetry));
 
@@ -131,6 +146,7 @@ public sealed partial class FirstRunViewModel : ObservableObject, IDisposable
                     ModelName = _model.DisplayName;
                     ModelReason = _model.Reason ?? "";
                     ModelSize = _s.Format("Vm_WelcomeSize", Fmt.Bytes(_model.SizeBytes));
+                    ModelLabel = _s.Format("Vm_WelcomeRecommended", _s.Get(SizeClass(_model.SizeBytes)));
                     ExistingLine = view.ExistingCopyIds.Contains(_model.Id) ? _s.Format("Vm_ExistingCopy", _model.DisplayName) : "";
                 }
                 HasModel = _model is not null;
@@ -141,6 +157,17 @@ public sealed partial class FirstRunViewModel : ObservableObject, IDisposable
         {
             _ui.Post(() => { Error = _s.Get("Vm_NoHostTitle"); Checking = false; });
         }
+    }
+
+    /// <summary>Small, medium or large, by download size: a name people understand.</summary>
+    public static string SizeClass(long bytes) => bytes < 4_000_000_000 ? "Vm_WelcomeSmall" : bytes < 12_000_000_000 ? "Vm_WelcomeMedium" : "Vm_WelcomeLarge";
+
+    /// <summary>Moves on without downloading; the last step reminds that a model can be picked later.</summary>
+    [RelayCommand]
+    private void ChooseLater()
+    {
+        ChoseLater = true;
+        if (Step < StepWhere) Step++;
     }
 
     [RelayCommand]

@@ -119,7 +119,7 @@ public class HomeTests
         Assert.True(home.HasRecommendation);
         Assert.Equal("14B model (medium)", home.RecName);
         Assert.Equal("8.4 GB", home.RecSize);
-        Assert.Contains("Best for your PC", home.RecReason);
+        Assert.Contains("Runs well on your graphics card", home.RecReason);
         Assert.False(home.CatalogueUnavailable);
         Assert.False(home.NotEnoughSpace);
         Assert.True(home.CanDownload);
@@ -734,6 +734,33 @@ public class FirstRunTests
         using var __ = vm;
         await vm.FinishCommand.ExecuteAsync(null);
         Assert.True((await rig.Host.GetSettingsAsync()).StartWithWindows);
+    }
+
+    [Fact]
+    public async Task Model_step_leads_with_a_friendly_label_and_choose_later_leaves_a_note()
+    {
+        var (rig, vm) = await Open();
+        using var _ = rig;
+        using var __ = vm;
+        Assert.Equal("Vm_WelcomeRecommended:Vm_WelcomeMedium", vm.ModelLabel);
+        Assert.Equal("Runs well on your graphics card and memory, about 14 words a second.", vm.ModelReason);
+        Assert.False(vm.ShowLaterNote);
+        vm.NextCommand.Execute(null);
+        vm.ChooseLaterCommand.Execute(null);
+        Assert.True(vm.OnWhere);
+        Assert.True(vm.ShowLaterNote);
+    }
+
+    [Fact]
+    public void Verified_apps_are_shown_without_the_raw_id_or_an_unknown_publisher()
+    {
+        var s = new KeyStrings();
+        var verified = new PendingApproval { CallerIdentity = "PortalApps.FilesPortal_8wekyb3d8bbwe", CallerVerified = true };
+        Assert.Equal("Vm_VerifiedShort", ApprovalText.IdentityShort(s, verified));
+        Assert.Equal("", ApprovalText.PublisherLine(s, verified));
+        var unverified = new PendingApproval { CallerIdentity = @"C:\x\a.exe", CallerVerified = false };
+        Assert.StartsWith("Vm_Unverified:", ApprovalText.IdentityShort(s, unverified));
+        Assert.Equal("Vm_PublisherUnknown", ApprovalText.PublisherLine(s, unverified));
     }
 }
 

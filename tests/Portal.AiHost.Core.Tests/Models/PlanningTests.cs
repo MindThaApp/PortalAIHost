@@ -104,6 +104,18 @@ public class PlanningTests
     }
 
     [Fact]
+    public void ReasonIsOnePlainSentenceWithoutLayerOrExpertTalk()
+    {
+        var model = Seed.Single(m => m.Id == "qwen3-30b-a3b-instruct-2507-q4km");
+        var split = PlacementPlanner.Plan(model, Rx6600With64.Hw, Rx6600With64.Mem);
+        Assert.Matches(@"^Runs well on your graphics card and memory, about \d+ words a second$", split.Reason);
+        var cpu = PlacementPlanner.Plan(model, Rtx5090With64.Hw, Rtx5090With64.Mem, new PlannerSettings { Backend = "cpu" });
+        Assert.Matches(@"^Runs on your processor, about \d+ words a second$", cpu.Reason);
+        Assert.DoesNotContain("expert", split.Reason);
+        Assert.DoesNotContain("attention", split.Reason);
+    }
+
+    [Fact]
     public void DenseModelOnBigGpuRunsFullyOnGpuAndGrowsContextAndSlots()
     {
         var model = Seed.Single(m => m.Id == "qwen3-14b-q4km");
