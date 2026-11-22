@@ -414,6 +414,19 @@ public sealed class ModelControlTests
     }
 
     [Fact]
+    public void Shipped_catalogue_verifies_with_the_trusted_key()
+    {
+        // Fails when catalogue.json changes without being signed again.
+        var dir = new DirectoryInfo(AppContext.BaseDirectory);
+        while (dir is not null && !File.Exists(Path.Combine(dir.FullName, "catalogue", "catalogue.json")))
+            dir = dir.Parent;
+        Assert.NotNull(dir);
+        var models = CatalogueSource.Load(dir!.FullName, _ => null);
+        Assert.NotNull(models);
+        Assert.NotEmpty(models!);
+    }
+
+    [Fact]
     public void Unverified_callers_have_no_publisher()
     {
         Assert.Null(ControlHandler.PublisherOf(new CallerIdentity(1, null, Environment.ProcessPath, Verified: false, SameUser: true)));
