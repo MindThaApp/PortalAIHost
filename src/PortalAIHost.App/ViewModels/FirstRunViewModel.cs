@@ -150,6 +150,7 @@ public sealed partial class FirstRunViewModel : ObservableObject, IDisposable
                     ExistingLine = view.ExistingCopyIds.Contains(_model.Id) ? _s.Format("Vm_ExistingCopy", _model.DisplayName) : "";
                 }
                 HasModel = _model is not null;
+                OnPropertyChanged(nameof(RecommendedTip));
                 Checking = false;
             });
         }
@@ -265,6 +266,21 @@ public sealed partial class FirstRunViewModel : ObservableObject, IDisposable
     private async Task FinishAsync()
     {
         if (!_startupTouched) await SaveStartupAsync().ConfigureAwait(false);
+        _ui.Post(() => CloseRequested?.Invoke());
+    }
+
+    /// <summary>Spoken and shown as the tooltip: what "Start with recommended settings" will do, with the download size.</summary>
+    public string RecommendedTip => _model is null
+        ? _s.Get("Vm_WelcomeRecommendedTipNoModel")
+        : _s.Format("Vm_WelcomeRecommendedTip", Fmt.Bytes(_model.SizeBytes));
+
+    /// <summary>Starts the recommended model download (it carries on in the host), keeps start with Windows on, and closes.</summary>
+    [RelayCommand]
+    private async Task StartRecommendedAsync()
+    {
+        if (_model is not null && !DownloadStarted) await DownloadAsync().ConfigureAwait(false);
+        StartWithWindows = true;
+        await SaveStartupAsync().ConfigureAwait(false);
         _ui.Post(() => CloseRequested?.Invoke());
     }
 

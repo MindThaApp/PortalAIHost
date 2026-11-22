@@ -18,7 +18,7 @@ namespace PortalAIHost.App;
 public sealed partial class WelcomeWindow : Window
 {
     private const int DesignWidth = 720;
-    private const int DesignHeight = 520;
+    private const int DesignHeight = 620;
     private const int ArriveMs = 333; // the "slow" motion token, used for welcome steps
 
     private readonly ShellViewModel _shell = AppServices.Shell;
@@ -31,6 +31,15 @@ public sealed partial class WelcomeWindow : Window
     {
         ViewModel = new FirstRunViewModel(_shell, AppServices.Ui, AppServices.Strings);
         InitializeComponent();
+        // A plain drag strip with only the close button; the window cannot be resized, minimised or maximised.
+        ExtendsContentIntoTitleBar = true;
+        SetTitleBar(DragStrip);
+        if (AppWindow.Presenter is OverlappedPresenter fixedSize)
+        {
+            fixedSize.IsResizable = false;
+            fixedSize.IsMaximizable = false;
+            fixedSize.IsMinimizable = false;
+        }
         _prefs = AppOptions.WithOverrides(_shell.State.Appearance);
         _panels = [Panel0, Panel1, Panel2];
         Title = AppServices.Strings.Get("Vm_WelcomeTitle");
@@ -54,8 +63,11 @@ public sealed partial class WelcomeWindow : Window
         Closed += OnClosed;
         AddKeys();
         UpdateDots();
+        Root.ActualThemeChanged += (_, _) => ApplyTitleBarColours();
         Root.Loaded += async (_, _) =>
         {
+            ApplyTitleBarColours();
+            LayoutFooter();
             AutomationProperties_SetDots();
             await ViewModel.LoadAsync();
         };
@@ -85,18 +97,56 @@ public sealed partial class WelcomeWindow : Window
         AppWindow.Move(new Windows.Graphics.PointInt32(area.X + (area.Width - w) / 2, area.Y + (area.Height - h) / 2));
     }
 
+    /// <summary>Every text size follows the text factor: body, row titles, captions, headings and buttons.</summary>
     private void ApplyTextScale(double k)
     {
         BodyScroll.FontSize = 14 * k;
-        SkipButton.FontSize = 14 * k;
-        BackButton.FontSize = 14 * k;
-        NextButton.FontSize = 14 * k;
-        HeroTitle.FontSize = 20 * Math.Min(k, 1.5);
-        StepText.FontSize = 13 * k;
-        SizeLine.FontSize = 13 * k;
-        Head0.FontSize = 20 * k;
-        Head1.FontSize = 20 * k;
-        Head2.FontSize = 20 * k;
+        foreach (var b in new Control[] { SkipButton, RecommendedButton, BackButton, NextButton, DownloadButton, LaterButton, RetryButton })
+            b.FontSize = 14 * k;
+        HeroTitle.FontSize = 36 * k;
+        Head0.FontSize = 14 * k;
+        Head1.FontSize = 28 * k;
+        Head2.FontSize = 28 * k;
+    }
+
+    /// <summary>Caption buttons follow the app theme, as in the main window.</summary>
+    private void ApplyTitleBarColours()
+    {
+        if (!AppWindowTitleBar.IsCustomizationSupported()) return;
+        var tb = AppWindow.TitleBar;
+        if (new Windows.UI.ViewManagement.AccessibilitySettings().HighContrast)
+        {
+            tb.ButtonBackgroundColor = null; tb.ButtonInactiveBackgroundColor = null; tb.ButtonForegroundColor = null;
+            tb.ButtonInactiveForegroundColor = null; tb.ButtonHoverBackgroundColor = null; tb.ButtonHoverForegroundColor = null;
+            tb.ButtonPressedBackgroundColor = null; tb.ButtonPressedForegroundColor = null;
+            return;
+        }
+        var dark = Root.ActualTheme == ElementTheme.Dark;
+        var fg = dark ? Microsoft.UI.Colors.White : Microsoft.UI.Colors.Black;
+        tb.ButtonBackgroundColor = Microsoft.UI.Colors.Transparent;
+        tb.ButtonInactiveBackgroundColor = Microsoft.UI.Colors.Transparent;
+        tb.ButtonForegroundColor = fg;
+        tb.ButtonInactiveForegroundColor = dark ? Windows.UI.Color.FromArgb(0xFF, 0x9A, 0x9A, 0x9A) : Windows.UI.Color.FromArgb(0xFF, 0x70, 0x70, 0x70);
+        tb.ButtonHoverBackgroundColor = dark ? Windows.UI.Color.FromArgb(0x20, 255, 255, 255) : Windows.UI.Color.FromArgb(0x18, 0, 0, 0);
+        tb.ButtonHoverForegroundColor = fg;
+        tb.ButtonPressedBackgroundColor = dark ? Windows.UI.Color.FromArgb(0x38, 255, 255, 255) : Windows.UI.Color.FromArgb(0x30, 0, 0, 0);
+        tb.ButtonPressedForegroundColor = fg;
+    }
+
+    private void OnFooterSizeChanged(object sender, SizeChangedEventArgs e) => LayoutFooter();
+
+    /// <summary>When the left and right button groups no longer fit on one line (large text), the left group moves to its own line. Nothing is clipped.</summary>
+    private void LayoutFooter()
+    {
+        FooterLeft.Measure(new Windows.Foundation.Size(double.PositiveInfinity, double.PositiveInfinity));
+        FooterRight.Measure(new Windows.Foundation.Size(double.PositiveInfinity, double.PositiveInfinity));
+        var room = Footer.ActualWidth - Footer.Padding.Left - Footer.Padding.Right - Footer.ColumnSpacing;
+        if (room <= 0) return;
+        var stacked = FooterLeft.DesiredSize.Width + FooterRight.DesiredSize.Width > room;
+        var row = stacked ? 1 : 0;
+        if (Grid.GetRow(FooterLeft) == row) return;
+        Grid.SetRow(FooterLeft, row);
+        Grid.SetColumnSpan(FooterLeft, stacked ? 2 : 1);
     }
 
     private void AddKeys()
@@ -125,16 +175,24 @@ public sealed partial class WelcomeWindow : Window
             case nameof(FirstRunViewModel.Step):
                 UpdateDots();
                 AutomationProperties_SetDots();
+                LayoutFooter();
                 Arrive(ViewModel.Step, ViewModel.Step >= _lastStep ? 1 : -1);
                 _lastStep = ViewModel.Step;
                 break;
         }
     }
 
+    /// <summary>Dots sit top-left and are hidden on the greeting; the current step is a longer pill, not only a different shade.</summary>
     private void UpdateDots()
     {
-        Ellipse[] dots = [Dot0, Dot1, Dot2];
-        for (var i = 0; i < dots.Length; i++) dots[i].Visibility = i == ViewModel.Step ? Visibility.Visible : Visibility.Collapsed;
+        Dots.Visibility = ViewModel.Step == FirstRunViewModel.StepWelcome ? Visibility.Collapsed : Visibility.Visible;
+        Grid[] dots = [Dot0, Dot1, Dot2];
+        Border[] on = [Dot0On, Dot1On, Dot2On];
+        for (var i = 0; i < dots.Length; i++)
+        {
+            dots[i].Width = i == ViewModel.Step ? 20 : 8;
+            on[i].Visibility = i == ViewModel.Step ? Visibility.Visible : Visibility.Collapsed;
+        }
     }
 
     /// <summary>The new step fades in while sliding 24 px from the side it comes from. With reduced motion it simply appears.</summary>

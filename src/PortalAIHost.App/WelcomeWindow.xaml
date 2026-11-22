@@ -4,27 +4,32 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Grid x:Name="Root">
         <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ScrollViewer x:Name="BodyScroll" Grid.Row="0" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" IsTabStop="False">
-            <StackPanel>
-            <StackPanel x:Name="Hero" Padding="32,16,32,4" Spacing="12" Orientation="Horizontal" HorizontalAlignment="Center"
-                        Visibility="{x:Bind ViewModel.OnWelcome, Mode=OneWay}">
-                <Image Source="ms-appx:///Assets/Square150x150Logo.scale-200.png" Width="40" Height="40" VerticalAlignment="Center"
-                       AutomationProperties.AccessibilityView="Raw" />
-                <TextBlock x:Name="HeroTitle" x:Uid="WelcomeTitle" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center"
-                           TextWrapping="NoWrap" AutomationProperties.HeadingLevel="Level1" />
+        <!-- Plain drag strip: step dots on the left (hidden on the greeting), the system close button on the right. -->
+        <Grid x:Name="DragStrip" Grid.Row="0" Background="Transparent">
+            <StackPanel x:Name="Dots" Orientation="Horizontal" Spacing="6" Margin="40,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left">
+                <Grid x:Name="Dot0" Width="8" Height="8"><Border CornerRadius="4" Background="{ThemeResource TextFillColorSecondaryBrush}" Opacity="0.6" /><Border x:Name="Dot0On" CornerRadius="4" Background="{ThemeResource AccentFillColorDefaultBrush}" /></Grid>
+                <Grid x:Name="Dot1" Width="8" Height="8"><Border CornerRadius="4" Background="{ThemeResource TextFillColorSecondaryBrush}" Opacity="0.6" /><Border x:Name="Dot1On" CornerRadius="4" Background="{ThemeResource AccentFillColorDefaultBrush}" /></Grid>
+                <Grid x:Name="Dot2" Width="8" Height="8"><Border CornerRadius="4" Background="{ThemeResource TextFillColorSecondaryBrush}" Opacity="0.6" /><Border x:Name="Dot2On" CornerRadius="4" Background="{ThemeResource AccentFillColorDefaultBrush}" /></Grid>
             </StackPanel>
-            <Grid Padding="48,8,48,8" MaxWidth="720">
-                <!-- Step 1: what it does -->
+        </Grid>
+
+        <ScrollViewer x:Name="BodyScroll" Grid.Row="1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" IsTabStop="False">
+            <Grid Padding="40,0,40,8" MaxWidth="720">
+                <!-- Step 1: greeting and what it does -->
                 <StackPanel x:Name="Panel0" Spacing="16" Visibility="{x:Bind ViewModel.OnWelcome, Mode=OneWay}">
                     <StackPanel.RenderTransform><TranslateTransform /></StackPanel.RenderTransform>
-                    <TextBlock x:Name="Head0" x:Uid="WelcomeLead" Style="{StaticResource SubtitleTextBlockStyle}" TextWrapping="Wrap"
-                               AutomationProperties.HeadingLevel="Level2" />
-                    <TextBlock x:Uid="WelcomeIntro" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <Image Source="ms-appx:///Assets/Square150x150Logo.scale-200.png" Width="64" Height="64" HorizontalAlignment="Center"
+                           AutomationProperties.AccessibilityView="Raw" />
+                    <TextBlock x:Name="HeroTitle" x:Uid="WelcomeTitle" FontWeight="SemiBold" FontSize="36" HorizontalAlignment="Center"
+                               TextWrapping="Wrap" TextAlignment="Center" AutomationProperties.HeadingLevel="Level1" />
+                    <TextBlock x:Name="Head0" x:Uid="WelcomeLead" FontSize="14" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock x:Uid="WelcomeIntro" TextWrapping="Wrap" Margin="0,8,0,0" />
                     <Grid ColumnSpacing="12">
                         <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
                         <Grid Width="34" Height="34" VerticalAlignment="Top">
@@ -32,7 +37,7 @@
                             <FontIcon Glyph="&#xE7F8;" FontSize="16" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
                         </Grid>
                         <StackPanel Grid.Column="1" Spacing="2">
-                            <TextBlock x:Uid="WelcomePoint1Title" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="Wrap" />
+                            <TextBlock x:Uid="WelcomePoint1Title" FontWeight="SemiBold" TextWrapping="Wrap" />
                             <TextBlock x:Uid="WelcomePoint1Body" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                         </StackPanel>
                     </Grid>
@@ -43,7 +48,7 @@
                             <FontIcon Glyph="&#xE72E;" FontSize="16" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
                         </Grid>
                         <StackPanel Grid.Column="1" Spacing="2">
-                            <TextBlock x:Uid="WelcomePoint2Title" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="Wrap" />
+                            <TextBlock x:Uid="WelcomePoint2Title" FontWeight="SemiBold" TextWrapping="Wrap" />
                             <TextBlock x:Uid="WelcomePoint2Body" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                         </StackPanel>
                     </Grid>
@@ -54,7 +59,7 @@
                             <FontIcon Glyph="&#xE71D;" FontSize="16" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
                         </Grid>
                         <StackPanel Grid.Column="1" Spacing="2">
-                            <TextBlock x:Uid="WelcomePoint3Title" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="Wrap" />
+                            <TextBlock x:Uid="WelcomePoint3Title" FontWeight="SemiBold" TextWrapping="Wrap" />
                             <TextBlock x:Uid="WelcomePoint3Body" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                         </StackPanel>
                     </Grid>
@@ -63,53 +68,50 @@
                 <!-- Step 2: pick a model -->
                 <StackPanel x:Name="Panel1" Spacing="12" Visibility="{x:Bind ViewModel.OnModel, Mode=OneWay}">
                     <StackPanel.RenderTransform><TranslateTransform /></StackPanel.RenderTransform>
-                    <TextBlock x:Name="Head1" x:Uid="WelcomeModelTitle" Style="{StaticResource SubtitleTextBlockStyle}" TextWrapping="Wrap"
-                               AutomationProperties.HeadingLevel="Level2" />
+                    <TextBlock x:Name="Head1" x:Uid="WelcomeModelTitle" FontWeight="SemiBold" FontSize="28" TextWrapping="Wrap"
+                               AutomationProperties.HeadingLevel="Level1" />
                     <TextBlock x:Uid="WelcomeModelIntro" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                     <TextBlock Text="{x:Bind ViewModel.Error, Mode=OneWay}" TextWrapping="Wrap" Foreground="{ThemeResource SystemFillColorCriticalBrush}" Visibility="{x:Bind ViewModel.HasError, Mode=OneWay}" />
 
                     <Border Style="{StaticResource CardBorder}">
                         <StackPanel Spacing="8">
-                            <!-- Checking your PC -->
                             <StackPanel Orientation="Horizontal" Spacing="12" Visibility="{x:Bind ViewModel.Checking, Mode=OneWay}">
                                 <ProgressRing IsActive="{x:Bind ViewModel.Checking, Mode=OneWay}" Width="20" Height="20" />
                                 <TextBlock Text="{x:Bind ViewModel.MemoryLine, Mode=OneWay}" TextWrapping="Wrap" VerticalAlignment="Center" />
                             </StackPanel>
-                            <!-- The recommended model -->
                             <StackPanel Spacing="6" Visibility="{x:Bind ViewModel.HasModel, Mode=OneWay}">
-                                <TextBlock Text="{x:Bind ViewModel.ModelLabel, Mode=OneWay}" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="Wrap" />
+                                <TextBlock Text="{x:Bind ViewModel.ModelLabel, Mode=OneWay}" FontWeight="SemiBold" TextWrapping="Wrap" />
                                 <TextBlock Text="{x:Bind ViewModel.ModelReason, Mode=OneWay}" TextWrapping="Wrap" />
-                                <TextBlock x:Name="SizeLine" Text="{x:Bind ViewModel.ModelDetail, Mode=OneWay}" TextWrapping="Wrap" FontSize="13" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                <TextBlock Text="{x:Bind ViewModel.ModelDetail, Mode=OneWay}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                                 <TextBlock Text="{x:Bind ViewModel.ExistingLine, Mode=OneWay}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                             </StackPanel>
                             <TextBlock x:Uid="WelcomeNoModel" TextWrapping="Wrap" Visibility="{x:Bind ViewModel.ShowNoModel, Mode=OneWay}" />
-                            <!-- Download choice -->
                             <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4,0,0" Visibility="{x:Bind ViewModel.ShowOffer, Mode=OneWay}">
                                 <Button x:Name="DownloadButton" x:Uid="WelcomeDownload" Command="{x:Bind ViewModel.DownloadCommand}" />
-                                <Button x:Uid="WelcomeChooseLater" Command="{x:Bind ViewModel.ChooseLaterCommand}" />
+                                <Button x:Name="LaterButton" x:Uid="WelcomeChooseLater" Command="{x:Bind ViewModel.ChooseLaterCommand}" />
                             </StackPanel>
-                            <!-- Download progress -->
                             <StackPanel Spacing="8" Visibility="{x:Bind ViewModel.ShowProgress, Mode=OneWay}">
                                 <ProgressBar Value="{x:Bind ViewModel.Percent, Mode=OneWay}" Maximum="100" />
                                 <TextBlock Text="{x:Bind ViewModel.ProgressText, Mode=OneWay}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
                                 <TextBlock x:Uid="WelcomeKeepGoing" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                                <Button x:Uid="WelcomeRetry" Command="{x:Bind ViewModel.RetryCommand}" Visibility="{x:Bind ViewModel.ShowRetry, Mode=OneWay}" />
+                                <Button x:Name="RetryButton" x:Uid="WelcomeRetry" Command="{x:Bind ViewModel.RetryCommand}" Visibility="{x:Bind ViewModel.ShowRetry, Mode=OneWay}" />
                             </StackPanel>
                         </StackPanel>
                     </Border>
 
                     <StackPanel Spacing="2" Visibility="{x:Bind ViewModel.HasModel, Mode=OneWay}">
-                        <TextBlock Text="{x:Bind ViewModel.MemoryLine, Mode=OneWay}" FontSize="13" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                        <TextBlock Text="{x:Bind ViewModel.GraphicsLine, Mode=OneWay}" FontSize="13" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                        <TextBlock Text="{x:Bind ViewModel.DiskLine, Mode=OneWay}" FontSize="13" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock Text="{x:Bind ViewModel.MemoryLine, Mode=OneWay}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock Text="{x:Bind ViewModel.GraphicsLine, Mode=OneWay}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock Text="{x:Bind ViewModel.DiskLine, Mode=OneWay}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                     </StackPanel>
                 </StackPanel>
 
                 <!-- Step 3: where to find it -->
                 <StackPanel x:Name="Panel2" Spacing="16" Visibility="{x:Bind ViewModel.OnWhere, Mode=OneWay}">
                     <StackPanel.RenderTransform><TranslateTransform /></StackPanel.RenderTransform>
-                    <TextBlock x:Name="Head2" x:Uid="WelcomeWhereTitle" Style="{StaticResource SubtitleTextBlockStyle}" TextWrapping="Wrap"
-                               AutomationProperties.HeadingLevel="Level2" />
+                    <TextBlock x:Name="Head2" x:Uid="WelcomeWhereTitle" FontWeight="SemiBold" FontSize="28" TextWrapping="Wrap"
+                               AutomationProperties.HeadingLevel="Level1" />
+                    <TextBlock x:Uid="WelcomeWhereIntro" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,-8,0,0" />
                     <Grid ColumnSpacing="12">
                         <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
                         <Grid Width="34" Height="34" VerticalAlignment="Top">
@@ -117,7 +119,7 @@
                             <FontIcon Glyph="&#xE9E9;" FontSize="16" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
                         </Grid>
                         <StackPanel Grid.Column="1" Spacing="2">
-                            <TextBlock x:Uid="WelcomeTrayTitle" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="Wrap" />
+                            <TextBlock x:Uid="WelcomeTrayTitle" FontWeight="SemiBold" TextWrapping="Wrap" />
                             <TextBlock x:Uid="WelcomeTrayBody" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                         </StackPanel>
                     </Grid>
@@ -128,34 +130,44 @@
                             <FontIcon Glyph="&#xE73E;" FontSize="16" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
                         </Grid>
                         <StackPanel Grid.Column="1" Spacing="2">
-                            <TextBlock x:Uid="WelcomeAskTitle" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="Wrap" />
+                            <TextBlock x:Uid="WelcomeAskTitle" FontWeight="SemiBold" TextWrapping="Wrap" />
                             <TextBlock x:Uid="WelcomeAskBody" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                         </StackPanel>
                     </Grid>
                     <TextBlock x:Uid="WelcomeLaterNote" TextWrapping="Wrap" Visibility="{x:Bind ViewModel.ShowLaterNote, Mode=OneWay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                    <ToggleSwitch x:Name="StartupToggle" x:Uid="WelcomeStartWithWindows" IsOn="{x:Bind ViewModel.StartWithWindows, Mode=OneWay}" Toggled="OnStartupToggled" />
+                    <!-- Settings-style row: title and description on the left, the switch on the right -->
+                    <Border Style="{StaticResource CardBorder}">
+                        <Grid ColumnSpacing="16">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                            <StackPanel Spacing="2" VerticalAlignment="Center">
+                                <TextBlock x:Uid="WelcomeStartTitle" FontWeight="SemiBold" TextWrapping="Wrap" />
+                                <TextBlock x:Uid="WelcomeStartBody" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            </StackPanel>
+                            <ToggleSwitch x:Name="StartupToggle" x:Uid="WelcomeStartWithWindows" Grid.Column="1" VerticalAlignment="Center" MinWidth="0"
+                                          OnContent="" OffContent="" IsOn="{x:Bind ViewModel.StartWithWindows, Mode=OneWay}" Toggled="OnStartupToggled" />
+                        </Grid>
+                    </Border>
                 </StackPanel>
             </Grid>
-            </StackPanel>
         </ScrollViewer>
 
-        <!-- Step dots -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center" Margin="0,8,0,8">
-            <StackPanel x:Name="Dots" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                <Grid Width="8" Height="8"><Ellipse Fill="{ThemeResource TextFillColorSecondaryBrush}" Opacity="0.6" /><Ellipse x:Name="Dot0" Fill="{ThemeResource AccentFillColorDefaultBrush}" /></Grid><Grid Width="8" Height="8"><Ellipse Fill="{ThemeResource TextFillColorSecondaryBrush}" Opacity="0.6" /><Ellipse x:Name="Dot1" Fill="{ThemeResource AccentFillColorDefaultBrush}" /></Grid><Grid Width="8" Height="8"><Ellipse Fill="{ThemeResource TextFillColorSecondaryBrush}" Opacity="0.6" /><Ellipse x:Name="Dot2" Fill="{ThemeResource AccentFillColorDefaultBrush}" /></Grid>
-            </StackPanel>
-            <TextBlock x:Name="StepText" Text="{x:Bind ViewModel.StepLine, Mode=OneWay}" FontSize="13" VerticalAlignment="Center"
-                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-        </StackPanel>
-
-        <!-- Skip on the left, Back and Next on the right -->
-        <Grid Grid.Row="2" Padding="32,8,32,24" ColumnSpacing="8">
+        <!-- Footer, pinned: Skip and the recommended-settings shortcut on the left, Back and Next on the right -->
+        <Grid x:Name="Footer" Grid.Row="2" Padding="24,8,24,16" ColumnSpacing="8" RowSpacing="4" SizeChanged="OnFooterSizeChanged">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <HyperlinkButton x:Name="SkipButton" x:Uid="WelcomeSkip" Command="{x:Bind ViewModel.SkipCommand}" VerticalAlignment="Center" />
-            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <StackPanel x:Name="FooterLeft" Orientation="Horizontal" Spacing="4">
+                <HyperlinkButton x:Name="SkipButton" x:Uid="WelcomeSkip" Command="{x:Bind ViewModel.SkipCommand}" VerticalAlignment="Center" />
+                <HyperlinkButton x:Name="RecommendedButton" x:Uid="WelcomeStartRec" Command="{x:Bind ViewModel.StartRecommendedCommand}" VerticalAlignment="Center"
+                                 ToolTipService.ToolTip="{x:Bind ViewModel.RecommendedTip, Mode=OneWay}"
+                                 AutomationProperties.HelpText="{x:Bind ViewModel.RecommendedTip, Mode=OneWay}" />
+            </StackPanel>
+            <StackPanel x:Name="FooterRight" Grid.Column="1" Orientation="Horizontal" Spacing="8">
                 <Button x:Name="BackButton" x:Uid="WelcomeBack" Command="{x:Bind ViewModel.BackCommand}" Visibility="{x:Bind ViewModel.CanGoBack, Mode=OneWay}" />
                 <Button x:Name="NextButton" Command="{x:Bind ViewModel.NextCommand}" Content="{x:Bind ViewModel.NextText, Mode=OneWay}" MinWidth="96"
                         Style="{StaticResource AccentButtonStyle}" AutomationProperties.Name="{x:Bind ViewModel.NextText, Mode=OneWay}" />

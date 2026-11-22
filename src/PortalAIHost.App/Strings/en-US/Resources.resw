@@ -88,9 +88,6 @@
   <data name="WelcomeTrayBody.Text" xml:space="preserve"><value>Portal AI Host waits quietly in the tray, the small icons near the clock. Click its icon to open it. If you do not see it, click the arrow to show hidden icons.</value></data>
   <data name="WelcomeAskTitle.Text" xml:space="preserve"><value>Apps always ask first</value></data>
   <data name="WelcomeAskBody.Text" xml:space="preserve"><value>The first time a Portal app wants to use AI on this PC, you will be asked. You can say no, and you can take access away at any time.</value></data>
-  <data name="WelcomeStartWithWindows.Header" xml:space="preserve"><value>Start Portal AI Host when I sign in to Windows</value></data>
-  <data name="WelcomeStartWithWindows.OnContent" xml:space="preserve"><value>On</value></data>
-  <data name="WelcomeStartWithWindows.OffContent" xml:space="preserve"><value>Off</value></data>
   <data name="WelcomeStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Start Portal AI Host when I sign in to Windows</value></data>
   <data name="WelcomeSkip.Content" xml:space="preserve"><value>Skip for now</value></data>
   <data name="WelcomeSkip.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Skip the welcome</value></data>
@@ -104,9 +101,16 @@
   <data name="Vm_WelcomeLarge" xml:space="preserve"><value>Large</value></data>
   <data name="Vm_WelcomeDetail" xml:space="preserve"><value>{0}, {1}</value></data>
   <data name="WelcomeLaterNote.Text" xml:space="preserve"><value>You can pick a model later in Models.</value></data>
+  <data name="WelcomeStartRec.Content" xml:space="preserve"><value>Start with recommended settings</value></data>
+  <data name="WelcomeStartRec.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Start with recommended settings</value></data>
+  <data name="WelcomeWhereIntro.Text" xml:space="preserve"><value>Two things to know before you start.</value></data>
+  <data name="WelcomeStartTitle.Text" xml:space="preserve"><value>Start with Windows</value></data>
+  <data name="WelcomeStartBody.Text" xml:space="preserve"><value>Keeps Portal AI Host ready in the tray when you sign in, so your apps can use it straight away.</value></data>
+  <data name="Vm_WelcomeRecommendedTip" xml:space="preserve"><value>Downloads the recommended model ({0}) in the background, keeps Portal AI Host starting with Windows, and closes this window. You can change it all later.</value></data>
+  <data name="Vm_WelcomeRecommendedTipNoModel" xml:space="preserve"><value>Keeps Portal AI Host starting with Windows and closes this window. You can change it all later.</value></data>
   <data name="Vm_WelcomeTitle" xml:space="preserve"><value>Welcome to Portal AI Host</value></data>
   <data name="Vm_WelcomeNext" xml:space="preserve"><value>Next</value></data>
-  <data name="Vm_WelcomeFinish" xml:space="preserve"><value>Finish</value></data>
+  <data name="Vm_WelcomeFinish" xml:space="preserve"><value>Get started</value></data>
   <data name="Vm_WelcomeSize" xml:space="preserve"><value>Download size: {0}</value></data>
   <data name="Vm_AppTitle" xml:space="preserve"><value>Portal AI Host</value></data>
   <data name="Vm_NoHostTitle" xml:space="preserve"><value>Portal AI Host is not running</value></data>
@@ -166,7 +170,7 @@
   <data name="Vm_ApprovalBody" xml:space="preserve"><value>{0} wants to use the AI model on this PC.</value></data>
   <data name="Vm_ApprovalReason" xml:space="preserve"><value>Reason given: {0}</value></data>
   <data name="Vm_Allow" xml:space="preserve"><value>Allow</value></data>
-  <data name="Vm_Deny" xml:space="preserve"><value>Deny</value></data>
+  <data name="Vm_Deny" xml:space="preserve"><value>Don't allow</value></data>
   <data name="Vm_Later" xml:space="preserve"><value>Decide later</value></data>
   <data name="Vm_Idle_Keep" xml:space="preserve"><value>Keep the model loaded</value></data>
   <data name="Vm_Idle_5" xml:space="preserve"><value>After 5 minutes</value></data>

@@ -737,6 +737,23 @@ public class FirstRunTests
     }
 
     [Fact]
+    public async Task Start_with_recommended_settings_downloads_the_model_keeps_startup_on_and_closes()
+    {
+        var (rig, vm) = await Open();
+        using var _ = rig;
+        using var __ = vm;
+        var closed = 0;
+        vm.CloseRequested += () => closed++;
+        Assert.StartsWith("Vm_WelcomeRecommendedTip:", vm.RecommendedTip); // the tooltip states the download size
+        await vm.StartRecommendedCommand.ExecuteAsync(null);
+        Assert.True(vm.DownloadStarted);
+        Assert.Equal(1, closed);
+        Assert.True((await rig.Host.GetSettingsAsync()).StartWithWindows);
+        for (var i = 0; i < 30; i++) rig.Host.Tick();
+        Assert.True(vm.DownloadDone);
+    }
+
+    [Fact]
     public async Task Model_step_leads_with_a_friendly_label_and_choose_later_leaves_a_note()
     {
         var (rig, vm) = await Open();
