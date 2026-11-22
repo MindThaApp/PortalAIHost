@@ -148,7 +148,7 @@ public sealed partial class WelcomeWindow : Window
         for (var i = 0; i < Dots.Children.Count; i++)
         {
             var dot = (Ellipse)Dots.Children[i];
-            dot.Fill = (Brush)Application.Current.Resources[i == ViewModel.Step ? "AccentFillColorDefaultBrush" : "ControlStrongStrokeColorDefaultBrush"];
+            dot.Fill = (Brush)Application.Current.Resources[i == ViewModel.Step ? "AccentFillColorDefaultBrush" : "TextFillColorTertiaryBrush"];
         }
     }
 

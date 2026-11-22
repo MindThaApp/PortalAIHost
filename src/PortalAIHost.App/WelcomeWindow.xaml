@@ -4,21 +4,19 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Grid x:Name="Root">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- Hero: the app logo and a greeting. -->
-        <StackPanel Grid.Row="0" Padding="32,24,32,8" Spacing="8" HorizontalAlignment="Center">
-            <Image Source="ms-appx:///Assets/Square150x150Logo.scale-200.png" Width="72" Height="72" HorizontalAlignment="Center"
+        <ScrollViewer x:Name="BodyScroll" Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsTabStop="False">
+            <StackPanel>
+        <StackPanel Padding="32,16,32,0" Spacing="4" HorizontalAlignment="Center">
+            <Image Source="ms-appx:///Assets/Square150x150Logo.scale-200.png" Width="56" Height="56" HorizontalAlignment="Center"
                    AutomationProperties.AccessibilityView="Raw" />
             <TextBlock x:Name="HeroTitle" x:Uid="WelcomeTitle" Style="{StaticResource TitleTextBlockStyle}" HorizontalAlignment="Center"
                        TextWrapping="Wrap" TextAlignment="Center" AutomationProperties.HeadingLevel="Level1" />
         </StackPanel>
-
-        <ScrollViewer x:Name="BodyScroll" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsTabStop="False">
             <Grid Padding="48,8,48,8" MaxWidth="720">
                 <!-- Step 1: what it does -->
                 <StackPanel x:Name="Panel0" Spacing="16" Visibility="{x:Bind ViewModel.OnWelcome, Mode=OneWay}">
@@ -67,7 +65,7 @@
                     <TextBlock x:Name="Head1" x:Uid="WelcomeModelTitle" Style="{StaticResource SubtitleTextBlockStyle}" TextWrapping="Wrap"
                                AutomationProperties.HeadingLevel="Level2" />
                     <TextBlock x:Uid="WelcomeModelIntro" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                    <TextBlock Text="{x:Bind ViewModel.Error, Mode=OneWay}" TextWrapping="Wrap" Foreground="{ThemeResource SystemFillColorCriticalBrush}" />
+                    <TextBlock Text="{x:Bind ViewModel.Error, Mode=OneWay}" TextWrapping="Wrap" Foreground="{ThemeResource SystemFillColorCriticalBrush}" Visibility="{x:Bind ViewModel.HasError, Mode=OneWay}" />
 
                     <Border Style="{StaticResource CardBorder}">
                         <StackPanel Spacing="8">
@@ -100,7 +98,7 @@
                     </Border>
 
                     <StackPanel Spacing="2" Visibility="{x:Bind ViewModel.HasModel, Mode=OneWay}">
-                        <TextBlock Text="{x:Bind ViewModel.MemoryLine, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Visibility="{x:Bind ViewModel.HasModel, Mode=OneWay}" />
+                        <TextBlock Text="{x:Bind ViewModel.MemoryLine, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                         <TextBlock Text="{x:Bind ViewModel.GraphicsLine, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                         <TextBlock Text="{x:Bind ViewModel.DiskLine, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                     </StackPanel>
@@ -136,15 +134,16 @@
                     <ToggleSwitch x:Name="StartupToggle" x:Uid="WelcomeStartWithWindows" IsOn="{x:Bind ViewModel.StartWithWindows, Mode=OneWay}" Toggled="OnStartupToggled" />
                 </StackPanel>
             </Grid>
+            </StackPanel>
         </ScrollViewer>
 
         <!-- Step dots -->
-        <StackPanel x:Name="Dots" Grid.Row="2" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center" Margin="0,8,0,8">
+        <StackPanel x:Name="Dots" Grid.Row="1" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center" Margin="0,8,0,8">
             <Ellipse Width="8" Height="8" /><Ellipse Width="8" Height="8" /><Ellipse Width="8" Height="8" />
         </StackPanel>
 
         <!-- Skip on the left, Back and Next on the right -->
-        <Grid Grid.Row="3" Padding="32,8,32,24" ColumnSpacing="8">
+        <Grid Grid.Row="2" Padding="32,8,32,24" ColumnSpacing="8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />

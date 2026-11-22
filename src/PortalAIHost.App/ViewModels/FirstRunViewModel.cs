@@ -64,6 +64,7 @@ public sealed partial class FirstRunViewModel : ObservableObject, IDisposable
 
     public bool ShowProgress => DownloadStarted;
     public bool ShowRetry => DownloadFailed;
+    public bool HasError => Error.Length > 0;
 
     public string NextText => _s.Get(IsLast ? "Vm_WelcomeFinish" : "Vm_WelcomeNext");
 
@@ -84,6 +85,7 @@ public sealed partial class FirstRunViewModel : ObservableObject, IDisposable
     partial void OnCheckingChanged(bool value) { OnPropertyChanged(nameof(ShowOffer)); OnPropertyChanged(nameof(ShowNoModel)); }
     partial void OnHasModelChanged(bool value) { OnPropertyChanged(nameof(ShowOffer)); OnPropertyChanged(nameof(ShowNoModel)); }
     partial void OnDownloadStartedChanged(bool value) { OnPropertyChanged(nameof(ShowOffer)); OnPropertyChanged(nameof(ShowProgress)); }
+    partial void OnErrorChanged(string value) => OnPropertyChanged(nameof(HasError));
     partial void OnDownloadFailedChanged(bool value) => OnPropertyChanged(nameof(ShowRetry));
 
     public async Task LoadAsync()
