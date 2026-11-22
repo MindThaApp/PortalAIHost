@@ -18,7 +18,7 @@ namespace PortalAIHost.App;
 public sealed partial class WelcomeWindow : Window
 {
     private const int DesignWidth = 720;
-    private const int DesignHeight = 620;
+    private const int DesignHeight = 520;
     private const int ArriveMs = 333; // the "slow" motion token, used for welcome steps
 
     private readonly ShellViewModel _shell = AppServices.Shell;
@@ -133,11 +133,8 @@ public sealed partial class WelcomeWindow : Window
 
     private void UpdateDots()
     {
-        for (var i = 0; i < Dots.Children.Count; i++)
-        {
-            var dot = (Ellipse)Dots.Children[i];
-            dot.Fill = (Brush)Application.Current.Resources[i == ViewModel.Step ? "AccentFillColorDefaultBrush" : "TextFillColorSecondaryBrush"];
-        }
+        Ellipse[] dots = [Dot0, Dot1, Dot2];
+        for (var i = 0; i < dots.Length; i++) dots[i].Visibility = i == ViewModel.Step ? Visibility.Visible : Visibility.Collapsed;
     }
 
     /// <summary>The new step fades in while sliding 24 px from the side it comes from. With reduced motion it simply appears.</summary>

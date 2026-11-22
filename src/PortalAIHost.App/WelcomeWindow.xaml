@@ -142,7 +142,7 @@
         <!-- Step dots -->
         <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center" Margin="0,8,0,8">
             <StackPanel x:Name="Dots" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                <Ellipse Width="8" Height="8" /><Ellipse Width="8" Height="8" /><Ellipse Width="8" Height="8" />
+                <Grid Width="8" Height="8"><Ellipse Fill="{ThemeResource TextFillColorSecondaryBrush}" Opacity="0.6" /><Ellipse x:Name="Dot0" Fill="{ThemeResource AccentFillColorDefaultBrush}" /></Grid><Grid Width="8" Height="8"><Ellipse Fill="{ThemeResource TextFillColorSecondaryBrush}" Opacity="0.6" /><Ellipse x:Name="Dot1" Fill="{ThemeResource AccentFillColorDefaultBrush}" /></Grid><Grid Width="8" Height="8"><Ellipse Fill="{ThemeResource TextFillColorSecondaryBrush}" Opacity="0.6" /><Ellipse x:Name="Dot2" Fill="{ThemeResource AccentFillColorDefaultBrush}" /></Grid>
             </StackPanel>
             <TextBlock x:Name="StepText" Text="{x:Bind ViewModel.StepLine, Mode=OneWay}" FontSize="13" VerticalAlignment="Center"
                        Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
