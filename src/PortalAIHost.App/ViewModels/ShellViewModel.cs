@@ -50,6 +50,9 @@ public sealed partial class ShellViewModel : ObservableObject, IDisposable
 
     public event Action? SnapshotChanged;
 
+    /// <summary>Raised after an access request was answered, so lists of connected apps can refresh at once.</summary>
+    public event Action? ClientsChanged;
+
     /// <summary>Set by the window: shows the approval prompt. Returns true for Allow, false for Deny, null when closed without an answer.</summary>
     public Func<PendingApproval, Task<bool?>>? ApprovalPresenter { get; set; }
 
@@ -178,6 +181,7 @@ public sealed partial class ShellViewModel : ObservableObject, IDisposable
             _pumping = false;
         }
         await RefreshAsync();
+        _ui.Post(() => ClientsChanged?.Invoke());
     }
 
     private readonly List<Func<Task>> _flushers = new();

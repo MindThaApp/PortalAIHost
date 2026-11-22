@@ -31,9 +31,9 @@
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
             </Expander>
             <Border Style="{StaticResource CardBorder}">
-                <TextBlock
+                <RichTextBlock
+                    x:Name="ReplyBlock"
                     x:Uid="TryItReply"
-                    Text="{x:Bind ViewModel.Reply, Mode=OneWay}"
                     TextWrapping="Wrap"
                     IsTextSelectionEnabled="True"
                     MinHeight="80" />

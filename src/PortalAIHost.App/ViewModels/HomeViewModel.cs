@@ -26,6 +26,7 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
         _ui = ui;
         _s = strings;
         _shell.SnapshotChanged += OnSnapshot;
+        _shell.ClientsChanged += OnClientsChanged;
         _shell.Host.DownloadProgress += OnProgress;
         _shell.PropertyChanged += (_, e) =>
         {
@@ -208,6 +209,9 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
         RefreshDownload();
     });
 
+    /// <summary>An app was allowed or denied: read the connected apps again so the count is right straight away.</summary>
+    private void OnClientsChanged() => _ = LoadAsync();
+
     private void OnSnapshot()
     {
         var hadModel = ShowInstalled;
@@ -280,6 +284,7 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
     public void Dispose()
     {
         _shell.SnapshotChanged -= OnSnapshot;
+        _shell.ClientsChanged -= OnClientsChanged;
         _shell.Host.DownloadProgress -= OnProgress;
     }
 }

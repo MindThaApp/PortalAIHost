@@ -630,27 +630,165 @@ public class TryItTests
 
 public class FirstRunTests
 {
-    [Fact]
-    public async Task Flow_goes_check_model_download_startup_and_finishes()
+    private static async Task<(Rig rig, FirstRunViewModel vm)> Open()
     {
-        using var rig = new Rig(FakeScenario.Fresh);
+        var rig = new Rig(FakeScenario.Fresh);
         await rig.Shell.InitializeAsync();
-        using var vm = new FirstRunViewModel(rig.Shell, rig.Ui, rig.Strings);
+        var vm = new FirstRunViewModel(rig.Shell, rig.Ui, rig.Strings);
         await vm.LoadAsync();
-        Assert.True(vm.OnCheck);
-        Assert.StartsWith("Vm_HwMemory:", vm.MemoryLine);
+        return (rig, vm);
+    }
+
+    [Fact]
+    public async Task Welcome_has_three_steps_and_the_last_one_finishes()
+    {
+        var (rig, vm) = await Open();
+        using var _ = rig;
+        using var __ = vm;
+        var closed = 0;
+        vm.CloseRequested += () => closed++;
+        Assert.True(vm.OnWelcome);
+        Assert.False(vm.CanGoBack);
+        Assert.Equal("Vm_StepOf:1|3", vm.StepLine);
         vm.NextCommand.Execute(null);
         Assert.True(vm.OnModel);
+        Assert.True(vm.CanGoBack);
+        vm.NextCommand.Execute(null);
+        Assert.True(vm.OnWhere);
+        Assert.Equal("Vm_WelcomeFinish", vm.NextText);
+        vm.BackCommand.Execute(null);
+        Assert.True(vm.OnModel);
+        vm.NextCommand.Execute(null);
+        await vm.NextCommand.ExecuteAsync(null);
+        Assert.Equal(1, closed);
+    }
+
+    [Fact]
+    public async Task Model_step_shows_the_check_then_the_recommendation_with_its_size()
+    {
+        var (rig, vm) = await Open();
+        using var _ = rig;
+        using var __ = vm;
+        Assert.False(vm.Checking);
+        Assert.True(vm.ShowOffer);
         Assert.Equal("14B model (medium)", vm.ModelName);
+        Assert.StartsWith("Vm_WelcomeSize:", vm.ModelSize);
+        Assert.StartsWith("Vm_HwMemory:", vm.MemoryLine);
+    }
+
+    [Fact]
+    public async Task Download_runs_in_place_and_does_not_block_the_next_step()
+    {
+        var (rig, vm) = await Open();
+        using var _ = rig;
+        using var __ = vm;
+        vm.NextCommand.Execute(null);
         await vm.DownloadCommand.ExecuteAsync(null);
-        Assert.True(vm.OnDownload);
+        Assert.True(vm.ShowProgress);
+        Assert.False(vm.ShowOffer);
+        Assert.True(vm.OnModel);
         for (var i = 0; i < 30; i++) rig.Host.Tick();
-        Assert.True(vm.OnStartup);
-        vm.StartWithWindows = true;
-        await vm.FinishCommand.ExecuteAsync(null);
-        Assert.False(rig.Shell.ShowFirstRun);
-        Assert.True(rig.State.FirstRunDone);
+        Assert.True(vm.DownloadDone);
+        Assert.True(vm.OnModel); // the person moves on with Next
+        vm.NextCommand.Execute(null);
+        Assert.True(vm.OnWhere);
+    }
+
+    [Fact]
+    public async Task Choosing_later_just_moves_on_without_downloading()
+    {
+        var (rig, vm) = await Open();
+        using var _ = rig;
+        using var __ = vm;
+        vm.NextCommand.Execute(null);
+        vm.NextCommand.Execute(null);
+        Assert.False(vm.DownloadStarted);
+        Assert.True(vm.OnWhere);
+    }
+
+    [Fact]
+    public async Task Finish_saves_start_with_windows_and_skip_keeps_an_earlier_choice()
+    {
+        var (rig, vm) = await Open();
+        using var _ = rig;
+        using var __ = vm;
+        var closed = 0;
+        vm.CloseRequested += () => closed++;
+        await vm.SetStartWithWindowsAsync(true);
         Assert.True((await rig.Host.GetSettingsAsync()).StartWithWindows);
+        await vm.SetStartWithWindowsAsync(false);
+        vm.SkipCommand.Execute(null);
+        Assert.Equal(1, closed);
+        Assert.False((await rig.Host.GetSettingsAsync()).StartWithWindows);
+        Assert.False(rig.State.FirstRunDone); // the window marks it done when it closes
+        rig.Shell.CompleteFirstRun();
+        Assert.True(rig.State.FirstRunDone);
+        Assert.False(rig.Shell.ShowFirstRun);
+    }
+
+    [Fact]
+    public async Task Finish_applies_the_recommended_default_when_the_person_never_touched_the_switch()
+    {
+        var (rig, vm) = await Open();
+        using var _ = rig;
+        using var __ = vm;
+        await vm.FinishCommand.ExecuteAsync(null);
+        Assert.True((await rig.Host.GetSettingsAsync()).StartWithWindows);
+    }
+}
+
+public class MiniMarkdownTests
+{
+    [Fact]
+    public void Bold_italic_and_code_become_runs_without_markers()
+    {
+        var lines = MiniMarkdown.Parse("A **big** and *small* `x = 1` day");
+        Assert.Single(lines);
+        Assert.Equal(new[] { MdKind.Text, MdKind.Bold, MdKind.Text, MdKind.Italic, MdKind.Text, MdKind.Code, MdKind.Text }, lines[0].Select(r => r.Kind));
+        Assert.Equal("A big and small x = 1 day", string.Concat(lines[0].Select(r => r.Text)));
+    }
+
+    [Fact]
+    public void Lists_get_bullets_and_numbers_stay()
+    {
+        var lines = MiniMarkdown.Parse(string.Join((char)10, new[] { "- one", "* two", "1. three" }));
+        Assert.Equal("• one", string.Concat(lines[0].Select(r => r.Text)));
+        Assert.Equal("• two", string.Concat(lines[1].Select(r => r.Text)));
+        Assert.Equal("1. three", string.Concat(lines[2].Select(r => r.Text)));
+    }
+
+    [Fact]
+    public void Unfinished_markers_stay_as_typed_while_a_reply_is_arriving()
+    {
+        Assert.Equal("half **bold", MiniMarkdown.StripMarkers("half **bold"));
+        Assert.Equal("2 * 3 * 4", MiniMarkdown.StripMarkers("2 * 3 * 4"));
+        Assert.Equal("", MiniMarkdown.StripMarkers(null));
+    }
+
+    [Fact]
+    public void Headings_show_as_bold_text()
+    {
+        var lines = MiniMarkdown.Parse("## Title");
+        Assert.Equal(MdKind.Bold, lines[0][0].Kind);
+        Assert.Equal("Title", lines[0][0].Text);
+    }
+}
+
+public class ApprovalRefreshTests
+{
+    [Fact]
+    public async Task Home_connected_apps_count_refreshes_after_an_approval_is_answered()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        rig.Shell.ApprovalPresenter = _ => Task.FromResult<bool?>(true);
+        await rig.Shell.InitializeAsync();
+        var home = new HomeViewModel(rig.Shell, rig.Ui, rig.Strings);
+        await home.LoadAsync();
+        Assert.Equal("Vm_HomeApps:2", home.AppsLine);
+        rig.Host.RaiseApproval();
+        await rig.Shell.PumpApprovalsAsync();
+        Assert.Equal("Vm_HomeApps:3", home.AppsLine);
+        home.Dispose();
     }
 }
 

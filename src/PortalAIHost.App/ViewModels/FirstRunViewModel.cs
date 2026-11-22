@@ -5,19 +5,20 @@ using PortalAIHost.App.Services;
 
 namespace PortalAIHost.App.ViewModels;
 
-/// <summary>First-run flow: check this PC, pick the recommended model, download it, choose start with Windows.</summary>
+/// <summary>Welcome flow in three steps: what the app does, the recommended model, and where to find the app.</summary>
 public sealed partial class FirstRunViewModel : ObservableObject, IDisposable
 {
-    public const int StepCheck = 0;
+    public const int StepWelcome = 0;
     public const int StepModel = 1;
-    public const int StepDownload = 2;
-    public const int StepStartup = 3;
+    public const int StepWhere = 2;
+    public const int StepCount = 3;
 
     private readonly ShellViewModel _shell;
     private readonly IUiDispatcher _ui;
     private readonly IStrings _s;
     private CatalogueModelSummary? _model;
     private HostSettings _settings = new();
+    private bool _startupTouched;
 
     public FirstRunViewModel(ShellViewModel shell, IUiDispatcher ui, IStrings strings)
     {
@@ -27,7 +28,8 @@ public sealed partial class FirstRunViewModel : ObservableObject, IDisposable
         shell.Host.DownloadProgress += OnProgress;
     }
 
-    [ObservableProperty] private int _step = StepCheck;
+    [ObservableProperty] private int _step = StepWelcome;
+    [ObservableProperty] private bool _checking = true;
     [ObservableProperty] private string _memoryLine = "";
     [ObservableProperty] private string _graphicsLine = "";
     [ObservableProperty] private string _coresLine = "";
@@ -36,34 +38,53 @@ public sealed partial class FirstRunViewModel : ObservableObject, IDisposable
     [ObservableProperty] private string _modelReason = "";
     [ObservableProperty] private string _modelSize = "";
     [ObservableProperty] private string _existingLine = "";
+    [ObservableProperty] private bool _hasModel;
+    [ObservableProperty] private bool _downloadStarted;
+    [ObservableProperty] private bool _downloadDone;
     [ObservableProperty] private double _percent;
     [ObservableProperty] private string _progressText = "";
     [ObservableProperty] private bool _downloadFailed;
     [ObservableProperty] private bool _startWithWindows = true;
     [ObservableProperty] private string _error = "";
 
-    public bool OnCheck => Step == StepCheck;
+    /// <summary>Raised when the window should close, after Finish or Skip. The window then marks the welcome as done.</summary>
+    public event Action? CloseRequested;
+
+    public bool OnWelcome => Step == StepWelcome;
     public bool OnModel => Step == StepModel;
-    public bool OnDownload => Step == StepDownload;
-    public bool OnStartup => Step == StepStartup;
+    public bool OnWhere => Step == StepWhere;
+    public bool CanGoBack => Step > StepWelcome;
+    public bool IsLast => Step == StepWhere;
 
-    public const int StepCount = 4;
+    /// <summary>The check is over, a model fits this PC and the download has not started.</summary>
+    public bool ShowOffer => !Checking && HasModel && !DownloadStarted;
 
-    /// <summary>"Step 2 of 4", read out by screen readers.</summary>
+    /// <summary>The check is over and nothing fits this PC (or the catalogue is missing).</summary>
+    public bool ShowNoModel => !Checking && !HasModel;
+
+    public bool ShowProgress => DownloadStarted;
+    public bool ShowRetry => DownloadFailed;
+
+    public string NextText => _s.Get(IsLast ? "Vm_WelcomeFinish" : "Vm_WelcomeNext");
+
+    /// <summary>"Step 2 of 3", read out by screen readers.</summary>
     public string StepLine => _s.Format("Vm_StepOf", Math.Clamp(Step, 0, StepCount - 1) + 1, StepCount);
-
-    /// <summary>Step dots: a filled dot for the current step and open dots for the others.</summary>
-    public string StepDots => string.Join(" ", Enumerable.Range(0, StepCount).Select(i => i == Step ? "●" : "○"));
 
     partial void OnStepChanged(int value)
     {
         OnPropertyChanged(nameof(StepLine));
-        OnPropertyChanged(nameof(StepDots));
-        OnPropertyChanged(nameof(OnCheck));
+        OnPropertyChanged(nameof(OnWelcome));
         OnPropertyChanged(nameof(OnModel));
-        OnPropertyChanged(nameof(OnDownload));
-        OnPropertyChanged(nameof(OnStartup));
+        OnPropertyChanged(nameof(OnWhere));
+        OnPropertyChanged(nameof(CanGoBack));
+        OnPropertyChanged(nameof(IsLast));
+        OnPropertyChanged(nameof(NextText));
     }
+
+    partial void OnCheckingChanged(bool value) { OnPropertyChanged(nameof(ShowOffer)); OnPropertyChanged(nameof(ShowNoModel)); }
+    partial void OnHasModelChanged(bool value) { OnPropertyChanged(nameof(ShowOffer)); OnPropertyChanged(nameof(ShowNoModel)); }
+    partial void OnDownloadStartedChanged(bool value) { OnPropertyChanged(nameof(ShowOffer)); OnPropertyChanged(nameof(ShowProgress)); }
+    partial void OnDownloadFailedChanged(bool value) => OnPropertyChanged(nameof(ShowRetry));
 
     public async Task LoadAsync()
     {
@@ -71,6 +92,7 @@ public sealed partial class FirstRunViewModel : ObservableObject, IDisposable
         {
             _ui.Post(() =>
             {
+                Checking = true;
                 MemoryLine = _s.Get("Vm_HwChecking");
                 GraphicsLine = "";
                 CoresLine = "";
@@ -106,21 +128,31 @@ public sealed partial class FirstRunViewModel : ObservableObject, IDisposable
                 {
                     ModelName = _model.DisplayName;
                     ModelReason = _model.Reason ?? "";
-                    ModelSize = Fmt.Bytes(_model.SizeBytes);
+                    ModelSize = _s.Format("Vm_WelcomeSize", Fmt.Bytes(_model.SizeBytes));
                     ExistingLine = view.ExistingCopyIds.Contains(_model.Id) ? _s.Format("Vm_ExistingCopy", _model.DisplayName) : "";
                 }
+                HasModel = _model is not null;
+                Checking = false;
             });
         }
         catch (HostUnavailableException)
         {
-            _ui.Post(() => Error = _s.Get("Vm_NoHostTitle"));
+            _ui.Post(() => { Error = _s.Get("Vm_NoHostTitle"); Checking = false; });
         }
     }
 
     [RelayCommand]
-    private void Next()
+    private void Back()
     {
-        if (Step < StepModel) Step++;
+        if (Step > StepWelcome) Step--;
+    }
+
+    /// <summary>Next on the first two steps; Finish on the last.</summary>
+    [RelayCommand]
+    private async Task NextAsync()
+    {
+        if (Step < StepWhere) Step++;
+        else await FinishAsync().ConfigureAwait(false);
     }
 
     [RelayCommand]
@@ -128,7 +160,8 @@ public sealed partial class FirstRunViewModel : ObservableObject, IDisposable
     {
         if (_model is null) return;
         DownloadFailed = false;
-        Step = StepDownload;
+        DownloadStarted = true;
+        ProgressText = _s.Get("Vm_Queued");
         try
         {
             await _shell.Host.StartDownloadAsync(_model.Id).ConfigureAwait(false);
@@ -150,7 +183,7 @@ public sealed partial class FirstRunViewModel : ObservableObject, IDisposable
         {
             case "done":
                 ProgressText = _s.Get("Vm_DownloadDone");
-                if (Step == StepDownload) Step = StepStartup;
+                DownloadDone = true;
                 break;
             case "failed":
                 DownloadFailed = true;
@@ -167,35 +200,48 @@ public sealed partial class FirstRunViewModel : ObservableObject, IDisposable
         }
     });
 
-    /// <summary>Saves the start-with-Windows choice, makes the model the active one, and closes the flow.</summary>
-    [RelayCommand]
-    private async Task FinishAsync()
+    /// <summary>Called when the person flips the switch: the choice is saved straight away, so Skip keeps it.</summary>
+    public async Task SetStartWithWindowsAsync(bool on)
+    {
+        _startupTouched = true;
+        StartWithWindows = on;
+        await SaveStartupAsync().ConfigureAwait(false);
+    }
+
+    private async Task SaveStartupAsync()
     {
         try
         {
-            if (StartWithWindows != _settings.StartWithWindows)
+            if (StartWithWindows == _settings.StartWithWindows) return;
+            var next = new HostSettings
             {
-                await _shell.Host.SetSettingsAsync(new HostSettings
-                {
-                    StartWithWindows = StartWithWindows,
-                    Backend = _settings.Backend,
-                    ModelsFolder = _settings.ModelsFolder,
-                    MaxMemoryPercent = _settings.MaxMemoryPercent,
-                    PreventSleepWhileDownloading = _settings.PreventSleepWhileDownloading,
-                    BandwidthCapBytesPerSecond = _settings.BandwidthCapBytesPerSecond,
-                    Kinds = _settings.Kinds,
-                }).ConfigureAwait(false);
-            }
+                StartWithWindows = StartWithWindows,
+                Backend = _settings.Backend,
+                ModelsFolder = _settings.ModelsFolder,
+                MaxMemoryPercent = _settings.MaxMemoryPercent,
+                PreventSleepWhileDownloading = _settings.PreventSleepWhileDownloading,
+                BandwidthCapBytesPerSecond = _settings.BandwidthCapBytesPerSecond,
+                Kinds = _settings.Kinds,
+            };
+            await _shell.Host.SetSettingsAsync(next).ConfigureAwait(false);
+            _settings = next;
         }
         catch (HostUnavailableException)
         {
         }
-        _ui.Post(_shell.CompleteFirstRun);
     }
 
-    /// <summary>Leaves the flow without finishing (a download in progress carries on in the host).</summary>
+    /// <summary>Finishing keeps the recommended default (start with Windows) unless the person already chose, then closes.</summary>
     [RelayCommand]
-    private void Skip() => _shell.CompleteFirstRun();
+    private async Task FinishAsync()
+    {
+        if (!_startupTouched) await SaveStartupAsync().ConfigureAwait(false);
+        _ui.Post(() => CloseRequested?.Invoke());
+    }
+
+    /// <summary>Leaves the welcome without finishing (a download in progress carries on in the host). Choices already made stay.</summary>
+    [RelayCommand]
+    private void Skip() => CloseRequested?.Invoke();
 
     public void Dispose() => _shell.Host.DownloadProgress -= OnProgress;
 }

@@ -63,6 +63,20 @@ public static class AppOptions
     /// <summary>Folder watched for take-NAME.txt files; each one makes the window save NAME.png (used by automated checks).</summary>
     public static string? ShotDir { get; private set; }
 
+    /// <summary>Check-only: force the theme (light or dark) for this run without saving it.</summary>
+    public static string? ThemeOverride { get; private set; }
+
+    /// <summary>Check-only: scale the welcome text (for example 2 for a 200 % text-size look) without changing Windows settings.</summary>
+    public static double? TextScale { get; private set; }
+
+    /// <summary>Applies the check-only theme override to the saved choices.</summary>
+    public static Services.AppearancePrefs WithOverrides(Services.AppearancePrefs prefs) => ThemeOverride switch
+    {
+        "light" => prefs with { Theme = Services.ThemeChoice.Light },
+        "dark" => prefs with { Theme = Services.ThemeChoice.Dark },
+        _ => prefs,
+    };
+
     /// <summary>Treat first-run setup as already done.</summary>
     public static bool SkipFirstRun { get; private set; }
 
@@ -82,6 +96,10 @@ public static class AppOptions
             else if (a.Equals("--offscreen", StringComparison.OrdinalIgnoreCase)) OffScreen = true;
             else if (a.Equals("--skip-first-run", StringComparison.OrdinalIgnoreCase)) SkipFirstRun = true;
             else if (a.StartsWith("--shot-dir=", StringComparison.OrdinalIgnoreCase)) ShotDir = a[11..];
+            else if (a.StartsWith("--theme=", StringComparison.OrdinalIgnoreCase)) ThemeOverride = a[8..].ToLowerInvariant();
+            else if (a.StartsWith("--text-scale=", StringComparison.OrdinalIgnoreCase)
+                     && double.TryParse(a[13..], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var k))
+                TextScale = Math.Clamp(k, 1, 3);
 #endif
         }
     }

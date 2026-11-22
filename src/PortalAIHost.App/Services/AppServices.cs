@@ -131,6 +131,12 @@ public sealed class WinUiDialogService : IDialogService
     /// <summary>Set by the window once it has content.</summary>
     public XamlRoot? Root { get; set; }
 
+    /// <summary>
+    /// Dialogs live in their own popup layer and do not inherit the window's chosen theme, so they would follow
+    /// Windows instead of the app. Reading the theme from the root element keeps them in step with Settings.
+    /// </summary>
+    private ElementTheme ThemeOf() => Root?.Content is FrameworkElement fe ? fe.RequestedTheme : ElementTheme.Default;
+
     public async Task<bool> ConfirmAsync(string title, string body, string confirmText, string cancelText)
     {
         if (Root is null) return false;
@@ -140,6 +146,7 @@ public sealed class WinUiDialogService : IDialogService
             var dialog = new ContentDialog
             {
                 XamlRoot = Root,
+                RequestedTheme = ThemeOf(),
                 Title = title,
                 Content = new TextBlock { Text = body, TextWrapping = TextWrapping.Wrap },
                 PrimaryButtonText = confirmText,
@@ -166,6 +173,7 @@ public sealed class WinUiDialogService : IDialogService
             var dialog = new ContentDialog
             {
                 XamlRoot = Root,
+                RequestedTheme = ThemeOf(),
                 Title = title,
                 Content = new ScrollViewer { Content = new TextBlock { Text = body, TextWrapping = TextWrapping.Wrap, IsTextSelectionEnabled = true } },
                 CloseButtonText = closeText,
@@ -202,6 +210,7 @@ public sealed class WinUiDialogService : IDialogService
             var dialog = new ContentDialog
             {
                 XamlRoot = Root,
+                RequestedTheme = ThemeOf(),
                 Title = _s.Format("Vm_ApprovalTitle", a.AppName),
                 Content = panel,
                 PrimaryButtonText = _s.Get("Vm_Allow"),

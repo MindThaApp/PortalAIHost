@@ -64,25 +64,42 @@
   <data name="TryItStop.Content" xml:space="preserve"><value>Stop</value></data>
   <data name="TryItStop.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Stop</value></data>
   <data name="TryItReply.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>The reply</value></data>
-  <data name="FirstRunTitle.Text" xml:space="preserve"><value>Welcome to Portal AI Host</value></data>
-  <data name="FirstRunCheckHeader.Text" xml:space="preserve"><value>Step 1 of 4: Checking your PC</value></data>
-  <data name="FirstRunNext.Content" xml:space="preserve"><value>Continue</value></data>
-  <data name="FirstRunNext.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Continue</value></data>
-  <data name="FirstRunModelHeader.Text" xml:space="preserve"><value>Step 2 of 4: The best model for your PC</value></data>
-  <data name="FirstRunDownload.Content" xml:space="preserve"><value>Download this model</value></data>
-  <data name="FirstRunDownload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Download this model</value></data>
-  <data name="FirstRunDownloadHeader.Text" xml:space="preserve"><value>Step 3 of 4: Downloading your model</value></data>
-  <data name="FirstRunRetry.Content" xml:space="preserve"><value>Try again</value></data>
-  <data name="FirstRunRetry.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Try again</value></data>
-  <data name="FirstRunStartupHeader.Text" xml:space="preserve"><value>Step 4 of 4: Start with Windows</value></data>
-  <data name="FirstRunStartWithWindows.Header" xml:space="preserve"><value>Start Portal AI Host when I sign in to Windows</value></data>
-  <data name="FirstRunStartWithWindows.OnContent" xml:space="preserve"><value>On</value></data>
-  <data name="FirstRunStartWithWindows.OffContent" xml:space="preserve"><value>Off</value></data>
-  <data name="FirstRunStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Start Portal AI Host when I sign in to Windows</value></data>
-  <data name="FirstRunFinish.Content" xml:space="preserve"><value>Finish</value></data>
-  <data name="FirstRunFinish.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Finish</value></data>
-  <data name="FirstRunSkip.Content" xml:space="preserve"><value>Skip for now</value></data>
-  <data name="FirstRunSkip.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Skip for now</value></data>
+  <data name="WelcomeTitle.Text" xml:space="preserve"><value>Welcome to Portal AI Host</value></data>
+  <data name="WelcomeLead.Text" xml:space="preserve"><value>AI that stays on your PC</value></data>
+  <data name="WelcomeIntro.Text" xml:space="preserve"><value>Portal AI Host runs AI models on this PC for your Portal apps. There is nothing to set up: we will pick a model that suits your PC.</value></data>
+  <data name="WelcomePoint1Title.Text" xml:space="preserve"><value>Runs on this PC</value></data>
+  <data name="WelcomePoint1Body.Text" xml:space="preserve"><value>The model uses your own graphics card and memory, so it works even without an internet connection.</value></data>
+  <data name="WelcomePoint2Title.Text" xml:space="preserve"><value>Stays private</value></data>
+  <data name="WelcomePoint2Body.Text" xml:space="preserve"><value>Your questions and files never leave this PC.</value></data>
+  <data name="WelcomePoint3Title.Text" xml:space="preserve"><value>Made for your Portal apps</value></data>
+  <data name="WelcomePoint3Body.Text" xml:space="preserve"><value>Your Portal apps can use it to write, summarise and answer, with no extra accounts.</value></data>
+  <data name="WelcomeModelTitle.Text" xml:space="preserve"><value>Pick a model</value></data>
+  <data name="WelcomeModelIntro.Text" xml:space="preserve"><value>A model is the AI that does the work. This is the one we think suits your PC best.</value></data>
+  <data name="WelcomeNoModel.Text" xml:space="preserve"><value>We could not find a model that suits this PC right now. You can look again later on the Models page.</value></data>
+  <data name="WelcomeDownload.Content" xml:space="preserve"><value>Download</value></data>
+  <data name="WelcomeDownload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Download the recommended model</value></data>
+  <data name="WelcomeChooseLater.Content" xml:space="preserve"><value>Choose later</value></data>
+  <data name="WelcomeChooseLater.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Choose a model later</value></data>
+  <data name="WelcomeKeepGoing.Text" xml:space="preserve"><value>You can carry on. The download keeps going in the background.</value></data>
+  <data name="WelcomeRetry.Content" xml:space="preserve"><value>Try again</value></data>
+  <data name="WelcomeRetry.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Try the download again</value></data>
+  <data name="WelcomeWhereTitle.Text" xml:space="preserve"><value>Find it near the clock</value></data>
+  <data name="WelcomeTrayTitle.Text" xml:space="preserve"><value>Look for the tray icon</value></data>
+  <data name="WelcomeTrayBody.Text" xml:space="preserve"><value>Portal AI Host waits quietly in the tray, the small icons near the clock. Click its icon to open it. If you do not see it, click the arrow to show hidden icons.</value></data>
+  <data name="WelcomeAskTitle.Text" xml:space="preserve"><value>Apps always ask first</value></data>
+  <data name="WelcomeAskBody.Text" xml:space="preserve"><value>The first time a Portal app wants to use AI on this PC, you will be asked. You can say no, and you can take access away at any time.</value></data>
+  <data name="WelcomeStartWithWindows.Header" xml:space="preserve"><value>Start Portal AI Host when I sign in to Windows</value></data>
+  <data name="WelcomeStartWithWindows.OnContent" xml:space="preserve"><value>On</value></data>
+  <data name="WelcomeStartWithWindows.OffContent" xml:space="preserve"><value>Off</value></data>
+  <data name="WelcomeStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Start Portal AI Host when I sign in to Windows</value></data>
+  <data name="WelcomeSkip.Content" xml:space="preserve"><value>Skip for now</value></data>
+  <data name="WelcomeSkip.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Skip the welcome</value></data>
+  <data name="WelcomeBack.Content" xml:space="preserve"><value>Back</value></data>
+  <data name="WelcomeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Back</value></data>
+  <data name="Vm_WelcomeTitle" xml:space="preserve"><value>Welcome to Portal AI Host</value></data>
+  <data name="Vm_WelcomeNext" xml:space="preserve"><value>Next</value></data>
+  <data name="Vm_WelcomeFinish" xml:space="preserve"><value>Finish</value></data>
+  <data name="Vm_WelcomeSize" xml:space="preserve"><value>Download size: {0}</value></data>
   <data name="Vm_AppTitle" xml:space="preserve"><value>Portal AI Host</value></data>
   <data name="Vm_NoHostTitle" xml:space="preserve"><value>Portal AI Host is not running</value></data>
   <data name="Vm_NoHostBody" xml:space="preserve"><value>The helper that runs your AI model is switched off. Start it so your apps can use AI.</value></data>

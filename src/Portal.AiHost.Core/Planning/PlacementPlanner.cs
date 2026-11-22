@@ -300,15 +300,15 @@ public static class PlacementPlanner
             KvType = kvType,
         };
         var tps = secondsPerToken > 0 ? 1 / secondsPerToken : 0;
+        // Plain words for people, no layer or expert talk: where it runs and roughly how fast.
         var where = backend switch
         {
-            "cpu" => "runs on the processor",
-            "metal" => "runs fully on the GPU",
-            _ when cpuMoe is > 0 => $"attention on the {gpu!.Name}, {cpuMoe} of {n} expert layers in RAM",
-            _ when gpuLayers == n => $"runs fully on the {gpu!.Name}",
-            _ => $"{gpuLayers} of {n} layers on the {gpu!.Name}, the rest in RAM",
+            "cpu" => "Runs on your processor",
+            "metal" => "Runs well on your graphics chip",
+            _ when cpuMoe is > 0 || gpuLayers < n => "Runs well on your graphics card and memory",
+            _ => "Runs well on your graphics card",
         };
-        var reason = $"{model.DisplayName} {where}, {ctx / slots / 1024}K context, about {tps:0} words/s";
+        var reason = $"{where}, about {tps:0} words a second";
         return new PlanResult(true, placement, reason, gpuBytes, cpuBytes, tps);
     }
 

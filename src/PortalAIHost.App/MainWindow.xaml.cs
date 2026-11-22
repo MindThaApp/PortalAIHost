@@ -28,7 +28,7 @@ public sealed partial class MainWindow : Window, IAppearanceApplier
         Root.SizeChanged += (_, _) => UpdateCaptionRegions();
         AppMenuButton.SizeChanged += (_, _) => UpdateCaptionRegions();
         AppServices.Appearance = this;
-        Apply(_shell.State.Appearance);
+        Apply(AppOptions.WithOverrides(_shell.State.Appearance));
         // Windows high contrast can change while the window is open: switch materials and caption colours with it.
         // (AccessibilitySettings.HighContrastChanged cannot be subscribed to in an unpackaged run; UISettings can.)
         try { _uiSettings.ColorValuesChanged += (_, _) => AppServices.Ui.Post(() => Apply(_prefs)); }
@@ -232,18 +232,40 @@ public sealed partial class MainWindow : Window, IAppearanceApplier
     {
         if (_shell.ShowFirstRun && !_firstRunShown)
         {
+            // The welcome is its own window; the main window stays out of sight until it closes.
             _firstRunShown = true;
-            Nav.IsPaneVisible = false;
-            ContentFrame.Navigate(typeof(FirstRunPage));
+            HideForWelcome();
+            new WelcomeWindow().Activate();
         }
         else if (!_shell.ShowFirstRun && _firstRunShown)
         {
             _firstRunShown = false;
             _shell.State.MarkVersionSeen(Links.WhatsNewVersion);
-            Nav.IsPaneVisible = true;
             Nav.SelectedItem = Nav.MenuItems[0];
             ContentFrame.Navigate(typeof(HomePage));
+            ShowAgain();
         }
+        else if (!_shell.ShowFirstRun)
+        {
+            ShowAgain();
+        }
+    }
+
+    private bool _hidden;
+
+    /// <summary>Hides the main window while the welcome is open (also used at launch on a new install, so it never flashes).</summary>
+    public void HideForWelcome()
+    {
+        _hidden = true;
+        AppWindow.Hide();
+    }
+
+    private void ShowAgain()
+    {
+        if (!_hidden) return;
+        _hidden = false;
+        AppWindow.Show();
+        Activate();
     }
 
     private void OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
