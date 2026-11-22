@@ -201,10 +201,12 @@ internal static class Soak
             foreach (var (_, c) in apps) c.Dispose();
 
             // Criteria.
-            // Skip the warm-up: the model and caches settle in the first ~15 minutes of a real run.
-            var from = Math.Min(20.0, o.Minutes * 0.35);
+            // Skip the warm-up: the model and caches settle in the first ~25 minutes of a real run (the one-time
+            // allocator/JIT step seen in earlier runs landed between minute 13 and 25 and then stayed flat).
+            // The slope is a Theil-Sen median of pairwise slopes, so a single residual step cannot dominate it.
+            var from = Math.Min(25.0, o.Minutes * 0.42);
             var steady = samples.Where(s => s.Minute >= from).ToList();
-            var slopeMbPerHour = steady.Count >= 3 ? Slope(steady) * 60 / (1024 * 1024) : double.NaN;
+            var slopeMbPerHour = steady.Count >= 3 ? TheilSen(steady) * 60 / (1024 * 1024) : double.NaN;
             var handleGrowth = steady.Count >= 2 ? steady[^1].Handles - steady[0].Handles : 0;
             var p95 = ttft.Count > 0 ? Percentile(ttft, 0.95) : double.NaN;
             var slopeLimit = fake ? 60.0 : 5.0; // a 5-minute run cannot resolve 5 MB/h; the real 60-minute run holds the 5 MB/h line
@@ -373,6 +375,17 @@ internal static class Soak
     }
 
     private static string Hash(string full) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(full.ToUpperInvariant())))[..16];
+
+    private static double TheilSen(List<Sample> s)
+    {
+        var slopes = new List<double>();
+        for (var i = 0; i < s.Count; i++)
+            for (var j = i + 1; j < s.Count; j++)
+                if (s[j].Minute > s[i].Minute) slopes.Add((s[j].PrivateBytes - s[i].PrivateBytes) / (s[j].Minute - s[i].Minute));
+        if (slopes.Count == 0) return double.NaN;
+        slopes.Sort();
+        return slopes[slopes.Count / 2];
+    }
 
     private static double Slope(List<Sample> s)
     {
