@@ -54,12 +54,15 @@ public static class Recommender
         return new Recommendation(best, candidates);
     }
 
-    /// <summary>Live free RAM, capped at total minus the typical use by Windows and other apps.</summary>
+    /// <summary>
+    /// The memory a recommendation counts on: total RAM minus what Windows and other apps typically use, and the
+    /// whole card for graphics memory. Live free memory is deliberately ignored, so the answer is the same however
+    /// much happens to be open. Loading a model still plans on live memory.
+    /// </summary>
     public static MemorySnapshot Typical(HardwareProfile hw, MemorySnapshot mem, PlannerSettings settings)
     {
         var reserve = Math.Max(2L << 30, (long)(hw.RamBytes * settings.TypicalOtherUseFraction));
-        var available = mem.AvailableRamBytes > 0 ? mem.AvailableRamBytes : hw.RamBytes;
-        return mem with { AvailableRamBytes = Math.Max(0, Math.Min(available, hw.RamBytes - reserve)) };
+        return mem with { AvailableRamBytes = Math.Max(0, hw.RamBytes - reserve), FreeVramBytesPerGpu = [] };
     }
 }
 

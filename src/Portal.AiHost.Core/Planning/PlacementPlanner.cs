@@ -168,7 +168,7 @@ public static class PlacementPlanner
 
         if (first is null)
         {
-            return new PlanResult(false, null, NoFitReason(model, budget), 0, 0, 0);
+            return new PlanResult(false, null, NoFitReason(model, budget, settings), 0, 0, 0);
         }
 
         var best = first;
@@ -312,9 +312,20 @@ public static class PlacementPlanner
         return new PlanResult(true, placement, reason, gpuBytes, cpuBytes, tps);
     }
 
-    private static string NoFitReason(CatalogueEntry model, MemoryBudget b) =>
-        $"{model.DisplayName} needs about {model.Memory.WeightsBytes / 1e9:0.#} GB; this PC can give it about "
-        + $"{(b.RamBudgetBytes + (b.Unified ? 0 : b.VramBudgetBytes)) / 1e9:0.#} GB";
+    /// <summary>
+    /// Compares like with like: the memory the smallest working setup needs (weights, the shortest context,
+    /// engine buffers) against the same budget the planner used, so the verdict and the text never disagree.
+    /// </summary>
+    private static string NoFitReason(CatalogueEntry model, MemoryBudget b, PlannerSettings s)
+    {
+        var m = model.Memory;
+        var minCtx = Math.Min(s.MinContextTokens, model.ContextDefault);
+        var need = m.WeightsBytes + (long)(m.KvBytesPer1kCtx * (minCtx / 1024.0)) + m.ComputeOverheadBytes + s.CpuBufferBytes;
+        var give = b.RamBudgetBytes + (b.Unified ? 0 : b.VramBudgetBytes);
+        return need > give
+            ? $"{model.DisplayName} needs about {need / 1e9:0.#} GB; this PC can give it about {give / 1e9:0.#} GB"
+            : $"{model.DisplayName} is too big to split well between the graphics card and memory on this PC (about {give / 1e9:0.#} GB available)";
+    }
 
     private readonly record struct PerToken(double NonExpert, double Expert)
     {

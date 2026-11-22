@@ -65,6 +65,33 @@ public class PlanningTests
     }
 
     [Fact]
+    public void RecommendationDoesNotChangeWithLiveFreeMemory()
+    {
+        var hw = Rx6600With64.Hw;
+        var roomy = new MemorySnapshot(hw.RamBytes, hw.RamBytes * 9 / 10, [7 * GiB]);
+        var busy = new MemorySnapshot(hw.RamBytes, 6 * GiB, [2 * GiB]);
+        var a = Recommender.Recommend(Seed, "chat", hw, roomy, Ctx());
+        var b = Recommender.Recommend(Seed, "chat", hw, busy, Ctx());
+        Assert.Equal(a.Best?.Entry.Id, b.Best?.Entry.Id);
+    }
+
+    [Fact]
+    public void TooBigTextAgreesWithTheVerdict()
+    {
+        var rec = Recommender.Recommend(Seed, "chat", Laptop8.Hw, Laptop8.Mem, Ctx());
+        foreach (var c in rec.Candidates.Where(c => !c.Plan.Fits))
+        {
+            Assert.Matches(@"needs about [\d.]+ GB; this PC can give it about [\d.]+ GB|too big to split", c.Reason);
+            var m = System.Text.RegularExpressions.Regex.Match(c.Reason, @"needs about ([\d.]+) GB; this PC can give it about ([\d.]+) GB");
+            if (m.Success)
+            {
+                Assert.True(double.Parse(m.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture)
+                    >= double.Parse(m.Groups[2].Value, System.Globalization.CultureInfo.InvariantCulture));
+            }
+        }
+    }
+
+    [Fact]
     public void MoeOnSmallGpuKeepsAttentionOnGpuAndExpertsInRam()
     {
         var model = Seed.Single(m => m.Id == "qwen3-30b-a3b-instruct-2507-q4km");

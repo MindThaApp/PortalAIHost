@@ -148,6 +148,22 @@ internal sealed class ModelCenter : IAsyncDisposable
         }
     }
 
+    /// <summary>Starts the hardware check if it has not run yet and returns its result once it is ready, else null.</summary>
+    public HardwareProfile? ProfileIfReady()
+    {
+        if (_hardware is null)
+        {
+            return null;
+        }
+
+        lock (_profileSync)
+        {
+            var hardware = _hardware;
+            var probe = _profile ??= Task.Run(() => hardware.ProbeAsync(CancellationToken.None));
+            return probe.IsCompletedSuccessfully ? probe.Result : null;
+        }
+    }
+
     private async Task<Dictionary<string, (bool Best, Candidate? Candidate)>> RecommendAsync(IReadOnlyList<StoredModel> stored, CancellationToken ct)
     {
         var result = new Dictionary<string, (bool, Candidate?)>(StringComparer.Ordinal);

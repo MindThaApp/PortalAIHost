@@ -266,7 +266,7 @@ public sealed class HostShell : IAsyncDisposable
 
     public ControlStatus BuildControlStatus() => new()
     {
-        Status = Runtime.BuildStatus(null),
+        Status = Runtime.BuildStatus(null, Models?.ProfileIfReady()),
         SafeMode = Runtime.SafeMode,
         UncleanExits = _marker?.UncleanExits ?? 0,
         BaseUrl = Server?.BaseUrl,

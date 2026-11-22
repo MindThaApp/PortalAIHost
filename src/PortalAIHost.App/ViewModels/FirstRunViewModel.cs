@@ -69,19 +69,36 @@ public sealed partial class FirstRunViewModel : ObservableObject, IDisposable
     {
         try
         {
+            _ui.Post(() =>
+            {
+                MemoryLine = _s.Get("Vm_HwChecking");
+                GraphicsLine = "";
+                CoresLine = "";
+            });
             var snap = await _shell.Host.GetStatusAsync().ConfigureAwait(false);
+            // The hardware check runs in the host in the background; wait for it so the numbers match the next step.
+            for (var tries = 0; tries < 40 && snap.Status is { Hardware.RamBytes: <= 0 }; tries++)
+            {
+                await Task.Delay(250).ConfigureAwait(false);
+                snap = await _shell.Host.GetStatusAsync().ConfigureAwait(false);
+            }
+
             var view = await _shell.Host.ListModelsAsync().ConfigureAwait(false);
             var settings = await _shell.Host.GetSettingsAsync().ConfigureAwait(false);
             _ui.Post(() =>
             {
                 _settings = settings;
-                if (snap.Status is { } st)
+                if (snap.Status is { } st && st.Hardware.RamBytes > 0)
                 {
                     var hw = st.Hardware;
                     MemoryLine = _s.Format("Vm_HwMemory", Fmt.Bytes(hw.RamBytes));
                     var gpu = hw.Gpus.FirstOrDefault();
                     GraphicsLine = _s.Format("Vm_HwGraphics", gpu is null ? _s.Get("Vm_NoGpu") : $"{gpu.Name} ({Fmt.Bytes(gpu.VramBytes)})");
                     CoresLine = _s.Format("Vm_HwCores", hw.CpuCores);
+                }
+                else
+                {
+                    MemoryLine = _s.Format("Vm_HwMemory", _s.Get("Vm_HwUnknown"));
                 }
                 DiskLine = _s.Format("Vm_HwDisk", Fmt.Bytes(view.FreeBytes));
                 _model = view.Models.FirstOrDefault(m => m.Recommended) ?? view.Models.FirstOrDefault(m => m.FitsThisPc);
