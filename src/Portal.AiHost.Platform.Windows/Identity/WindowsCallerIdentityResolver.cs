@@ -10,7 +10,9 @@ namespace Portal.AiHost.Platform.Windows.Identity;
 /// <summary>
 /// Maps a loopback TCP connection to the calling process: GetExtendedTcpTable gives the owner PID of the
 /// client's end; the process is then queried for its package family name (packaged = verified), its exe path,
-/// and its user SID, which must equal the host's. Fails closed: anything unknown is unverified / other user.
+/// and its user SID, which must equal the host's. A Portal app is a Store-installed package of the Portal
+/// publisher; being packaged or signed is not enough. Fails closed: anything unknown is unverified / other user /
+/// not a Portal app.
 /// </summary>
 [SupportedOSPlatform("windows")]
 public sealed class WindowsCallerIdentityResolver : ICallerIdentityResolver
@@ -45,7 +47,8 @@ public sealed class WindowsCallerIdentityResolver : ICallerIdentityResolver
             var exe = ImagePath(handle);
             var user = ProcessUser(handle);
             var sameUser = user is not null && _hostUser is not null && user.Equals(_hostUser);
-            return new CallerIdentity(processId, pfn, exe, Verified: pfn is not null, SameUser: sameUser);
+            var portal = pfn is not null && PortalPublisher.IsPortalPackage(pfn, InstalledFromStore(handle));
+            return new CallerIdentity(processId, pfn, exe, Verified: pfn is not null, SameUser: sameUser, PortalApp: portal);
         }
         finally
         {
@@ -72,6 +75,44 @@ public sealed class WindowsCallerIdentityResolver : ICallerIdentityResolver
         }
 
         return rc == 0 && length > 0 ? new string(buffer, 0, (int)length - 1) : null;
+    }
+
+    /// <summary>True only when Windows reports the process's package as installed from the Microsoft Store.</summary>
+    private static unsafe bool InstalledFromStore(nint process)
+    {
+        uint length = 0;
+        var rc = IdentityNative.GetPackageFullName(process, ref length, null);
+        if (rc != (int)IdentityNative.ErrorInsufficientBuffer || length == 0 || length > 1024)
+        {
+            return false;
+        }
+
+        var buffer = new char[length];
+        fixed (char* p = buffer)
+        {
+            rc = IdentityNative.GetPackageFullName(process, ref length, p);
+        }
+
+        if (rc != 0 || length == 0)
+        {
+            return false;
+        }
+
+        return IsStoreOrigin(new string(buffer, 0, (int)length - 1));
+    }
+
+    /// <summary>True only when Windows reports the package as installed from the Microsoft Store.</summary>
+    internal static bool IsStoreOrigin(string packageFullName)
+    {
+        try
+        {
+            return IdentityNative.GetStagedPackageOrigin(packageFullName, out var origin) == 0 &&
+                   origin == IdentityNative.PackageOriginStore;
+        }
+        catch (Exception ex) when (ex is EntryPointNotFoundException or DllNotFoundException)
+        {
+            return false;
+        }
     }
 
     private static unsafe string? ImagePath(nint process)

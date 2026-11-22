@@ -66,6 +66,16 @@ internal static unsafe partial class IdentityNative
     [LibraryImport("kernel32.dll")]
     public static partial int GetPackageFamilyName(nint process, ref uint length, char* familyName);
 
+    [LibraryImport("kernel32.dll")]
+    public static partial int GetPackageFullName(nint process, ref uint length, char* fullName);
+
+    /// <summary>PackageOrigin_Store: the package was installed from the Microsoft Store.</summary>
+    public const int PackageOriginStore = 3;
+
+    // Not exported by kernel32.dll; it lives in the app-model API set.
+    [LibraryImport("api-ms-win-appmodel-runtime-l1-1-1.dll", StringMarshalling = StringMarshalling.Utf16)]
+    public static partial int GetStagedPackageOrigin(string packageFullName, out int origin);
+
     [LibraryImport("advapi32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static partial bool OpenProcessToken(nint process, uint desiredAccess, out nint token);

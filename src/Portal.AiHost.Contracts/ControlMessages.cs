@@ -80,7 +80,14 @@ public sealed class PendingApproval
     /// <summary>Verified package name, or an exe path with an "unverified" mark.</summary>
     public string CallerIdentity { get; set; } = "";
 
+    /// <summary>Windows reported a package identity for the caller. Says nothing about who made the app.</summary>
     public bool CallerVerified { get; init; }
+
+    /// <summary>
+    /// The caller is a Store-installed package of the Portal publisher. Only this may be shown as a Portal app;
+    /// a missing value (older host) reads as false.
+    /// </summary>
+    public bool CallerPortalApp { get; init; }
     public DateTimeOffset ExpiresAt { get; init; }
 }
 

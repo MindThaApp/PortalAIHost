@@ -267,6 +267,7 @@ internal sealed class ControlHandler(HostShell shell)
         Reason = info.Reason,
         CallerIdentity = info.Caller.PackageFamilyName ?? info.Caller.ExePath ?? "process " + info.Caller.ProcessId,
         CallerVerified = info.Caller.Verified,
+        CallerPortalApp = info.Caller.Verified && info.Caller.PortalApp,
         ExpiresAt = info.ExpiresAt,
     };
 

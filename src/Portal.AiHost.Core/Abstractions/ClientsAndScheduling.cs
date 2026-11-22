@@ -16,9 +16,13 @@ public sealed record ClientPrincipal(string AppId, string DeviceId, Transport Tr
     public const string LocalDevice = "local";
 }
 
-/// <summary>Identity of the calling process, shown to the user in the approval prompt.</summary>
+/// <summary>
+/// Identity of the calling process, shown to the user in the approval prompt. Verified means Windows reported a
+/// package identity for the process; it says nothing about who made the app. PortalApp is set only for a
+/// Store-installed package of the Portal publisher (see <see cref="Auth.PortalPublisher"/>).
+/// </summary>
 public sealed record CallerIdentity(
-    int ProcessId, string? PackageFamilyName, string? ExePath, bool Verified, bool SameUser);
+    int ProcessId, string? PackageFamilyName, string? ExePath, bool Verified, bool SameUser, bool PortalApp = false);
 
 public sealed record AccessRequestInfo(
     string RequestId,

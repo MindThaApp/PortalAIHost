@@ -56,21 +56,30 @@ public sealed partial class PendingRowViewModel : ObservableObject
     [RelayCommand] private Task DenyAsync() => _owner.AnswerAsync(this, false);
 }
 
-/// <summary>Plain-language lines for an access request, shared by the prompt and the pending list.</summary>
+/// <summary>
+/// Plain-language lines for an access request, shared by the prompt and the pending list. Only a caller the host
+/// matched to the Portal publisher's Store packages is called a Portal app; any other package is named by its
+/// package id, and anything unpackaged gets the warning.
+/// </summary>
 public static class ApprovalText
 {
-    public static string Identity(IStrings s, PendingApproval a) => a.CallerVerified
-        ? s.Format("Vm_Verified", a.CallerIdentity)
+    /// <summary>True only when the host tied the caller to a Portal package (never from the app's own name).</summary>
+    public static bool IsPortalApp(PendingApproval a) => a.CallerVerified && a.CallerPortalApp;
+
+    public static string Identity(IStrings s, PendingApproval a) =>
+        IsPortalApp(a) ? s.Format("Vm_VerifiedPortal", a.CallerIdentity)
+        : a.CallerVerified ? s.Format("Vm_Verified", a.CallerIdentity)
         : s.Format("Vm_Unverified", a.CallerIdentity);
 
-    /// <summary>For the access prompt: a verified app is just called a verified Portal app; the raw id goes under Details.</summary>
-    public static string IdentityShort(IStrings s, PendingApproval a) => a.CallerVerified
-        ? s.Get("Vm_VerifiedShort")
+    /// <summary>For the access prompt: a Portal app is just called a verified Portal app; the raw id goes under Details.</summary>
+    public static string IdentityShort(IStrings s, PendingApproval a) =>
+        IsPortalApp(a) ? s.Get("Vm_VerifiedShort")
+        : a.CallerVerified ? s.Format("Vm_Verified", a.CallerIdentity)
         : s.Format("Vm_Unverified", a.CallerIdentity);
 
-    /// <summary>The publisher line, or empty when the app is verified and has no publisher to show.</summary>
+    /// <summary>The publisher line, or empty when the app is a Portal app and has no publisher to show.</summary>
     public static string PublisherLine(IStrings s, PendingApproval a) =>
-        a.CallerVerified && string.IsNullOrWhiteSpace(a.Publisher) ? "" : Publisher(s, a);
+        IsPortalApp(a) && string.IsNullOrWhiteSpace(a.Publisher) ? "" : Publisher(s, a);
 
     public static string Publisher(IStrings s, PendingApproval a) => string.IsNullOrWhiteSpace(a.Publisher)
         ? s.Get("Vm_PublisherUnknown")

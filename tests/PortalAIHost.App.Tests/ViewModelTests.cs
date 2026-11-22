@@ -769,15 +769,66 @@ public class FirstRunTests
     }
 
     [Fact]
-    public void Verified_apps_are_shown_without_the_raw_id_or_an_unknown_publisher()
+    public void Portal_apps_are_shown_without_the_raw_id_or_an_unknown_publisher()
     {
         var s = new KeyStrings();
-        var verified = new PendingApproval { CallerIdentity = "PortalApps.FilesPortal_8wekyb3d8bbwe", CallerVerified = true };
-        Assert.Equal("Vm_VerifiedShort", ApprovalText.IdentityShort(s, verified));
-        Assert.Equal("", ApprovalText.PublisherLine(s, verified));
+        var portal = new PendingApproval
+        {
+            AppName = "Files Portal", CallerIdentity = "MindtheApp.FilesPortal_24e29cj9741rt",
+            CallerVerified = true, CallerPortalApp = true,
+        };
+        Assert.True(ApprovalText.IsPortalApp(portal));
+        Assert.Equal("Vm_VerifiedShort", ApprovalText.IdentityShort(s, portal));
+        Assert.Equal("Vm_VerifiedPortal:MindtheApp.FilesPortal_24e29cj9741rt", ApprovalText.Identity(s, portal));
+        Assert.Equal("", ApprovalText.PublisherLine(s, portal));
         var unverified = new PendingApproval { CallerIdentity = @"C:\x\a.exe", CallerVerified = false };
         Assert.StartsWith("Vm_Unverified:", ApprovalText.IdentityShort(s, unverified));
         Assert.Equal("Vm_PublisherUnknown", ApprovalText.PublisherLine(s, unverified));
+    }
+
+    [Fact]
+    public void Microsoft_signed_packaged_app_is_not_called_a_Portal_app()
+    {
+        // What a Store-installed PowerShell 7 looks like to the host.
+        var s = new KeyStrings();
+        var pwsh = new PendingApproval
+        {
+            AppName = "PowerShell", Publisher = "Microsoft Corporation",
+            CallerIdentity = "Microsoft.PowerShell_8wekyb3d8bbwe", CallerVerified = true,
+        };
+        Assert.False(ApprovalText.IsPortalApp(pwsh));
+        Assert.Equal("Vm_Verified:Microsoft.PowerShell_8wekyb3d8bbwe", ApprovalText.IdentityShort(s, pwsh));
+        Assert.Equal("Vm_Verified:Microsoft.PowerShell_8wekyb3d8bbwe", ApprovalText.Identity(s, pwsh));
+        Assert.Equal("Vm_Publisher:Microsoft Corporation", ApprovalText.PublisherLine(s, pwsh));
+    }
+
+    [Fact]
+    public void Unsigned_exe_is_not_called_a_Portal_app()
+    {
+        var s = new KeyStrings();
+        var exe = new PendingApproval { AppName = "Files Portal", CallerIdentity = @"C:\Tools\tool.exe" };
+        Assert.False(ApprovalText.IsPortalApp(exe));
+        Assert.Equal(@"Vm_Unverified:C:\Tools\tool.exe", ApprovalText.IdentityShort(s, exe));
+        Assert.Equal("Vm_PublisherUnknown", ApprovalText.PublisherLine(s, exe));
+    }
+
+    [Fact]
+    public void App_claiming_a_Portal_name_is_not_called_a_Portal_app()
+    {
+        var s = new KeyStrings();
+        // Portal-looking name and package name, but the host did not match the Portal publisher.
+        var spoof = new PendingApproval
+        {
+            AppName = "Files Portal", AppId = "files-portal", Publisher = "MindtheApp",
+            CallerIdentity = "MindtheApp.FilesPortal_8wekyb3d8bbwe", CallerVerified = true,
+        };
+        Assert.False(ApprovalText.IsPortalApp(spoof));
+        Assert.Equal("Vm_Verified:MindtheApp.FilesPortal_8wekyb3d8bbwe", ApprovalText.IdentityShort(s, spoof));
+
+        // A Portal flag without a package identity is ignored.
+        var noPackage = new PendingApproval { AppName = "Files Portal", CallerIdentity = @"C:\x\a.exe", CallerPortalApp = true };
+        Assert.False(ApprovalText.IsPortalApp(noPackage));
+        Assert.StartsWith("Vm_Unverified:", ApprovalText.IdentityShort(s, noPackage));
     }
 }
 

@@ -112,6 +112,7 @@ public static class ApprovalPrompts
             Reason = prompt.Reason,
             CallerIdentity = prompt.CallerLine,
             CallerVerified = prompt.CallerVerified,
+            CallerPortalApp = info.Caller.Verified && info.Caller.PortalApp,
             ExpiresAt = info.ExpiresAt,
         };
     }

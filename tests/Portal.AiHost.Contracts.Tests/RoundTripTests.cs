@@ -307,7 +307,7 @@ public class RoundTripTests
         RoundTrip("""{ "code": "internal_error", "message": "x" }""", Ctx.ControlError);
         RoundTrip("""
             { "pending": [ { "request_id": "ar_1", "app_id": "a", "app_name": "A", "reason": "r",
-              "caller_identity": "MindThaApp.VoicePortal", "caller_verified": true, "expires_at": "2026-11-20T21:14:11+00:00" } ] }
+              "caller_identity": "MindThaApp.VoicePortal", "caller_verified": true, "caller_portal_app": true, "expires_at": "2026-11-20T21:14:11+00:00" } ] }
             """, Ctx.ApprovalList);
         RoundTrip("""{ "request_id": "ar_1" }""", Ctx.ApprovalDecision);
         RoundTrip("""

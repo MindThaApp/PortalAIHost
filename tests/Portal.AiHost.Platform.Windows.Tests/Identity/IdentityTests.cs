@@ -52,6 +52,7 @@ public class IdentityTests
         Assert.Equal(Environment.ProcessPath, caller.ExePath, ignoreCase: true);
         Assert.Null(caller.PackageFamilyName);
         Assert.False(caller.Verified);
+        Assert.False(caller.PortalApp);
     }
 
     [Fact]
@@ -69,5 +70,15 @@ public class IdentityTests
         var caller = new WindowsCallerIdentityResolver().Describe(int.MaxValue - 3);
         Assert.False(caller.SameUser);
         Assert.False(caller.Verified);
+        Assert.False(caller.PortalApp);
+    }
+
+    [Fact]
+    public void PackageOriginLookupBindsAndFailsClosed()
+    {
+        // Calls the real API (no catch here): a wrong DLL or entry point would throw.
+        Assert.NotEqual(0, IdentityNative.GetStagedPackageOrigin("Nope.NotInstalled_1.0.0.0_x64__24e29cj9741rt", out _));
+        Assert.False(WindowsCallerIdentityResolver.IsStoreOrigin("Nope.NotInstalled_1.0.0.0_x64__24e29cj9741rt"));
+        Assert.False(WindowsCallerIdentityResolver.IsStoreOrigin(""));
     }
 }

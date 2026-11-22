@@ -368,8 +368,9 @@ public sealed class FakeHostControl : IHostControl, IDisposable
         AppId = "files-portal",
         AppName = "Files Portal",
         Reason = "Summarise documents you select.",
-        CallerIdentity = "PortalApps.FilesPortal_8wekyb3d8bbwe",
+        CallerIdentity = "MindtheApp.FilesPortal_24e29cj9741rt",
         CallerVerified = true,
+        CallerPortalApp = true,
         ExpiresAt = DateTimeOffset.Now.AddMinutes(2),
     };
 }

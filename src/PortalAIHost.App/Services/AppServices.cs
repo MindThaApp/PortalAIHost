@@ -209,7 +209,7 @@ public sealed class WinUiDialogService : IDialogService
                 TextWrapping = TextWrapping.Wrap,
                 FontWeight = a.CallerVerified ? Microsoft.UI.Text.FontWeights.Normal : Microsoft.UI.Text.FontWeights.SemiBold,
             });
-            if (a.CallerVerified && !string.IsNullOrWhiteSpace(a.CallerIdentity))
+            if (ApprovalText.IsPortalApp(a) && !string.IsNullOrWhiteSpace(a.CallerIdentity))
                 panel.Children.Add(new Expander
                 {
                     Header = _s.Get("Vm_ApprovalDetails"),

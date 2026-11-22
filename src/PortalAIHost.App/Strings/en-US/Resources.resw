@@ -164,7 +164,8 @@
   <data name="Vm_RevokeBody" xml:space="preserve"><value>{0} will stop working with the AI host until you allow it again.</value></data>
   <data name="Vm_RevokeYes" xml:space="preserve"><value>Remove access</value></data>
   <data name="Vm_Cancel" xml:space="preserve"><value>Cancel</value></data>
-  <data name="Vm_Verified" xml:space="preserve"><value>Verified app ({0})</value></data>
+  <data name="Vm_Verified" xml:space="preserve"><value>Installed app ({0}). Not a Portal app.</value></data>
+  <data name="Vm_VerifiedPortal" xml:space="preserve"><value>Verified Portal app ({0})</value></data>
   <data name="Vm_Unverified" xml:space="preserve"><value>Not verified. It runs from {0}. Only allow it if you started it yourself.</value></data>
   <data name="Vm_ApprovalTitle" xml:space="preserve"><value>Let {0} use AI on this PC?</value></data>
   <data name="Vm_ApprovalBody" xml:space="preserve"><value>{0} wants to use the AI model on this PC.</value></data>
