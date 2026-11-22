@@ -176,7 +176,7 @@ public sealed partial class SettingsViewModel : ObservableObject
                     : startup is StartupStates.Enabled or StartupStates.EnabledByPolicy;
                 IdleIndex = IndexFor(s);
                 ModelsFolder = s.ModelsFolder ?? "";
-                FolderPlaceholder = shownFolder;
+                FolderPlaceholder = Fmt.PrivatePath(shownFolder);
                 Available = true;
                 Message = "";
                 _loading = false;
@@ -256,9 +256,9 @@ public sealed partial class SettingsViewModel : ObservableObject
 
                 var target = string.IsNullOrEmpty(next.ModelsFolder)
                     ? _s.Get("Vm_DefaultFolder")
-                    : Path.Combine(next.ModelsFolder, HostFolders.ModelsSubfolder);
+                    : Fmt.PrivatePath(Path.Combine(next.ModelsFolder, HostFolders.ModelsSubfolder));
                 if (saved.ModelsFolderChanged)
-                    Say(_s.Format("Vm_FolderSavedNote", string.IsNullOrEmpty(old) ? _s.Get("Vm_DefaultFolder") : Path.Combine(old, HostFolders.ModelsSubfolder), target), MessageSuccess);
+                    Say(_s.Format("Vm_FolderSavedNote", string.IsNullOrEmpty(old) ? _s.Get("Vm_DefaultFolder") : Fmt.PrivatePath(Path.Combine(old, HostFolders.ModelsSubfolder)), target), MessageSuccess);
                 else
                     Message = "";
             });

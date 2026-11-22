@@ -92,5 +92,17 @@ public class TextTests
         Assert.Equal("9 GB", Fmt.Bytes(9L * 1024 * 1024 * 1024));
         Assert.Equal("100 MB", Fmt.Bytes(100L * 1024 * 1024));
         Assert.Equal("★★★★☆", Fmt.Stars(4.2));
+        Assert.Equal(3.5, Fmt.StarScale(70));
+        Assert.Equal(5, Fmt.StarScale(250));
+        string? Env(string n) => n switch
+        {
+            "LOCALAPPDATA" => @"C:\Users\sam\AppData\Local",
+            "USERPROFILE" => @"C:\Users\sam",
+            _ => null,
+        };
+        Assert.Equal(@"%LOCALAPPDATA%\Portal AI Host\models", Fmt.PrivatePath(@"C:\Users\sam\AppData\Local\Portal AI Host\models", Env));
+        Assert.Equal(@"%USERPROFILE%\Models", Fmt.PrivatePath(@"c:\users\SAM\Models", Env));
+        Assert.Equal(@"D:\Models", Fmt.PrivatePath(@"D:\Models", Env));
+        Assert.Equal(@"C:\Users\samantha\x", Fmt.PrivatePath(@"C:\Users\samantha\x", Env));
     }
 }

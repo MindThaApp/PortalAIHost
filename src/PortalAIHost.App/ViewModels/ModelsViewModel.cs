@@ -21,9 +21,10 @@ public sealed partial class ModelRowViewModel : ObservableObject
         Name = m.DisplayName;
         SizeBytes = m.SizeBytes;
         SizeText = Fmt.Bytes(m.SizeBytes);
-        QualityText = Fmt.Stars(m.Quality);
-        QualityName = strings.Format("Vm_QualityName", Math.Round(m.Quality, 1));
-        Reason = m.StoreFolder is { } oldFolder ? strings.Format("Vm_OldFolderRow", oldFolder) : m.Reason ?? "";
+        var stars = Fmt.StarScale(m.Quality);
+        QualityText = Fmt.Stars(stars);
+        QualityName = strings.Format("Vm_QualityName", Math.Round(stars, 1));
+        Reason = m.StoreFolder is { } oldFolder ? strings.Format("Vm_OldFolderRow", Fmt.PrivatePath(oldFolder)) : m.Reason ?? "";
         Recommended = m.Recommended;
         Installed = m.Installed;
         Active = m.Active;
@@ -189,7 +190,7 @@ public sealed partial class ModelsViewModel : ObservableObject, IDisposable
         foreach (var m in view.Models)
             Models.Add(new ModelRowViewModel(this, _s, m, view.ExistingCopyIds.Contains(m.Id)));
         Recommended = Models.FirstOrDefault(m => m.Recommended && !m.InOldFolder);
-        StorageLine = _s.Format("Vm_StorageLine", view.StorageFolder, Fmt.Bytes(view.FreeBytes));
+        StorageLine = _s.Format("Vm_StorageLine", Fmt.PrivatePath(view.StorageFolder), Fmt.Bytes(view.FreeBytes));
         var existing = Models.FirstOrDefault(m => m.ExistingCopy);
         ExistingCopyLine = existing is null ? "" : _s.Format("Vm_ExistingCopy", existing.Name);
         var upgrade = view.UpgradeModelId is null ? null : Models.FirstOrDefault(m => m.Id == view.UpgradeModelId);

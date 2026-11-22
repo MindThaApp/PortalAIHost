@@ -36,6 +36,32 @@ public static class Fmt
         return bytes >= gb ? $"{bytes / gb:0.#} GB" : $"{Math.Max(0, bytes) / mb:0} MB";
     }
 
+    /// <summary>The model list scores quality from 0 to 100; people see 0 to 5 stars.</summary>
+    public static double StarScale(double score100) => Math.Clamp(score100 / 20.0, 0, 5);
+
+    /// <summary>
+    /// Shows a path without the Windows user name: the start that belongs to the user profile becomes
+    /// %LOCALAPPDATA%, %APPDATA% or %USERPROFILE%. For display only; actions keep the real path.
+    /// </summary>
+    public static string PrivatePath(string? path, Func<string, string?>? env = null)
+    {
+        if (string.IsNullOrEmpty(path))
+            return path ?? "";
+        env ??= Environment.GetEnvironmentVariable;
+        foreach (var name in new[] { "LOCALAPPDATA", "APPDATA", "USERPROFILE" })
+        {
+            var root = env(name)?.TrimEnd('\\', '/');
+            if (string.IsNullOrEmpty(root))
+                continue;
+            if (path.Equals(root, StringComparison.OrdinalIgnoreCase))
+                return "%" + name + "%";
+            if (path.StartsWith(root + "\\", StringComparison.OrdinalIgnoreCase) || path.StartsWith(root + "/", StringComparison.OrdinalIgnoreCase))
+                return "%" + name + "%" + path[root.Length..];
+        }
+
+        return path;
+    }
+
     public static string Stars(double quality)
     {
         var n = (int)Math.Round(Math.Clamp(quality, 0, 5));
