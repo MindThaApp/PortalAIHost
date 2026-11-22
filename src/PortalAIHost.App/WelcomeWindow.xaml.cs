@@ -69,6 +69,7 @@ public sealed partial class WelcomeWindow : Window
             ApplyTitleBarColours();
             LayoutFooter();
             AutomationProperties_SetDots();
+            NextButton.Focus(FocusState.Programmatic); // the first thing to act on, so Enter and Narrator start on Next
             await ViewModel.LoadAsync();
         };
     }
@@ -155,6 +156,7 @@ public sealed partial class WelcomeWindow : Window
         var esc = new Microsoft.UI.Xaml.Input.KeyboardAccelerator { Key = Windows.System.VirtualKey.Escape };
         esc.Invoked += (_, e) => { e.Handled = true; ViewModel.SkipCommand.Execute(null); };
         Root.KeyboardAccelerators.Add(esc);
+        Root.KeyboardAcceleratorPlacementMode = Microsoft.UI.Xaml.Input.KeyboardAcceleratorPlacementMode.Hidden;
         var enter = new Microsoft.UI.Xaml.Input.KeyboardAccelerator { Key = Windows.System.VirtualKey.Enter };
         enter.Invoked += (_, e) =>
         {
@@ -163,6 +165,20 @@ public sealed partial class WelcomeWindow : Window
             ViewModel.NextCommand.Execute(null);
         };
         Root.KeyboardAccelerators.Add(enter);
+    }
+
+    /// <summary>Tells a screen reader which step this is and its heading, since focus moves to a button rather than the heading.</summary>
+    private void AnnounceStep(int step)
+    {
+        TextBlock[] heads = [HeroTitle, Head1, Head2];
+        var text = heads[Math.Clamp(step, 0, heads.Length - 1)].Text;
+        var line = step == FirstRunViewModel.StepWelcome ? text : ViewModel.StepLine + ". " + text;
+        var peer = Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer.FromElement(heads[Math.Clamp(step, 0, heads.Length - 1)])
+                   ?? Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer.CreatePeerForElement(heads[Math.Clamp(step, 0, heads.Length - 1)]);
+        peer?.RaiseNotificationEvent(
+            Microsoft.UI.Xaml.Automation.Peers.AutomationNotificationKind.ActionCompleted,
+            Microsoft.UI.Xaml.Automation.Peers.AutomationNotificationProcessing.ImportantMostRecent,
+            line, "WelcomeStep");
     }
 
     private void AutomationProperties_SetDots() =>
@@ -199,6 +215,7 @@ public sealed partial class WelcomeWindow : Window
     private void Arrive(int step, int direction)
     {
         var panel = _panels[Math.Clamp(step, 0, _panels.Length - 1)];
+        AnnounceStep(step);
         // Focus the first thing to act on: Download when it is offered, otherwise Next.
         DispatcherQueue.TryEnqueue(() => (step == FirstRunViewModel.StepModel && ViewModel.ShowOffer ? DownloadButton : NextButton).Focus(FocusState.Programmatic));
         var move = (TranslateTransform)panel.RenderTransform;
