@@ -37,7 +37,11 @@ public sealed record CatalogueCheckResult(
 /// </summary>
 public static class CatalogueTrust
 {
-    public static IReadOnlyList<string> PublicKeysSpkiBase64 { get; } = Array.Empty<string>();
+    public static IReadOnlyList<string> PublicKeysSpkiBase64 { get; } =
+    [
+        // Current key, created 2026-11-22.
+        "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAErATSEYcCszrlRPc31YZqkiEy4rfZfQxH5bBUBuk1lj08SzUk0sjNcfQFf0sbZUOuZwLYCgyUpqeHZ+rwLM3NUg==",
+    ];
 }
 
 /// <summary>
