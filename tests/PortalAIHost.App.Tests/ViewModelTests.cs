@@ -653,3 +653,44 @@ public class FirstRunTests
         Assert.True((await rig.Host.GetSettingsAsync()).StartWithWindows);
     }
 }
+
+public class TryItThinkingTests
+{
+    [Fact]
+    public async Task Thinking_text_goes_to_its_own_area_and_the_answer_still_arrives()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        var vm = new TryItViewModel(rig.Shell, rig.Ui, rig.Strings) { Prompt = "[think] hello" };
+        await vm.SendCommand.ExecuteAsync(null);
+        Assert.Contains("Working out", vm.Thinking);
+        Assert.True(vm.HasThinking);
+        Assert.Contains("You asked", vm.Reply);
+        Assert.DoesNotContain("Working out", vm.Reply);
+        Assert.Equal("", vm.Status);
+        Assert.False(vm.IsBusy);
+    }
+
+    [Fact]
+    public void Think_tags_in_the_answer_are_split_off()
+    {
+        var (thinking, answer) = TryItText.Split(null, "<think>\nhmm, a greeting\n</think>\n\nHello there.");
+        Assert.Equal("hmm, a greeting", thinking);
+        Assert.Equal("Hello there.", answer);
+    }
+
+    [Fact]
+    public void Reasoning_field_and_unclosed_tag_are_both_thinking()
+    {
+        var (thinking, answer) = TryItText.Split("first", "<think>still going");
+        Assert.Equal("first\nstill going", thinking);
+        Assert.Equal("", answer);
+    }
+
+    [Fact]
+    public void Closing_tag_alone_ends_thinking()
+    {
+        var (thinking, answer) = TryItText.Split(null, "I should greet.</think>Hi!");
+        Assert.Equal("I should greet.", thinking);
+        Assert.Equal("Hi!", answer);
+    }
+}

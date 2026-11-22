@@ -151,6 +151,11 @@
   <data name="Vm_FolderTitle" xml:space="preserve"><value>Use this folder for models?</value></data>
   <data name="Vm_FolderBody" xml:space="preserve"><value>The host will use {0} for models. Models you already have are not moved or deleted.</value></data>
   <data name="Vm_FolderYes" xml:space="preserve"><value>Use folder</value></data>
+  <data name="TryItThinking.Header" xml:space="preserve"><value>What the model thought first</value></data>
+  <data name="Vm_TryWorking" xml:space="preserve"><value>Working on it. A small PC can take a minute.</value></data>
+  <data name="Vm_TryThinking" xml:space="preserve"><value>Thinking it through...</value></data>
+  <data name="Vm_TryOnlyThinking" xml:space="preserve"><value>The model used its whole time limit thinking and gave no answer. Try a shorter question.</value></data>
+  <data name="Vm_TryEmpty" xml:space="preserve"><value>The model sent an empty answer. Try asking again.</value></data>
   <data name="Vm_TryFailed" xml:space="preserve"><value>The host could not answer: {0}</value></data>
   <data name="Vm_HwMemory" xml:space="preserve"><value>Memory: {0}</value></data>
   <data name="Vm_HwGraphics" xml:space="preserve"><value>Graphics: {0}</value></data>

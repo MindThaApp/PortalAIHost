@@ -18,6 +18,18 @@
                 <ProgressRing IsActive="{x:Bind ViewModel.IsBusy, Mode=OneWay}" Width="24" Height="24" />
             </StackPanel>
             <TextBlock Text="{x:Bind ViewModel.Error, Mode=OneWay}" TextWrapping="Wrap" />
+            <TextBlock
+                Text="{x:Bind ViewModel.Status, Mode=OneWay}"
+                TextWrapping="Wrap"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            <Expander x:Uid="TryItThinking" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+                Visibility="{x:Bind ViewModel.HasThinking, Mode=OneWay}">
+                <TextBlock
+                    Text="{x:Bind ViewModel.Thinking, Mode=OneWay}"
+                    TextWrapping="Wrap"
+                    IsTextSelectionEnabled="True"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            </Expander>
             <Border Style="{StaticResource CardBorder}">
                 <TextBlock
                     x:Uid="TryItReply"

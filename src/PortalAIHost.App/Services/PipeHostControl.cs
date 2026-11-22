@@ -101,7 +101,7 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
             : new SettingsSaved();
     }
 
-    public async IAsyncEnumerable<string> TryItAsync(string prompt,
+    public async IAsyncEnumerable<TryItPiece> TryItAsync(string prompt,
         [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct = default)
     {
         var request = new TryItRequest
@@ -111,8 +111,23 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
         var answer = await CallAsync(ControlTypes.TryItChat, JsonSerializer.SerializeToElement(request, AiHostJsonContext.Default.TryItRequest), ct)
             .ConfigureAwait(false);
         var response = Read(answer, AiHostJsonContext.Default.ChatCompletionResponse);
-        // The host answers in one piece today; the window still reads it as a stream.
-        yield return response.Choices.FirstOrDefault()?.Message.Content ?? "";
+        // The host answers in one piece today; the window still reads it as pieces.
+        var message = response.Choices.FirstOrDefault()?.Message;
+        var (thinking, answer2) = TryItText.Split(message?.ReasoningContent, message?.Content);
+        if (thinking.Length > 0)
+            yield return new TryItPiece(thinking, true);
+        yield return new TryItPiece(answer2);
+    }
+
+    public async Task CancelTryItAsync()
+    {
+        try
+        {
+            await CallAsync(ControlTypes.TryItCancel, null, CancellationToken.None).ConfigureAwait(false);
+        }
+        catch (Exception e) when (e is HostUnavailableException or IOException or HostRequestException)
+        {
+        }
     }
 
     private Task Download(string type, string id, CancellationToken ct) =>

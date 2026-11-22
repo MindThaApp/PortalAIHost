@@ -32,6 +32,7 @@ public static class ControlTypes
     public const string GetSettings = "settings.get";
     public const string SetSettings = "settings.set";
     public const string TryItChat = "tryit.chat";
+    public const string TryItCancel = "tryit.cancel";
     public const string Quit = "quit";
 
     // Host -> UI answers.

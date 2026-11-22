@@ -74,9 +74,15 @@ public interface IHostControl
     /// <summary>Saves settings. A new models folder never moves or deletes the models already downloaded.</summary>
     Task<SettingsSaved> SetSettingsAsync(HostSettings settings, CancellationToken ct = default);
 
-    /// <summary>Streams the reply text of a short chat request in pieces.</summary>
-    IAsyncEnumerable<string> TryItAsync(string prompt, CancellationToken ct = default);
+    /// <summary>Streams the reply of a short chat request in pieces. Thinking text and answer text come as separate pieces.</summary>
+    IAsyncEnumerable<TryItPiece> TryItAsync(string prompt, CancellationToken ct = default);
+
+    /// <summary>Has the host stop the running "Try it" request so it stops using the processor.</summary>
+    Task CancelTryItAsync();
 }
+
+/// <summary>One piece of a "Try it" reply: the model's thinking text or its answer.</summary>
+public sealed record TryItPiece(string Text, bool IsThinking = false);
 
 /// <summary>Starts the host process when the control pipe is absent.</summary>
 public interface IHostLauncher

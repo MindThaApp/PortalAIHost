@@ -10,6 +10,19 @@ namespace PortalAIHost.Service;
 /// <summary>Answers admin pipe requests. This is the only place admin actions exist; HTTP has none.</summary>
 internal sealed class ControlHandler(HostShell shell)
 {
+    private CancellationTokenSource? _tryIt;
+
+    private static void CancelQuietly(CancellationTokenSource? cts)
+    {
+        try
+        {
+            cts?.Cancel();
+        }
+        catch (ObjectDisposedException)
+        {
+        }
+    }
+
     public async Task<ControlEnvelope> HandleAsync(ControlEnvelope request, CancellationToken ct)
     {
         try
@@ -117,9 +130,25 @@ internal sealed class ControlHandler(HostShell shell)
                 return Ok(id, SaveSettings(Payload(r, AiHostJsonContext.Default.HostSettings)!), AiHostJsonContext.Default.SettingsSaved);
 
             case ControlTypes.TryItChat:
+            {
                 var tryIt = Payload(r, AiHostJsonContext.Default.TryItRequest)!;
-                var answer = await runtime.TryItChatAsync(tryIt.Request, ct).ConfigureAwait(false);
-                return Ok(id, answer, AiHostJsonContext.Default.ChatCompletionResponse);
+                using var mine = CancellationTokenSource.CreateLinkedTokenSource(ct);
+                var previous = Interlocked.Exchange(ref _tryIt, mine);
+                CancelQuietly(previous);
+                try
+                {
+                    var answer = await runtime.TryItChatAsync(tryIt.Request, mine.Token).ConfigureAwait(false);
+                    return Ok(id, answer, AiHostJsonContext.Default.ChatCompletionResponse);
+                }
+                finally
+                {
+                    Interlocked.CompareExchange(ref _tryIt, null, mine);
+                }
+            }
+
+            case ControlTypes.TryItCancel:
+                CancelQuietly(Volatile.Read(ref _tryIt));
+                return ControlPipe.Ok(id);
 
             case ControlTypes.Quit:
                 // Answer first, then quit, so the window sees the acknowledgement.

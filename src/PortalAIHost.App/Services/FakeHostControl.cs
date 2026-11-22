@@ -262,15 +262,23 @@ public sealed class FakeHostControl : IHostControl, IDisposable
         return Task.FromResult(new SettingsSaved { ModelsFolderChanged = moved, AppliesAtRestart = moved });
     }
 
-    public async IAsyncEnumerable<string> TryItAsync(string prompt, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct = default)
+    public async IAsyncEnumerable<TryItPiece> TryItAsync(string prompt, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct = default)
     {
         Require();
+        if (prompt.Contains("[think]", StringComparison.Ordinal))
+        {
+            await Task.Delay(40, ct).ConfigureAwait(false);
+            yield return new TryItPiece("Working out what to say. ", true);
+        }
+
         foreach (var word in ("This is a sample reply from the practice host. You asked: " + prompt).Split(' '))
         {
             await Task.Delay(40, ct).ConfigureAwait(false);
-            yield return word + " ";
+            yield return new TryItPiece(word + " ");
         }
     }
+
+    public Task CancelTryItAsync() => Task.CompletedTask;
 
     public void Dispose() => _timer?.Dispose();
 

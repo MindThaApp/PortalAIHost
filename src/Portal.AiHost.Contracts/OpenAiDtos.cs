@@ -42,6 +42,9 @@ public sealed class ChatCompletionRequest
     public JsonElement? Logprobs { get; init; }
 
     public string? User { get; init; }
+
+    /// <summary>Passed to the engine chat template (for example enable_thinking). The host sets it for its own checks.</summary>
+    public JsonElement? ChatTemplateKwargs { get; init; }
 }
 
 public sealed class StreamOptions

@@ -24,7 +24,15 @@ public sealed partial class TryItViewModel : ObservableObject
     private string _prompt = "";
 
     [ObservableProperty] private string _reply = "";
+    [ObservableProperty] private string _thinking = "";
     [ObservableProperty] private string _error = "";
+
+    /// <summary>Plain-language progress line: shown while waiting, or when the model ended without an answer.</summary>
+    [ObservableProperty] private string _status = "";
+
+    public bool HasThinking => Thinking.Length > 0;
+
+    partial void OnThinkingChanged(string value) => OnPropertyChanged(nameof(HasThinking));
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SendCommand))]
@@ -37,24 +45,47 @@ public sealed partial class TryItViewModel : ObservableObject
     private async Task SendAsync()
     {
         Reply = "";
+        Thinking = "";
         Error = "";
+        Status = _s.Get("Vm_TryWorking");
         IsBusy = true;
         _cts = new CancellationTokenSource();
         try
         {
             await foreach (var piece in _shell.Host.TryItAsync(Prompt.Trim(), _cts.Token).ConfigureAwait(false))
-                _ui.Post(() => Reply += piece);
+            {
+                _ui.Post(() =>
+                {
+                    if (piece.IsThinking)
+                        Thinking += piece.Text;
+                    else
+                        Reply += piece.Text;
+                    Status = piece.IsThinking && Reply.Length == 0 ? _s.Get("Vm_TryThinking") : "";
+                });
+            }
+
+            _ui.Post(() => Status = Reply.Trim().Length > 0 ? ""
+                : _s.Get(Thinking.Length > 0 ? "Vm_TryOnlyThinking" : "Vm_TryEmpty"));
         }
         catch (OperationCanceledException)
         {
+            _ui.Post(() => Status = "");
         }
         catch (HostUnavailableException)
         {
-            _ui.Post(() => Error = _s.Get("Vm_NoHostTitle"));
+            _ui.Post(() =>
+            {
+                Status = "";
+                Error = _s.Get("Vm_NoHostTitle");
+            });
         }
         catch (Exception e) when (e is IOException or InvalidOperationException)
         {
-            _ui.Post(() => Error = _s.Format("Vm_TryFailed", e.Message));
+            _ui.Post(() =>
+            {
+                Status = "";
+                Error = _s.Format("Vm_TryFailed", e.Message);
+            });
         }
         finally
         {
@@ -63,5 +94,16 @@ public sealed partial class TryItViewModel : ObservableObject
     }
 
     [RelayCommand(CanExecute = nameof(IsBusy))]
-    private void Stop() => _cts?.Cancel();
+    private async Task StopAsync()
+    {
+        _cts?.Cancel();
+        // Also have the host stop generating, so the processor is free again at once.
+        try
+        {
+            await _shell.Host.CancelTryItAsync().ConfigureAwait(false);
+        }
+        catch (Exception e) when (e is IOException or InvalidOperationException or HostUnavailableException)
+        {
+        }
+    }
 }

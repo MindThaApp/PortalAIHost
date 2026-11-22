@@ -207,6 +207,23 @@ public sealed class HostShellTests
     }
 
     [Fact]
+    public async Task Try_it_passes_the_reasoning_text_back_with_the_answer()
+    {
+        using var root = new TestRoot();
+        await using var harness = await ShellHarness.StartAsync(root);
+        harness.Chat.Options.Reasoning = "The user greets me.";
+        await harness.Shell.Runtime.SetActiveAsync(ModelKinds.Chat,
+            new Core.Runtime.ActiveModel(ModelKinds.Chat, "m", "M", ["x.gguf"]), default);
+        await using var client = await ControlPipeClient.ConnectAsync(harness.Paths.PipeName);
+        var reply = await client.TryItChatAsync(new ChatCompletionRequest
+        {
+            Messages = [new ChatMessage { Role = ChatRoles.User, Content = "Hello" }],
+        });
+        Assert.Equal("The user greets me.", reply.Choices[0].Message.ReasoningContent);
+        Assert.False(string.IsNullOrEmpty(reply.Choices[0].Message.Content));
+    }
+
+    [Fact]
     public async Task Host_exe_runs_in_a_test_root_single_instance_and_quits_cleanly()
     {
         using var root = new TestRoot();

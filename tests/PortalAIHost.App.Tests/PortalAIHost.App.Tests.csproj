@@ -15,6 +15,7 @@
   <ItemGroup>
     <Compile Include="..\..\src\PortalAIHost.App\ViewModels\*.cs" Link="App\ViewModels\%(Filename)%(Extension)" />
     <Compile Include="..\..\src\PortalAIHost.App\Services\HostTypes.cs" Link="App\Services\HostTypes.cs" />
+    <Compile Include="..\..\src\PortalAIHost.App\Services\TryItText.cs" Link="App\Services\TryItText.cs" />
     <Compile Include="..\..\src\PortalAIHost.App\Services\FakeHostControl.cs" Link="App\Services\FakeHostControl.cs" />
     <Compile Include="..\..\src\PortalAIHost.App\Services\PipeHostControl.cs" Link="App\Services\PipeHostControl.cs" />
     <Compile Include="..\..\src\PortalAIHost.App\Services\ControlChannel.cs" Link="App\Services\ControlChannel.cs" />

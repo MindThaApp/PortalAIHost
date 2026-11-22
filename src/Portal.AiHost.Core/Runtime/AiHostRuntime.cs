@@ -560,7 +560,8 @@ public sealed class AiHostRuntime : IAsyncDisposable
     {
         ArgumentNullException.ThrowIfNull(request);
         RequestValidator.ValidateChat(request);
-        var (_, sup) = Require(ModelKinds.Chat);
+        var (active, sup) = Require(ModelKinds.Chat);
+        request = ForTryIt(request, active.SupportsReasoning);
         using var linked = CancellationTokenSource.CreateLinkedTokenSource(ct, _lifetime.Token);
         linked.CancelAfter(TimeSpan.FromMilliseconds(ApiLimits.DefaultInteractiveDeadlineMs));
         Interlocked.Increment(ref _inFlight);
@@ -580,6 +581,26 @@ public sealed class AiHostRuntime : IAsyncDisposable
             Interlocked.Decrement(ref _inFlight);
         }
     }
+
+    /// <summary>Longest reply "Try it" asks for, so a model that rambles or thinks aloud cannot run for minutes.</summary>
+    public const int TryItMaxTokens = 768;
+
+    private static readonly JsonElement DisableThinking = JsonDocument.Parse("{\"enable_thinking\":false}").RootElement.Clone();
+
+    private static ChatCompletionRequest ForTryIt(ChatCompletionRequest request, bool supportsReasoning) => new()
+    {
+        Model = request.Model,
+        Messages = request.Messages,
+        Stream = false,
+        MaxTokens = request.MaxTokens ?? request.MaxCompletionTokens ?? TryItMaxTokens,
+        Temperature = request.Temperature,
+        TopP = request.TopP,
+        Seed = request.Seed,
+        // A quick check: a thinking model answers straight away instead of reasoning first.
+        ChatTemplateKwargs = request.ChatTemplateKwargs ?? (supportsReasoning
+            ? DisableThinking
+            : null),
+    };
 
     // ---- endpoints -----------------------------------------------------------------------------
 

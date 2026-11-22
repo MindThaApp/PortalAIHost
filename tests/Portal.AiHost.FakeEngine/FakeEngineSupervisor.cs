@@ -21,6 +21,9 @@ public sealed class FakeEngineOptions
     /// <summary>Fixed reply text. When null the reply is "Echo: " plus the last user message.</summary>
     public string? Reply { get; set; }
 
+    /// <summary>When set, non-streamed replies carry this as reasoning_content next to the text.</summary>
+    public string? Reasoning { get; set; }
+
     public int EmbeddingDimensions { get; set; } = 8;
     public int ContextTokens { get; set; } = 4096;
 }
@@ -191,7 +194,7 @@ public sealed class FakeEngineSupervisor : IEngineSupervisor
                 new ChatChoice
                 {
                     Index = 0,
-                    Message = new ChatResponseMessage { Content = text.ToString() },
+                    Message = new ChatResponseMessage { Content = text.ToString(), ReasoningContent = Options.Reasoning },
                     FinishReason = finish,
                 },
             },
