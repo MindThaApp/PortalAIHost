@@ -45,6 +45,7 @@ public static class AppServices
                 protocolStart: StartByProtocolAsync);
             Startup = new WindowsStartupControl();
             stateFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PortalAIHost", "app");
+            if (AppOptions.StateFolder is { Length: > 0 } custom) stateFolder = custom;
         }
         IAppState state = AppOptions.SkipFirstRun ? new FixedAppState(true) : new AppStateStore(stateFolder);
         Shell = new ShellViewModel(Host, launcher, Ui, Strings, state);

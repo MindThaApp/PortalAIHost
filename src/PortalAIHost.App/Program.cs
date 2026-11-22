@@ -77,6 +77,9 @@ public static class AppOptions
         _ => prefs,
     };
 
+    /// <summary>Check-only: keep the window's own state (welcome done, appearance) in this folder instead of the per-user one.</summary>
+    public static string? StateFolder { get; private set; }
+
     /// <summary>Treat first-run setup as already done.</summary>
     public static bool SkipFirstRun { get; private set; }
 
@@ -95,6 +98,7 @@ public static class AppOptions
             else if (a.Equals("--pseudo-loc", StringComparison.OrdinalIgnoreCase)) PseudoLoc = true;
             else if (a.Equals("--offscreen", StringComparison.OrdinalIgnoreCase)) OffScreen = true;
             else if (a.Equals("--skip-first-run", StringComparison.OrdinalIgnoreCase)) SkipFirstRun = true;
+            else if (a.StartsWith("--state-dir=", StringComparison.OrdinalIgnoreCase)) StateFolder = a[12..];
             else if (a.StartsWith("--shot-dir=", StringComparison.OrdinalIgnoreCase)) ShotDir = a[11..];
             else if (a.StartsWith("--theme=", StringComparison.OrdinalIgnoreCase)) ThemeOverride = a[8..].ToLowerInvariant();
             else if (a.StartsWith("--text-scale=", StringComparison.OrdinalIgnoreCase)
