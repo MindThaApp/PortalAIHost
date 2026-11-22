@@ -9,35 +9,41 @@ Capture after the new look is final. Rules (Store lessons):
   profile on a test PC or VM.
 - Caption each one in Partner Center (up to 200 characters).
 
-## 1.0.1 set (new Welcome window)
+## 1.0.1 set
 
-Real captures of this build, real hardware detection (no `--fake`), a fresh test data root, no personal paths.
-Files are in `docs/store/screenshots/1.0.1/`; each has a `-dark` copy. Captions are up to 200 characters.
+Real captures of this build, real hardware detection and a real model answering (no `--fake`), fresh test data
+roots, no personal paths. Files are in `docs/store/screenshots/1.0.1/`; each has a `-dark` copy. Captions are up
+to 200 characters. Images 1 to 3 are the Welcome window centred on a neutral 1366x768 canvas; images 4 to 7 are the
+main window at exactly 1366x768 (host version 1.0.1, a small test model loaded).
 
 | # | File | What it shows | Caption |
 |---|---|---|---|
-| 1 | `01-welcome.png` | Welcome step 1: "Runs on this PC", "Stays private", "Made for your Portal apps" | Welcome to Portal AI Host: AI that runs on your own PC. It picks a model to suit it, and there is nothing to set up. |
+| 1 | `01-welcome.png` | Welcome step 1: "Runs on this PC", "Stays private", "Made for your Portal apps" | Welcome to Portal AI Host: AI that runs on your own PC. It picks a model to suit it and you're ready in a few clicks. |
 | 2 | `02-pick-a-model.png` | Welcome step 2, "Pick a model": the recommended model for this PC with its reason, size and your PC's memory, graphics and free disk space | It checks your PC and recommends the model that suits it best, with the size and how fast it should answer. Download it now or choose later. |
 | 3 | `03-where-it-lives.png` | Welcome step 3: where it lives in the tray, the "you will be asked" note and the Start with Windows switch | It waits quietly in the tray and always asks before a Portal app can use it. Starting with Windows is your choice. |
+| 4 | `04-home.png` | Home: status "Ready", host version 1.0.1, the active model loaded, no apps connected yet, no requests waiting | Home shows at a glance that your AI model is loaded and ready, which model is in use, and whether any apps are waiting for your say-so. |
+| 5 | `05-try-it-answer.png` | Try it after an answer: the question, and the reply with its key word shown in bold; "Nothing you type here is saved" | Check that it works: ask something short and read the reply here. Nothing you type in Try it is saved. |
+| 6 | `06-models.png` | Models: the list for this PC, the best choice marked, size, speed and quality for each, a Download button, and the "A better model is available" note | Models lists what suits your PC, with size, speed and quality. The best choice is marked, and you are told when a better model is available. |
+| 7 | `07-approval-prompt.png` | The access prompt over Home: who is asking, the reason given, the verified publisher line, and Allow / Don't allow / Decide later | Apps have to ask first. You see who is asking and why, and you choose Allow, Don't allow or Decide later. |
 
-Still to capture for 1.0.1 (needs a loaded model or a paired app, so not possible without a model download):
-Home with a model ready, Try it (the answer now shows bold text properly), the approval prompt ("Don't allow"
-instead of "Deny") and Models with a download in progress. Until then the 1.0 images for those pages stay in
-Partner Center; do not reuse them in new rows, as they show host version 1.0.0 and raw `**` markdown.
+Notes for Partner Center:
+- The prompt in image 7 comes from a real request made by PowerShell, so it shows a real verified publisher.
+- Settings is not recaptured: its page, text and layout are unchanged since 1.0, so the 1.0 Settings image is
+  still accurate for 1.0.1. A new capture from an unpackaged test build would show a test folder path and the
+  "only available in the installed app" note, which the Store build does not have.
+- The 1.0 images of Home, Try it and the prompt show host version 1.0.0 and "Deny"; use the 1.0.1 images above
+  instead.
 
 ## Plan for a full set
 
-Original plan, with the changes for 1.0.1 (welcome is 3 steps, not "2 of 3"/"2 of 4"; the prompt button is
-"Don't allow"):
+The 1.0.1 set above covers the plan except the items below. Welcome is 3 steps and the prompt button is
+"Don't allow".
 
-| # | Page / state | What it must show | Caption |
-|---|---|---|---|
-| 1 | Home, model loaded | Status "ready", the loaded model's name, one or two allowed apps, queue empty | Your own AI model, ready for your apps |
-| 2 | Welcome window, step 2 (Pick a model) | Recommended model with its plain reason and size | Picks the best model for your PC |
-| 3 | Models, a download in progress | Recommended model, catalogue list with sizes and quality, progress with time left, pause button | One-click download with pause and resume |
-| 4 | Devices and apps, approval prompt open | "Let Voice Portal use your AI host?" with the verified publisher line, Allow / Don't allow / Decide later | Apps ask first; you decide |
-| 5 | Try it, after an answer | A short question and the model's reply; "nothing you type here is saved" visible | Check it works; nothing is saved |
-| 6 | Settings | Start with Windows, free memory when idle, models folder | Starts with Windows only if you want it |
+| Page / state | What it must show | Status |
+|---|---|---|
+| Models, a download in progress | Recommended model, list with sizes and quality, progress with time left, pause button | Not captured: needs a real download of a large model |
+| Devices and apps with one or two allowed apps | App names, last used, Revoke | Not captured |
+| Settings | Start with Windows, free memory when idle, models folder | Reuse the 1.0 image (see notes above) |
 
-Optional 7th: the tray icon menu (Open / Quit) cropped with the window behind it, only if it can be captured without
+Optional extra: the tray icon menu (Open / Quit) cropped with the window behind it, only if it can be captured without
 other tray icons.
