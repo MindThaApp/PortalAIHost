@@ -52,22 +52,14 @@
         </uap:DefaultTile>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
-    </Application>
-
-    <!-- The host: headless, no Start entry, offered as a startup task, started by the portal-ai-host: protocol. -->
-    <Application Id="Service" Executable="PortalAIHost.Service.exe" EntryPoint="Windows.FullTrustApplication">
-      <uap:VisualElements DisplayName="Portal AI Host (background)" Description="Portal AI Host background service."
-                          BackgroundColor="transparent"
-                          Square150x150Logo="Assets\Square150x150Logo.png"
-                          Square44x44Logo="Assets\Square44x44Logo.png"
-                          AppListEntry="none" />
       <Extensions>
+        <!-- The host exe is started by the startup task and by the portal-ai-host: protocol (only :start and :open). -->
         <desktop:Extension Category="windows.startupTask" Executable="PortalAIHost.Service.exe"
                            EntryPoint="Windows.FullTrustApplication">
           <desktop:StartupTask TaskId="PortalAIHostStartup" Enabled="false" DisplayName="Portal AI Host" />
         </desktop:Extension>
-        <!-- Clients may only ask the host to start or to open its window (portal-ai-host:start, portal-ai-host:open). -->
-        <uap:Extension Category="windows.protocol">
+        <uap:Extension Category="windows.protocol" Executable="PortalAIHost.Service.exe"
+                       EntryPoint="Windows.FullTrustApplication">
           <uap:Protocol Name="portal-ai-host">
             <uap:DisplayName>Portal AI Host</uap:DisplayName>
           </uap:Protocol>

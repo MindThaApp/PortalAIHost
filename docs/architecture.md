@@ -88,7 +88,8 @@ reports 0 MB, or Vulkan was marked bad.
 **Decision: two executables in one MSIX package.**
 - **`PortalAIHost.Service.exe` (the host):** headless, NativeAOT (Kestrel `CreateSlimBuilder`, source-generated JSON
   only). Owns the API, engines, downloads, tokens, the tray icon (plain `Shell_NotifyIcon` on its own message-loop
-  thread) and the admin pipe. Second `<Application>` in the manifest with `AppListEntry="none"`. Not a Windows
+  thread) and the admin pipe. Not a manifest `<Application>` of its own (the Store refuses headless apps): the package has one visible
+  Application, and the startup task and the `portal-ai-host:` protocol both name this exe. Not a Windows
   service (`packagedServices` is restricted and needs admin).
 - **`PortalAIHost.App.exe` (the window):** WinUI 3, started from Start, the tray or an approval request. Closing the
   window ends this process; the host keeps serving.
@@ -96,7 +97,7 @@ reports 0 MB, or Vulkan was marked bad.
 Why: WinUI fail-fasts (0x800710DD class, lessons file) cannot take down the API clients are using, idle memory
 stays small, and the phase-4 macOS host mirrors the split.
 
-- **Startup task:** `desktop:StartupTask` on the Service application, offered as "Start with Windows" and enabled at
+- **Startup task:** `desktop:StartupTask` on the one Application, pointing at the host exe, offered as "Start with Windows" and enabled at
   the end of first-run setup (`RequestEnableAsync`). `DisabledByUser` shows the Task Manager hint; never fought.
 - **Single instance (host):** the admin pipe `\\.\pipe\PortalAIHost.Control.<UserSID>` with
   `FirstPipeInstance | CurrentUserOnly`. A second launch sends `show` and exits. The SID separates users (pipe names
@@ -321,7 +322,7 @@ parallel. Each package owns only the listed paths, and changes to another packag
 | WP5 Server and host exe | Kestrel listener + port fallback, endpoint adapters, Origin/Host guard, SSE + `: portal` comments, discovery file, admin pipe server, single instance, tray, safe mode, test-root guard | `src/Portal.AiHost.Server/**`, `src/PortalAIHost.Service/**`, `Platform.Windows/{Tray,Pipes}/**`, `tests/Portal.AiHost.Server.Tests/**` | WP1; integrates WP2-4 |
 | WP6 WinUI app | Home, Models (recommendation, download progress, location, upgrade), Devices and apps, Settings, Try it, approval prompt, first-run flow, string keys + pseudo-loc, accessibility names | `src/PortalAIHost.App/**` except the manifest | WP1 (control messages) |
 | WP7 Client library | everything in section 6, NuGet pack into `builds\nuget\`, stub host for tests | `src/Portal.AiHost.Client/**`, `tests/Portal.AiHost.Client.Tests/**` | WP1 |
-| WP8 Package and soak | **day-1 spike:** StartupTask on the `AppListEntry="none"` app, child exe from the package, another package reading `LocalState\discovery`; then manifest, x64/arm64 bundles, engine folders in the package, PathMap, build script, soak driver | `src/PortalAIHost.App/Package.appxmanifest`, `scripts/build-msix.ps1`, `tests/PortalAIHost.Soak/**` | WP1; soak needs WP5 |
+| WP8 Package and soak | **day-1 spike:** StartupTask and protocol extensions that launch the host exe from the single visible app, child exe from the package, another package reading `LocalState\discovery`; then manifest, x64/arm64 bundles, engine folders in the package, PathMap, build script, soak driver | `src/PortalAIHost.App/Package.appxmanifest`, `scripts/build-msix.ps1`, `tests/PortalAIHost.Soak/**` | WP1; soak needs WP5 |
 
 - **Reviews.** WP3 (deletes, moves, downloads) and WP4 (tokens, caller identity) each get an independent code-only
   review before the first build.
