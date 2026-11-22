@@ -213,7 +213,11 @@ internal sealed class ModelCenter : IAsyncDisposable
 
             if (kind == ModelKinds.Chat)
             {
-                UpgradeModelId = HardwareRecheck.Run(null, hw, mem, _catalogue, kind, _activeId(kind), ctx).Upgrade?.ToModelId;
+                // An upgrade only makes sense when a model is in use now; with none, the plain recommendation applies.
+                var current = _activeId(kind);
+                UpgradeModelId = current is null
+                    ? null
+                    : HardwareRecheck.Run(null, hw, mem, _catalogue, kind, current, ctx).Upgrade?.ToModelId;
             }
         }
 

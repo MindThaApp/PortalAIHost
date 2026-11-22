@@ -128,6 +128,19 @@ public sealed class ModelControlTests
     }
 
     [Fact(Timeout = 30000)]
+    public async Task With_no_model_in_use_the_listing_offers_no_upgrade()
+    {
+        using var root = new TestRoot();
+        var body = RandomNumberGenerator.GetBytes(4096);
+        var (shell, _) = await StartAsync(root, [Entry(body)], body);
+        await using var _s = shell;
+        await using var client = await ControlPipeClient.ConnectAsync(shell.Paths().PipeName);
+        var listing = await client.ListModelsAsync();
+        Assert.Single(listing.Models);
+        Assert.Null(listing.UpgradeModelId);
+    }
+
+    [Fact(Timeout = 30000)]
     public async Task A_download_without_room_on_the_drive_is_refused_up_front_and_writes_nothing()
     {
         using var root = new TestRoot();
