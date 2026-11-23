@@ -69,7 +69,7 @@ if ($Store) {
     }
     # Pseudo-localised strings (Strings\qps-ploc, made by -p:PseudoLoc=true) would ship as an extra language.
     # Release hosts trust only the compiled-in catalogue keys; with none, the packaged app has no model list at all.
-    if (-not $PlaceholderIdentity -and (Select-String -Path (Join-Path $repo 'src\Portal.AiHost.Core\Catalogue\CatalogueVerifier.cs') -Pattern 'PublicKeysSpkiBase64 \{ get; \} = Array\.Empty' -Quiet)) {
+    if (-not $PlaceholderIdentity -and (Select-String -Path (Join-Path $repo 'src\Portal.AiHost.Models\Catalogue\CatalogueVerifier.cs') -Pattern 'PublicKeysSpkiBase64 \{ get; \} = Array\.Empty' -Quiet)) {
         throw 'Store build: no catalogue public key is compiled in (CatalogueTrust.PublicKeysSpkiBase64 is empty).'
     }
     if (Test-Path (Join-Path $appDir 'Strings\qps-ploc')) { throw 'Store build: src\PortalAIHost.App\Strings\qps-ploc exists (pseudo-localisation output); remove it first.' }
