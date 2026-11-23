@@ -171,7 +171,9 @@ public sealed partial class TrayPopupWindow : Window
 /// </summary>
 public static class PopupTiming
 {
+#if DEBUG
     private static bool _reported;
+#endif
 
     /// <summary>True when this process was started by a tray click rather than by opening the main window.</summary>
     public static bool ColdPopup { get; set; }
