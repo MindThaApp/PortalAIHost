@@ -6,7 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Portal.AiHost.Core\Portal.AiHost.Core.csproj" />
-    <ProjectReference Include="..Portal.AiHost.Models.WindowsPortal.AiHost.Models.Windows.csproj" />
+    <ProjectReference Include="..\Portal.AiHost.Models.Windows\Portal.AiHost.Models.Windows.csproj" />
   </ItemGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Portal.AiHost.Platform.Windows.Tests" />
