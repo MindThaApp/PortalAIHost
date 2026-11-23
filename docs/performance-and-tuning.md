@@ -36,7 +36,23 @@ These are the shared names, used as JSON keys in the API and in settings files. 
 | `cpu_threads` | Processor cores | 1 to logical cores minus 1 | logical cores minus 2 (minimum 1) | 1.0.2 |
 | `priority` | Priority | `low`, `normal` | `low` | 1.0.2 |
 | `cpu_ceiling_percent` | Maximum processor use | 20–100 | 100 | 1.0.3 |
-| `ease_off` | Ease off when… | flags: `fullscreen`, `gpu_busy`, `battery` | `fullscreen`, `battery` | 1.0.3 |
+| `ease_off` | Ease off when… | flags: `fullscreen`, `gpu_busy`, `battery`, `app_busy` | `fullscreen`, `battery`, `app_busy` | 1.0.3 |
+
+**`app_busy` (Voice Portal, 2026-11-23):** an app doing live, time-critical work (live transcription) asks the host
+to ease off batch work while it runs:
+- `POST /host/ease-off` with `{ "reason": "live_audio", "ttl_ms": 30000 }`, renewed while busy, ended with
+  `DELETE /host/ease-off`.
+- While it's active, the host:
+  - runs `batch` requests at lowest priority with fewer threads, and drops back between tokens;
+  - leaves `interactive` requests as they are;
+  - reports `eased_off_now: "app_busy"`.
+- In built-in mode, the same effect comes from `EngineSupervisor` priority and thread controls on the app's own
+  side process.
+
+**Memory an app already holds:** the planner's `CommittedMemory` input (in `RecommendContext`) takes the bytes an
+app's other models already use, for example Voice Portal's speech model. The fit preview and memory cap then leave
+room for it. In host mode the same is reported with `POST /host/ease-off`'s optional `reserved_bytes`, or is simply
+seen as used RAM.
 
 **Presets** set the values below. Moving any slider switches the preset to `custom`.
 
