@@ -12,16 +12,15 @@ find and fix problems quickly.
 
 ### What is sent
 
-- The type of error and a short error message, cleaned on your PC before it is sent.
-- The technical call stack: function names inside the app.
+- The error type and where in the app it happened (function and module names). Never the error text.
 - The app version, the Windows version, and whether it is a store or development build.
 - Whether the report came from the window or the host.
 
 ### What is never sent
 
 - Your prompts or the model's answers, or anything you type.
-- File names or folder paths. Paths in a message are replaced with "[path]", which also removes your Windows user
-  name and your models folder.
+- File names or folder paths. Error text is dropped entirely, so no
+  path, Windows user name or models folder can leak.
 - Your computer name, your user name or account name.
 - Request contents, or the names of the apps that use the host.
 - Your IP address. We do not store it.

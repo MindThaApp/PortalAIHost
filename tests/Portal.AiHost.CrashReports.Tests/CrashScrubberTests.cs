@@ -105,12 +105,34 @@ public class CrashScrubberTests
     }
 
     [Fact]
-    public void Scrubs_exception_message_in_the_event()
+    public void Drops_exception_message_in_the_event()
     {
         var e = CrashScrubber.Scrub(Event(@"No access to C:\Users\Jane\a.txt"))!;
         var v = e.SentryExceptions!.Single().Value!;
-        Assert.DoesNotContain("Jane", v);
+        Assert.Equal(CrashScrubber.RemovedText, v);
         Assert.Equal("IOException", e.SentryExceptions!.Single().Type);
+    }
+
+    [Fact]
+    public void Sends_no_word_of_a_prompt_sentence_in_any_exception_including_inner_ones()
+    {
+        const string prompt = "please summarise my confidential salary negotiation with Helena tomorrow";
+        var e = new SentryEvent();
+        e.SentryExceptions =
+        [
+            new SentryException { Type = "AggregateException", Value = prompt, Module = "System.Private.CoreLib" },
+            new SentryException { Type = "JsonException", Value = "bad body: " + prompt },
+        ];
+        CrashScrubber.Scrub(e);
+        foreach (var ex in e.SentryExceptions!)
+        {
+            Assert.Equal(CrashScrubber.RemovedText, ex.Value);
+            Assert.DoesNotContain("salary", ex.Value);
+            Assert.DoesNotContain("Helena", ex.Value);
+        }
+
+        Assert.Equal("JsonException", e.SentryExceptions!.Last().Type);
+        Assert.Equal("System.Private.CoreLib", e.SentryExceptions!.First().Module);
     }
 
     [Fact]

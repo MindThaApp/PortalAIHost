@@ -76,7 +76,7 @@ Questions or concerns: mindthaapp@gmail.com
 Portal AI Host sends a crash report when the window or the host stops unexpectedly, so that we can find and fix
 the cause. This is on by default.
 
-What is sent: the type of error, a short cleaned error message, the technical call stack (function names), the app
+What is sent: the error type and where in the app it happened (function and module names, never the error text), the app
 version, the Windows version and the kind of build (store or development). Whether the report came from the window or
 the host.
 

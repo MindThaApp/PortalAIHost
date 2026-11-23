@@ -11,6 +11,7 @@ namespace Portal.AiHost.CrashReports;
 public static partial class CrashScrubber
 {
     public const string PathMark = "[path]";
+    public const string RemovedText = "[removed]";
     public const string TextMark = "[text]";
     public const int MaxMessageLength = 200;
 
@@ -97,8 +98,9 @@ public static partial class CrashScrubber
 
         foreach (var ex in e.SentryExceptions ?? [])
         {
-            ex.Value = ScrubText(ex.Value);
-            ex.Module = null;
+            // Error text can echo a request (prompt, JSON, engine output), so it is never sent. The type, module,
+            // HResult and our own stack frames stay. Inner exceptions are separate entries in this list.
+            ex.Value = RemovedText;
             if (ex.Stacktrace is { } st)
             {
                 ScrubFrames(st.Frames);
