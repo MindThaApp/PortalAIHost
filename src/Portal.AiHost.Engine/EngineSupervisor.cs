@@ -52,7 +52,7 @@ public sealed class EngineSupervisorOptions
 /// per-launch key, Job Object, health and readiness wait, heartbeat, crash restart with backoff,
 /// Vulkan-to-CPU fallback, idle unload, and an HTTP proxy for chat, embeddings and tokenize.
 /// </summary>
-public sealed class EngineSupervisor : IEngineSupervisor
+public sealed class EngineSupervisor : IEngineSupervisor, Portal.AiHost.Core.Runtime.IEngineProcess
 {
     private static readonly string[] AllowedForwardPaths = { "/v1/chat/completions", "/v1/embeddings", "/tokenize", "/apply-template" };
 

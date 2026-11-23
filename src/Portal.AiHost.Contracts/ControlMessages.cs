@@ -35,6 +35,15 @@ public static class ControlTypes
     public const string TryItCancel = "tryit.cancel";
     public const string Quit = "quit";
 
+    /// <summary>Per-app activity today and which apps generate now. Answers <see cref="ActivityReport"/>.</summary>
+    public const string GetActivity = "activity.get";
+
+    /// <summary>Loads the active model of a kind now. Payload <see cref="EngineCommand"/>.</summary>
+    public const string LoadEngine = "engine.load";
+
+    /// <summary>Unloads the engine of a kind now (stops the engine process; model files are never touched).</summary>
+    public const string UnloadEngine = "engine.unload";
+
     // Host -> UI answers.
     public const string Ok = "ok";
     public const string Error = "error";
@@ -44,6 +53,9 @@ public static class ControlTypes
     public const string EventApprovalPending = "event.approval_pending";
     public const string EventDownloadProgress = "event.download_progress";
     public const string EventStatusChanged = "event.status_changed";
+
+    /// <summary>The tray icon was clicked: show the small pop-up. Payload <see cref="TrayPopupEvent"/>.</summary>
+    public const string EventTrayPopup = "event.tray_popup";
 }
 
 /// <summary>Wire envelope. Payload is a JSON object whose type depends on Type.</summary>
@@ -314,4 +326,37 @@ public sealed class ControlStatus
     /// </summary>
     [JsonPropertyName("store_problem")]
     public string? StoreProblem { get; init; }
+}
+
+/// <summary>Payload of engine.load and engine.unload.</summary>
+public sealed class EngineCommand
+{
+    /// <summary>Model kind; chat when missing.</summary>
+    public string? Kind { get; init; }
+}
+
+/// <summary>One app's activity today. Counts and times only, never content.</summary>
+public sealed class AppActivity
+{
+    public string AppId { get; set; } = "";
+    public string AppName { get; set; } = "";
+    public int Requests { get; init; }
+    public DateTimeOffset? LastSeen { get; init; }
+    public long Tokens { get; init; }
+
+    /// <summary>Requests of this app running right now.</summary>
+    public int Running { get; init; }
+}
+
+/// <summary>Answer to activity.get. Reset at local midnight; not saved.</summary>
+public sealed class ActivityReport
+{
+    public List<AppActivity> Apps { get; set; } = new();
+}
+
+/// <summary>Where the tray icon was clicked, in screen pixels.</summary>
+public sealed class TrayPopupEvent
+{
+    public int X { get; init; }
+    public int Y { get; init; }
 }

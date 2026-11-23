@@ -77,6 +77,9 @@ public sealed class HostStatus
     public HardwareInfo Hardware { get; set; } = new();
     public bool UpgradeAvailable { get; init; }
     public SharingStatus Sharing { get; set; } = new();
+
+    /// <summary>Live use of the engine. Counts and speeds only. Null until the host has sampled.</summary>
+    public HostUsage? Usage { get; set; }
 }
 
 public sealed class StatusClient
@@ -303,4 +306,19 @@ public sealed class PortalProgressEvent
 
     public int? Position { get; init; }
     public double? Progress { get; init; }
+}
+
+/// <summary>Live use of the engine process(es), sampled at most every 1.5 seconds and only while someone asks.</summary>
+public sealed class HostUsage
+{
+    public long RamUsedBytes { get; init; }
+    public long VramUsedBytes { get; init; }
+
+    /// <summary>Engine processor use as a share of the whole PC, 0 to 100.</summary>
+    public int CpuPercent { get; init; }
+
+    /// <summary>Tokens per second of the last finished request, or null when none yet.</summary>
+    public double? GenerationTokensPerSecond { get; init; }
+
+    public DateTimeOffset UpdatedAt { get; init; }
 }

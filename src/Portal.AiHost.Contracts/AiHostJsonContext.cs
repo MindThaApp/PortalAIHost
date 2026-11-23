@@ -18,6 +18,7 @@ namespace Portal.AiHost.Contracts;
 [JsonSerializable(typeof(AuthRequestCreated))]
 [JsonSerializable(typeof(AuthRequestStatus))]
 [JsonSerializable(typeof(HostStatus))]
+[JsonSerializable(typeof(HostUsage))]
 [JsonSerializable(typeof(HostCapabilities))]
 [JsonSerializable(typeof(ModelList))]
 [JsonSerializable(typeof(WarmupRequest))]
@@ -48,6 +49,9 @@ namespace Portal.AiHost.Contracts;
 [JsonSerializable(typeof(HostSettings))]
 [JsonSerializable(typeof(TryItRequest))]
 [JsonSerializable(typeof(ControlStatus))]
+[JsonSerializable(typeof(EngineCommand))]
+[JsonSerializable(typeof(ActivityReport))]
+[JsonSerializable(typeof(TrayPopupEvent))]
 public sealed partial class AiHostJsonContext : JsonSerializerContext
 {
 }

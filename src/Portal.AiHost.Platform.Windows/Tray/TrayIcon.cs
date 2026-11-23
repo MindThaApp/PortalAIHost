@@ -20,6 +20,7 @@ public sealed unsafe partial class TrayIcon : IDisposable
     private const uint WmEndSession = 0x0016;
     private const nint EndSessionCloseApp = 0x1;
     private const uint RestartNoCrash = 1, RestartNoHang = 2, RestartNoReboot = 8;
+    private const uint WmLButtonUp = 0x0202;
     private const uint WmLButtonDblClk = 0x0203;
     private const uint WmRButtonUp = 0x0205;
     private const uint WmContextMenu = 0x007B;
@@ -55,6 +56,9 @@ public sealed unsafe partial class TrayIcon : IDisposable
     }
 
     public event EventHandler? OpenRequested;
+
+    /// <summary>Left click on the icon: the small status pop-up. The point is the cursor in screen pixels.</summary>
+    public event EventHandler<(int X, int Y)>? PopupRequested;
 
     public event EventHandler? QuitRequested;
 
@@ -214,6 +218,11 @@ public sealed unsafe partial class TrayIcon : IDisposable
                 if (mouse == WmLButtonDblClk)
                 {
                     OpenRequested?.Invoke(this, EventArgs.Empty);
+                }
+                else if (mouse == WmLButtonUp)
+                {
+                    GetCursorPos(out var click);
+                    PopupRequested?.Invoke(this, (click.X, click.Y));
                 }
                 else if (mouse is WmRButtonUp or WmContextMenu)
                 {
