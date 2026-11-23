@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Portal.AiHost.Contracts;
 using Portal.AiHost.Contracts.Control;
 using Portal.AiHost.Core.Abstractions;
+using Portal.AiHost.CrashReports;
 using Portal.AiHost.Core.Download;
 using Portal.AiHost.Core.Store;
 using Portal.AiHost.Platform.Windows.Power;
