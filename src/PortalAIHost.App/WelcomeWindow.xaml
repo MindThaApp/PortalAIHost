@@ -147,6 +147,12 @@
                                           OnContent="" OffContent="" IsOn="{x:Bind ViewModel.StartWithWindows, Mode=OneWay}" Toggled="OnStartupToggled" />
                         </Grid>
                     </Border>
+                    <!-- Crash reports: one pre-ticked option; unticking is one click -->
+                    <StackPanel Spacing="0">
+                        <CheckBox x:Name="CrashCheck" x:Uid="WelcomeCrashReports" IsChecked="{x:Bind ViewModel.SendCrashReports, Mode=OneTime}"
+                                  Click="OnCrashClicked" />
+                        <HyperlinkButton x:Name="CrashWhatsSent" x:Uid="CrashWhatsSent" Padding="28,2,0,2" />
+                    </StackPanel>
                 </StackPanel>
             </Grid>
         </ScrollViewer>

@@ -25,11 +25,19 @@ public sealed class AppStateStore : IAppState
         FirstRunDone = d.FirstRunDone;
         Appearance = d.Appearance ?? AppearancePrefs.Default;
         LastSeenVersion = d.LastSeenVersion;
+        SendCrashReports = d.SendCrashReports ?? true;
     }
 
     public bool FirstRunDone { get; private set; }
     public AppearancePrefs Appearance { get; private set; }
     public string? LastSeenVersion { get; private set; }
+    public bool SendCrashReports { get; private set; } = true;
+
+    public void SaveSendCrashReports(bool on)
+    {
+        SendCrashReports = on;
+        Write();
+    }
 
     public void MarkFirstRunDone()
     {
@@ -54,6 +62,7 @@ public sealed class AppStateStore : IAppState
         public bool FirstRunDone { get; set; }
         public AppearancePrefs? Appearance { get; set; }
         public string? LastSeenVersion { get; set; }
+        public bool? SendCrashReports { get; set; }
     }
 
     private void Write()
@@ -61,7 +70,7 @@ public sealed class AppStateStore : IAppState
         try
         {
             Directory.CreateDirectory(Path.GetDirectoryName(_path)!);
-            var data = new Data { FirstRunDone = FirstRunDone, Appearance = Appearance, LastSeenVersion = LastSeenVersion };
+            var data = new Data { FirstRunDone = FirstRunDone, Appearance = Appearance, LastSeenVersion = LastSeenVersion, SendCrashReports = SendCrashReports };
             File.WriteAllText(_path, JsonSerializer.Serialize(data, Json));
         }
         catch (IOException)

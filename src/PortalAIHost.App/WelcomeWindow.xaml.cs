@@ -31,6 +31,7 @@ public sealed partial class WelcomeWindow : Window
     {
         ViewModel = new FirstRunViewModel(_shell, AppServices.Ui, AppServices.Strings);
         InitializeComponent();
+        CrashWhatsSent.NavigateUri = new Uri(Links.PrivacyUrl);
         AppWindow.SetIcon(System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "portalaihost.ico"));
         // A plain drag strip with only the close button; the window cannot be resized, minimised or maximised.
         ExtendsContentIntoTitleBar = true;
@@ -258,6 +259,9 @@ public sealed partial class WelcomeWindow : Window
         if (StartupToggle.IsOn != ViewModel.StartWithWindows)
             await ViewModel.SetStartWithWindowsAsync(StartupToggle.IsOn);
     }
+
+    private async void OnCrashClicked(object sender, RoutedEventArgs e) =>
+        await ViewModel.SetSendCrashReportsAsync(CrashCheck.IsChecked == true);
 
     private void OnClosed(object sender, WindowEventArgs args)
     {

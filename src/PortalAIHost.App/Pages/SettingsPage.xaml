@@ -33,6 +33,18 @@
             </Border>
 
             <Grid>
+                <TextBlock x:Uid="SettingsPrivacyHeader" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center" />
+                <HyperlinkButton x:Uid="SettingsResetPrivacy" Command="{x:Bind ViewModel.ResetPrivacyCommand}" HorizontalAlignment="Right" />
+            </Grid>
+            <Border Style="{StaticResource CardBorder}">
+                <StackPanel Spacing="8">
+                    <ToggleSwitch x:Uid="SettingsCrashReports" IsOn="{x:Bind ViewModel.SendCrashReports, Mode=TwoWay}" />
+                    <TextBlock x:Uid="SettingsCrashReportsHelp" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <HyperlinkButton x:Name="CrashWhatsSent" x:Uid="CrashWhatsSent" Padding="0,4" />
+                </StackPanel>
+            </Border>
+
+            <Grid>
                 <TextBlock x:Uid="SettingsModelsHeader" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center" />
                 <HyperlinkButton x:Uid="SettingsResetFolder" Command="{x:Bind ViewModel.ResetFolderCommand}" HorizontalAlignment="Right" />
             </Grid>

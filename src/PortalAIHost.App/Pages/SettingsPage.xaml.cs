@@ -13,6 +13,7 @@ public sealed partial class SettingsPage : Page
     {
         ViewModel = new SettingsViewModel(AppServices.Shell, AppServices.Ui, AppServices.Strings, AppServices.Dialogs, AppServices.Startup, AppServices.Appearance);
         InitializeComponent();
+        CrashWhatsSent.NavigateUri = new Uri(Links.PrivacyUrl);
         ViewModel.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(SettingsViewModel.MessageKind)) ShowSeverity();

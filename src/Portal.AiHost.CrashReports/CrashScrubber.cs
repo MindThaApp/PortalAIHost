@@ -17,10 +17,10 @@ public static partial class CrashScrubber
     /// <summary>Quoted text longer than this is treated as user text and removed.</summary>
     private const int MaxQuoted = 24;
 
-    [GeneratedRegex(@"[A-Za-z]:[\/][^\r\n""'<>|*?]*", RegexOptions.CultureInvariant)]
+    [GeneratedRegex(@"[A-Za-z]:[\\/][^\r\n""'<>|*?]*", RegexOptions.CultureInvariant)]
     private static partial Regex DrivePath();
 
-    [GeneratedRegex(@"\\[^\s\/]+[\/][^\r\n""'<>|*?]*", RegexOptions.CultureInvariant)]
+    [GeneratedRegex(@"\\\\[^\s\\/]+[\\/][^\r\n""'<>|*?]*", RegexOptions.CultureInvariant)]
     private static partial Regex UncPath();
 
     [GeneratedRegex(@"(?<![\w.:])/(?:[\w.\-]+/)+[\w.\-]*", RegexOptions.CultureInvariant)]
@@ -35,7 +35,7 @@ public static partial class CrashScrubber
     [GeneratedRegex(@"https?://\S+", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase)]
     private static partial Regex Url();
 
-    [GeneratedRegex("\"([^\"\r\n]{" + "25" + ",})\"|'([^'\r\n]{" + "25" + ",})'", RegexOptions.CultureInvariant)]
+    [GeneratedRegex("\"([^\"\r\n]{25,})\"|'([^'\r\n]{25,})'", RegexOptions.CultureInvariant)]
     private static partial Regex LongQuoted();
 
     /// <summary>Cleans one piece of text. Never returns more than <see cref="MaxMessageLength"/> characters.</summary>

@@ -56,11 +56,38 @@ public sealed partial class ShellViewModel : ObservableObject, IDisposable
     /// <summary>Set by the window: shows the approval prompt. Returns true for Allow, false for Deny, null when closed without an answer.</summary>
     public Func<PendingApproval, Task<bool?>>? ApprovalPresenter { get; set; }
 
+    /// <summary>Set by the app: starts or stops sending crash reports in this process at once.</summary>
+    public Action<bool>? CrashReportsApplier { get; set; }
+
+    /// <summary>Saves the person's crash-report choice, applies it here at once and tells the host. Never asks again.</summary>
+    public async Task SetSendCrashReportsAsync(bool on)
+    {
+        State.SaveSendCrashReports(on);
+        CrashReportsApplier?.Invoke(on);
+        await SyncCrashReportsAsync().ConfigureAwait(false);
+    }
+
+    /// <summary>Makes the host follow the window's choice. The host being away is fine: it is synced on the next connect.</summary>
+    public async Task SyncCrashReportsAsync()
+    {
+        try
+        {
+            var s = await _host.GetSettingsAsync(_cts.Token).ConfigureAwait(false);
+            if (s.SendCrashReports == State.SendCrashReports) return;
+            s.SendCrashReports = State.SendCrashReports;
+            await _host.SetSettingsAsync(s, _cts.Token).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is HostUnavailableException or HostRequestException or OperationCanceledException)
+        {
+        }
+    }
+
     public async Task InitializeAsync()
     {
         await RefreshAsync().ConfigureAwait(false);
         if (!Snapshot.Connected)
             await StartHostAsync().ConfigureAwait(false);
+        await SyncCrashReportsAsync().ConfigureAwait(false);
         _ui.Post(() => ShowFirstRun = !State.FirstRunDone && NeedsSetup(Snapshot));
         _ = PollAsync();
     }

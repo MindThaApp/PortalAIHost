@@ -142,4 +142,8 @@ public interface IAppState
     /// <summary>Version whose What's new was last shown, or null when none was.</summary>
     string? LastSeenVersion { get; }
     void MarkVersionSeen(string version);
+
+    /// <summary>Send scrubbed crash reports. On unless the person turned it off.</summary>
+    bool SendCrashReports { get; }
+    void SaveSendCrashReports(bool on);
 }

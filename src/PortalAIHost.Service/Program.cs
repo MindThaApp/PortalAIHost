@@ -97,6 +97,12 @@ internal static class Program
             return 0;
         }
 
+        if (!paths.TestMode)
+        {
+            CrashReporting.Start("host", typeof(Program).Assembly.GetName().Version?.ToString(3) ?? "1.0.0", shell.Settings.Current.SendCrashReports);
+            shell.Settings.Changed += (_, s) => CrashReporting.SetEnabled(s.SendCrashReports);
+        }
+
         shell.ShowRequested += (_, page) => OpenWindow(paths, page);
         if (launch == LaunchMode.Open && LaunchArgs.IsProtocol(args))
         {

@@ -265,6 +265,9 @@ public sealed class HostSettings
 
     public int MaxMemoryPercent { get; set; } = 80;
     public bool PreventSleepWhileDownloading { get; set; } = true;
+
+    /// <summary>Send scrubbed crash reports. On unless the user turns it off; the host follows the window's choice.</summary>
+    public bool SendCrashReports { get; set; } = true;
     public long? BandwidthCapBytesPerSecond { get; init; }
 
     /// <summary>Per model kind: keep loaded and idle timeout.</summary>

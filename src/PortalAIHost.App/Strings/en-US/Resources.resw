@@ -257,6 +257,18 @@ Esc: close What's new or a dialog</value></data>
   <data name="SettingsGeneralHeader.Text" xml:space="preserve"><value>General</value></data>
   <data name="SettingsResetGeneral.Content" xml:space="preserve"><value>Reset to default</value></data>
   <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Reset general settings to default</value></data>
+  <data name="SettingsPrivacyHeader.Text" xml:space="preserve"><value>Privacy</value></data>
+  <data name="SettingsResetPrivacy.Content" xml:space="preserve"><value>Reset to default</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Reset to default, privacy settings</value></data>
+  <data name="SettingsCrashReports.Header" xml:space="preserve"><value>Send crash reports</value></data>
+  <data name="SettingsCrashReports.OnContent" xml:space="preserve"><value>On</value></data>
+  <data name="SettingsCrashReports.OffContent" xml:space="preserve"><value>Off</value></data>
+  <data name="SettingsCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Send crash reports</value></data>
+  <data name="SettingsCrashReportsHelp.Text" xml:space="preserve"><value>If Portal AI Host crashes, a short report helps us fix it fast. Reports never include your files or what you type. Turning this off stops them straight away.</value></data>
+  <data name="CrashWhatsSent.Content" xml:space="preserve"><value>What's sent</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>What's sent, opens the privacy page</value></data>
+  <data name="WelcomeCrashReports.Content" xml:space="preserve"><value>Send crash reports so we can fix problems fast. They never include your files or what you type.</value></data>
+  <data name="WelcomeCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Send crash reports so we can fix problems fast. They never include your files or what you type.</value></data>
   <data name="SettingsModelsHeader.Text" xml:space="preserve"><value>Models folder</value></data>
   <data name="SettingsResetFolder.Content" xml:space="preserve"><value>Reset to default</value></data>
   <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Reset models folder to default</value></data>

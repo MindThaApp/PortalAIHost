@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.ApplicationModel.Resources;
 using Portal.AiHost.Contracts.Control;
+using Portal.AiHost.CrashReports;
 using PortalAIHost.App.ViewModels;
 
 namespace PortalAIHost.App.Services;
@@ -48,7 +49,13 @@ public static class AppServices
             if (AppOptions.StateFolder is { Length: > 0 } custom) stateFolder = custom;
         }
         IAppState state = AppOptions.SkipFirstRun ? new FixedAppState(true) : new AppStateStore(stateFolder);
-        Shell = new ShellViewModel(Host, launcher, Ui, Strings, state);
+        Shell = new ShellViewModel(Host, launcher, Ui, Strings, state)
+        {
+            CrashReportsApplier = CrashReporting.SetEnabled,
+        };
+        // Not for fake or check runs, which never send anything.
+        if (AppOptions.Fake is null && !AppOptions.SkipFirstRun)
+            CrashReporting.Start("app", typeof(AppServices).Assembly.GetName().Version?.ToString(3) ?? "1.0.0", state.SendCrashReports);
     }
 
     /// <summary>Packaged installs register portal-ai-host:start; unpackaged runs have nothing to launch.</summary>
@@ -70,6 +77,8 @@ public static class AppServices
         public FixedAppState(bool done) => FirstRunDone = done;
         public bool FirstRunDone { get; private set; }
         public void MarkFirstRunDone() => FirstRunDone = true;
+        public bool SendCrashReports { get; private set; } = true;
+        public void SaveSendCrashReports(bool on) => SendCrashReports = on;
         public AppearancePrefs Appearance { get; private set; } = AppearancePrefs.Default;
         public void SaveAppearance(AppearancePrefs prefs) => Appearance = prefs;
         public string? LastSeenVersion { get; private set; } = Links.AppVersion; // dev runs never open What's new by themselves

@@ -56,6 +56,7 @@ public sealed partial class SettingsViewModel : ObservableObject
     public IReadOnlyList<string> MotionChoices { get; }
 
     [ObservableProperty] private bool _startWithWindows;
+    [ObservableProperty] private bool _sendCrashReports = true;
     [ObservableProperty] private int _idleIndex = TenMinutesIndex;
     [ObservableProperty] private string _modelsFolder = "";
     [ObservableProperty] private string _folderPlaceholder = "";
@@ -175,6 +176,7 @@ public sealed partial class SettingsViewModel : ObservableObject
                 StartWithWindows = startup is StartupStates.Unavailable ? s.StartWithWindows
                     : startup is StartupStates.Enabled or StartupStates.EnabledByPolicy;
                 IdleIndex = IndexFor(s);
+                SendCrashReports = _shell.State.SendCrashReports;
                 ModelsFolder = s.ModelsFolder ?? "";
                 FolderPlaceholder = Fmt.PrivatePath(shownFolder);
                 Available = true;
@@ -213,6 +215,12 @@ public sealed partial class SettingsViewModel : ObservableObject
         await SaveAsync().ConfigureAwait(false);
     }
 
+    partial void OnSendCrashReportsChanged(bool value) { if (!_loading) _ = _shell.SetSendCrashReportsAsync(value); }
+
+    /// <summary>Puts the privacy choices back to their defaults (crash reports on).</summary>
+    [RelayCommand]
+    private void ResetPrivacy() => SendCrashReports = true;
+
     partial void OnIdleIndexChanged(int value) { if (!_loading && value >= 0) _ = SaveAsync(); }
 
     /// <summary>Builds the settings to send: the current ones with only the changed fields replaced.</summary>
@@ -231,6 +239,7 @@ public sealed partial class SettingsViewModel : ObservableObject
             ModelsFolder = folder ?? _current.ModelsFolder,
             MaxMemoryPercent = _current.MaxMemoryPercent,
             PreventSleepWhileDownloading = _current.PreventSleepWhileDownloading,
+            SendCrashReports = _shell.State.SendCrashReports,
             BandwidthCapBytesPerSecond = _current.BandwidthCapBytesPerSecond,
             Kinds = kinds,
         };

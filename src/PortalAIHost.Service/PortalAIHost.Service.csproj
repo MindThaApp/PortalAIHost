@@ -18,6 +18,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Portal.AiHost.Server\Portal.AiHost.Server.csproj" />
+    <ProjectReference Include="..\Portal.AiHost.CrashReports\Portal.AiHost.CrashReports.csproj" />
     <ProjectReference Include="..\Portal.AiHost.Engine\Portal.AiHost.Engine.csproj" />
     <ProjectReference Include="..\Portal.AiHost.Platform.Windows\Portal.AiHost.Platform.Windows.csproj" />
   </ItemGroup>
