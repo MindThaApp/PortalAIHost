@@ -11,7 +11,7 @@ public static class Links
     public const string LlamaCppUrl = "https://github.com/ggml-org/llama.cpp";
 
     /// <summary>The release whose What's new notes ship in this build.</summary>
-    public const string WhatsNewVersion = "1.0";
+    public const string WhatsNewVersion = "1.0.2";
 
     /// <summary>Version as three numbers, for example 1.0.0.</summary>
     public static string AppVersion

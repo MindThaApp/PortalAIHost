@@ -333,14 +333,14 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</value></data>
   <data name="Vm_WhatsNewHeading" xml:space="preserve"><value>What's new in Portal AI Host {0}</value></data>
-  <data name="Vm_Wn1Title" xml:space="preserve"><value>Your own AI, on your PC</value></data>
-  <data name="Vm_Wn1Body" xml:space="preserve"><value>Portal AI Host runs a language model on this PC. Portal apps you approve can use it, and what you type to it stays on your PC.</value></data>
-  <data name="Vm_Wn2Title" xml:space="preserve"><value>A model chosen for your PC</value></data>
-  <data name="Vm_Wn2Body" xml:space="preserve"><value>Get the recommended model in one click, see how big it is, and remove it again to free the space.</value></data>
-  <data name="Vm_Wn3Title" xml:space="preserve"><value>You decide which apps can use it</value></data>
-  <data name="Vm_Wn3Body" xml:space="preserve"><value>Approve a request when an app asks, and remove access at any time. Removing access can be undone for a few seconds.</value></data>
-  <data name="Vm_Wn4Title" xml:space="preserve"><value>Make it yours</value></data>
-  <data name="Vm_Wn4Body" xml:space="preserve"><value>Choose the theme, window material, corner style, density and text size in Settings, with a reset button for each section.</value></data>
+  <data name="Vm_Wn1Title" xml:space="preserve"><value>See what's happening</value></data>
+  <data name="Vm_Wn1Body" xml:space="preserve"><value>Home now shows which app is using AI right now, how fast it answers, how much memory the model uses, and how often each app asked today. Unload or load the model with one click.</value></data>
+  <data name="Vm_Wn2Title" xml:space="preserve"><value>A quick look from the tray</value></data>
+  <data name="Vm_Wn2Body" xml:space="preserve"><value>Click the tray icon to see whether the AI is ready, which model is loaded and the last request, without opening the window.</value></data>
+  <data name="Vm_Wn3Title" xml:space="preserve"><value>Crash reports help us fix problems</value></data>
+  <data name="Vm_Wn3Body" xml:space="preserve"><value>If something goes wrong, a short report tells us where it happened. It never includes what you type, file names or your name. Turn it off in Settings under Privacy.</value></data>
+  <data name="Vm_Wn4Title" xml:space="preserve"><value>Smoother and steadier</value></data>
+  <data name="Vm_Wn4Body" xml:space="preserve"><value>Calmer animations, a safer model folder that only Portal AI Host can change, and many small fixes.</value></data>
   <data name="Vm_WnShowMe" xml:space="preserve"><value>Show me</value></data>
   <data name="Vm_WnShowMeName" xml:space="preserve"><value>Show me: {0}</value></data>
   <data name="WhatsNewDone.Content" xml:space="preserve"><value>Got it</value></data>

@@ -48,8 +48,8 @@ public sealed class WhatsNewViewModel
         Cards = new[]
         {
             Card(s, "Vm_Wn1", "home"),
-            Card(s, "Vm_Wn2", "models"),
-            Card(s, "Vm_Wn3", "apps"),
+            Card(s, "Vm_Wn2", "home"),
+            Card(s, "Vm_Wn3", "settings"),
             Card(s, "Vm_Wn4", "settings"),
         };
     }
