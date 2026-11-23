@@ -17,6 +17,7 @@
     <SelfContained>true</SelfContained>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\portalaihost.ico</ApplicationIcon>
     <NoWarn>$(NoWarn);MVVMTK0045</NoWarn>
     <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
   </PropertyGroup>
@@ -25,6 +26,7 @@
     <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == '' and '$(Platform)' == 'ARM64'">win-arm64</RuntimeIdentifier>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="Assets\portalaihost.ico" CopyToOutputDirectory="PreserveNewest" />
     <PackageReference Include="Microsoft.WindowsAppSDK.WinUI" VersionOverride="2.3.9" />
     <PackageReference Include="Microsoft.WindowsAppSDK.Foundation" VersionOverride="2.3.12" />
     <PackageReference Include="Microsoft.WindowsAppSDK.InteractiveExperiences" VersionOverride="2.1.9" />

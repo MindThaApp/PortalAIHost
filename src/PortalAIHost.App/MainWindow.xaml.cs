@@ -18,6 +18,7 @@ public sealed partial class MainWindow : Window, IAppearanceApplier
     public MainWindow()
     {
         InitializeComponent();
+        AppWindow.SetIcon(System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "portalaihost.ico"));
         Title = AppServices.Strings.Get("Vm_AppTitle");
         TitleText.Text = Title;
         Microsoft.UI.Xaml.Controls.ToolTipService.SetToolTip(AppMenuButton, AppServices.Strings.Get("Vm_AppMenuTip"));
