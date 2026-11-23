@@ -58,6 +58,12 @@ public sealed partial class CatalogueEntry
     public string MinHostVersion { get; set; } = "1.0.0";
     public RecommendedSampling? RecommendedSampling { get; init; }
 
+    /// <summary>
+    /// Optional plain-language guidance for people choosing a model (null when the catalogue has none). It is part
+    /// of the signed catalogue, so changing it needs the catalogue to be signed again.
+    /// </summary>
+    public CatalogueAdvice? Advice { get; init; }
+
     /// <summary>Free text for maintainers (sources, which numbers are estimates).</summary>
     public string? Notes { get; init; }
 
@@ -130,6 +136,22 @@ public sealed class ModelMemory
 
     /// <summary>Compute buffers on the device that runs the model.</summary>
     public long ComputeOverheadBytes { get; init; }
+}
+
+/// <summary>User-facing guidance for one model. Every field is optional; apps show what is present.</summary>
+public sealed class CatalogueAdvice
+{
+    /// <summary>One sentence on what the model is good at.</summary>
+    public string? Summary { get; init; }
+
+    /// <summary>Short tasks it suits, for example "everyday chat", "long documents", "writing code".</summary>
+    public List<string> GoodFor { get; init; } = new();
+
+    /// <summary>Short honest limits, for example "slow on laptops without a graphics card".</summary>
+    public List<string> Caveats { get; init; } = new();
+
+    /// <summary>Rough kind of PC it is meant for, for example "8 GB laptop" or "gaming PC".</summary>
+    public string? Hardware { get; init; }
 }
 
 public sealed class ModelFeatures
