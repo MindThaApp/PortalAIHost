@@ -8,7 +8,10 @@ namespace Portal.AiHost.Core.Store;
 public sealed class StoreSafetyException(string message) : IOException(message);
 
 /// <summary>Thrown when a folder cannot be used as a store (no marker, foreign marker, FAT32 ...).</summary>
-public sealed class StoreRefusedException(string message) : IOException(message);
+public class StoreRefusedException(string message) : IOException(message);
+
+/// <summary>The store is open elsewhere (another process or store object); it may be free again shortly.</summary>
+public sealed class StoreLockedException(string message) : StoreRefusedException(message);
 
 /// <summary>Free space and file system of the volume that holds a path. Faked in tests.</summary>
 public interface IDiskInfo
@@ -49,9 +52,108 @@ public sealed class SystemDiskInfo : IDiskInfo
 
 internal sealed class StoreMarker
 {
-    public string Kind { get; set; } = OwnedFolder.MarkerKind;
+    public string Kind { get; set; } = StoreOptions.DefaultMarkerKind;
     public Guid StoreId { get; init; }
     public DateTimeOffset Created { get; init; }
+}
+
+/// <summary>
+/// Names that identify a store: the folder name used inside a chosen parent folder, the marker file name and the
+/// marker kind written inside it. Two stores with different options never adopt each other's folders. The defaults
+/// are Portal AI Host's own values. Another app must use <see cref="ForApp"/>, which derives all three together, so
+/// it can never open the host's store (or the other way round). Options that differ from the defaults but keep the
+/// default marker file name or kind are refused.
+/// </summary>
+public sealed partial record StoreOptions
+{
+    public const string DefaultFolderName = Portal.AiHost.Contracts.HostFolders.ModelsSubfolder;
+    public const string DefaultMarkerFileName = ".portal-ai-host-store";
+    public const string DefaultMarkerKind = "portal-ai-host-store";
+
+    public static StoreOptions Default { get; } = new();
+
+    /// <summary>Subfolder created inside the user's chosen parent folder.</summary>
+    public string FolderName { get; init; } = DefaultFolderName;
+
+    /// <summary>Marker file at the store root; a folder without it is never adopted.</summary>
+    public string MarkerFileName { get; init; } = DefaultMarkerFileName;
+
+    /// <summary>Kind string stored inside the marker; a marker with another kind is not this store's.</summary>
+    public string MarkerKind { get; init; } = DefaultMarkerKind;
+
+    /// <summary>
+    /// Options for another app's own store. <paramref name="appKey"/> is lower-case letters, digits and hyphens
+    /// (for example "voice-portal"); the folder is "&lt;appKey&gt; Models", the marker file ".&lt;appKey&gt;-store" and the kind
+    /// "&lt;appKey&gt;-store". The host's own key ("portal-ai-host") is refused.
+    /// </summary>
+    public static StoreOptions ForApp(string appKey)
+    {
+        if (appKey is null || !AppKeyPattern().IsMatch(appKey) || appKey.EndsWith('-') || appKey.Contains("--", StringComparison.Ordinal))
+        {
+            throw new ArgumentException("The app key must be lower-case letters, digits and single hyphens (at most 48 characters).", nameof(appKey));
+        }
+
+        var options = new StoreOptions
+        {
+            FolderName = appKey + " Models",
+            MarkerFileName = "." + appKey + "-store",
+            MarkerKind = appKey + "-store",
+        };
+        options.Validate();
+        return options;
+    }
+
+    internal void Validate()
+    {
+        if (FolderName is null || MarkerFileName is null || MarkerKind is null)
+        {
+            throw new ArgumentException("Store names must not be empty.");
+        }
+
+        if (!FolderPattern().IsMatch(FolderName) || FolderName.EndsWith('.') || FolderName.EndsWith(' ')
+            || FolderName is "." or ".." || OwnedFolder.IsReservedDeviceName(FolderName) || IsInternalName(FolderName))
+        {
+            throw new ArgumentException("The store folder name must be a plain, safe folder name.");
+        }
+
+        if (!MarkerPattern().IsMatch(MarkerFileName) || IsInternalName(MarkerFileName))
+        {
+            throw new ArgumentException("The store marker name must be a plain dotted name such as '.my-app-store'.");
+        }
+
+        if (!KindPattern().IsMatch(MarkerKind))
+        {
+            throw new ArgumentException("The store marker kind must be lower-case letters, digits and hyphens.");
+        }
+
+        if (!Equals(Default)
+            && (string.Equals(MarkerFileName, DefaultMarkerFileName, StringComparison.OrdinalIgnoreCase)
+                || string.Equals(MarkerKind, DefaultMarkerKind, StringComparison.Ordinal)))
+        {
+            throw new ArgumentException(
+                "Custom store options must not reuse the default marker name or kind. Use StoreOptions.ForApp(appKey).");
+        }
+    }
+
+    private static bool IsInternalName(string name) =>
+        name.Equals("store.json", StringComparison.OrdinalIgnoreCase)
+        || name.Equals("store.json.tmp", StringComparison.OrdinalIgnoreCase)
+        || name.Equals(OwnedFolder.LockFileName, StringComparison.OrdinalIgnoreCase)
+        || name.EndsWith(".part", StringComparison.OrdinalIgnoreCase)
+        || name.EndsWith(".json", StringComparison.OrdinalIgnoreCase)
+        || name.EndsWith(".tmp", StringComparison.OrdinalIgnoreCase);
+
+    [System.Text.RegularExpressions.GeneratedRegex("^[a-z0-9][a-z0-9-]{0,47}$")]
+    private static partial System.Text.RegularExpressions.Regex AppKeyPattern();
+
+    [System.Text.RegularExpressions.GeneratedRegex("^[A-Za-z0-9][A-Za-z0-9 ._()-]{0,99}$")]
+    private static partial System.Text.RegularExpressions.Regex FolderPattern();
+
+    [System.Text.RegularExpressions.GeneratedRegex("^[.][a-z0-9][a-z0-9-]{0,63}$")]
+    private static partial System.Text.RegularExpressions.Regex MarkerPattern();
+
+    [System.Text.RegularExpressions.GeneratedRegex("^[a-z0-9][a-z0-9-]{0,63}$")]
+    private static partial System.Text.RegularExpressions.Regex KindPattern();
 }
 
 /// <summary>
@@ -63,18 +165,21 @@ internal sealed class StoreMarker
 /// </summary>
 internal sealed class OwnedFolder
 {
-    public const string MarkerFileName = ".portal-ai-host-store";
     public const string ManifestFileName = "store.json";
-    public const string MarkerKind = "portal-ai-host-store";
+    public const string LockFileName = ".store-lock";
 
     private static readonly StringComparison PathComparison =
         OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
-    public OwnedFolder(string root, Guid storeId)
+    public OwnedFolder(string root, Guid storeId, StoreOptions? options = null)
     {
         Root = Normalize(root);
         StoreId = storeId;
+        Options = options ?? StoreOptions.Default;
     }
+
+    public StoreOptions Options { get; }
+    public string MarkerFileName => Options.MarkerFileName;
 
     public string Root { get; }
     public Guid StoreId { get; }
@@ -86,9 +191,10 @@ internal sealed class OwnedFolder
         Path.TrimEndingDirectorySeparator(Path.GetFullPath(path));
 
     /// <summary>Reads the marker GUID of a folder, or null when the folder carries no valid marker.</summary>
-    public static Guid? ReadMarker(string root)
+    public static Guid? ReadMarker(string root, StoreOptions? options = null)
     {
-        var marker = Path.Combine(Normalize(root), MarkerFileName);
+        options ??= StoreOptions.Default;
+        var marker = Path.Combine(Normalize(root), options.MarkerFileName);
         var info = new FileInfo(marker);
         if (!info.Exists || info.LinkTarget is not null || IsLinkedDirectory(new DirectoryInfo(Normalize(root))))
         {
@@ -98,7 +204,7 @@ internal sealed class OwnedFolder
         try
         {
             var m = JsonSerializer.Deserialize(File.ReadAllBytes(marker), StoreJsonContext.Default.StoreMarker);
-            return m is { Kind: MarkerKind } && m.StoreId != Guid.Empty ? m.StoreId : null;
+            return m is { } && m.Kind == options.MarkerKind && m.StoreId != Guid.Empty ? m.StoreId : null;
         }
         catch (JsonException)
         {
@@ -107,7 +213,7 @@ internal sealed class OwnedFolder
     }
 
     /// <summary>Creates a brand-new store folder with a fresh marker. Fails if anything already exists there.</summary>
-    public static OwnedFolder CreateNew(string root)
+    public static OwnedFolder CreateNew(string root, StoreOptions? options = null)
     {
         root = Normalize(root);
         if (Directory.Exists(root) || File.Exists(root))
@@ -116,9 +222,9 @@ internal sealed class OwnedFolder
         }
 
         Directory.CreateDirectory(root);
-        var folder = new OwnedFolder(root, Guid.NewGuid());
+        var folder = new OwnedFolder(root, Guid.NewGuid(), options);
         var bytes = JsonSerializer.SerializeToUtf8Bytes(
-            new StoreMarker { StoreId = folder.StoreId, Created = DateTimeOffset.UtcNow }, StoreJsonContext.Default.StoreMarker);
+            new StoreMarker { Kind = folder.Options.MarkerKind, StoreId = folder.StoreId, Created = DateTimeOffset.UtcNow }, StoreJsonContext.Default.StoreMarker);
         using (var fs = new FileStream(folder.MarkerPath, FileMode.CreateNew, FileAccess.Write))
         {
             fs.Write(bytes);
@@ -127,9 +233,33 @@ internal sealed class OwnedFolder
         return folder;
     }
 
+    /// <summary>
+    /// Takes an exclusive lock for as long as the returned stream is open, so two processes (or two store objects)
+    /// never work in one store at the same time. The lock file is created by this store inside its own root and
+    /// disappears when the lock is released. Refused when someone else holds it.
+    /// </summary>
+    public FileStream AcquireLock()
+    {
+        AssertMarker();
+        var path = Path.Combine(Root, LockFileName);
+        if (new FileInfo(path).LinkTarget is not null)
+        {
+            throw new StoreSafetyException("The store lock is a link; the store was not opened.");
+        }
+
+        try
+        {
+            return new FileStream(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 1, FileOptions.DeleteOnClose);
+        }
+        catch (IOException ex)
+        {
+            throw new StoreLockedException("This model store is already open in another window or process, so it was not opened again. " + ex.Message);
+        }
+    }
+
     public void AssertMarker()
     {
-        if (ReadMarker(Root) != StoreId)
+        if (ReadMarker(Root, Options) != StoreId)
         {
             throw new StoreSafetyException($"Store marker missing or changed in '{Root}'; nothing was touched.");
         }
@@ -339,12 +469,12 @@ internal sealed class OwnedFolder
     /// Final step of removing a whole store folder the host created: deletes store.json and the marker, then the
     /// folder, and only when nothing else is left in it.
     /// </summary>
-    public bool TryRetireEmptyStore()
+    public bool TryRetireEmptyStore(bool ownLockHeld = false)
     {
         AssertMarker();
         var leftovers = Directory.EnumerateFileSystemEntries(Root)
             .Select(Path.GetFileName)
-            .Where(n => n is not (MarkerFileName or ManifestFileName))
+            .Where(n => n != MarkerFileName && n != ManifestFileName && !(ownLockHeld && n == LockFileName))
             .ToList();
         if (leftovers.Count > 0)
         {
@@ -360,6 +490,15 @@ internal sealed class OwnedFolder
         }
 
         return true;
+    }
+
+    /// <summary>After <see cref="TryRetireEmptyStore"/> with the caller's own lock released: removes the now empty folder (never recursive).</summary>
+    public void TryRemoveEmptyRootAfterRetire()
+    {
+        if (Directory.Exists(Root) && !File.Exists(MarkerPath) && !Directory.EnumerateFileSystemEntries(Root).Any())
+        {
+            Directory.Delete(Root, recursive: false);
+        }
     }
 }
 

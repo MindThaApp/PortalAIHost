@@ -180,4 +180,17 @@ public class FakeEngineTests
         await engine.StartAsync(Spec(), CancellationToken.None);
         Assert.Equal(4, await engine.CountTokensAsync(new TokenizeRequest { Text = "a b c d" }, CancellationToken.None));
     }
+
+    [Fact]
+    public async Task PriorityIsRememberedAndAppliedOnlyWhileRunning()
+    {
+        await using var engine = new FakeEngineSupervisor();
+        Assert.Null(engine.RequestedPriority);
+        Assert.False(engine.SetPriority(System.Diagnostics.ProcessPriorityClass.BelowNormal));
+        Assert.Equal(System.Diagnostics.ProcessPriorityClass.BelowNormal, engine.RequestedPriority);
+
+        await engine.StartAsync(Spec(), CancellationToken.None);
+        Assert.True(engine.SetPriority(System.Diagnostics.ProcessPriorityClass.Normal));
+        Assert.Equal(System.Diagnostics.ProcessPriorityClass.Normal, engine.RequestedPriority);
+    }
 }

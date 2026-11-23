@@ -113,4 +113,14 @@ public interface IEngineSupervisor : IAsyncDisposable
 
     /// <summary>Counts tokens exactly as the loaded model would.</summary>
     Task<int> CountTokensAsync(TokenizeRequest request, CancellationToken ct);
+
+    /// <summary>
+    /// Sets the operating-system priority of the engine process, now and for every later restart. Lets a host lower
+    /// the engine (for example below normal while the user is working) or restore it. Returns false when there is no
+    /// process to change or the system refused; the wanted value is still remembered for the next start.
+    /// </summary>
+    bool SetPriority(System.Diagnostics.ProcessPriorityClass priority) => false;
+
+    /// <summary>The priority last requested, or null when none was.</summary>
+    System.Diagnostics.ProcessPriorityClass? RequestedPriority => null;
 }

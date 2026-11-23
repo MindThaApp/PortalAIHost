@@ -105,9 +105,9 @@ internal sealed class ManifestFile
 /// touched. Moves copy, verify by re-hashing the copy, switch, and leave the old copies until
 /// <see cref="RemoveOldCopiesAsync"/> is called.
 /// </summary>
-public sealed partial class ModelStore : IModelStoreWriter
+public sealed partial class ModelStore : IModelStoreWriter, IDisposable
 {
-    public const string UserFolderName = Portal.AiHost.Contracts.HostFolders.ModelsSubfolder;
+    public const string UserFolderName = StoreOptions.DefaultFolderName;
 
     private const long Fat32MaxFile = 4L * 1024 * 1024 * 1024 - 1;
     private readonly SemaphoreSlim _gate = new(1, 1);
@@ -116,8 +116,15 @@ public sealed partial class ModelStore : IModelStoreWriter
     private OwnedFolder _folder;
     private StoreManifest _manifest;
 
-    private ModelStore(OwnedFolder folder, StoreManifest manifest, IDiskInfo disk)
+    private readonly StoreOptions _options;
+
+    private FileStream _lock;
+    private volatile bool _disposed;
+
+    private ModelStore(OwnedFolder folder, StoreManifest manifest, IDiskInfo disk, FileStream storeLock)
     {
+        _lock = storeLock;
+        _options = folder.Options;
         _folder = folder;
         _manifest = manifest;
         _disk = disk;
@@ -126,65 +133,95 @@ public sealed partial class ModelStore : IModelStoreWriter
     private static readonly StringComparison PathComparison =
         OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
+    /// <summary>Releases the store's exclusive lock so it can be opened again (by this or another process).</summary>
+    public void Dispose()
+    {
+        _disposed = true;
+        _lock.Dispose();
+    }
+
+    private async Task EnterGateAsync(CancellationToken ct)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        await _gate.WaitAsync(ct).ConfigureAwait(false);
+        if (_disposed)
+        {
+            _gate.Release();
+            throw new ObjectDisposedException(nameof(ModelStore));
+        }
+    }
+
     /// <summary>
     /// Opens the default store (LocalState\models): creates and marks it when missing, opens it when it carries
     /// a marker, and refuses an existing unmarked folder.
     /// </summary>
-    public static ModelStore OpenOrCreate(string storeFolder, IDiskInfo? disk = null)
+    public static ModelStore OpenOrCreate(string storeFolder, IDiskInfo? disk = null, StoreOptions? options = null)
     {
         disk ??= SystemDiskInfo.Instance;
+        options = Checked(options);
         var root = OwnedFolder.Normalize(storeFolder);
         if (!Directory.Exists(root))
         {
-            return CreateFresh(root, disk);
+            return CreateFresh(root, disk, options);
         }
 
-        return Open(root, disk);
+        return Open(root, disk, options);
     }
 
     /// <summary>Opens an existing marked store. An unmarked folder is refused.</summary>
-    public static ModelStore Open(string storeFolder, IDiskInfo? disk = null)
+    public static ModelStore Open(string storeFolder, IDiskInfo? disk = null, StoreOptions? options = null)
     {
         disk ??= SystemDiskInfo.Instance;
+        options = Checked(options);
         var root = OwnedFolder.Normalize(storeFolder);
-        var id = OwnedFolder.ReadMarker(root)
-            ?? throw new StoreRefusedException($"'{root}' is not a Portal AI Host store (no marker); it was not used.");
-        var folder = new OwnedFolder(root, id);
+        var id = OwnedFolder.ReadMarker(root, options)
+            ?? throw new StoreRefusedException($"'{root}' is not a model store of this app (no matching marker); it was not used.");
+        var folder = new OwnedFolder(root, id, options);
+        var storeLock = folder.AcquireLock(); // before store.json is read, so nobody changes it meanwhile
         StoreManifest manifest;
-        if (File.Exists(folder.ManifestPath))
+        try
         {
-            try
+            if (File.Exists(folder.ManifestPath))
             {
-                manifest = JsonSerializer.Deserialize(File.ReadAllBytes(folder.ManifestPath), StoreJsonContext.Default.StoreManifest)
-                    ?? throw new StoreRefusedException("store.json is empty.");
+                try
+                {
+                    manifest = JsonSerializer.Deserialize(File.ReadAllBytes(folder.ManifestPath), StoreJsonContext.Default.StoreManifest)
+                        ?? throw new StoreRefusedException("store.json is empty.");
+                }
+                catch (JsonException ex)
+                {
+                    // Never repaired or deleted automatically: the inventory is the only proof of what the host created.
+                    throw new StoreRefusedException($"store.json in '{root}' is damaged ({ex.Message}); it was left in place.");
+                }
+                if (manifest.StoreId != id)
+                {
+                    throw new StoreRefusedException("store.json belongs to a different store than the marker.");
+                }
             }
-            catch (JsonException ex)
+            else
             {
-                // Never repaired or deleted automatically: the inventory is the only proof of what the host created.
-                throw new StoreRefusedException($"store.json in '{root}' is damaged ({ex.Message}); it was left in place.");
-            }
-            if (manifest.StoreId != id)
-            {
-                throw new StoreRefusedException("store.json belongs to a different store than the marker.");
+                manifest = new StoreManifest { StoreId = id };
             }
         }
-        else
+        catch
         {
-            manifest = new StoreManifest { StoreId = id };
+            storeLock.Dispose();
+            throw;
         }
 
-        return new ModelStore(folder, manifest, disk);
+        return new ModelStore(folder, manifest, disk, storeLock);
     }
 
     /// <summary>
     /// Creates a new store in a user-chosen parent folder: always a new subfolder "Portal AI Host Models"
     /// (or "Portal AI Host Models (2)" ...), never an existing folder. FAT32 is refused.
     /// </summary>
-    public static ModelStore CreateInParent(string parentFolder, IDiskInfo? disk = null)
+    public static ModelStore CreateInParent(string parentFolder, IDiskInfo? disk = null, StoreOptions? options = null)
     {
         disk ??= SystemDiskInfo.Instance;
-        var root = PickNewStoreFolder(parentFolder, disk);
-        return CreateFresh(root, disk);
+        options = Checked(options);
+        var root = PickNewStoreFolder(parentFolder, disk, options);
+        return CreateFresh(root, disk, options);
     }
 
     /// <summary>
@@ -192,16 +229,25 @@ public sealed partial class ModelStore : IModelStoreWriter
     /// marker), otherwise creates it with the same checks as <see cref="CreateInParent"/>. Missing parents are
     /// never created, and an existing unmarked folder is refused.
     /// </summary>
-    public static ModelStore OpenOrCreateInParent(string parentFolder, IDiskInfo? disk = null)
+    public static ModelStore OpenOrCreateInParent(string parentFolder, IDiskInfo? disk = null, StoreOptions? options = null)
     {
         disk ??= SystemDiskInfo.Instance;
+        options = Checked(options);
         var parent = CheckedParent(parentFolder, disk);
-        var root = StoreFolderIn(parent);
-        return Directory.Exists(root) ? Open(root, disk) : CreateFresh(root, disk);
+        var root = StoreFolderIn(parent, options);
+        return Directory.Exists(root) ? Open(root, disk, options) : CreateFresh(root, disk, options);
     }
 
     /// <summary>The store folder the host uses inside a chosen models folder.</summary>
-    public static string StoreFolderIn(string parentFolder) => Path.Combine(OwnedFolder.Normalize(parentFolder), UserFolderName);
+    public static string StoreFolderIn(string parentFolder, StoreOptions? options = null) =>
+        Path.Combine(OwnedFolder.Normalize(parentFolder), (options ?? StoreOptions.Default).FolderName);
+
+    private static StoreOptions Checked(StoreOptions? options)
+    {
+        options ??= StoreOptions.Default;
+        options.Validate();
+        return options;
+    }
 
     /// <summary>Plain-language reason a folder cannot hold a new store (missing, FAT32), or null when it can. Reads only.</summary>
     public static string? CheckParentFolder(string parentFolder, IDiskInfo? disk = null)
@@ -238,14 +284,23 @@ public sealed partial class ModelStore : IModelStoreWriter
         return parent;
     }
 
-    private static string PickNewStoreFolder(string parentFolder, IDiskInfo disk) =>
-        UniquePath(Path.Combine(CheckedParent(parentFolder, disk), UserFolderName));
+    private static string PickNewStoreFolder(string parentFolder, IDiskInfo disk, StoreOptions options) =>
+        UniquePath(Path.Combine(CheckedParent(parentFolder, disk), options.FolderName));
 
-    private static ModelStore CreateFresh(string root, IDiskInfo disk)
+    private static ModelStore CreateFresh(string root, IDiskInfo disk, StoreOptions options)
     {
-        var folder = OwnedFolder.CreateNew(root);
-        var store = new ModelStore(folder, new StoreManifest { StoreId = folder.StoreId }, disk);
-        store.SaveManifest();
+        var folder = OwnedFolder.CreateNew(root, options);
+        var store = new ModelStore(folder, new StoreManifest { StoreId = folder.StoreId }, disk, folder.AcquireLock());
+        try
+        {
+            store.SaveManifest();
+        }
+        catch
+        {
+            store.Dispose();
+            throw;
+        }
+
         return store;
     }
 
@@ -257,7 +312,7 @@ public sealed partial class ModelStore : IModelStoreWriter
 
     public async Task<IReadOnlyList<StoredModel>> ListAsync(CancellationToken ct)
     {
-        await _gate.WaitAsync(ct).ConfigureAwait(false);
+        await EnterGateAsync(ct).ConfigureAwait(false);
         try
         {
             return _manifest.Models.Select(ToStored).ToList();
@@ -270,7 +325,7 @@ public sealed partial class ModelStore : IModelStoreWriter
 
     public async Task<StoredModel?> GetAsync(string modelId, CancellationToken ct)
     {
-        await _gate.WaitAsync(ct).ConfigureAwait(false);
+        await EnterGateAsync(ct).ConfigureAwait(false);
         try
         {
             var m = Find(modelId);
@@ -350,11 +405,20 @@ public sealed partial class ModelStore : IModelStoreWriter
         });
 
     public Task<StoredFile> CommitFileAsync(string modelId, string partPath, string sha256, CancellationToken ct) =>
+        CommitFileAsync(modelId, partPath, sha256, null, ct);
+
+    /// <summary>Commits a finished part. When <paramref name="expectedSize"/> is given, a part of another size is refused and kept.</summary>
+    public Task<StoredFile> CommitFileAsync(string modelId, string partPath, string sha256, long? expectedSize, CancellationToken ct) =>
         Locked(ct, () =>
         {
             var (_, f) = FindPart(modelId, partPath);
             _folder.AssertMarker();
             var partFull = _folder.Resolve(f.PartPath!);
+            if (expectedSize is { } want && new FileInfo(partFull).Length != want)
+            {
+                throw new StoreSafetyException($"'{Path.GetFileName(partFull)}' is not the expected size; it was not committed.");
+            }
+
             var finalFull = _folder.Resolve(f.Path);
             if (Exists(finalFull))
             {
@@ -396,6 +460,11 @@ public sealed partial class ModelStore : IModelStoreWriter
                 SaveManifest();
             }
         });
+
+    /// <summary>True when a store file or part has this file id (a hard link into the store would match).</summary>
+    internal Task<bool> HasFileIdAsync(string fileId, CancellationToken ct) =>
+        Locked(ct, () => _manifest.Models.SelectMany(m => m.Files)
+            .Any(f => string.Equals(f.FileId, fileId, StringComparison.Ordinal) || string.Equals(f.PartFileId, fileId, StringComparison.Ordinal)));
 
     public IDisposable AcquireDownload(string modelId)
     {
@@ -471,7 +540,7 @@ public sealed partial class ModelStore : IModelStoreWriter
     public async Task<StoredFile?> TryAdoptExistingAsync(string modelId, string fileName, string sha256, long size, CancellationToken ct)
     {
         AssertSafeFileName(fileName);
-        await _gate.WaitAsync(ct).ConfigureAwait(false);
+        await EnterGateAsync(ct).ConfigureAwait(false);
         try
         {
             var m = Find(modelId);
@@ -699,7 +768,7 @@ public sealed partial class ModelStore : IModelStoreWriter
 
     public async Task MoveStoreAsync(string newParentFolder, IProgress<double>? progress, CancellationToken ct)
     {
-        await _gate.WaitAsync(ct).ConfigureAwait(false);
+        await EnterGateAsync(ct).ConfigureAwait(false);
         try
         {
             await MoveCoreAsync(newParentFolder, progress, ct).ConfigureAwait(false);
@@ -724,7 +793,7 @@ public sealed partial class ModelStore : IModelStoreWriter
         }
 
         var total = files.Sum(f => f.Size);
-        var root = PickNewStoreFolder(newParentFolder, _disk);
+        var root = PickNewStoreFolder(newParentFolder, _disk, _options);
         var needed = total + (long)(total * 0.02) + (2L << 30);
         var free = _disk.GetFreeBytes(Path.GetDirectoryName(root)!);
         if (free < needed)
@@ -738,7 +807,8 @@ public sealed partial class ModelStore : IModelStoreWriter
             throw new StoreRefusedException("That drive cannot hold files over 4 GB.");
         }
 
-        var target = OwnedFolder.CreateNew(root);
+        var target = OwnedFolder.CreateNew(root, _options);
+        var targetLock = target.AcquireLock();
         var newManifest = new StoreManifest
         {
             StoreId = target.StoreId,
@@ -800,6 +870,8 @@ public sealed partial class ModelStore : IModelStoreWriter
         }
         catch
         {
+            targetLock.Dispose();
+
             // Undo only what this move created inside the new, freshly marked folder. A cleanup problem never hides
             // the original error; anything left over stays in the new marked folder for the user to see.
             try
@@ -826,6 +898,9 @@ public sealed partial class ModelStore : IModelStoreWriter
             throw;
         }
 
+        var oldLock = _lock;
+        _lock = targetLock;
+        oldLock.Dispose();
         _folder = target;
         _manifest = newManifest;
         progress?.Report(1);
@@ -838,7 +913,7 @@ public sealed partial class ModelStore : IModelStoreWriter
     /// </summary>
     public async Task<IReadOnlyList<string>> RemoveOldCopiesAsync(CancellationToken ct)
     {
-        await _gate.WaitAsync(ct).ConfigureAwait(false);
+        await EnterGateAsync(ct).ConfigureAwait(false);
         try
         {
             return await RemoveOldCopiesCoreAsync(ct).ConfigureAwait(false);
@@ -858,12 +933,35 @@ public sealed partial class ModelStore : IModelStoreWriter
             throw new StoreSafetyException("The previous store is the current store; nothing was removed.");
         }
 
-        if (OwnedFolder.ReadMarker(prev.Path) != prev.StoreId)
+        if (OwnedFolder.ReadMarker(prev.Path, _options) != prev.StoreId)
         {
             throw new StoreSafetyException($"The old store '{prev.Path}' no longer carries its marker; nothing was removed.");
         }
 
-        var old = new OwnedFolder(prev.Path, prev.StoreId);
+        var old = new OwnedFolder(prev.Path, prev.StoreId, _options);
+        var oldLock = old.AcquireLock(); // refused (StoreLockedException) while another store object or process has it open
+        try
+        {
+            return await RemoveOldCopiesLockedAsync(old, prev, oldLock, ct).ConfigureAwait(false);
+        }
+        finally
+        {
+            oldLock.Dispose();
+            try
+            {
+                old.TryRemoveEmptyRootAfterRetire();
+            }
+            catch (IOException)
+            {
+            }
+            catch (UnauthorizedAccessException)
+            {
+            }
+        }
+    }
+
+    private async Task<IReadOnlyList<string>> RemoveOldCopiesLockedAsync(OwnedFolder old, PreviousStore prev, FileStream oldLock, CancellationToken ct)
+    {
         StoreManifest? oldManifest;
         try
         {
@@ -922,12 +1020,24 @@ public sealed partial class ModelStore : IModelStoreWriter
         }
 
         oldManifest.Models.RemoveAll(m => m.Origin == ModelOrigin.External || m.Files.Count == 0);
+        var retired = false;
         if (oldManifest.Models.Count == 0)
         {
-            old.TryRetireEmptyStore();
+            try
+            {
+                retired = old.TryRetireEmptyStore(ownLockHeld: true);
+            }
+            catch (IOException)
+            {
+            }
+            catch (UnauthorizedAccessException)
+            {
+            }
         }
-        else
+
+        if (!retired)
         {
+            // Always record what is really left, so no model is listed whose files are gone.
             old.ReplaceOwnedFile(OwnedFolder.ManifestFileName, JsonSerializer.SerializeToUtf8Bytes(oldManifest, StoreJsonContext.Default.StoreManifest));
         }
 
@@ -1077,7 +1187,7 @@ public sealed partial class ModelStore : IModelStoreWriter
 
     private async Task<T> Locked<T>(CancellationToken ct, Func<T> action)
     {
-        await _gate.WaitAsync(ct).ConfigureAwait(false);
+        await EnterGateAsync(ct).ConfigureAwait(false);
         try
         {
             return action();
@@ -1090,7 +1200,7 @@ public sealed partial class ModelStore : IModelStoreWriter
 
     private async Task Locked(CancellationToken ct, Action action)
     {
-        await _gate.WaitAsync(ct).ConfigureAwait(false);
+        await EnterGateAsync(ct).ConfigureAwait(false);
         try
         {
             action();

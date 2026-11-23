@@ -316,12 +316,18 @@ public static class PlacementPlanner
     /// Compares like with like: the memory the smallest working setup needs (weights, the shortest context,
     /// engine buffers) against the same budget the planner used, so the verdict and the text never disagree.
     /// </summary>
-    private static string NoFitReason(CatalogueEntry model, MemoryBudget b, PlannerSettings s)
+    internal static (long Need, long Give) MinimumMemory(CatalogueEntry model, MemoryBudget b, PlannerSettings s)
     {
         var m = model.Memory;
         var minCtx = Math.Min(s.MinContextTokens, model.ContextDefault);
         var need = m.WeightsBytes + (long)(m.KvBytesPer1kCtx * (minCtx / 1024.0)) + m.ComputeOverheadBytes + s.CpuBufferBytes;
         var give = b.RamBudgetBytes + (b.Unified ? 0 : b.VramBudgetBytes);
+        return (need, give);
+    }
+
+    private static string NoFitReason(CatalogueEntry model, MemoryBudget b, PlannerSettings s)
+    {
+        var (need, give) = MinimumMemory(model, b, s);
         return need > give
             ? $"{model.DisplayName} needs about {need / 1e9:0.#} GB; this PC can give it about {give / 1e9:0.#} GB"
             : $"{model.DisplayName} is too big to split well between the graphics card and memory on this PC (about {give / 1e9:0.#} GB available)";

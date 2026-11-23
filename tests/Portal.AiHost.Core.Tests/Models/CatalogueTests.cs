@@ -144,4 +144,25 @@ public class CatalogueTests
         Assert.Empty(errors);
         Assert.Empty(catalogue!.Models);
     }
+
+    [Fact]
+    public void AdviceIsOptionalAndParsesWhenPresent()
+    {
+        var (plain, e1) = CatalogueValidator.Parse(TestData.SeedCatalogueBytes());
+        Assert.Empty(e1);
+        Assert.All(plain!.Models, m => Assert.True(m.Advice is null || m.Advice.GoodFor is not null));
+
+        var text = Encoding.UTF8.GetString(TestData.SeedCatalogueBytes());
+        var first = text.IndexOf("\"models\"", StringComparison.Ordinal);
+        var brace = text.IndexOf('{', text.IndexOf('[', first));
+        var withAdvice = text.Insert(brace + 1,
+            "\"advice\": {\"summary\": \"Good all-rounder\", \"good_for\": [\"chat\"], \"caveats\": [\"slow without a graphics card\"], \"hardware\": \"8 GB laptop\"},");
+        var (cat, errors) = CatalogueValidator.Parse(Encoding.UTF8.GetBytes(withAdvice));
+        Assert.Empty(errors);
+        var advice = cat!.Models[0].Advice;
+        Assert.NotNull(advice);
+        Assert.Equal("Good all-rounder", advice.Summary);
+        Assert.Equal(["chat"], advice.GoodFor);
+        Assert.Equal("8 GB laptop", advice.Hardware);
+    }
 }

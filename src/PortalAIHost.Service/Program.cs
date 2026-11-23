@@ -197,11 +197,33 @@ internal static class Program
         try
         {
             var isDefault = string.Equals(folder, Path.Combine(paths.DataRoot, "models"), StringComparison.OrdinalIgnoreCase);
-            return new(isDefault ? ModelStore.OpenOrCreate(folder) : ModelStore.OpenOrCreateInParent(settings.ModelsFolder!), null);
+            return new(OpenWithLockRetry(
+                () => isDefault ? ModelStore.OpenOrCreate(folder) : ModelStore.OpenOrCreateInParent(settings.ModelsFolder!),
+                TimeSpan.FromSeconds(5), TimeSpan.FromMilliseconds(250)), null);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException or ArgumentException)
         {
             return new(null, $"The models folder '{folder}' could not be used: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Opens a store, retrying for up to <paramref name="maxWait"/> while another host that is shutting down still
+    /// holds its lock. Any other refusal, and a lock that stays held, is reported as usual.
+    /// </summary>
+    internal static T OpenWithLockRetry<T>(Func<T> open, TimeSpan maxWait, TimeSpan step)
+    {
+        var until = DateTime.UtcNow + maxWait;
+        while (true)
+        {
+            try
+            {
+                return open();
+            }
+            catch (StoreLockedException) when (DateTime.UtcNow < until)
+            {
+                Thread.Sleep(step);
+            }
         }
     }
 
@@ -220,7 +242,9 @@ internal static class Program
             {
                 if (Directory.Exists(path))
                 {
-                    stores.Add(ModelStore.Open(path));
+                    // Looked at once and closed again: no lock is kept on an old (maybe external) drive.
+                    using var opened = ModelStore.Open(path);
+                    stores.Add(PreviousStoreSnapshot.Capture(opened));
                 }
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException)

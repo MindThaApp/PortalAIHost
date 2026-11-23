@@ -25,7 +25,9 @@ public class ModelStoreTests
         Assert.True(File.Exists(Path.Combine(store.Location.Path, ".portal-ai-host-store")));
         Assert.NotEqual(Guid.Empty, store.Location.StoreId);
 
-        var reopened = ModelStore.Open(store.Location.Path, new FakeDisk());
+        var storePath = store.Location.Path;
+        store.Dispose();
+        var reopened = ModelStore.Open(storePath, new FakeDisk());
         Assert.Equal(store.Location.StoreId, reopened.Location.StoreId);
     }
 
@@ -177,7 +179,9 @@ public class ModelStoreTests
 
         var json = File.ReadAllText(StoreJson(store));
         File.WriteAllText(StoreJson(store), json.Replace("\"path\": \"m\\\\victim.gguf\"", "\"path\": \"..\\\\outside\\\\victim.gguf\""));
-        var reopened = ModelStore.Open(store.Location.Path, new FakeDisk());
+        var storePath = store.Location.Path;
+        store.Dispose();
+        var reopened = ModelStore.Open(storePath, new FakeDisk());
 
         Assert.Contains("outside", File.ReadAllText(StoreJson(store)), StringComparison.Ordinal);
         Assert.Equal(victim, Path.GetFullPath(Path.Combine(store.Location.Path, "..", "outside", "victim.gguf")));
@@ -199,7 +203,9 @@ public class ModelStoreTests
 
         var json = File.ReadAllText(StoreJson(store));
         File.WriteAllText(StoreJson(store), json.Replace("\"path\": \"m\\\\victim.gguf\"", "\"path\": \"m\\\\link\\\\victim.gguf\""));
-        var reopened = ModelStore.Open(store.Location.Path, new FakeDisk());
+        var storePath = store.Location.Path;
+        store.Dispose();
+        var reopened = ModelStore.Open(storePath, new FakeDisk());
 
         await Assert.ThrowsAsync<StoreSafetyException>(() => reopened.RemoveAsync("m", Ct));
         Assert.True(File.Exists(victim));

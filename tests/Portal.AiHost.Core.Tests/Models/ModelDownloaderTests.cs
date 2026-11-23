@@ -90,6 +90,7 @@ public class ModelDownloaderTests
         Assert.InRange(partial.SizeBytes, 1, data.Length - 1);
 
         // "Restart": a new store and downloader instance pick up the .part and its sidecar.
+        first.Dispose();
         var second = ModelStore.Open(folder, new FakeDisk());
         var model = await new ModelDownloader(http, second, new FakeDisk(), Fast()).DownloadAsync(entry, null, Ct);
 

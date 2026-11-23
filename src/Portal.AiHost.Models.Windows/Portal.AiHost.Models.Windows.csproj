@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IsAotCompatible>true</IsAotCompatible>
+    <RootNamespace>Portal.AiHost.Platform.Windows</RootNamespace>
+
+    <PackageId>Portal.AiHost.Models.Windows</PackageId>
+    <Version>1.0.2-preview.2</Version>
+    <Authors>MindThaApp</Authors>
+    <Description>Windows hardware probe (RAM, GPUs and VRAM via DXGI) and power status for the Portal AI Host model planner.</Description>
+    <PackageTags>portal;local-ai;hardware;dxgi;windows</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/MindThaApp/PortalAIHost</RepositoryUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Portal.AiHost.Models\Portal.AiHost.Models.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Portal.AiHost.Platform.Windows" />
+    <InternalsVisibleTo Include="Portal.AiHost.Platform.Windows.Tests" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsAotCompatible>true</IsAotCompatible>
+    <RootNamespace>Portal.AiHost.Core</RootNamespace>
+
+    <PackageId>Portal.AiHost.Models</PackageId>
+    <Version>1.0.2-preview.2</Version>
+    <Authors>MindThaApp</Authors>
+    <Description>Shared model catalogue, hardware-aware placement planner, resumable model downloader and owned model store used by Portal AI Host and the Portal apps. No Windows dependency.</Description>
+    <PackageTags>portal;local-ai;llm;gguf;model-catalogue</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/MindThaApp/PortalAIHost</RepositoryUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Portal.AiHost.Contracts\Portal.AiHost.Contracts.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Portal.AiHost.Core" />
+    <InternalsVisibleTo Include="Portal.AiHost.Core.Tests" />
+  </ItemGroup>
+</Project>
