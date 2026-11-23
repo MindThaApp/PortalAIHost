@@ -25,6 +25,7 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
         _shell = shell;
         _ui = ui;
         _s = strings;
+        Live = new LiveViewModel(shell.Host, ui, strings);
         _shell.SnapshotChanged += OnSnapshot;
         _shell.ClientsChanged += OnClientsChanged;
         _shell.Host.DownloadProgress += OnProgress;
@@ -34,6 +35,9 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
         };
         Update();
     }
+
+    /// <summary>Live activity, meters, Unload and Load, and the Today list.</summary>
+    public LiveViewModel Live { get; }
 
     // Which block is on screen.
     [ObservableProperty] private bool _noHost;
@@ -286,5 +290,6 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
         _shell.SnapshotChanged -= OnSnapshot;
         _shell.ClientsChanged -= OnClientsChanged;
         _shell.Host.DownloadProgress -= OnProgress;
+        Live.Dispose();
     }
 }

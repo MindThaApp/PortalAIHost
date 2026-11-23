@@ -23,6 +23,7 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
     public event Action<PendingApproval>? ApprovalPending;
     public event Action<DownloadProgressEvent>? DownloadProgress;
     public event Action<EngineStateEvent>? EngineStateChanged;
+    public event Action<TrayPopupEvent>? TrayPopup;
 
     /// <summary>True while a connection is open.</summary>
     public bool IsConnected => Volatile.Read(ref _channel) is not null;
@@ -39,6 +40,15 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
             return HostSnapshot.NoHost;
         }
     }
+
+    public async Task<IReadOnlyList<AppActivity>> GetActivityAsync(CancellationToken ct = default) =>
+        (await RequestAsync(ControlTypes.GetActivity, AiHostJsonContext.Default.ActivityReport, ct).ConfigureAwait(false)).Apps;
+
+    public Task LoadEngineAsync(CancellationToken ct = default) =>
+        SendAsync(ControlTypes.LoadEngine, new EngineCommand { Kind = ModelKinds.Chat }, AiHostJsonContext.Default.EngineCommand, ct);
+
+    public Task UnloadEngineAsync(CancellationToken ct = default) =>
+        SendAsync(ControlTypes.UnloadEngine, new EngineCommand { Kind = ModelKinds.Chat }, AiHostJsonContext.Default.EngineCommand, ct);
 
     public async Task<IReadOnlyList<PendingApproval>> ListApprovalsAsync(CancellationToken ct = default) =>
         (await RequestAsync(ControlTypes.ListApprovals, AiHostJsonContext.Default.ApprovalList, ct).ConfigureAwait(false)).Pending;
@@ -249,6 +259,9 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
                     break;
                 case ControlTypes.EventDownloadProgress when p.Deserialize(AiHostJsonContext.Default.DownloadProgressEvent) is { } d:
                     DownloadProgress?.Invoke(d);
+                    break;
+                case ControlTypes.EventTrayPopup when p.Deserialize(AiHostJsonContext.Default.TrayPopupEvent) is { } tp:
+                    TrayPopup?.Invoke(tp);
                     break;
                 case ControlTypes.EventEngineState when p.Deserialize(AiHostJsonContext.Default.EngineStateEvent) is { } en:
                     EngineStateChanged?.Invoke(en);
