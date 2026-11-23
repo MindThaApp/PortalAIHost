@@ -124,3 +124,9 @@ public interface IEngineSupervisor : IAsyncDisposable
     /// <summary>The priority last requested, or null when none was.</summary>
     System.Diagnostics.ProcessPriorityClass? RequestedPriority => null;
 }
+
+/// <summary>An engine supervisor that can say which process it runs.</summary>
+public interface IEngineProcess
+{
+    int? ProcessId { get; }
+}

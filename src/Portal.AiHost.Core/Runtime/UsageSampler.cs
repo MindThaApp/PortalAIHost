@@ -1,4 +1,5 @@
 using Portal.AiHost.Contracts;
+using Portal.AiHost.Core.Abstractions;
 
 namespace Portal.AiHost.Core.Runtime;
 
@@ -10,12 +11,6 @@ public interface IProcessUsageProbe
 {
     /// <summary>Null when the process is gone or cannot be read.</summary>
     ProcessUsage? Read(int processId);
-}
-
-/// <summary>An engine supervisor that can say which process it runs.</summary>
-public interface IEngineProcess
-{
-    int? ProcessId { get; }
 }
 
 /// <summary>
