@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Portal.AiHost.Contracts;
 using Portal.AiHost.Contracts.Control;
 using Portal.AiHost.Core.Abstractions;
+using Portal.AiHost.CrashReports;
 using Portal.AiHost.Core.Download;
 using Portal.AiHost.Core.Store;
 using Portal.AiHost.Platform.Windows.Power;
@@ -94,6 +95,12 @@ internal static class Program
             }
 
             return 0;
+        }
+
+        if (!paths.TestMode)
+        {
+            CrashReporting.Start("host", typeof(Program).Assembly.GetName().Version?.ToString(3) ?? "1.0.0", shell.Settings.Current.SendCrashReports);
+            shell.Settings.Changed += (_, s) => CrashReporting.SetEnabled(s.SendCrashReports);
         }
 
         shell.ShowRequested += (_, page) => OpenWindow(paths, page);

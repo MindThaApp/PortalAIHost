@@ -233,6 +233,11 @@ public sealed partial class FirstRunViewModel : ObservableObject, IDisposable
         }
     });
 
+    /// <summary>The pre-ticked crash-report option. Unticking is one click and takes effect at once.</summary>
+    public bool SendCrashReports => _shell.State.SendCrashReports;
+
+    public Task SetSendCrashReportsAsync(bool on) => _shell.SetSendCrashReportsAsync(on);
+
     /// <summary>Called when the person flips the switch: the choice is saved straight away, so Skip keeps it.</summary>
     public async Task SetStartWithWindowsAsync(bool on)
     {
@@ -253,6 +258,7 @@ public sealed partial class FirstRunViewModel : ObservableObject, IDisposable
                 ModelsFolder = _settings.ModelsFolder,
                 MaxMemoryPercent = _settings.MaxMemoryPercent,
                 PreventSleepWhileDownloading = _settings.PreventSleepWhileDownloading,
+                SendCrashReports = _shell.State.SendCrashReports,
                 BandwidthCapBytesPerSecond = _settings.BandwidthCapBytesPerSecond,
                 Kinds = _settings.Kinds,
             };

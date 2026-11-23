@@ -439,6 +439,65 @@ public class AppsTests
     }
 }
 
+public class CrashReportChoiceTests
+{
+    [Fact]
+    public void Crash_reports_are_on_by_default()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        Assert.True(rig.State.SendCrashReports);
+        Assert.True(new HostSettings().SendCrashReports);
+    }
+
+    [Fact]
+    public async Task Turning_off_applies_at_once_saves_and_reaches_the_host()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        var applied = new List<bool>();
+        rig.Shell.CrashReportsApplier = applied.Add;
+        var vm = new SettingsViewModel(rig.Shell, rig.Ui, rig.Strings, rig.Dialogs);
+        await vm.LoadAsync();
+        Assert.True(vm.SendCrashReports);
+        vm.SendCrashReports = false;
+        await rig.Shell.SyncCrashReportsAsync();
+        Assert.Equal(new[] { false }, applied);
+        Assert.False(rig.State.SendCrashReports);
+        Assert.False((await rig.Host.GetSettingsAsync()).SendCrashReports);
+    }
+
+    [Fact]
+    public async Task Other_settings_changes_keep_the_choice()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        await rig.Shell.SetSendCrashReportsAsync(false);
+        var vm = new SettingsViewModel(rig.Shell, rig.Ui, rig.Strings, rig.Dialogs);
+        await vm.LoadAsync();
+        Assert.False(vm.SendCrashReports);
+        vm.IdleIndex = SettingsViewModel.FiveMinutesIndex;
+        Assert.False((await rig.Host.GetSettingsAsync()).SendCrashReports);
+    }
+
+    [Fact]
+    public async Task Welcome_option_is_pre_ticked_and_one_click_turns_it_off()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        var vm = new FirstRunViewModel(rig.Shell, rig.Ui, rig.Strings);
+        Assert.True(vm.SendCrashReports);
+        await vm.SetSendCrashReportsAsync(false);
+        Assert.False(vm.SendCrashReports);
+        Assert.False(rig.State.SendCrashReports);
+    }
+
+    [Fact]
+    public async Task Choice_is_synced_to_the_host_on_start()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        rig.State.SaveSendCrashReports(false);
+        await rig.Shell.SyncCrashReportsAsync();
+        Assert.False((await rig.Host.GetSettingsAsync()).SendCrashReports);
+    }
+}
+
 public class SettingsTests
 {
     [Fact]

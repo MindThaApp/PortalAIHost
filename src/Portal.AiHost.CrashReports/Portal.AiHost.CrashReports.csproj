@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsAotCompatible>true</IsAotCompatible>
+    <!-- store or dev. Store builds pass -p:CrashEnvironment=store. -->
+    <CrashEnvironment Condition="'$(CrashEnvironment)' == ''">dev</CrashEnvironment>
+    <!-- Where the crash-report address is read from at build time. It is never committed. -->
+    <CrashDsnFile Condition="'$(CrashDsnFile)' == ''">$(LOCALAPPDATA)\PortalAIHost-signing-key\sentry-dsn.txt</CrashDsnFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Sentry" />
+    <InternalsVisibleTo Include="Portal.AiHost.CrashReports.Tests" />
+  </ItemGroup>
+
+  <!--
+    Writes obj\CrashBuildInfo.g.cs with the crash-report address (from the PORTALAIHOST_SENTRY_DSN variable or the
+    key file) and the environment name. With no address the constant is empty and crash reports stay off.
+  -->
+  <Target Name="GenerateCrashBuildInfo" BeforeTargets="CoreCompile;GenerateMSBuildEditorConfigFileCore">
+    <ReadLinesFromFile File="$(CrashDsnFile)" Condition="'$(PORTALAIHOST_SENTRY_DSN)' == '' and Exists('$(CrashDsnFile)')">
+      <Output TaskParameter="Lines" ItemName="CrashDsnLine" />
+    </ReadLinesFromFile>
+    <PropertyGroup>
+      <_CrashDsn>$(PORTALAIHOST_SENTRY_DSN)</_CrashDsn>
+      <_CrashDsn Condition="'$(_CrashDsn)' == '' and '@(CrashDsnLine)' != ''">@(CrashDsnLine->'%(Identity)', '')</_CrashDsn>
+      <_CrashDsn>$([System.String]::Copy('$(_CrashDsn)').Trim())</_CrashDsn>
+      <_CrashInfoFile>$(IntermediateOutputPath)CrashBuildInfo.g.cs</_CrashInfoFile>
+    </PropertyGroup>
+    <ItemGroup>
+      <_CrashInfoLine Include="namespace Portal.AiHost.CrashReports%3B" />
+      <_CrashInfoLine Include="internal static class CrashBuildInfo" />
+      <_CrashInfoLine Include="{" />
+      <_CrashInfoLine Include="    public const string Dsn = &quot;$(_CrashDsn)&quot;%3B" />
+      <_CrashInfoLine Include="    public const string Environment = &quot;$(CrashEnvironment)&quot;%3B" />
+      <_CrashInfoLine Include="}" />
+    </ItemGroup>
+    <WriteLinesToFile File="$(_CrashInfoFile)" Lines="@(_CrashInfoLine)" Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <ItemGroup>
+      <Compile Include="$(_CrashInfoFile)" />
+    </ItemGroup>
+  </Target>
+</Project>

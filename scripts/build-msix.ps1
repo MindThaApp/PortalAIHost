@@ -101,8 +101,15 @@ $work = Join-Path ([IO.Path]::GetTempPath()) ('portalaihost-msix-' + [guid]::New
 $pathMap = "$repo=C:\src\PortalAIHost"
 $summary = @()
 
+# Crash reports: the project reads the address at build time from PORTALAIHOST_SENTRY_DSN or the key file
+# (%LOCALAPPDATA%\PortalAIHost-signing-key\sentry-dsn.txt). It is never printed or committed. Store builds are tagged 'store'.
+$crashDsnFile = Join-Path $env:LOCALAPPDATA 'PortalAIHost-signing-key\sentry-dsn.txt'
+$hasCrashDsn = [bool]$env:PORTALAIHOST_SENTRY_DSN -or (Test-Path $crashDsnFile)
+$crashEnv = if ($Store) { 'store' } else { 'dev' }
+if ($Store -and -not $hasCrashDsn) { Write-Warning 'No crash-report address found: this build will not send crash reports.' }
+
 function Invoke-Publish([string]$project, [string[]]$extra) {
-    $log = & dotnet publish $project -c Release @extra -p:PathMap="$pathMap" -nologo -v q 2>&1
+    $log = & dotnet publish $project -c Release @extra "-p:CrashEnvironment=$crashEnv" -p:PathMap="$pathMap" -nologo -v q 2>&1
     if ($LASTEXITCODE -ne 0) {
         $log | Select-String 'error' | Select-Object -First 5 | ForEach-Object { Write-Host $_.Line.Trim() }
         throw "dotnet publish failed: $project"

@@ -35,6 +35,8 @@ internal sealed class MemoryState : IAppState
     public void SaveAppearance(AppearancePrefs prefs) => Appearance = prefs;
     public string? LastSeenVersion { get; private set; }
     public void MarkVersionSeen(string version) => LastSeenVersion = version;
+    public bool SendCrashReports { get; private set; } = true;
+    public void SaveSendCrashReports(bool on) => SendCrashReports = on;
 }
 
 internal sealed class RecordingAppearance : IAppearanceApplier
