@@ -6,7 +6,7 @@
     <RootNamespace>Portal.AiHost.Platform.Windows</RootNamespace>
 
     <PackageId>Portal.AiHost.Models.Windows</PackageId>
-    <Version>1.0.2-preview.1</Version>
+    <Version>1.0.2-preview.2</Version>
     <Authors>MindThaApp</Authors>
     <Description>Windows hardware probe (RAM, GPUs and VRAM via DXGI) and power status for the Portal AI Host model planner.</Description>
     <PackageTags>portal;local-ai;hardware;dxgi;windows</PackageTags>

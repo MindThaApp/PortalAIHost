@@ -1,7 +1,7 @@
 # Shared packages
 
 Four NuGet packages let other Portal apps reuse the model store, planner, catalogue and engine supervisor without
-the host. All are version `1.0.2-preview.1`, MIT licensed. `scripts\pack-shared.ps1` writes them to
+the host. All are version `1.0.2-preview.2`, MIT licensed. `scripts\pack-shared.ps1` writes them to
 `builds\packages`.
 
 | Package | Target | Holds |
@@ -21,7 +21,7 @@ Add the folder as a source (for example in `nuget.config`):
 </packageSources>
 ```
 
-Then `dotnet add package Portal.AiHost.Models --version 1.0.2-preview.1 --prerelease`.
+Then `dotnet add package Portal.AiHost.Models --version 1.0.2-preview.2 --prerelease`.
 
 ## The store-marker rule
 
@@ -29,18 +29,27 @@ A model store only touches a folder it created and can identify. The folder hold
 `kind` string must both match the store's `StoreOptions`, and whose GUID is checked before every delete, move or
 overwrite. An unmarked folder is never adopted: opening one throws `StoreRefusedException`.
 
-`StoreOptions` (folder name, marker file name, marker kind) defaults to the host's values (`Portal AI Host Models`,
-`.portal-ai-host-store`, `portal-ai-host-store`). An app that keeps its own store passes its own options as the last
-argument to `OpenOrCreate`, `Open`, `CreateInParent`, `OpenOrCreateInParent` and `StoreFolderIn`. Two stores with
-different options never adopt or delete each other's folders. Names must be non-empty, valid file names, and the
-marker cannot be `store.json`.
+Use `StoreOptions.ForApp("your-app-key")` for your app's own store. It derives the folder name
+(`your-app-key Models`), the marker file (`.your-app-key-store`) and the marker kind (`your-app-key-store`) together,
+and passes them as the last argument to `OpenOrCreate`, `Open`, `CreateInParent`, `OpenOrCreateInParent` and
+`StoreFolderIn`. The app key is lower-case letters, digits and single hyphens. Never build `StoreOptions` by hand:
+options that differ from the host's defaults but reuse its marker file name or kind are refused, so another app's
+store can never open the host's folder (or the other way round). Names are checked against a strict whitelist, and
+`store.json`, `*.part`, `*.json` and `*.tmp` names are refused.
+
+A store is also locked while it is open: a second `Open` of the same folder, from another process or another store
+object, throws `StoreRefusedException`. Keep one `ModelStore` per process and call `Dispose()` on it when you are
+done (for example before reopening it).
 
 ## Adopting a file you already have
 
-`ModelStore.AdoptFromPathAsync(modelId, fileName, sourcePath, sha256, size, ct)` copies the file into the store as a
-`.part`, checks size and SHA-256, then commits it. The source is opened read-only and is never moved, locked for
-write or deleted. On a mismatch it discards only its own `.part` and returns null. A path inside the store is
-refused.
+`ModelStore.AdoptFromPathAsync(modelId, fileName, fullSourcePath, sha256, size, ct)` copies the file into the store
+as a `.part`, checks size and SHA-256, flushes, then commits it. The source must be a full path; it is opened
+read-only and is never moved, locked for write or deleted. It returns an `AdoptResult` whose `Status` is one of
+`Adopted`, `AlreadyStored`, `SourceMissing`, `SourceIsLink`, `SizeMismatch`, `HashMismatch`, `Busy` (the model is
+being downloaded or adopted), `PartialDownloadExists` (resume that download instead), `DifferentFileStored` and
+`NotEnoughSpace`. It only ever discards the `.part` it created itself, and never touches an unfinished download. A
+path inside the store, including a hard link to a stored file, is refused with `StoreRefusedException`.
 
 ## Planning and recommending
 

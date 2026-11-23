@@ -57,6 +57,7 @@ public class SafetyFixTests
             File.Move(part, part[..^".part".Length]); // crash: renamed, store.json still says partial
         }
 
+        store.Dispose();
         var reopened = ModelStore.Open(folder, new FakeDisk());
         using var http = server.CreateClient();
         var model = await new ModelDownloader(http, reopened, new FakeDisk(), Fast()).DownloadAsync(entry, null, Ct);
@@ -380,7 +381,9 @@ public class SafetyFixTests
         File.WriteAllText(json, File.ReadAllText(json)
             .Replace(oldPath.Replace("\\", "\\\\", StringComparison.Ordinal), store.Location.Path.Replace("\\", "\\\\", StringComparison.Ordinal), StringComparison.Ordinal)
             .Replace(oldId.ToString(), store.Location.StoreId.ToString(), StringComparison.Ordinal));
-        var reopened = ModelStore.Open(store.Location.Path, new FakeDisk());
+        var curPath = store.Location.Path;
+        store.Dispose();
+        var reopened = ModelStore.Open(curPath, new FakeDisk());
         var copy = (await reopened.GetAsync("m", Ct))!.Files[0].Path;
 
         await Assert.ThrowsAsync<StoreSafetyException>(() => reopened.RemoveOldCopiesAsync(Ct));

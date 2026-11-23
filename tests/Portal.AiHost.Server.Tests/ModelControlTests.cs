@@ -347,7 +347,9 @@ public sealed class ModelControlTests
         Directory.CreateDirectory(fresh);
         var created = ModelStore.OpenOrCreateInParent(fresh);
         Assert.Equal(ModelStore.StoreFolderIn(fresh), created.Location.Path, ignoreCase: true);
-        Assert.Equal(created.Location.StoreId, ModelStore.OpenOrCreateInParent(fresh).Location.StoreId); // same store next start
+        var createdId = created.Location.StoreId;
+        created.Dispose();
+        Assert.Equal(createdId, ModelStore.OpenOrCreateInParent(fresh).Location.StoreId); // same store next start
     }
 
     [Fact(Timeout = 30000)]

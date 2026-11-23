@@ -105,7 +105,7 @@ internal sealed class ManifestFile
 /// touched. Moves copy, verify by re-hashing the copy, switch, and leave the old copies until
 /// <see cref="RemoveOldCopiesAsync"/> is called.
 /// </summary>
-public sealed partial class ModelStore : IModelStoreWriter
+public sealed partial class ModelStore : IModelStoreWriter, IDisposable
 {
     public const string UserFolderName = StoreOptions.DefaultFolderName;
 
@@ -118,8 +118,11 @@ public sealed partial class ModelStore : IModelStoreWriter
 
     private readonly StoreOptions _options;
 
+    private FileStream _lock;
+
     private ModelStore(OwnedFolder folder, StoreManifest manifest, IDiskInfo disk)
     {
+        _lock = folder.AcquireLock();
         _options = folder.Options;
         _folder = folder;
         _manifest = manifest;
@@ -128,6 +131,9 @@ public sealed partial class ModelStore : IModelStoreWriter
 
     private static readonly StringComparison PathComparison =
         OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+
+    /// <summary>Releases the store's exclusive lock so it can be opened again (by this or another process).</summary>
+    public void Dispose() => _lock.Dispose();
 
     /// <summary>
     /// Opens the default store (LocalState\models): creates and marks it when missing, opens it when it carries
@@ -153,7 +159,7 @@ public sealed partial class ModelStore : IModelStoreWriter
         options = Checked(options);
         var root = OwnedFolder.Normalize(storeFolder);
         var id = OwnedFolder.ReadMarker(root, options)
-            ?? throw new StoreRefusedException($"'{root}' is not a Portal AI Host store (no marker); it was not used.");
+            ?? throw new StoreRefusedException($"'{root}' is not a model store of this app (no matching marker); it was not used.");
         var folder = new OwnedFolder(root, id, options);
         StoreManifest manifest;
         if (File.Exists(folder.ManifestPath))
@@ -365,11 +371,20 @@ public sealed partial class ModelStore : IModelStoreWriter
         });
 
     public Task<StoredFile> CommitFileAsync(string modelId, string partPath, string sha256, CancellationToken ct) =>
+        CommitFileAsync(modelId, partPath, sha256, null, ct);
+
+    /// <summary>Commits a finished part. When <paramref name="expectedSize"/> is given, a part of another size is refused and kept.</summary>
+    public Task<StoredFile> CommitFileAsync(string modelId, string partPath, string sha256, long? expectedSize, CancellationToken ct) =>
         Locked(ct, () =>
         {
             var (_, f) = FindPart(modelId, partPath);
             _folder.AssertMarker();
             var partFull = _folder.Resolve(f.PartPath!);
+            if (expectedSize is { } want && new FileInfo(partFull).Length != want)
+            {
+                throw new StoreSafetyException($"'{Path.GetFileName(partFull)}' is not the expected size; it was not committed.");
+            }
+
             var finalFull = _folder.Resolve(f.Path);
             if (Exists(finalFull))
             {
@@ -411,6 +426,11 @@ public sealed partial class ModelStore : IModelStoreWriter
                 SaveManifest();
             }
         });
+
+    /// <summary>True when a store file or part has this file id (a hard link into the store would match).</summary>
+    internal Task<bool> HasFileIdAsync(string fileId, CancellationToken ct) =>
+        Locked(ct, () => _manifest.Models.SelectMany(m => m.Files)
+            .Any(f => string.Equals(f.FileId, fileId, StringComparison.Ordinal) || string.Equals(f.PartFileId, fileId, StringComparison.Ordinal)));
 
     public IDisposable AcquireDownload(string modelId)
     {
@@ -754,6 +774,7 @@ public sealed partial class ModelStore : IModelStoreWriter
         }
 
         var target = OwnedFolder.CreateNew(root, _options);
+        var targetLock = target.AcquireLock();
         var newManifest = new StoreManifest
         {
             StoreId = target.StoreId,
@@ -815,6 +836,8 @@ public sealed partial class ModelStore : IModelStoreWriter
         }
         catch
         {
+            targetLock.Dispose();
+
             // Undo only what this move created inside the new, freshly marked folder. A cleanup problem never hides
             // the original error; anything left over stays in the new marked folder for the user to see.
             try
@@ -841,6 +864,9 @@ public sealed partial class ModelStore : IModelStoreWriter
             throw;
         }
 
+        var oldLock = _lock;
+        _lock = targetLock;
+        oldLock.Dispose();
         _folder = target;
         _manifest = newManifest;
         progress?.Report(1);
