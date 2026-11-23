@@ -4,7 +4,39 @@ using Portal.AiHost.Core.Catalogue;
 
 namespace Portal.AiHost.Core.Planning;
 
-public sealed record Candidate(CatalogueEntry Entry, PlanResult Plan, bool Installed, bool FitsOnDisk, bool Recommendable, string Reason);
+/// <summary>Why a candidate is or is not recommendable. Apps map these to their own wording.</summary>
+public enum ReasonCode
+{
+    /// <summary>Fits in memory, on disk and runs fast enough.</summary>
+    Recommendable,
+
+    /// <summary>Not enough memory (RAM plus graphics memory) even for the smallest working setup.</summary>
+    NotEnoughMemory,
+
+    /// <summary>Would fit but chat speed is below the minimum words per second.</summary>
+    TooSlow,
+
+    /// <summary>Not enough free space on the store drive for the download plus headroom.</summary>
+    NotEnoughDisk,
+}
+
+/// <summary>
+/// One catalogue entry planned on this PC. <paramref name="NeededBytes"/> is the memory the smallest working setup
+/// needs, <paramref name="AvailableBytes"/> is what the PC can give it, and <paramref name="DriveFreeBytes"/> is the
+/// free space on the store drive. <paramref name="ReasonCode"/> is the stable machine-readable verdict; Reason is
+/// display text.
+/// </summary>
+public sealed record Candidate(
+    CatalogueEntry Entry,
+    PlanResult Plan,
+    bool Installed,
+    bool FitsOnDisk,
+    bool Recommendable,
+    string Reason,
+    ReasonCode ReasonCode = ReasonCode.Recommendable,
+    long NeededBytes = 0,
+    long AvailableBytes = 0,
+    long DriveFreeBytes = 0);
 
 public sealed record Recommendation(Candidate? Best, IReadOnlyList<Candidate> Candidates);
 
@@ -42,7 +74,13 @@ public static class Recommender
                 : !fastEnough ? $"{e.DisplayName} would fit but run at about {plan.TokensPerSecond:0} words/s, too slow"
                 : !onDisk ? $"{e.DisplayName} needs {diskNeed / 1e9:0} GB; {ctx.StoreDriveName} has {ctx.StoreFreeBytes / 1e9:0} GB free"
                 : plan.Reason;
-            candidates.Add(new Candidate(e, plan, installed, onDisk, plan.Fits && fastEnough && onDisk, reason));
+            var code = !plan.Fits ? ReasonCode.NotEnoughMemory
+                : !fastEnough ? ReasonCode.TooSlow
+                : !onDisk ? ReasonCode.NotEnoughDisk
+                : ReasonCode.Recommendable;
+            var (need, give) = PlacementPlanner.MinimumMemory(e, budget, settings);
+            candidates.Add(new Candidate(e, plan, installed, onDisk, plan.Fits && fastEnough && onDisk, reason,
+                code, need, give, ctx.StoreFreeBytes));
         }
 
         var best = candidates

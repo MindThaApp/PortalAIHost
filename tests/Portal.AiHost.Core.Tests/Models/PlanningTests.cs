@@ -236,4 +236,29 @@ public class PlanningTests
         Assert.True(File.Exists(oldFile.Path), "the old model is kept until the user removes it");
         Assert.NotNull(await store.GetAsync(oldId, CancellationToken.None));
     }
+
+    [Fact]
+    public void CandidatesCarryReasonCodesAndByteFigures()
+    {
+        var rec = Recommender.Recommend(Seed, "chat", Rtx5090With128.Hw, Rtx5090With128.Mem,
+            new RecommendContext(new HashSet<string>(), 60 * GiB, "C:"));
+        var big = rec.Candidates.Single(c => c.Entry.Id == "qwen3.5-122b-a10b-q4km");
+        Assert.Equal(ReasonCode.NotEnoughDisk, big.ReasonCode);
+        Assert.Equal(60 * GiB, big.DriveFreeBytes);
+        Assert.True(big.NeededBytes > 0 && big.AvailableBytes > 0);
+        Assert.Equal(ReasonCode.Recommendable, rec.Best!.ReasonCode);
+
+        var small = Recommender.Recommend(Seed, "chat", Laptop8.Hw, Laptop8.Mem, Ctx());
+        Assert.Contains(small.Candidates, c => c.ReasonCode == ReasonCode.NotEnoughMemory && c.NeededBytes > c.AvailableBytes);
+    }
+
+    [Fact]
+    public void CommittedMemoryReducesWhatIsRecommended()
+    {
+        var free = Recommender.Recommend(Seed, "chat", Rtx5090With128.Hw, Rtx5090With128.Mem, Ctx());
+        var committed = new CommittedMemory(Rtx5090With128.Hw.RamBytes - 6 * GiB, Rtx5090With128.Hw.Gpus.Select(_ => 0L).ToList());
+        var held = Recommender.Recommend(Seed, "chat", Rtx5090With128.Hw, Rtx5090With128.Mem,
+            new RecommendContext(new HashSet<string>(), 4000 * GiB, Committed: committed));
+        Assert.True(held.Candidates.Count(c => c.Recommendable) < free.Candidates.Count(c => c.Recommendable));
+    }
 }
