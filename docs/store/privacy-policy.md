@@ -9,7 +9,8 @@ text stays on your PC.
 
 - Your prompts and the model's answers are processed on your PC only. They are never sent to us or to anyone else.
 - Prompts and answers are never saved or logged.
-- No account, no sign-in, no advertising, no telemetry, no analytics and no crash reporting.
+- No account, no sign-in, no advertising, no telemetry and no analytics.
+- If the app crashes it sends a short crash report so we can fix the problem. This is on by default and you can turn it off at any time (see "Crash reports" below). Reports never include your files or what you type.
 - The app connects to the internet only to download the AI model files you choose, from Hugging Face.
 
 ## What the app does with your text
@@ -69,3 +70,23 @@ it on.
 ## Contact
 
 Questions or concerns: mindthaapp@gmail.com
+
+## Crash reports
+
+Portal AI Host sends a crash report when the window or the host stops unexpectedly, so that we can find and fix
+the cause. This is on by default.
+
+What is sent: the type of error, a short cleaned error message, the technical call stack (function names), the app
+version, the Windows version and the kind of build (store or development). Whether the report came from the window or
+the host.
+
+What is never sent: your prompts or the model's answers, any file names or folder paths (including your Windows user
+name and the models folder), your computer's name or your account name, request contents, or your IP address. Paths,
+names and anything that looks like typed text are removed on your PC before a report leaves it.
+
+How to turn it off: open Settings > Privacy and switch off "Send crash reports". It stops straight away and the app
+never asks again. You can also untick it on the welcome screen the first time you run the app.
+
+How long we keep it: 90 days, then it is deleted.
+
+Questions or deletion requests: mindthaapp@gmail.com.

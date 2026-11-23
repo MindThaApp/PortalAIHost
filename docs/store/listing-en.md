@@ -32,7 +32,7 @@ Simple to set up
 Private by design
 - The model runs on this PC. Prompts and answers never leave it.
 - No account and no sign-in.
-- No telemetry and no analytics. Your prompts are never saved or logged.
+- No analytics. Optional crash reports never include your files or what you type, and you can turn them off. Your prompts are never saved or logged.
 - The host only listens on this PC (loopback). Other computers on your network cannot reach it.
 
 You stay in control
@@ -63,7 +63,7 @@ offers models whose licences allow commercial use (Apache 2.0 or MIT).
 4. One-click download with pause, resume and file checks
 5. Uses your graphics card (Vulkan) with automatic CPU fallback
 6. No account, no sign-in, no subscription
-7. No telemetry; prompts are never saved or logged
+7. No analytics; crash reports are optional and scrubbed; prompts are never saved or logged
 8. Listens on this PC only (loopback)
 9. Apps must ask first; you allow, deny or remove access
 10. Shows whether an asking app is verified

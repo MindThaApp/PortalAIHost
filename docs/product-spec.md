@@ -93,7 +93,8 @@ Owner hardware for testing and default tuning:
 - Follow the Portal apps' design language, with accessibility names on all controls. Translated into the same 21 languages.
 
 ## 8. Privacy and security
-- **No telemetry by default.** Any crash reporting is opt-in, with no prompt or response content.
+- **No analytics or usage telemetry.** The only thing that leaves the PC is a crash report.
+- **Crash reports are on by default (opt-out).** A scrubbed report is sent when the window or the host crashes. It never holds prompt or response text, file names or paths, machine or user names, IP addresses, request bodies or model folder paths. Settings > Privacy has a "Send crash reports" switch; turning it off stops reports at once and is never asked again. The welcome offers one pre-ticked option with a "What's sent" link to the privacy page. Reports are kept for 90 days. Contact: mindthaapp@gmail.com. The address of the crash-report service is added at build time and is not in the source; a build without it sends nothing.
 - **No logging of request content.** Only counts and timing are logged.
 - **Encryption:** TLS and E2E for all non-loopback traffic. Unpaired clients cannot reach the API.
 - **Security review** before the first remote-access release, covering pairing, the relay protocol, token storage and the API surface.
