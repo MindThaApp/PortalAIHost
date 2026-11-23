@@ -416,6 +416,7 @@ public class SafetyFixTests
         var store = ModelStore.OpenOrCreate(Path.Combine(root.Path, "models"), new FakeDisk());
         var json = Path.Combine(store.Location.Path, "store.json");
         File.WriteAllText(json, "{ not json");
+        store.Dispose();
 
         Assert.Throws<StoreRefusedException>(() => ModelStore.Open(store.Location.Path, new FakeDisk()));
         Assert.Equal("{ not json", File.ReadAllText(json));

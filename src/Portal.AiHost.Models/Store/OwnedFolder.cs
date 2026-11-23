@@ -8,7 +8,10 @@ namespace Portal.AiHost.Core.Store;
 public sealed class StoreSafetyException(string message) : IOException(message);
 
 /// <summary>Thrown when a folder cannot be used as a store (no marker, foreign marker, FAT32 ...).</summary>
-public sealed class StoreRefusedException(string message) : IOException(message);
+public class StoreRefusedException(string message) : IOException(message);
+
+/// <summary>The store is open elsewhere (another process or store object); it may be free again shortly.</summary>
+public sealed class StoreLockedException(string message) : StoreRefusedException(message);
 
 /// <summary>Free space and file system of the volume that holds a path. Faked in tests.</summary>
 public interface IDiskInfo
@@ -250,7 +253,7 @@ internal sealed class OwnedFolder
         }
         catch (IOException ex)
         {
-            throw new StoreRefusedException("This model store is already open in another window or process, so it was not opened again. " + ex.Message);
+            throw new StoreLockedException("This model store is already open in another window or process, so it was not opened again. " + ex.Message);
         }
     }
 
@@ -466,12 +469,12 @@ internal sealed class OwnedFolder
     /// Final step of removing a whole store folder the host created: deletes store.json and the marker, then the
     /// folder, and only when nothing else is left in it.
     /// </summary>
-    public bool TryRetireEmptyStore()
+    public bool TryRetireEmptyStore(bool ownLockHeld = false)
     {
         AssertMarker();
         var leftovers = Directory.EnumerateFileSystemEntries(Root)
             .Select(Path.GetFileName)
-            .Where(n => n != MarkerFileName && n != ManifestFileName)
+            .Where(n => n != MarkerFileName && n != ManifestFileName && !(ownLockHeld && n == LockFileName))
             .ToList();
         if (leftovers.Count > 0)
         {
@@ -487,6 +490,15 @@ internal sealed class OwnedFolder
         }
 
         return true;
+    }
+
+    /// <summary>After <see cref="TryRetireEmptyStore"/> with the caller's own lock released: removes the now empty folder (never recursive).</summary>
+    public void TryRemoveEmptyRootAfterRetire()
+    {
+        if (Directory.Exists(Root) && !File.Exists(MarkerPath) && !Directory.EnumerateFileSystemEntries(Root).Any())
+        {
+            Directory.Delete(Root, recursive: false);
+        }
     }
 }
 

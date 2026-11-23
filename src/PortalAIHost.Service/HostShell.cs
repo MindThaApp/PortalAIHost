@@ -84,6 +84,7 @@ public sealed class HostShell : IAsyncDisposable
     private EventHandler<string?>? _showRequested;
     private List<string?>? _pendingShows = [];
     private IModelStore? _store;
+    private bool _ownsStore;
     private readonly Lock _inUseGate = new();
     private Task _inUseChain = Task.CompletedTask;
     private readonly Dictionary<string, string> _inUse = new(StringComparer.Ordinal); // kind -> model marked in use
@@ -214,11 +215,13 @@ public sealed class HostShell : IAsyncDisposable
         {
             var opened = open(settings);
             _store = opened.Store;
+            _ownsStore = true;
             StoreProblem = opened.Problem;
         }
         else
         {
             _store = _o.Store ?? _o.OpenStoreFor?.Invoke(settings) ?? _o.OpenStore?.Invoke();
+            _ownsStore = _o.Store is null;
         }
 
         var previous = _o.OpenPreviousStores?.Invoke(settings, _store) ?? [];
@@ -346,7 +349,6 @@ public sealed class HostShell : IAsyncDisposable
         }).ConfigureAwait(false);
         await GuardAsync(() => Runtime?.StopAsync(grace) ?? Task.CompletedTask).ConfigureAwait(false);
         await GuardAsync(() => Server?.StopAsync() ?? Task.CompletedTask).ConfigureAwait(false);
-        await GuardAsync(async () => await _pipe.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
         await GuardAsync(async () =>
         {
             if (Runtime is { } r)
@@ -357,6 +359,15 @@ public sealed class HostShell : IAsyncDisposable
         await GuardAsync(DrainInUseAsync).ConfigureAwait(false);
         Guard(() => _registry?.Dispose());
         Guard(() => _scheduler?.Dispose());
+
+        // The store lock goes first and the control pipe last: a new host can only start once the pipe is free, so
+        // it never meets a store that the old host still holds.
+        if (_ownsStore)
+        {
+            Guard(() => (_store as IDisposable)?.Dispose());
+        }
+
+        await GuardAsync(async () => await _pipe.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
     }
 
     // ---- in-use marks ---------------------------------------------------------------------------

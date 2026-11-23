@@ -370,6 +370,8 @@ public sealed class ModelControlTests
         var stray = Path.Combine(old.Location.Path, "not-recorded.gguf");
         File.WriteAllBytes(stray, body);
         var file = (await old.GetAsync(entry.Id, CancellationToken.None))!.Files.Single().Path;
+        var oldView = PortalAIHost.Service.PreviousStoreSnapshot.Capture(old);
+        old.Dispose(); // the host keeps no lock on an earlier folder
         var store = ModelStore.OpenOrCreate(Path.Combine(root.Path, "models"));
         var shell = await HostShell.StartAsync(new HostShellOptions
         {
@@ -384,7 +386,7 @@ public sealed class ModelControlTests
             QuitGrace = TimeSpan.FromMilliseconds(200),
             Store = store,
             Catalogue = [entry],
-            OpenPreviousStores = (_, _) => [old],
+            OpenPreviousStores = (_, _) => [oldView],
         }) ?? throw new InvalidOperationException("pipe already owned");
         await using var _s = shell;
         await using var client = await ControlPipeClient.ConnectAsync(shell.Paths().PipeName);
@@ -487,5 +489,61 @@ public sealed class LaunchArgsTests
         Assert.Equal(LaunchMode.Open, LaunchArgs.Parse([]));
         Assert.False(LaunchArgs.IsProtocol([]));
         Assert.True(LaunchArgs.IsProtocol(["portal-ai-host:start"]));
+    }
+
+    [Fact(Timeout = 30000)]
+    public async Task A_second_host_in_the_same_process_reopens_the_store_the_first_one_released()
+    {
+        using var root = new TestRoot();
+        var folder = Path.Combine(root.Path, "models");
+        async Task<HostShell> StartAsync() => await HostShell.StartAsync(new HostShellOptions
+        {
+            Paths = HostPaths.Resolve(n => n == HostPaths.TestRootVariable ? root.Path : null)!,
+            Supervisors = new Dictionary<string, IEngineSupervisor>
+            {
+                [ModelKinds.Chat] = new FakeEngineSupervisor(ModelKinds.Chat),
+                [ModelKinds.Embedding] = new FakeEngineSupervisor(ModelKinds.Embedding),
+            },
+            KeyProtector = new TestKeyProtector(),
+            CallerResolver = new SameUserResolver(),
+            QuitGrace = TimeSpan.FromMilliseconds(200),
+            OpenStoreFor = _ => ModelStore.OpenOrCreate(folder),
+        }) ?? throw new InvalidOperationException("pipe already owned");
+
+        var first = await StartAsync();
+        Assert.Throws<StoreLockedException>(() => ModelStore.Open(folder)); // held while the host runs
+        await first.DisposeAsync();
+
+        var second = await StartAsync(); // would throw if the first host had kept the lock
+        await second.DisposeAsync();
+        ModelStore.Open(folder).Dispose();
+    }
+
+    [Fact]
+    public void Opening_a_store_retries_only_while_the_lock_is_held()
+    {
+        using var root = new TestRoot();
+        var folder = Path.Combine(root.Path, "models");
+        var held = ModelStore.OpenOrCreate(folder);
+        var release = Task.Run(async () =>
+        {
+            await Task.Delay(400);
+            held.Dispose();
+        });
+        using (Program.OpenWithLockRetry(() => ModelStore.Open(folder), TimeSpan.FromSeconds(5), TimeSpan.FromMilliseconds(50)))
+        {
+        }
+
+        release.GetAwaiter().OnCompleted(() => { });
+        SpinWait.SpinUntil(() => release.IsCompleted, TimeSpan.FromSeconds(5));
+
+        using var again = ModelStore.Open(folder);
+        Assert.Throws<StoreLockedException>(() =>
+            Program.OpenWithLockRetry(() => ModelStore.Open(folder), TimeSpan.FromMilliseconds(300), TimeSpan.FromMilliseconds(50)));
+
+        var calls = 0;
+        Assert.Throws<StoreRefusedException>(() => Program.OpenWithLockRetry<ModelStore>(
+            () => { calls++; return ModelStore.Open(root.Path); }, TimeSpan.FromSeconds(2), TimeSpan.FromMilliseconds(50)));
+        Assert.Equal(1, calls); // an unmarked folder is refused at once, not retried
     }
 }

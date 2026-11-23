@@ -213,7 +213,7 @@ public class StoreOptionsTests
         using var root = new TestRoot();
         var path = Path.Combine(root.Path, "models");
         var first = ModelStore.OpenOrCreate(path, new FakeDisk());
-        var ex = Assert.Throws<StoreRefusedException>(() => ModelStore.Open(path, new FakeDisk()));
+        var ex = Assert.Throws<StoreLockedException>(() => ModelStore.Open(path, new FakeDisk()));
         Assert.Contains("already open", ex.Message, StringComparison.Ordinal);
         first.Dispose();
         ModelStore.Open(path, new FakeDisk()).Dispose();
@@ -230,7 +230,7 @@ public class StoreOptionsTests
         await AddAsync(store, "m", "a.gguf", [1, 2, 3]);
         await store.MoveStoreAsync(root.Sub("new"), null, Ct);
 
-        Assert.Throws<StoreRefusedException>(() => ModelStore.Open(store.Location.Path, new FakeDisk()));
+        Assert.Throws<StoreLockedException>(() => ModelStore.Open(store.Location.Path, new FakeDisk()));
         ModelStore.Open(oldPath, new FakeDisk()).Dispose(); // old folder is free again
     }
 
@@ -330,5 +330,39 @@ public class StoreOptionsTests
         await File.WriteAllBytesAsync(part, [1, 2, 3], Ct);
         await Assert.ThrowsAsync<StoreSafetyException>(() => store.CommitFileAsync("m", part, TestData.Sha([1, 2, 3]), 5, Ct));
         Assert.True(File.Exists(part));
+    }
+
+    [Fact]
+    public async Task UseAfterDisposeThrowsObjectDisposed()
+    {
+        using var root = new TestRoot();
+        var store = ModelStore.OpenOrCreate(Path.Combine(root.Path, "models"), new FakeDisk());
+        store.Dispose();
+        store.Dispose();
+        await Assert.ThrowsAsync<ObjectDisposedException>(() => store.ListAsync(Ct));
+        await Assert.ThrowsAsync<ObjectDisposedException>(() => store.EnsureModelAsync("m", "M", "chat", "llama", Ct));
+    }
+
+    [Fact]
+    public async Task RemovingOldCopiesIsRefusedWhileTheOldStoreIsOpenAndNeverLeavesGhosts()
+    {
+        using var root = new TestRoot();
+        var store = ModelStore.OpenOrCreate(Path.Combine(root.Path, "models"), new FakeDisk());
+        var oldPath = store.Location.Path;
+        await AddAsync(store, "m", "a.gguf", [1, 2, 3]);
+        await store.MoveStoreAsync(root.Sub("new"), null, Ct);
+
+        using (ModelStore.Open(oldPath, new FakeDisk()))
+        {
+            await Assert.ThrowsAsync<StoreLockedException>(() => store.RemoveOldCopiesAsync(Ct));
+            Assert.True(File.Exists(Path.Combine(oldPath, "m", "a.gguf")));
+        }
+
+        File.WriteAllText(Path.Combine(oldPath, "user-note.txt"), "mine"); // keeps the old folder from being retired
+        Assert.Empty(await store.RemoveOldCopiesAsync(Ct));
+
+        Assert.Equal("mine", File.ReadAllText(Path.Combine(oldPath, "user-note.txt")));
+        using var old = ModelStore.Open(oldPath, new FakeDisk());
+        Assert.Empty(await old.ListAsync(Ct)); // no listed model whose files are gone
     }
 }

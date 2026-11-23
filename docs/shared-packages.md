@@ -72,3 +72,5 @@ path inside the store, including a hard link to a stored file, is refused with `
   `RequestedPriority` reports the last request.
 - Engine download sizes (pinned in `engine\engine.lock.json`): Vulkan 38.9 MB, CPU 25.0 MB, CPU arm64 13.1 MB. The
   engine zips are not in this checkout, so installed sizes are not measured here.
+
+The store lock is strong on Windows (an exclusive open of `.store-lock`); on other systems it is only advisory.

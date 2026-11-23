@@ -23,7 +23,8 @@ internal sealed class ModelCenter : IAsyncDisposable
     private readonly Func<HostSettings> _settings;
     private readonly Func<string, string?> _activeId;
     private readonly Func<string, bool> _isLoaded;
-    private readonly IReadOnlyList<IModelStore> _previous;
+    private readonly List<IModelStore> _previous;
+    private readonly Func<string, IModelStore> _openPrevious;
     private readonly Func<DownloadProgressEvent, Task> _push;
     private readonly ConcurrentDictionary<string, Running> _running = new(StringComparer.Ordinal);
     private readonly ConcurrentDictionary<string, string> _lastState = new(StringComparer.Ordinal);
@@ -34,9 +35,11 @@ internal sealed class ModelCenter : IAsyncDisposable
     /// <param name="isLoaded">True while an engine still runs with that model (for example while it stops after a switch).</param>
     public ModelCenter(IModelStore? store, IReadOnlyList<CatalogueEntry>? catalogue, ModelDownloader? downloader,
         IHardwareProbe? hardware, Func<HostSettings> settings, Func<string, string?> activeId, Func<DownloadProgressEvent, Task> push,
-        Func<string, bool>? isLoaded = null, IReadOnlyList<IModelStore>? previousStores = null)
+        Func<string, bool>? isLoaded = null, IReadOnlyList<IModelStore>? previousStores = null,
+        Func<string, IModelStore>? openPrevious = null)
     {
-        _previous = previousStores ?? [];
+        _previous = previousStores?.ToList() ?? [];
+        _openPrevious = openPrevious ?? (path => Portal.AiHost.Core.Store.ModelStore.Open(path));
         _store = store;
         _catalogue = catalogue;
         _downloader = downloader;
@@ -92,7 +95,13 @@ internal sealed class ModelCenter : IAsyncDisposable
         }
 
         // Models left in earlier models folders: listed so their space can be freed; remove only.
-        foreach (var old in _previous)
+        IModelStore[] previousNow;
+        lock (_previous)
+        {
+            previousNow = [.. _previous];
+        }
+
+        foreach (var old in previousNow)
         {
             IReadOnlyList<StoredModel> oldModels;
             try
@@ -344,28 +353,61 @@ internal sealed class ModelCenter : IAsyncDisposable
     /// </summary>
     public async Task RemoveFromPreviousAsync(string id, string storeFolder, CancellationToken ct)
     {
-        var old = _previous.FirstOrDefault(s => string.Equals(s.Location.Path, storeFolder, StringComparison.OrdinalIgnoreCase))
-            ?? throw new ControlPipeException(ErrorCodes.NotFound, "That folder is not an earlier models folder of this host.");
-        if (await old.GetAsync(id, ct).ConfigureAwait(false) is null)
+        IModelStore? known;
+        lock (_previous)
         {
-            throw new ControlPipeException(ErrorCodes.NotFound, "That model is not in that folder.");
+            known = _previous.FirstOrDefault(s => string.Equals(s.Location.Path, storeFolder, StringComparison.OrdinalIgnoreCase));
         }
 
+        if (known is null)
+        {
+            throw new ControlPipeException(ErrorCodes.NotFound, "That folder is not an earlier models folder of this host.");
+        }
+
+        // Opened only for this removal and closed again straight away, so the drive can be ejected afterwards.
+        IModelStore old;
         try
         {
-            await old.RemoveAsync(id, ct).ConfigureAwait(false);
-        }
-        catch (InvalidOperationException ex)
-        {
-            throw new ControlPipeException(ErrorCodes.InvalidRequest, ex.Message);
-        }
-        catch (KeyNotFoundException)
-        {
-            throw new ControlPipeException(ErrorCodes.NotFound, "That model is not in that folder.");
+            old = _openPrevious(known.Location.Path);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
-            throw new ControlPipeException(ErrorCodes.InvalidRequest, "The model could not be removed: " + ex.Message);
+            throw new ControlPipeException(ErrorCodes.InvalidRequest, "That models folder could not be opened: " + ex.Message);
+        }
+
+        using (old as IDisposable)
+        {
+            if (await old.GetAsync(id, ct).ConfigureAwait(false) is null)
+            {
+                throw new ControlPipeException(ErrorCodes.NotFound, "That model is not in that folder.");
+            }
+
+            try
+            {
+                await old.RemoveAsync(id, ct).ConfigureAwait(false);
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new ControlPipeException(ErrorCodes.InvalidRequest, ex.Message);
+            }
+            catch (KeyNotFoundException)
+            {
+                throw new ControlPipeException(ErrorCodes.NotFound, "That model is not in that folder.");
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                throw new ControlPipeException(ErrorCodes.InvalidRequest, "The model could not be removed: " + ex.Message);
+            }
+
+            var fresh = PreviousStoreSnapshot.Capture(old);
+            lock (_previous)
+            {
+                var i = _previous.FindIndex(x => ReferenceEquals(x, known));
+                if (i >= 0)
+                {
+                    _previous[i] = fresh;
+                }
+            }
         }
     }
 

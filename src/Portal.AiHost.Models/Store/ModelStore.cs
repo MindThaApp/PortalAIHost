@@ -119,10 +119,11 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
     private readonly StoreOptions _options;
 
     private FileStream _lock;
+    private volatile bool _disposed;
 
-    private ModelStore(OwnedFolder folder, StoreManifest manifest, IDiskInfo disk)
+    private ModelStore(OwnedFolder folder, StoreManifest manifest, IDiskInfo disk, FileStream storeLock)
     {
-        _lock = folder.AcquireLock();
+        _lock = storeLock;
         _options = folder.Options;
         _folder = folder;
         _manifest = manifest;
@@ -133,7 +134,22 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
         OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
     /// <summary>Releases the store's exclusive lock so it can be opened again (by this or another process).</summary>
-    public void Dispose() => _lock.Dispose();
+    public void Dispose()
+    {
+        _disposed = true;
+        _lock.Dispose();
+    }
+
+    private async Task EnterGateAsync(CancellationToken ct)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        await _gate.WaitAsync(ct).ConfigureAwait(false);
+        if (_disposed)
+        {
+            _gate.Release();
+            throw new ObjectDisposedException(nameof(ModelStore));
+        }
+    }
 
     /// <summary>
     /// Opens the default store (LocalState\models): creates and marks it when missing, opens it when it carries
@@ -161,30 +177,39 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
         var id = OwnedFolder.ReadMarker(root, options)
             ?? throw new StoreRefusedException($"'{root}' is not a model store of this app (no matching marker); it was not used.");
         var folder = new OwnedFolder(root, id, options);
+        var storeLock = folder.AcquireLock(); // before store.json is read, so nobody changes it meanwhile
         StoreManifest manifest;
-        if (File.Exists(folder.ManifestPath))
+        try
         {
-            try
+            if (File.Exists(folder.ManifestPath))
             {
-                manifest = JsonSerializer.Deserialize(File.ReadAllBytes(folder.ManifestPath), StoreJsonContext.Default.StoreManifest)
-                    ?? throw new StoreRefusedException("store.json is empty.");
+                try
+                {
+                    manifest = JsonSerializer.Deserialize(File.ReadAllBytes(folder.ManifestPath), StoreJsonContext.Default.StoreManifest)
+                        ?? throw new StoreRefusedException("store.json is empty.");
+                }
+                catch (JsonException ex)
+                {
+                    // Never repaired or deleted automatically: the inventory is the only proof of what the host created.
+                    throw new StoreRefusedException($"store.json in '{root}' is damaged ({ex.Message}); it was left in place.");
+                }
+                if (manifest.StoreId != id)
+                {
+                    throw new StoreRefusedException("store.json belongs to a different store than the marker.");
+                }
             }
-            catch (JsonException ex)
+            else
             {
-                // Never repaired or deleted automatically: the inventory is the only proof of what the host created.
-                throw new StoreRefusedException($"store.json in '{root}' is damaged ({ex.Message}); it was left in place.");
-            }
-            if (manifest.StoreId != id)
-            {
-                throw new StoreRefusedException("store.json belongs to a different store than the marker.");
+                manifest = new StoreManifest { StoreId = id };
             }
         }
-        else
+        catch
         {
-            manifest = new StoreManifest { StoreId = id };
+            storeLock.Dispose();
+            throw;
         }
 
-        return new ModelStore(folder, manifest, disk);
+        return new ModelStore(folder, manifest, disk, storeLock);
     }
 
     /// <summary>
@@ -265,8 +290,17 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
     private static ModelStore CreateFresh(string root, IDiskInfo disk, StoreOptions options)
     {
         var folder = OwnedFolder.CreateNew(root, options);
-        var store = new ModelStore(folder, new StoreManifest { StoreId = folder.StoreId }, disk);
-        store.SaveManifest();
+        var store = new ModelStore(folder, new StoreManifest { StoreId = folder.StoreId }, disk, folder.AcquireLock());
+        try
+        {
+            store.SaveManifest();
+        }
+        catch
+        {
+            store.Dispose();
+            throw;
+        }
+
         return store;
     }
 
@@ -278,7 +312,7 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
 
     public async Task<IReadOnlyList<StoredModel>> ListAsync(CancellationToken ct)
     {
-        await _gate.WaitAsync(ct).ConfigureAwait(false);
+        await EnterGateAsync(ct).ConfigureAwait(false);
         try
         {
             return _manifest.Models.Select(ToStored).ToList();
@@ -291,7 +325,7 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
 
     public async Task<StoredModel?> GetAsync(string modelId, CancellationToken ct)
     {
-        await _gate.WaitAsync(ct).ConfigureAwait(false);
+        await EnterGateAsync(ct).ConfigureAwait(false);
         try
         {
             var m = Find(modelId);
@@ -506,7 +540,7 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
     public async Task<StoredFile?> TryAdoptExistingAsync(string modelId, string fileName, string sha256, long size, CancellationToken ct)
     {
         AssertSafeFileName(fileName);
-        await _gate.WaitAsync(ct).ConfigureAwait(false);
+        await EnterGateAsync(ct).ConfigureAwait(false);
         try
         {
             var m = Find(modelId);
@@ -734,7 +768,7 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
 
     public async Task MoveStoreAsync(string newParentFolder, IProgress<double>? progress, CancellationToken ct)
     {
-        await _gate.WaitAsync(ct).ConfigureAwait(false);
+        await EnterGateAsync(ct).ConfigureAwait(false);
         try
         {
             await MoveCoreAsync(newParentFolder, progress, ct).ConfigureAwait(false);
@@ -879,7 +913,7 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
     /// </summary>
     public async Task<IReadOnlyList<string>> RemoveOldCopiesAsync(CancellationToken ct)
     {
-        await _gate.WaitAsync(ct).ConfigureAwait(false);
+        await EnterGateAsync(ct).ConfigureAwait(false);
         try
         {
             return await RemoveOldCopiesCoreAsync(ct).ConfigureAwait(false);
@@ -905,6 +939,29 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
         }
 
         var old = new OwnedFolder(prev.Path, prev.StoreId, _options);
+        var oldLock = old.AcquireLock(); // refused (StoreLockedException) while another store object or process has it open
+        try
+        {
+            return await RemoveOldCopiesLockedAsync(old, prev, oldLock, ct).ConfigureAwait(false);
+        }
+        finally
+        {
+            oldLock.Dispose();
+            try
+            {
+                old.TryRemoveEmptyRootAfterRetire();
+            }
+            catch (IOException)
+            {
+            }
+            catch (UnauthorizedAccessException)
+            {
+            }
+        }
+    }
+
+    private async Task<IReadOnlyList<string>> RemoveOldCopiesLockedAsync(OwnedFolder old, PreviousStore prev, FileStream oldLock, CancellationToken ct)
+    {
         StoreManifest? oldManifest;
         try
         {
@@ -963,12 +1020,24 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
         }
 
         oldManifest.Models.RemoveAll(m => m.Origin == ModelOrigin.External || m.Files.Count == 0);
+        var retired = false;
         if (oldManifest.Models.Count == 0)
         {
-            old.TryRetireEmptyStore();
+            try
+            {
+                retired = old.TryRetireEmptyStore(ownLockHeld: true);
+            }
+            catch (IOException)
+            {
+            }
+            catch (UnauthorizedAccessException)
+            {
+            }
         }
-        else
+
+        if (!retired)
         {
+            // Always record what is really left, so no model is listed whose files are gone.
             old.ReplaceOwnedFile(OwnedFolder.ManifestFileName, JsonSerializer.SerializeToUtf8Bytes(oldManifest, StoreJsonContext.Default.StoreManifest));
         }
 
@@ -1118,7 +1187,7 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
 
     private async Task<T> Locked<T>(CancellationToken ct, Func<T> action)
     {
-        await _gate.WaitAsync(ct).ConfigureAwait(false);
+        await EnterGateAsync(ct).ConfigureAwait(false);
         try
         {
             return action();
@@ -1131,7 +1200,7 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
 
     private async Task Locked(CancellationToken ct, Action action)
     {
-        await _gate.WaitAsync(ct).ConfigureAwait(false);
+        await EnterGateAsync(ct).ConfigureAwait(false);
         try
         {
             action();
