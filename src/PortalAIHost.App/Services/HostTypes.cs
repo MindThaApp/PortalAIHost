@@ -52,7 +52,19 @@ public interface IHostControl
     event Action<DownloadProgressEvent>? DownloadProgress;
     event Action<EngineStateEvent>? EngineStateChanged;
 
+    /// <summary>The host says the tray icon was clicked: show the small status pop-up.</summary>
+    event Action<TrayPopupEvent>? TrayPopup;
+
     Task<HostSnapshot> GetStatusAsync(CancellationToken ct = default);
+
+    /// <summary>Today's per-app counts and which apps are generating now (counts and times only).</summary>
+    Task<IReadOnlyList<AppActivity>> GetActivityAsync(CancellationToken ct = default);
+
+    /// <summary>Loads the active chat model now.</summary>
+    Task LoadEngineAsync(CancellationToken ct = default);
+
+    /// <summary>Unloads the chat model now (stops the engine; model files are never touched).</summary>
+    Task UnloadEngineAsync(CancellationToken ct = default);
     Task<IReadOnlyList<PendingApproval>> ListApprovalsAsync(CancellationToken ct = default);
     Task ApproveAsync(string requestId, CancellationToken ct = default);
     Task DenyAsync(string requestId, CancellationToken ct = default);

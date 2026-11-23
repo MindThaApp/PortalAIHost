@@ -57,6 +57,9 @@ public sealed class AiHostRuntimeOptions
     public Func<string, (bool KeepLoaded, int IdleUnloadSeconds)>? IdlePolicy { get; init; }
 
     public TimeProvider Time { get; init; } = TimeProvider.System;
+
+    /// <summary>Reads engine process memory and processor time for status usage. Null: no usage in status.</summary>
+    public IProcessUsageProbe? UsageProbe { get; init; }
 }
 
 /// <summary>
@@ -71,6 +74,7 @@ public sealed class AiHostRuntime : IAsyncDisposable
     private readonly CancellationTokenSource _lifetime = new();
     private readonly SemaphoreSlim _resumeGate = new(1, 1);
     private readonly System.Collections.Concurrent.ConcurrentDictionary<string, byte> _keepLoaded = new(StringComparer.Ordinal);
+    private readonly UsageSampler? _sampler;
     private long _revision = 1;
     private int _inFlight;
     private volatile bool _stopping;
@@ -81,6 +85,12 @@ public sealed class AiHostRuntime : IAsyncDisposable
         SafeMode = options.SafeMode;
         Pipeline = new ApiPipeline(options.Registry, options.Pipeline, options.Time);
         Pipeline.HostStopping = _lifetime.Token;
+        Activity = new ActivityTracker(options.Time);
+        if (options.UsageProbe is { } probe)
+        {
+            _sampler = new UsageSampler(() => options.Supervisors.Values.OfType<IEngineProcess>()
+                .Select(s => s.ProcessId).Where(p => p.HasValue).Select(p => p!.Value).ToList(), probe, options.Time);
+        }
         foreach (var (kind, sup) in options.Supervisors)
         {
             _kinds[kind] = new KindState();
@@ -99,6 +109,39 @@ public sealed class AiHostRuntime : IAsyncDisposable
     }
 
     public ApiPipeline Pipeline { get; }
+
+    /// <summary>Per-app counts for today (memory only).</summary>
+    public ActivityTracker Activity { get; }
+
+    /// <summary>
+    /// Stops the engine of a kind now. Only the engine process ends: model files are never touched. A later
+    /// request loads it again.
+    /// </summary>
+    public async Task UnloadAsync(string kind, CancellationToken ct)
+    {
+        var (_, sup) = Require(kind);
+        var ks = _kinds[kind];
+        Task? pending;
+        lock (ks)
+        {
+            pending = ks.Load is { IsCompleted: false } l ? l : null;
+        }
+
+        if (pending is not null)
+        {
+            try
+            {
+                await pending.WaitAsync(ct).ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                // A failed load leaves nothing to wait for.
+            }
+        }
+
+        await sup.StopAsync(ct).ConfigureAwait(false);
+        Interlocked.Increment(ref _revision);
+    }
 
     public string InstanceId => _o.InstanceId;
 
@@ -327,6 +370,7 @@ public sealed class AiHostRuntime : IAsyncDisposable
             State = hostState,
             Client = principal is null ? null : new StatusClient { AppId = principal.AppId, TokenId = principal.TokenId },
             Models = models,
+            Usage = _sampler?.Get(Activity.LastTokensPerSecond),
             Queue = new QueueStatus
             {
                 Running = snap.Running,
@@ -658,7 +702,7 @@ public sealed class AiHostRuntime : IAsyncDisposable
     {
         ApiVersion = s.ApiVersion, HostVersion = s.HostVersion, InstanceId = s.InstanceId, State = s.State,
         Client = client, Models = s.Models, Queue = s.Queue, Hardware = s.Hardware,
-        UpgradeAvailable = s.UpgradeAvailable, Sharing = s.Sharing,
+        UpgradeAvailable = s.UpgradeAvailable, Sharing = s.Sharing, Usage = s.Usage,
     };
 
     private Task ListModelsAsync(ApiContext ctx)
@@ -730,9 +774,11 @@ public sealed class AiHostRuntime : IAsyncDisposable
         var (model, sup) = Require(ModelKinds.Embedding);
         ctx.ResponseHeaders[HeaderNames.Model] = model.ModelId;
         using var deadline = DeadlineToken(ctx);
+        using var activity = BeginActivity(ctx);
         await using var lease = await AcquireAsync(ctx, ModelKinds.Embedding, deadline.Token, null).ConfigureAwait(false);
         ctx.SetQueueWait(lease.QueueWait);
         await LoadForRequestAsync(ctx, ModelKinds.Embedding, deadline.Token, null).ConfigureAwait(false);
+        activity?.StartGeneration();
         var result = await Generate(ctx, deadline, () => sup.EmbedAsync(body, deadline.Token)).ConfigureAwait(false);
         await ctx.WriteJsonAsync(200, result, AiHostJsonContext.Default.EmbeddingsResponse).ConfigureAwait(false);
     }
@@ -744,6 +790,7 @@ public sealed class AiHostRuntime : IAsyncDisposable
         var (model, sup) = Require(ModelKinds.Chat);
         ctx.ResponseHeaders[HeaderNames.Model] = model.ModelId;
         using var deadline = DeadlineToken(ctx);
+        using var activity = BeginActivity(ctx);
 
         if (ctx.Options.FailIfLoading && !IsLoaded(sup, model))
         {
@@ -764,7 +811,9 @@ public sealed class AiHostRuntime : IAsyncDisposable
             await using var lease = await AcquireAsync(ctx, ModelKinds.Chat, deadline.Token, null).ConfigureAwait(false);
             ctx.SetQueueWait(lease.QueueWait);
             await LoadForRequestAsync(ctx, ModelKinds.Chat, deadline.Token, null).ConfigureAwait(false);
+            activity?.StartGeneration();
             var result = await Generate(ctx, deadline, () => sup.ChatAsync(body, deadline.Token)).ConfigureAwait(false);
+            activity?.AddTokens(result.Usage?.CompletionTokens ?? 0);
             await ctx.WriteJsonAsync(200, result, AiHostJsonContext.Default.ChatCompletionResponse).ConfigureAwait(false);
             return;
         }
@@ -776,22 +825,39 @@ public sealed class AiHostRuntime : IAsyncDisposable
         {
             await LoadForRequestAsync(ctx, ModelKinds.Chat, deadline.Token, pump).ConfigureAwait(false);
             await pump.StopAsync(new PortalProgressEvent { Event = ProgressEvents.Started }).ConfigureAwait(false);
+            activity?.StartGeneration();
+            long usageTokens = 0, streamed = 0;
             try
             {
                 await foreach (var chunk in sup.StreamChatAsync(body, deadline.Token).ConfigureAwait(false))
                 {
                     await ctx.WriteSseDataAsync(chunk, AiHostJsonContext.Default.ChatCompletionChunk).ConfigureAwait(false);
+                    if (chunk.Usage is { CompletionTokens: > 0 } u)
+                    {
+                        usageTokens = u.CompletionTokens;
+                    }
+                    else if (chunk.Choices.Any(c => !string.IsNullOrEmpty(c.Delta.Content) || !string.IsNullOrEmpty(c.Delta.ReasoningContent)))
+                    {
+                        streamed++;
+                    }
                 }
             }
             catch (OperationCanceledException) when (deadline.IsDeadline)
             {
                 throw Deadline(DeadlinePhases.Generating);
             }
+            finally
+            {
+                activity?.AddTokens(usageTokens > 0 ? usageTokens : streamed);
+            }
         }
 
         await ctx.WriteSseDoneAsync().ConfigureAwait(false);
         await ctx.CompleteAsync().ConfigureAwait(false);
     }
+
+    private ActivityTracker.RequestScope? BeginActivity(ApiContext ctx) =>
+        ctx.Principal is { } p ? Activity.Begin(p.AppId) : null;
 
     private static async Task<T> Generate<T>(ApiContext ctx, DeadlineScope deadline, Func<Task<T>> call)
     {

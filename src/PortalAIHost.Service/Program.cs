@@ -11,6 +11,7 @@ using Portal.AiHost.Platform.Windows.Hardware;
 using Portal.AiHost.Platform.Windows.Identity;
 using Portal.AiHost.Platform.Windows.Pipes;
 using Portal.AiHost.Platform.Windows.Tray;
+using Portal.AiHost.Platform.Windows.Usage;
 
 namespace PortalAIHost.Service;
 
@@ -55,6 +56,7 @@ internal static class Program
                 KeyProtector = new DpapiHostKeyProtector(),
                 CallerResolver = new WindowsCallerIdentityResolver(),
                 Hardware = new WindowsHardwareProbe(),
+                UsageProbe = new ProcessUsageProbe(),
                 OpenStoreReporting = settings => OpenStore(paths, settings), // Only after the single-instance lock is held.
                 OpenPreviousStores = OpenPreviousStores,
                 Catalogue = catalogue,
@@ -116,6 +118,13 @@ internal static class Program
         {
             tray = TrayIcon.Start(showIcon: showIcon);
             tray.OpenRequested += (_, _) => OpenWindow(paths, null);
+            tray.PopupRequested += (_, at) =>
+            {
+                if (!shell.RequestTrayPopup(at.X, at.Y))
+                {
+                    OpenWindow(paths, null, trayPopup: at);
+                }
+            };
             tray.QuitRequested += (_, _) => shell.RequestQuit();
             tray.Resumed += (_, _) => _ = shell.OnResumeAsync();
             tray.SessionEnding += (_, _) => shell.StopForSessionEnd(SessionEndBudget);
@@ -264,7 +273,7 @@ internal static class Program
     }
 
     /// <summary>Starts the window next to this exe; never in test mode.</summary>
-    private static void OpenWindow(HostPaths paths, string? page)
+    private static void OpenWindow(HostPaths paths, string? page, (int X, int Y)? trayPopup = null)
     {
         if (paths.TestMode)
         {
@@ -282,7 +291,11 @@ internal static class Program
         try
         {
             var start = new ProcessStartInfo(exe) { UseShellExecute = false };
-            if (page is not null)
+            if (trayPopup is { } at)
+            {
+                start.ArgumentList.Add(FormattableString.Invariant($"--tray-popup={at.X},{at.Y}"));
+            }
+            else if (page is not null)
             {
                 start.ArgumentList.Add("--page=" + page);
             }

@@ -33,6 +33,7 @@ public sealed class FakeHostControl : IHostControl, IDisposable
     private bool _connected;
     private bool _safeMode;
     private string? _activeId;
+    private bool? _loadedNow;
 
     public FakeHostControl(FakeScenario scenario, bool autoTick = true)
     {
@@ -81,6 +82,7 @@ public sealed class FakeHostControl : IHostControl, IDisposable
     public event Action<DownloadProgressEvent>? DownloadProgress;
 #pragma warning disable CS0067 // the fake never reports engine state changes
     public event Action<EngineStateEvent>? EngineStateChanged;
+    public event Action<TrayPopupEvent>? TrayPopup;
 #pragma warning restore CS0067
 
     /// <summary>Called by the fake launcher: the host "starts" and shows a fresh install.</summary>
@@ -280,6 +282,48 @@ public sealed class FakeHostControl : IHostControl, IDisposable
 
     public Task CancelTryItAsync() => Task.CompletedTask;
 
+    /// <summary>What the fake reports as live use while the model is loaded.</summary>
+    public HostUsage Usage { get; set; } = new()
+    {
+        RamUsedBytes = 18L * 1024 * 1024 * 1024, VramUsedBytes = 7L * 1024 * 1024 * 1024, CpuPercent = 12,
+        GenerationTokensPerSecond = 28, UpdatedAt = DateTimeOffset.UtcNow,
+    };
+
+    /// <summary>What the fake reports as today's activity.</summary>
+    public List<AppActivity> Activity { get; } = new();
+
+    /// <summary>When set, load and unload wait for it first (tests use it to see the pending state).</summary>
+    public Task? EngineGate { get; set; }
+
+    /// <summary>When set, load and unload fail with this reason.</summary>
+    public string? EngineFailure { get; set; }
+
+    public int LoadCalls { get; private set; }
+    public int UnloadCalls { get; private set; }
+
+    public Task<IReadOnlyList<AppActivity>> GetActivityAsync(CancellationToken ct = default)
+    {
+        Require();
+        return Task.FromResult<IReadOnlyList<AppActivity>>(Activity.ToList());
+    }
+
+    public Task LoadEngineAsync(CancellationToken ct = default) => EngineAsync(true);
+
+    public Task UnloadEngineAsync(CancellationToken ct = default) => EngineAsync(false);
+
+    /// <summary>Raises the tray pop-up signal, like a click on the tray icon.</summary>
+    public void RaiseTrayPopup(int x, int y) => TrayPopup?.Invoke(new TrayPopupEvent { X = x, Y = y });
+
+    private async Task EngineAsync(bool load)
+    {
+        Require();
+        if (load) LoadCalls++; else UnloadCalls++;
+        if (EngineGate is { } gate) await gate.ConfigureAwait(false);
+        if (EngineFailure is { } why) throw new HostRequestException("internal_error", why);
+        lock (_gate) _loadedNow = load;
+        StatusChanged?.Invoke(Snapshot());
+    }
+
     public void Dispose() => _timer?.Dispose();
 
     private void Require()
@@ -295,7 +339,7 @@ public sealed class FakeHostControl : IHostControl, IDisposable
             if (!_connected) return HostSnapshot.NoHost;
             var active = _models.FirstOrDefault(m => m.Id == _activeId);
             var downloading = _downloads.Values.Any(d => d.State == "downloading");
-            var loaded = Scenario is FakeScenario.Loaded or FakeScenario.ApprovalPending;
+            var loaded = _loadedNow ?? Scenario is FakeScenario.Loaded or FakeScenario.ApprovalPending;
             var chat = new ModelStatus
             {
                 Id = active?.Id,
@@ -317,6 +361,7 @@ public sealed class FakeHostControl : IHostControl, IDisposable
                     Gpus = new() { new GpuInfo { Name = "AMD Radeon RX 6600", Vendor = "AMD", VramBytes = 8L * 1024 * 1024 * 1024, Backend = "vulkan" } },
                 },
                 UpgradeAvailable = Scenario is FakeScenario.Loaded or FakeScenario.SafeMode,
+                Usage = loaded ? Usage : null,
             };
             return new HostSnapshot(true, status, _safeMode);
         }

@@ -32,6 +32,9 @@ public sealed class HostShellOptions
 
     public IHardwareProbe? Hardware { get; init; }
 
+    /// <summary>Reads engine memory and processor time for status usage; null leaves usage out.</summary>
+    public IProcessUsageProbe? UsageProbe { get; init; }
+
     public IModelStore? Store { get; init; }
 
     /// <summary>Opens the model store once this host holds the single-instance lock (used when Store is null).</summary>
@@ -249,6 +252,7 @@ public sealed class HostShell : IAsyncDisposable
             HostVersion = _o.HostVersion,
             SafeMode = _marker.SafeMode,
             IdlePolicy = IdlePolicyFor,
+            UsageProbe = _o.UsageProbe,
         }, ct).ConfigureAwait(false);
 
         Runtime.EngineStateChanged += (_, change) => _ = PushEngineStateAsync(change);
@@ -291,6 +295,22 @@ public sealed class HostShell : IAsyncDisposable
         {
             return false;
         }
+    }
+
+    /// <summary>
+    /// The tray icon was clicked. When a window is connected it is told to show the pop-up and true is returned;
+    /// otherwise false, and the caller starts the window with the pop-up switch.
+    /// </summary>
+    public bool RequestTrayPopup(int x, int y)
+    {
+        if (_pipe is not { ConnectionCount: > 0 })
+        {
+            return false;
+        }
+
+        _ = _pipe.BroadcastAsync(ControlTypes.EventTrayPopup,
+            JsonSerializer.SerializeToElement(new TrayPopupEvent { X = x, Y = y }, AiHostJsonContext.Default.TrayPopupEvent));
+        return true;
     }
 
     public void RequestShow(string? page)

@@ -18,6 +18,9 @@ public static class AppServices
     public static ShellViewModel Shell { get; private set; } = null!;
     /// <summary>Opens a page by name (home, models, apps, tryit, settings) and moves the menu selection. Set by the window.</summary>
     public static Action<string>? NavigateTo { get; set; }
+
+    /// <summary>Raised when the main window is shown or hidden (minimized). Live pages stop reading while hidden.</summary>
+    public static Action<bool>? MainVisibilityChanged { get; set; }
     public static IStartupControl Startup { get; private set; } = new UnavailableStartupControl();
     /// <summary>Applies appearance choices to the open window. Set by the window.</summary>
     public static IAppearanceApplier? Appearance { get; set; }

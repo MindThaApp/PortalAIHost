@@ -30,8 +30,20 @@ public sealed partial class HomePage : Page
 
     protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
+        AppServices.MainVisibilityChanged += OnWindowVisible;
+        ViewModel.Live.Start();
         await ViewModel.LoadAsync();
     }
 
-    protected override void OnNavigatedFrom(NavigationEventArgs e) => ViewModel.Dispose();
+    private void OnWindowVisible(bool visible)
+    {
+        if (visible) ViewModel.Live.Start();
+        else ViewModel.Live.Stop();
+    }
+
+    protected override void OnNavigatedFrom(NavigationEventArgs e)
+    {
+        AppServices.MainVisibilityChanged -= OnWindowVisible;
+        ViewModel.Dispose();
+    }
 }

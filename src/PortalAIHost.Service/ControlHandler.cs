@@ -33,6 +33,10 @@ internal sealed class ControlHandler(HostShell shell)
         {
             return ControlPipe.Error(request.Id, ex.Code, ex.Message);
         }
+        catch (EngineException ex)
+        {
+            return ControlPipe.Error(request.Id, ex.ErrorCode, ex.Message);
+        }
         catch (ApiException ex)
         {
             return ControlPipe.Error(request.Id, ex.Code, ex.Message);
@@ -149,6 +153,31 @@ internal sealed class ControlHandler(HostShell shell)
             case ControlTypes.TryItCancel:
                 CancelQuietly(Volatile.Read(ref _tryIt));
                 return ControlPipe.Ok(id);
+
+            case ControlTypes.GetActivity:
+            {
+                var known = (await runtime.Registry.ListAsync(ct).ConfigureAwait(false))
+                    .GroupBy(c => c.AppId).ToDictionary(g => g.Key, g => g.First().AppName);
+                var apps = runtime.Activity.Snapshot(a => known.GetValueOrDefault(a));
+                return Ok(id, new ActivityReport { Apps = apps }, AiHostJsonContext.Default.ActivityReport);
+            }
+
+            case ControlTypes.LoadEngine:
+            {
+                var kind = Payload(r, AiHostJsonContext.Default.EngineCommand, optional: true)?.Kind ?? ModelKinds.Chat;
+                await runtime.EnsureLoadedAsync(kind, ct).ConfigureAwait(false);
+                await shell.PushStatusAsync().ConfigureAwait(false);
+                return ControlPipe.Ok(id);
+            }
+
+            case ControlTypes.UnloadEngine:
+            {
+                // Stops the engine process only. Model files are never touched.
+                var kind = Payload(r, AiHostJsonContext.Default.EngineCommand, optional: true)?.Kind ?? ModelKinds.Chat;
+                await runtime.UnloadAsync(kind, ct).ConfigureAwait(false);
+                await shell.PushStatusAsync().ConfigureAwait(false);
+                return ControlPipe.Ok(id);
+            }
 
             case ControlTypes.Quit:
                 // Answer first, then quit, so the window sees the acknowledgement.

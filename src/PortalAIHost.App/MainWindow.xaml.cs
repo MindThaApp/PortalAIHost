@@ -29,6 +29,7 @@ public sealed partial class MainWindow : Window, IAppearanceApplier
         Root.SizeChanged += (_, _) => UpdateCaptionRegions();
         AppMenuButton.SizeChanged += (_, _) => UpdateCaptionRegions();
         AppServices.Appearance = this;
+        VisibilityChanged += (_, e) => AppServices.MainVisibilityChanged?.Invoke(e.Visible);
         Apply(AppOptions.WithOverrides(_shell.State.Appearance));
         // Windows high contrast can change while the window is open: switch materials and caption colours with it.
         // (AccessibilitySettings.HighContrastChanged cannot be subscribed to in an unpackaged run; UISettings can.)

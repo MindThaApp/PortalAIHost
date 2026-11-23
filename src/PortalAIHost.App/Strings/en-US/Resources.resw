@@ -349,4 +349,45 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="AppsUndo.Content" xml:space="preserve"><value>Undo</value></data>
   <data name="Vm_RemoveFrees" xml:space="preserve"><value>This frees {0}.</value></data>
   <data name="Vm_StepOf" xml:space="preserve"><value>Step {0} of {1}</value></data>
+  <data name="Vm_LiveIdle" xml:space="preserve"><value>Nothing is being written right now</value></data>
+  <data name="Vm_LiveGenerating" xml:space="preserve"><value>{0} is getting an answer</value></data>
+  <data name="Vm_LiveSpeed" xml:space="preserve"><value>About {0} words a second</value></data>
+  <data name="Vm_LiveMemory" xml:space="preserve"><value>{0} of {1}</value></data>
+  <data name="Vm_LiveMemoryNoTotal" xml:space="preserve"><value>{0}</value></data>
+  <data name="Vm_LivePendingLoad" xml:space="preserve"><value>Loading...</value></data>
+  <data name="Vm_LivePendingUnload" xml:space="preserve"><value>Unloading...</value></data>
+  <data name="Vm_LiveLoadFailed" xml:space="preserve"><value>The model could not be loaded. {0}</value></data>
+  <data name="Vm_LiveUnloadFailed" xml:space="preserve"><value>The model could not be unloaded. {0}</value></data>
+  <data name="Vm_TodayNone" xml:space="preserve"><value>No requests yet today.</value></data>
+  <data name="Vm_TodayRow1" xml:space="preserve"><value>{0} request, last seen {1}</value></data>
+  <data name="Vm_TodayRow" xml:space="preserve"><value>{0} requests, last seen {1}</value></data>
+  <data name="Vm_SeenNever" xml:space="preserve"><value>never</value></data>
+  <data name="Vm_SeenNow" xml:space="preserve"><value>just now</value></data>
+  <data name="Vm_SeenMinutes" xml:space="preserve"><value>{0} min ago</value></data>
+  <data name="Vm_SeenHours" xml:space="preserve"><value>{0} h ago</value></data>
+  <data name="HomeLiveTitle.Text" xml:space="preserve"><value>RIGHT NOW</value></data>
+  <data name="Vm_LiveRamName" xml:space="preserve"><value>Memory used by the model: {0}</value></data>
+  <data name="Vm_LiveVramName" xml:space="preserve"><value>Graphics memory used by the model: {0}</value></data>
+  <data name="HomeRamLabel.Text" xml:space="preserve"><value>Memory used by the model</value></data>
+  <data name="HomeVramLabel.Text" xml:space="preserve"><value>Graphics memory used by the model</value></data>
+  <data name="HomeUnloadButton.Content" xml:space="preserve"><value>Unload now</value></data>
+  <data name="HomeLoadButton.Content" xml:space="preserve"><value>Load now</value></data>
+  <data name="HomeActionErrorBar.Title" xml:space="preserve"><value>That did not work</value></data>
+  <data name="HomeTodayLabel.Text" xml:space="preserve"><value>TODAY</value></data>
+  <data name="Vm_TrayReady" xml:space="preserve"><value>Ready · {0} loaded</value></data>
+  <data name="Vm_TrayBusy" xml:space="preserve"><value>Busy · {0}</value></data>
+  <data name="Vm_TrayBusyOther" xml:space="preserve"><value>Busy</value></data>
+  <data name="Vm_TrayLoading" xml:space="preserve"><value>Loading · {0}</value></data>
+  <data name="Vm_TrayIdle" xml:space="preserve"><value>Ready · {0} loads when asked</value></data>
+  <data name="Vm_TrayNoModel" xml:space="preserve"><value>No model yet</value></data>
+  <data name="Vm_TrayOff" xml:space="preserve"><value>Off</value></data>
+  <data name="Vm_TrayLastNone" xml:space="preserve"><value>No requests today</value></data>
+  <data name="Vm_TrayLast" xml:space="preserve"><value>{0}, {1}</value></data>
+  <data name="TrayModelLabel.Text" xml:space="preserve"><value>Model</value></data>
+  <data name="TrayMemoryLabel.Text" xml:space="preserve"><value>Memory</value></data>
+  <data name="TrayLastLabel.Text" xml:space="preserve"><value>Last request</value></data>
+  <data name="TrayQueueLabel.Text" xml:space="preserve"><value>Queue</value></data>
+  <data name="TrayOpenButton.Content" xml:space="preserve"><value>Open app</value></data>
+  <data name="TrayUnloadButton.Content" xml:space="preserve"><value>Unload model</value></data>
+  <data name="TrayWindowTitle" xml:space="preserve"><value>Portal AI Host status</value></data>
 </root>
