@@ -387,7 +387,7 @@ internal sealed class OwnedFolder
         AssertMarker();
         var leftovers = Directory.EnumerateFileSystemEntries(Root)
             .Select(Path.GetFileName)
-            .Where(n => n is not (MarkerFileName or ManifestFileName))
+            .Where(n => n != MarkerFileName && n != ManifestFileName)
             .ToList();
         if (leftovers.Count > 0)
         {
