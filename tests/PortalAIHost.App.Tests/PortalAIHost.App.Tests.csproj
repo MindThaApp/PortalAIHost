@@ -25,6 +25,7 @@
     <Compile Include="..\..\src\PortalAIHost.App\Services\AppearanceTypes.cs" Link="App\Services\AppearanceTypes.cs" />
     <Compile Include="..\..\src\PortalAIHost.App\Services\Links.cs" Link="App\Services\Links.cs" />
     <Compile Include="..\..\src\PortalAIHost.App\Services\PseudoLoc.cs" Link="App\Services\PseudoLoc.cs" />
+    <Compile Include="../../src/PortalAIHost.App/Services/TrayPopupArgs.cs" Link="App/Services/TrayPopupArgs.cs" />
     <Compile Include="../../src/PortalAIHost.App/Services/TrayPlacement.cs" Link="App/Services/TrayPlacement.cs" />
   </ItemGroup>
 </Project>

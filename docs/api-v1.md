@@ -204,13 +204,20 @@ final event `data: {"error":{...}}` and closes the stream **without** `data: [DO
     "gpus": [ { "name": "AMD Radeon RX 6600", "vendor": "amd", "vram_bytes": 8589934592, "backend": "vulkan" } ]
   },
   "upgrade_available": false,
-  "sharing": { "lan": false, "relay": false }
+  "sharing": { "lan": false, "relay": false },
+  "usage": { "ram_used_bytes": 19327352832, "vram_used_bytes": 7516192768, "cpu_percent": 34,
+             "generation_tokens_per_second": 21.5, "updated_at": "2026-11-23T21:40:02Z" }
 }
 ```
 - `state` is one of `ready` (loaded and idle), `busy` (generating), `loading`, `idle` (installed but not loaded; the
   next request loads it), `no_model`, `downloading` (no usable model yet) or `error`.
 - `models.<kind>.state` is one of `unloaded`, `loading`, `loaded`, `failed` or `not_installed`. The keys under
   `models` are model kinds. Expect more kinds later (for example `transcription`) and ignore unknown ones.
+- `usage` is the live use of the engine process (read-only): `ram_used_bytes` (working set) and `vram_used_bytes` 
+  (dedicated graphics memory), `cpu_percent` (share of the whole PC, 0 to 100), `generation_tokens_per_second` 
+  (speed of the last finished request; missing until one has finished) and `updated_at`. It is sampled at most every 
+  1.5 seconds and only while someone asks, so reading it often costs nothing extra. It is missing when the host cannot 
+  read the engine. Ignore unknown fields.
 
 ### `GET /host/capabilities`
 What the current model on this machine can do. It changes when the user switches models, when hardware changes or
@@ -432,6 +439,18 @@ only). Messages are JSON envelopes `{ "id", "type", "payload" }`; answers are `o
   store_problem }`. `store_problem` is a plain-language reason the models folder could not be opened (a folder
   without the host's marker, a damaged `store.json`, a missing parent); the folder is left untouched and
   downloads are off until the setting is changed.
+
+**Live activity and the tray pop-up**
+
+- `activity.get` answers `{ apps: [...] }`: today's per-app counts, newest first. Each app has `app_id, app_name,
+  requests, last_seen, tokens, running` (`running` = requests generating right now). Counts and times only, never
+  content; kept in memory and reset at local midnight.
+- `engine.load` / `engine.unload` `{ kind? }` (chat when missing): load the active model now, or stop its engine
+  process now. Unload never touches model files; the next request loads the model again. The answer comes when the
+  work is done; failures are error answers (for example `insufficient_memory`, or `not_found` when no model is active).
+- `event.tray_popup` `{ x, y }` (push): the tray icon was clicked at that screen position. A connected window shows
+  its small status pop-up. With no window connected the host starts the window with `--tray-popup=x,y` instead.
+- `status.get` carries the same `usage` as `GET /host/status`.
 
 **Settings**
 

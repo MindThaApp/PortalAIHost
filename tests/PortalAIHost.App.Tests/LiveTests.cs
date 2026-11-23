@@ -152,3 +152,19 @@ public class LiveTests
         Assert.InRange(second.X, -1920 + 8, -8);
     }
 }
+
+public class TrayPopupArgsTests
+{
+    [Theory]
+    [InlineData("--tray-popup=1850,1060", 1850, 1060)]
+    [InlineData("\"C:/x/PortalAIHost.exe\" --tray-popup=-100,1060 --other", -100, 1060)]
+    public void Reads_the_icon_position(string text, int x, int y) => Assert.Equal((x, y), TrayPopupArgs.Find(text));
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("--page=home")]
+    [InlineData("--tray-popup=abc,1")]
+    [InlineData("--tray-popup=1")]
+    public void Ignores_anything_else(string? text) => Assert.Null(TrayPopupArgs.Find(text));
+}

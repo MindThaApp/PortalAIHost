@@ -171,6 +171,8 @@ The recommended minimum is "Reply speed vs quality".
 "usage": { "ram_used_bytes": 19327352832, "vram_used_bytes": 7516192768, "cpu_percent": 34,
            "generation_tokens_per_second": 21.5, "updated_at": "2026-11-23T21:40:02Z" }
 ```
+Read-only, sampled at most every 1.5 s and only while someone asks. `ram_used_bytes` and `vram_used_bytes` are the engine process's own use; 
+`cpu_percent` is its share of the whole PC; `generation_tokens_per_second` is the last finished request. Field names are as in api-v1 section 6.
 
 ### 5.3 New request header
 

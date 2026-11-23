@@ -60,6 +60,9 @@ public static class AppOptions
     /// <summary>Open this page first: home, models, apps, tryit, settings.</summary>
     public static string? StartPage { get; private set; }
 
+    /// <summary>Where the tray icon was clicked (screen pixels) when the host started this window for the pop-up.</summary>
+    public static (int X, int Y)? TrayPopup { get; private set; }
+
     /// <summary>Folder watched for take-NAME.txt files; each one makes the window save NAME.png (used by automated checks).</summary>
     public static string? ShotDir { get; private set; }
 
@@ -88,6 +91,7 @@ public static class AppOptions
         foreach (var a in args)
         {
             if (a.StartsWith("--page=", StringComparison.OrdinalIgnoreCase)) StartPage = a[7..];
+            else if (Services.TrayPopupArgs.Find(a) is { } popupAt) TrayPopup = popupAt;
 #if DEBUG
             // Development and automated-check switches; Release builds ignore them.
             else if (a.StartsWith("--fake", StringComparison.OrdinalIgnoreCase))
