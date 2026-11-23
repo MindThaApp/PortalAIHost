@@ -64,6 +64,7 @@ public sealed class EngineSupervisor : IEngineSupervisor
     private readonly CancellationTokenSource _disposeCts = new();
     private readonly List<DateTime> _crashes = new();
     private JobObject? _job;
+    private System.Diagnostics.ProcessPriorityClass? _priority;
     private EngineState _state = EngineState.Stopped;
     private EngineLaunchSpec? _current;
     private EngineLaunchSpec? _requested;
@@ -125,6 +126,36 @@ public sealed class EngineSupervisor : IEngineSupervisor
     public int? ProcessId
     {
         get { lock (_sync) { return _run?.Proc.Id; } }
+    }
+
+    public System.Diagnostics.ProcessPriorityClass? RequestedPriority
+    {
+        get { lock (_sync) { return _priority; } }
+    }
+
+    public bool SetPriority(System.Diagnostics.ProcessPriorityClass priority)
+    {
+        Process? proc;
+        lock (_sync)
+        {
+            _priority = priority;
+            proc = _run?.Proc;
+        }
+
+        return proc is not null && TryApplyPriority(proc, priority);
+    }
+
+    private static bool TryApplyPriority(Process proc, System.Diagnostics.ProcessPriorityClass priority)
+    {
+        try
+        {
+            proc.PriorityClass = priority;
+            return true;
+        }
+        catch (Exception e) when (e is InvalidOperationException or System.ComponentModel.Win32Exception or NotSupportedException)
+        {
+            return false;
+        }
     }
 
     // ---- lifecycle ----------------------------------------------------------------
@@ -326,6 +357,12 @@ public sealed class EngineSupervisor : IEngineSupervisor
         };
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", endpoint.ApiKey);
         var run = new Run(proc, http, ring, binary, spec, requested);
+        var wantedPriority = RequestedPriority;
+        if (wantedPriority is { } wanted)
+        {
+            TryApplyPriority(proc, wanted);
+        }
+
         lock (_sync)
         {
             _run = run;

@@ -40,6 +40,7 @@ public sealed class FakeEngineSupervisor : IEngineSupervisor
     private CancellationTokenSource _lifetime = new();
     private EngineState _state = EngineState.Stopped;
     private EngineLaunchSpec? _current;
+    private System.Diagnostics.ProcessPriorityClass? _priority;
     private int _active;
     private int _cancelled;
     private int _loadCount;
@@ -131,6 +132,21 @@ public sealed class FakeEngineSupervisor : IEngineSupervisor
             lock (_gate) { _current = null; }
             Set(EngineState.Stopped);
             throw;
+        }
+    }
+
+    public System.Diagnostics.ProcessPriorityClass? RequestedPriority
+    {
+        get { lock (_gate) { return _priority; } }
+    }
+
+    /// <summary>Records the wanted priority; there is no process, so it reports true only while an engine is loaded.</summary>
+    public bool SetPriority(System.Diagnostics.ProcessPriorityClass priority)
+    {
+        lock (_gate)
+        {
+            _priority = priority;
+            return _state != EngineState.Stopped;
         }
     }
 
