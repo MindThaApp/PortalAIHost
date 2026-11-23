@@ -2,9 +2,17 @@
   <PropertyGroup>
     <IsAotCompatible>true</IsAotCompatible>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+    <PackageId>Portal.AiHost.Engine</PackageId>
+    <Version>1.0.2-preview.1</Version>
+    <Authors>MindThaApp</Authors>
+    <Description>Supervises a local llama.cpp server process: start, health, restart with backoff, GGUF header reading and runtime probing. Used by Portal AI Host and the Portal apps.</Description>
+    <PackageTags>portal;local-ai;llama-cpp;gguf;engine</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/MindThaApp/PortalAIHost</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Portal.AiHost.Core\Portal.AiHost.Core.csproj" />
+    <ProjectReference Include="..\Portal.AiHost.Models\Portal.AiHost.Models.csproj" />
   </ItemGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Portal.AiHost.Engine.Tests" />

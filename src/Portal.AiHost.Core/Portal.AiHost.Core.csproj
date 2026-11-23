@@ -4,5 +4,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Portal.AiHost.Contracts\Portal.AiHost.Contracts.csproj" />
+    <ProjectReference Include="..\Portal.AiHost.Models\Portal.AiHost.Models.csproj" />
   </ItemGroup>
 </Project>

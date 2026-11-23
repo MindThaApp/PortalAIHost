@@ -3,5 +3,13 @@
     <IsAotCompatible>true</IsAotCompatible>
     <JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
+
+    <PackageId>Portal.AiHost.Contracts</PackageId>
+    <Version>1.0.2-preview.1</Version>
+    <Authors>MindThaApp</Authors>
+    <Description>Wire contracts (request and response types, JSON context) shared by Portal AI Host, its client library and the shared model packages.</Description>
+    <PackageTags>portal;local-ai;contracts</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/MindThaApp/PortalAIHost</RepositoryUrl>
   </PropertyGroup>
 </Project>
