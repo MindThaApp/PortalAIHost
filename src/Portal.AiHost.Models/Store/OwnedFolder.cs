@@ -49,9 +49,49 @@ public sealed class SystemDiskInfo : IDiskInfo
 
 internal sealed class StoreMarker
 {
-    public string Kind { get; set; } = OwnedFolder.MarkerKind;
+    public string Kind { get; set; } = StoreOptions.DefaultMarkerKind;
     public Guid StoreId { get; init; }
     public DateTimeOffset Created { get; init; }
+}
+
+/// <summary>
+/// Names that identify a store: the folder name used inside a chosen parent folder, the marker file name and the
+/// marker kind written inside it. Two stores with different options never adopt each other's folders. The defaults
+/// are Portal AI Host's own values; another app passes its own so it can never pick up the host's store.
+/// </summary>
+public sealed record StoreOptions
+{
+    public const string DefaultFolderName = Portal.AiHost.Contracts.HostFolders.ModelsSubfolder;
+    public const string DefaultMarkerFileName = ".portal-ai-host-store";
+    public const string DefaultMarkerKind = "portal-ai-host-store";
+
+    public static StoreOptions Default { get; } = new();
+
+    /// <summary>Subfolder created inside the user's chosen parent folder.</summary>
+    public string FolderName { get; init; } = DefaultFolderName;
+
+    /// <summary>Marker file at the store root; a folder without it is never adopted.</summary>
+    public string MarkerFileName { get; init; } = DefaultMarkerFileName;
+
+    /// <summary>Kind string stored inside the marker; a marker with another kind is not this store's.</summary>
+    public string MarkerKind { get; init; } = DefaultMarkerKind;
+
+    internal void Validate()
+    {
+        foreach (var n in new[] { FolderName, MarkerFileName, MarkerKind })
+        {
+            if (string.IsNullOrWhiteSpace(n))
+            {
+                throw new ArgumentException("Store names must not be empty.");
+            }
+        }
+
+        if (MarkerFileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0 || FolderName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0
+            || MarkerFileName is "store.json" or "." or "..")
+        {
+            throw new ArgumentException("Store folder and marker names must be plain file names (and the marker cannot be store.json).");
+        }
+    }
 }
 
 /// <summary>
@@ -63,18 +103,20 @@ internal sealed class StoreMarker
 /// </summary>
 internal sealed class OwnedFolder
 {
-    public const string MarkerFileName = ".portal-ai-host-store";
     public const string ManifestFileName = "store.json";
-    public const string MarkerKind = "portal-ai-host-store";
 
     private static readonly StringComparison PathComparison =
         OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
-    public OwnedFolder(string root, Guid storeId)
+    public OwnedFolder(string root, Guid storeId, StoreOptions? options = null)
     {
         Root = Normalize(root);
         StoreId = storeId;
+        Options = options ?? StoreOptions.Default;
     }
+
+    public StoreOptions Options { get; }
+    public string MarkerFileName => Options.MarkerFileName;
 
     public string Root { get; }
     public Guid StoreId { get; }
@@ -86,9 +128,10 @@ internal sealed class OwnedFolder
         Path.TrimEndingDirectorySeparator(Path.GetFullPath(path));
 
     /// <summary>Reads the marker GUID of a folder, or null when the folder carries no valid marker.</summary>
-    public static Guid? ReadMarker(string root)
+    public static Guid? ReadMarker(string root, StoreOptions? options = null)
     {
-        var marker = Path.Combine(Normalize(root), MarkerFileName);
+        options ??= StoreOptions.Default;
+        var marker = Path.Combine(Normalize(root), options.MarkerFileName);
         var info = new FileInfo(marker);
         if (!info.Exists || info.LinkTarget is not null || IsLinkedDirectory(new DirectoryInfo(Normalize(root))))
         {
@@ -98,7 +141,7 @@ internal sealed class OwnedFolder
         try
         {
             var m = JsonSerializer.Deserialize(File.ReadAllBytes(marker), StoreJsonContext.Default.StoreMarker);
-            return m is { Kind: MarkerKind } && m.StoreId != Guid.Empty ? m.StoreId : null;
+            return m is { } && m.Kind == options.MarkerKind && m.StoreId != Guid.Empty ? m.StoreId : null;
         }
         catch (JsonException)
         {
@@ -107,7 +150,7 @@ internal sealed class OwnedFolder
     }
 
     /// <summary>Creates a brand-new store folder with a fresh marker. Fails if anything already exists there.</summary>
-    public static OwnedFolder CreateNew(string root)
+    public static OwnedFolder CreateNew(string root, StoreOptions? options = null)
     {
         root = Normalize(root);
         if (Directory.Exists(root) || File.Exists(root))
@@ -116,9 +159,9 @@ internal sealed class OwnedFolder
         }
 
         Directory.CreateDirectory(root);
-        var folder = new OwnedFolder(root, Guid.NewGuid());
+        var folder = new OwnedFolder(root, Guid.NewGuid(), options);
         var bytes = JsonSerializer.SerializeToUtf8Bytes(
-            new StoreMarker { StoreId = folder.StoreId, Created = DateTimeOffset.UtcNow }, StoreJsonContext.Default.StoreMarker);
+            new StoreMarker { Kind = folder.Options.MarkerKind, StoreId = folder.StoreId, Created = DateTimeOffset.UtcNow }, StoreJsonContext.Default.StoreMarker);
         using (var fs = new FileStream(folder.MarkerPath, FileMode.CreateNew, FileAccess.Write))
         {
             fs.Write(bytes);
@@ -129,7 +172,7 @@ internal sealed class OwnedFolder
 
     public void AssertMarker()
     {
-        if (ReadMarker(Root) != StoreId)
+        if (ReadMarker(Root, Options) != StoreId)
         {
             throw new StoreSafetyException($"Store marker missing or changed in '{Root}'; nothing was touched.");
         }

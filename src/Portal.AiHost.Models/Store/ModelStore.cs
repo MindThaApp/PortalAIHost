@@ -107,7 +107,7 @@ internal sealed class ManifestFile
 /// </summary>
 public sealed partial class ModelStore : IModelStoreWriter
 {
-    public const string UserFolderName = Portal.AiHost.Contracts.HostFolders.ModelsSubfolder;
+    public const string UserFolderName = StoreOptions.DefaultFolderName;
 
     private const long Fat32MaxFile = 4L * 1024 * 1024 * 1024 - 1;
     private readonly SemaphoreSlim _gate = new(1, 1);
@@ -116,8 +116,11 @@ public sealed partial class ModelStore : IModelStoreWriter
     private OwnedFolder _folder;
     private StoreManifest _manifest;
 
+    private readonly StoreOptions _options;
+
     private ModelStore(OwnedFolder folder, StoreManifest manifest, IDiskInfo disk)
     {
+        _options = folder.Options;
         _folder = folder;
         _manifest = manifest;
         _disk = disk;
@@ -130,26 +133,28 @@ public sealed partial class ModelStore : IModelStoreWriter
     /// Opens the default store (LocalState\models): creates and marks it when missing, opens it when it carries
     /// a marker, and refuses an existing unmarked folder.
     /// </summary>
-    public static ModelStore OpenOrCreate(string storeFolder, IDiskInfo? disk = null)
+    public static ModelStore OpenOrCreate(string storeFolder, IDiskInfo? disk = null, StoreOptions? options = null)
     {
         disk ??= SystemDiskInfo.Instance;
+        options = Checked(options);
         var root = OwnedFolder.Normalize(storeFolder);
         if (!Directory.Exists(root))
         {
-            return CreateFresh(root, disk);
+            return CreateFresh(root, disk, options);
         }
 
-        return Open(root, disk);
+        return Open(root, disk, options);
     }
 
     /// <summary>Opens an existing marked store. An unmarked folder is refused.</summary>
-    public static ModelStore Open(string storeFolder, IDiskInfo? disk = null)
+    public static ModelStore Open(string storeFolder, IDiskInfo? disk = null, StoreOptions? options = null)
     {
         disk ??= SystemDiskInfo.Instance;
+        options = Checked(options);
         var root = OwnedFolder.Normalize(storeFolder);
-        var id = OwnedFolder.ReadMarker(root)
+        var id = OwnedFolder.ReadMarker(root, options)
             ?? throw new StoreRefusedException($"'{root}' is not a Portal AI Host store (no marker); it was not used.");
-        var folder = new OwnedFolder(root, id);
+        var folder = new OwnedFolder(root, id, options);
         StoreManifest manifest;
         if (File.Exists(folder.ManifestPath))
         {
@@ -180,11 +185,12 @@ public sealed partial class ModelStore : IModelStoreWriter
     /// Creates a new store in a user-chosen parent folder: always a new subfolder "Portal AI Host Models"
     /// (or "Portal AI Host Models (2)" ...), never an existing folder. FAT32 is refused.
     /// </summary>
-    public static ModelStore CreateInParent(string parentFolder, IDiskInfo? disk = null)
+    public static ModelStore CreateInParent(string parentFolder, IDiskInfo? disk = null, StoreOptions? options = null)
     {
         disk ??= SystemDiskInfo.Instance;
-        var root = PickNewStoreFolder(parentFolder, disk);
-        return CreateFresh(root, disk);
+        options = Checked(options);
+        var root = PickNewStoreFolder(parentFolder, disk, options);
+        return CreateFresh(root, disk, options);
     }
 
     /// <summary>
@@ -192,16 +198,25 @@ public sealed partial class ModelStore : IModelStoreWriter
     /// marker), otherwise creates it with the same checks as <see cref="CreateInParent"/>. Missing parents are
     /// never created, and an existing unmarked folder is refused.
     /// </summary>
-    public static ModelStore OpenOrCreateInParent(string parentFolder, IDiskInfo? disk = null)
+    public static ModelStore OpenOrCreateInParent(string parentFolder, IDiskInfo? disk = null, StoreOptions? options = null)
     {
         disk ??= SystemDiskInfo.Instance;
+        options = Checked(options);
         var parent = CheckedParent(parentFolder, disk);
-        var root = StoreFolderIn(parent);
-        return Directory.Exists(root) ? Open(root, disk) : CreateFresh(root, disk);
+        var root = StoreFolderIn(parent, options);
+        return Directory.Exists(root) ? Open(root, disk, options) : CreateFresh(root, disk, options);
     }
 
     /// <summary>The store folder the host uses inside a chosen models folder.</summary>
-    public static string StoreFolderIn(string parentFolder) => Path.Combine(OwnedFolder.Normalize(parentFolder), UserFolderName);
+    public static string StoreFolderIn(string parentFolder, StoreOptions? options = null) =>
+        Path.Combine(OwnedFolder.Normalize(parentFolder), (options ?? StoreOptions.Default).FolderName);
+
+    private static StoreOptions Checked(StoreOptions? options)
+    {
+        options ??= StoreOptions.Default;
+        options.Validate();
+        return options;
+    }
 
     /// <summary>Plain-language reason a folder cannot hold a new store (missing, FAT32), or null when it can. Reads only.</summary>
     public static string? CheckParentFolder(string parentFolder, IDiskInfo? disk = null)
@@ -238,12 +253,12 @@ public sealed partial class ModelStore : IModelStoreWriter
         return parent;
     }
 
-    private static string PickNewStoreFolder(string parentFolder, IDiskInfo disk) =>
-        UniquePath(Path.Combine(CheckedParent(parentFolder, disk), UserFolderName));
+    private static string PickNewStoreFolder(string parentFolder, IDiskInfo disk, StoreOptions options) =>
+        UniquePath(Path.Combine(CheckedParent(parentFolder, disk), options.FolderName));
 
-    private static ModelStore CreateFresh(string root, IDiskInfo disk)
+    private static ModelStore CreateFresh(string root, IDiskInfo disk, StoreOptions options)
     {
-        var folder = OwnedFolder.CreateNew(root);
+        var folder = OwnedFolder.CreateNew(root, options);
         var store = new ModelStore(folder, new StoreManifest { StoreId = folder.StoreId }, disk);
         store.SaveManifest();
         return store;
@@ -724,7 +739,7 @@ public sealed partial class ModelStore : IModelStoreWriter
         }
 
         var total = files.Sum(f => f.Size);
-        var root = PickNewStoreFolder(newParentFolder, _disk);
+        var root = PickNewStoreFolder(newParentFolder, _disk, _options);
         var needed = total + (long)(total * 0.02) + (2L << 30);
         var free = _disk.GetFreeBytes(Path.GetDirectoryName(root)!);
         if (free < needed)
@@ -738,7 +753,7 @@ public sealed partial class ModelStore : IModelStoreWriter
             throw new StoreRefusedException("That drive cannot hold files over 4 GB.");
         }
 
-        var target = OwnedFolder.CreateNew(root);
+        var target = OwnedFolder.CreateNew(root, _options);
         var newManifest = new StoreManifest
         {
             StoreId = target.StoreId,
@@ -858,12 +873,12 @@ public sealed partial class ModelStore : IModelStoreWriter
             throw new StoreSafetyException("The previous store is the current store; nothing was removed.");
         }
 
-        if (OwnedFolder.ReadMarker(prev.Path) != prev.StoreId)
+        if (OwnedFolder.ReadMarker(prev.Path, _options) != prev.StoreId)
         {
             throw new StoreSafetyException($"The old store '{prev.Path}' no longer carries its marker; nothing was removed.");
         }
 
-        var old = new OwnedFolder(prev.Path, prev.StoreId);
+        var old = new OwnedFolder(prev.Path, prev.StoreId, _options);
         StoreManifest? oldManifest;
         try
         {
