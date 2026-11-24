@@ -43,6 +43,22 @@ public interface IModelStoreWriter : IModelStore
     Task WriteResumeStateAsync(string modelId, string partPath, string json, CancellationToken ct);
 }
 
+/// <summary>The move side of the store: what a move needs, and the removal of the old copies once the new ones verified.</summary>
+public interface IModelStoreMover : IModelStore
+{
+    /// <summary>Free space a move to another drive needs: the models' size plus 2 % plus 2 GB headroom.</summary>
+    long MoveBytesNeeded { get; }
+
+    /// <summary>Folder of the previous store after a move, until its copies are removed; otherwise null.</summary>
+    string? PreviousLocation { get; }
+
+    /// <summary>Deletes the old copies of the last move that the old store lists and the new store holds verified. Returns what was left.</summary>
+    Task<IReadOnlyList<string>> RemoveOldCopiesAsync(CancellationToken ct);
+
+    /// <summary>The plain-language reason a folder cannot receive the models, or null when it can. Reads only.</summary>
+    string? CheckMoveTarget(string newParentFolder);
+}
+
 internal sealed class StoreManifest
 {
     public int Version { get; init; } = 1;
@@ -105,7 +121,7 @@ internal sealed class ManifestFile
 /// touched. Moves copy, verify by re-hashing the copy, switch, and leave the old copies until
 /// <see cref="RemoveOldCopiesAsync"/> is called.
 /// </summary>
-public sealed partial class ModelStore : IModelStoreWriter, IDisposable
+public sealed partial class ModelStore : IModelStoreWriter, IModelStoreMover, IDisposable
 {
     public const string UserFolderName = StoreOptions.DefaultFolderName;
 
@@ -766,6 +782,34 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
             SaveManifest();
         });
 
+    public long MoveBytesNeeded
+    {
+        get
+        {
+            var total = _manifest.Models.Where(m => m.Origin == ModelOrigin.Catalogue).SelectMany(m => m.Files).Sum(f => f.Size);
+            return total + (long)(total * 0.02) + (2L << 30);
+        }
+    }
+
+    public string? CheckMoveTarget(string newParentFolder)
+    {
+        try
+        {
+            var parent = CheckedParent(newParentFolder, _disk);
+            return Directory.Exists(StoreFolderIn(parent, _options))
+                ? "That folder already has a Portal AI Host Models folder. Pick another folder."
+                : null;
+        }
+        catch (StoreRefusedException ex)
+        {
+            return ex.Message;
+        }
+        catch (Exception ex) when (ex is IOException or ArgumentException or UnauthorizedAccessException or NotSupportedException)
+        {
+            return $"'{newParentFolder}' cannot be used: {ex.Message}";
+        }
+    }
+
     public async Task MoveStoreAsync(string newParentFolder, IProgress<double>? progress, CancellationToken ct)
     {
         await EnterGateAsync(ct).ConfigureAwait(false);
@@ -794,7 +838,7 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
 
         var total = files.Sum(f => f.Size);
         var root = PickNewStoreFolder(newParentFolder, _disk, _options);
-        var needed = total + (long)(total * 0.02) + (2L << 30);
+        var needed = MoveBytesNeeded;
         var free = _disk.GetFreeBytes(Path.GetDirectoryName(root)!);
         if (free < needed)
         {

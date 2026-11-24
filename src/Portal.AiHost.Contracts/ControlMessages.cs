@@ -29,6 +29,18 @@ public static class ControlTypes
     /// <summary>Removes an installed or unfinished model through the model store rules (host-created files only; external models are only forgotten).</summary>
     public const string RemoveModel = "models.remove";
     public const string ActivateModel = "models.activate";
+
+    /// <summary>Re-hashes an installed model against the model list. Payload <see cref="VerifyModelCommand"/>; progress arrives as <see cref="EventStoreProgress"/>. Nothing is deleted.</summary>
+    public const string VerifyModel = "models.verify";
+
+    /// <summary>Answers <see cref="StoreFolderInfo"/>: the models folder the window may open in Explorer. The host changes nothing.</summary>
+    public const string OpenStoreFolder = "store.open_folder";
+
+    /// <summary>Moves the models to another drive or folder. Payload <see cref="MoveStoreCommand"/>; progress arrives as <see cref="EventStoreProgress"/>.</summary>
+    public const string MoveStore = "store.move";
+
+    /// <summary>Cancels the running move or check. A cancelled move leaves the old models folder as it was.</summary>
+    public const string CancelStoreOperation = "store.cancel";
     public const string GetSettings = "settings.get";
     public const string SetSettings = "settings.set";
     public const string TryItChat = "tryit.chat";
@@ -53,6 +65,9 @@ public static class ControlTypes
     public const string EventApprovalPending = "event.approval_pending";
     public const string EventDownloadProgress = "event.download_progress";
     public const string EventStatusChanged = "event.status_changed";
+
+    /// <summary>Progress of a move or a check. Payload <see cref="StoreProgressEvent"/>.</summary>
+    public const string EventStoreProgress = "event.store_progress";
 
     /// <summary>The tray icon was clicked: show the small pop-up. Payload <see cref="TrayPopupEvent"/>.</summary>
     public const string EventTrayPopup = "event.tray_popup";
@@ -164,6 +179,30 @@ public sealed class CatalogueModelSummary
     /// it can only be removed (send this folder with models.remove), not used or downloaded.
     /// </summary>
     public string? StoreFolder { get; init; }
+
+    /// <summary>When the model was last loaded by the host (UTC), or null when never or not tracked.</summary>
+    public DateTimeOffset? LastUsedAt { get; init; }
+
+    /// <summary>True after a check found a file that does not match the model list. Nothing was deleted.</summary>
+    public bool Damaged { get; init; }
+
+    /// <summary>Why the check marked it damaged, or null.</summary>
+    public string? DamagedReason { get; init; }
+
+    /// <summary>One sentence on what the model is good at (model list advice), or null.</summary>
+    public string? AdviceSummary { get; init; }
+
+    /// <summary>Short tasks it suits (model list advice).</summary>
+    public List<string>? GoodFor { get; init; }
+
+    /// <summary>Short honest limits (model list advice).</summary>
+    public List<string>? Caveats { get; init; }
+
+    /// <summary>Memory (RAM plus graphics memory) the model needs on this PC according to the planner, or 0 when unknown.</summary>
+    public long MemoryNeededBytes { get; init; }
+
+    public string? LicenceName { get; init; }
+    public string? LicenceUrl { get; init; }
 }
 
 public sealed class ModelListing
@@ -175,6 +214,9 @@ public sealed class ModelListing
 
     /// <summary>Free bytes on the drive of <see cref="ModelsFolder"/>.</summary>
     public long FreeBytes { get; init; }
+
+    /// <summary>Disk space the installed and partial models use in the current models folder.</summary>
+    public long ModelsBytes { get; init; }
 
     /// <summary>Catalogue id of the recommended upgrade over the active chat model, or null.</summary>
     public string? UpgradeModelId { get; init; }
@@ -197,6 +239,77 @@ public sealed class RemoveModelCommand
 
     /// <summary>Earlier models folder to remove from (a listing's store_folder); null for the current folder.</summary>
     public string? StoreFolder { get; init; }
+
+    /// <summary>
+    /// When the removed model is in use: the installed model of the same kind to switch to first. Null: the host goes
+    /// to "no model" for that kind. Ignored when the model is not in use.
+    /// </summary>
+    public string? SwitchToId { get; init; }
+}
+
+/// <summary>Payload of models.verify.</summary>
+public sealed class VerifyModelCommand
+{
+    public string CatalogueId { get; set; } = "";
+}
+
+/// <summary>Payload of store.move: the folder that will hold the host's own "Portal AI Host Models" subfolder.</summary>
+public sealed class MoveStoreCommand
+{
+    public string ParentFolder { get; set; } = "";
+}
+
+/// <summary>Answer to store.open_folder: the path only. The window opens it in Explorer itself.</summary>
+public sealed class StoreFolderInfo
+{
+    public string Path { get; init; } = "";
+}
+
+/// <summary>Operation names of <see cref="StoreProgressEvent"/>.</summary>
+public static class StoreOperations
+{
+    public const string Move = "move";
+    public const string Verify = "verify";
+}
+
+/// <summary>State names of <see cref="StoreProgressEvent"/>.</summary>
+public static class StoreStates
+{
+    public const string Running = "running";
+
+    /// <summary>Move only: the copies verified and the host switched; the old copies are being removed.</summary>
+    public const string RemovingOld = "removing_old";
+    public const string Done = "done";
+    public const string Failed = "failed";
+    public const string Cancelled = "cancelled";
+
+    /// <summary>Verify only: a file does not match the model list. Nothing was deleted.</summary>
+    public const string Damaged = "damaged";
+}
+
+/// <summary>Progress of a move or a check (event.store_progress).</summary>
+public sealed class StoreProgressEvent
+{
+    /// <summary><see cref="StoreOperations"/> value.</summary>
+    public string Operation { get; set; } = StoreOperations.Move;
+
+    /// <summary><see cref="StoreStates"/> value.</summary>
+    public string State { get; set; } = StoreStates.Running;
+
+    /// <summary>Model being checked (verify only).</summary>
+    public string? CatalogueId { get; init; }
+
+    /// <summary>0 to 1.</summary>
+    public double Fraction { get; init; }
+
+    public long BytesDone { get; init; }
+    public long BytesTotal { get; init; }
+
+    /// <summary>Plain-language result or reason.</summary>
+    public string? Message { get; init; }
+
+    /// <summary>Move, done: old copies that were left in place because they did not pass the checks.</summary>
+    public List<string>? LeftBehind { get; init; }
 }
 
 /// <summary>Answer to settings.set.</summary>
