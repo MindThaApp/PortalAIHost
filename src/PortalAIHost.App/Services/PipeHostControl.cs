@@ -98,6 +98,10 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
         SendAsync(ControlTypes.RemoveModel, new RemoveModelCommand { CatalogueId = catalogueId, SwitchToId = switchToId },
             AiHostJsonContext.Default.RemoveModelCommand, ct);
 
+    public Task RemoveDamagedModelAsync(string catalogueId, CancellationToken ct = default) =>
+        SendAsync(ControlTypes.RemoveModel, new RemoveModelCommand { CatalogueId = catalogueId, RemoveDamaged = true },
+            AiHostJsonContext.Default.RemoveModelCommand, ct);
+
     public Task VerifyModelAsync(string catalogueId, CancellationToken ct = default) =>
         SendAsync(ControlTypes.VerifyModel, new VerifyModelCommand { CatalogueId = catalogueId }, AiHostJsonContext.Default.VerifyModelCommand, ct);
 

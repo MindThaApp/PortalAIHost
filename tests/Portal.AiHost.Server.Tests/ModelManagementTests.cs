@@ -23,7 +23,7 @@ internal static class RootExtensions
     }
 }
 
-public sealed class ModelManagementTests
+public sealed partial class ModelManagementTests
 {
     private const long GiB = 1L << 30;
 
@@ -73,6 +73,11 @@ public sealed class ModelManagementTests
         public Func<StoreProgressEvent, Task>? OnPush { get; set; }
         public Func<string, long> Free { get; set; } = _ => 100 * GiB;
         public (string Parent, string? OldRoot)? Moved { get; private set; }
+        public int ApplyFailures { get; set; }
+        public int ApplyCalls { get; private set; }
+        public ConcurrentQueue<string> Remembered { get; } = new();
+        public ConcurrentQueue<string> Forgotten { get; } = new();
+        public List<string?> Maintenance { get; } = new();
         public ModelCenter Center { get; }
 
         public Harness(ModelStore store, IReadOnlyList<CatalogueEntry> catalogue, bool withClear = true)
@@ -103,7 +108,15 @@ public sealed class ModelManagementTests
                         if (OnStop is { } s) { await s(ct); }
                     },
                     RefreshActive = _ => { Calls.Enqueue("refresh"); return Task.CompletedTask; },
-                    ApplyMovedFolder = (p, o) => Moved = (p, o),
+                    ApplyMovedFolder = (p, o) =>
+                    {
+                        ApplyCalls++;
+                        if (ApplyFailures-- > 0) { throw new IOException("settings are locked"); }
+                        Moved = (p, o);
+                    },
+                    RememberFolder = f => Remembered.Enqueue(f),
+                    ForgetFolder = f => Forgotten.Enqueue(f),
+                    SetMaintenance = m => { lock (Maintenance) { Maintenance.Add(m); } },
                     PushStore = async e =>
                     {
                         Events.Enqueue(e);

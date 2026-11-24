@@ -237,6 +237,38 @@ public class ModelManagementViewModelTests
     }
 
     [Fact]
+    public async Task Download_again_uses_the_damaged_removal_and_chooses_the_model_again_when_it_was_in_use()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        var vm = Make(rig);
+        await vm.LoadAsync();
+        var row = vm.Models.First(m => m.Id == "chat-14b");
+        Assert.True(row.Active);
+        rig.Host.VerifyOutcome = "damaged";
+        await row.CheckCommand.ExecuteAsync(null);
+        rig.Dialogs.Answer = true;
+        await row.RedownloadCommand.ExecuteAsync(null);
+        Assert.Equal(["chat-14b"], rig.Host.DamagedRemovals);
+        Assert.Empty(rig.Host.Activations); // nothing to choose yet: it is downloading
+        for (var i = 0; i < 40; i++) rig.Host.Tick();
+        Assert.Equal(["chat-14b"], rig.Host.Activations); // chosen again once the download finished
+    }
+
+    [Fact]
+    public async Task Download_again_for_a_model_not_in_use_does_not_choose_it()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        var (vm, _) = await LoadedWithSpareAsync(rig);
+        var other = vm.Models.First(m => m.Id == "chat-8b");
+        rig.Host.VerifyOutcome = "damaged";
+        await other.CheckCommand.ExecuteAsync(null);
+        rig.Dialogs.Answer = true;
+        await other.RedownloadCommand.ExecuteAsync(null);
+        for (var i = 0; i < 40; i++) rig.Host.Tick();
+        Assert.Empty(rig.Host.Activations);
+    }
+
+    [Fact]
     public async Task A_check_can_be_stopped_and_files_added_in_place_cannot_be_checked()
     {
         using var rig = new Rig(FakeScenario.Loaded);

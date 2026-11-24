@@ -90,6 +90,11 @@ public interface IHostControl
     /// <paramref name="switchToId"/>, switches to that installed model; without it the host has no model afterwards.
     /// </summary>
     Task RemoveModelAsync(string catalogueId, string? switchToId, CancellationToken ct = default);
+    /// <summary>
+    /// After the user confirmed: removes a model a check found damaged, also when its file changed size. Only that
+    /// model's own files go, through the same store rules; nothing else is skipped.
+    /// </summary>
+    Task RemoveDamagedModelAsync(string catalogueId, CancellationToken ct = default);
     /// <summary>Has the host re-hash an installed model against the model list. Read-only; progress arrives as <see cref="StoreProgress"/>.</summary>
     Task VerifyModelAsync(string catalogueId, CancellationToken ct = default);
     /// <summary>The models folder, to open in Explorer. The host changes nothing.</summary>

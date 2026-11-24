@@ -272,6 +272,14 @@ public sealed class FakeHostControl : IHostControl, IDisposable
         return Task.CompletedTask;
     }
 
+    public List<string> DamagedRemovals { get; } = new();
+
+    public Task RemoveDamagedModelAsync(string catalogueId, CancellationToken ct = default)
+    {
+        DamagedRemovals.Add(catalogueId);
+        return RemoveModelAsync(catalogueId, null, ct);
+    }
+
     public Task VerifyModelAsync(string catalogueId, CancellationToken ct = default)
     {
         Verifies.Add(catalogueId);
@@ -328,8 +336,11 @@ public sealed class FakeHostControl : IHostControl, IDisposable
         return Task.CompletedTask;
     }
 
+    public List<string> Activations { get; } = new();
+
     public Task ActivateModelAsync(string catalogueId, CancellationToken ct = default)
     {
+        Activations.Add(catalogueId);
         lock (_gate) _activeId = catalogueId;
         StatusChanged?.Invoke(Snapshot());
         return Task.CompletedTask;

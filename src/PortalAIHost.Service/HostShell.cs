@@ -252,6 +252,9 @@ public sealed class HostShell : IAsyncDisposable
                 RefreshActive = RefreshActiveAsync,
                 ApplyMovedFolder = ApplyMovedFolder,
                 PushStore = PushStoreAsync,
+                SetMaintenance = msg => { if (Runtime is { } r) r.MaintenanceMessage = msg; },
+                RememberFolder = RememberFolder,
+                ForgetFolder = ForgetFolder,
             },
         };
         _registry = new ClientRegistry(new ClientRegistryOptions { DataDirectory = root }, _o.KeyProtector);
@@ -269,6 +272,18 @@ public sealed class HostShell : IAsyncDisposable
             UsageProbe = _o.UsageProbe,
         }, ct).ConfigureAwait(false);
 
+        // A move that did not finish removing its old copies (crash, locked file) is finished, or named, at every start.
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await Models.ReconcilePreviousMoveAsync(CancellationToken.None).ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is not OutOfMemoryException)
+            {
+                // Retried at the next start; the folder stays listed under earlier folders.
+            }
+        });
         Runtime.EngineStateChanged += (_, change) => _ = PushEngineStateAsync(change);
         _registry.RequestPending += (_, info) => _ = PushApprovalAsync(info);
 
@@ -604,6 +619,7 @@ public sealed class HostShell : IAsyncDisposable
 
     internal async Task ActivateAsync(string modelId, CancellationToken ct)
     {
+        Models.AssertIdle();
         var stored = _store is null ? null : await _store.GetAsync(modelId, ct).ConfigureAwait(false);
         if (stored is not { IsComplete: true })
         {
@@ -614,7 +630,17 @@ public sealed class HostShell : IAsyncDisposable
         await PersistActiveAsync().ConfigureAwait(false);
     }
 
+    private readonly object _activeWriteLock = new();
+
     private void WriteActiveModels()
+    {
+        lock (_activeWriteLock)
+        {
+            WriteActiveModelsLocked();
+        }
+    }
+
+    private void WriteActiveModelsLocked()
     {
         var map = new Dictionary<string, string>(StringComparer.Ordinal);
         foreach (var kind in new[] { ModelKinds.Chat, ModelKinds.Embedding })
@@ -686,11 +712,52 @@ public sealed class HostShell : IAsyncDisposable
     {
         var next = _settings.Current;
         next.ModelsFolder = parent;
+        // The old folder stays listed until its copies are gone (ForgetFolder); the new current folder is never "earlier".
         var previous = (next.PreviousStoreFolders ?? []).Where(p =>
-            !string.Equals(p, oldRoot, StringComparison.OrdinalIgnoreCase)
-            && !string.Equals(p, _store?.Location.Path, StringComparison.OrdinalIgnoreCase)).ToList();
+            !string.Equals(p, _store?.Location.Path, StringComparison.OrdinalIgnoreCase)).ToList();
+        if (oldRoot is not null && !previous.Contains(oldRoot, StringComparer.OrdinalIgnoreCase))
+        {
+            previous.Insert(0, oldRoot);
+        }
+
         next.PreviousStoreFolders = previous.Count == 0 ? null : previous;
         _settings.Save(next);
+    }
+
+    private readonly object _foldersLock = new();
+
+    /// <summary>Puts a folder into the earlier-folders list in settings (host-owned) before it receives anything.</summary>
+    private void RememberFolder(string folder)
+    {
+        lock (_foldersLock)
+        {
+            var next = _settings.Current;
+            var list = new List<string>(next.PreviousStoreFolders ?? []);
+            if (list.Contains(folder, StringComparer.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            list.Insert(0, folder);
+            next.PreviousStoreFolders = list;
+            _settings.Save(next);
+        }
+    }
+
+    private void ForgetFolder(string folder)
+    {
+        lock (_foldersLock)
+        {
+            var next = _settings.Current;
+            var list = (next.PreviousStoreFolders ?? []).Where(p => !string.Equals(p, folder, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (list.Count == (next.PreviousStoreFolders?.Count ?? 0))
+            {
+                return;
+            }
+
+            next.PreviousStoreFolders = list.Count == 0 ? null : list;
+            _settings.Save(next);
+        }
     }
 
     private async Task PushStoreAsync(StoreProgressEvent e)

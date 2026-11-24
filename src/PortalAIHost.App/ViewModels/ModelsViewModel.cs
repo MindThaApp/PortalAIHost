@@ -269,6 +269,9 @@ public sealed partial class ModelsViewModel : ObservableObject, IDisposable
     private readonly IFolderOpener? _folders;
     private readonly Func<DateTimeOffset> _clock;
 
+    /// <summary>Models that were in use when "Download again" removed them: chosen again when the download is done.</summary>
+    private readonly HashSet<string> _reactivate = new(StringComparer.Ordinal);
+
     public ModelsViewModel(ShellViewModel shell, IUiDispatcher ui, IStrings strings, IDialogService dialogs,
         IFolderOpener? folders = null, Func<DateTimeOffset>? clock = null)
     {
@@ -366,8 +369,21 @@ public sealed partial class ModelsViewModel : ObservableObject, IDisposable
         var row = Models.FirstOrDefault(m => m.Id == e.CatalogueId && !m.InOldFolder);
         row?.Apply(e);
         // A finished download or a removal moves the row between the two lists.
-        if (e.State is "done" or "removed") _ = LoadAsync();
+        if (e.State == "done" && _reactivate.Remove(e.CatalogueId))
+        {
+            _ = ReactivateAsync(e.CatalogueId);
+        }
+        else if (e.State is "done" or "removed")
+        {
+            _ = LoadAsync();
+        }
     });
+
+    private async Task ReactivateAsync(string id)
+    {
+        await Run(() => _shell.Host.ActivateModelAsync(id));
+        await LoadAsync();
+    }
 
     private void OnStoreProgress(StoreProgressEvent e) => _ui.Post(() =>
     {
@@ -412,16 +428,17 @@ public sealed partial class ModelsViewModel : ObservableObject, IDisposable
             if (switchAnswer) switchTo = other.Id;
         }
 
-        await RemoveRowAsync(row, switchTo);
+        await RemoveRowAsync(row, switchTo, damaged: false);
     }
 
-    private async Task<bool> RemoveRowAsync(ModelRowViewModel row, string? switchTo)
+    private async Task<bool> RemoveRowAsync(ModelRowViewModel row, string? switchTo, bool damaged)
     {
         HasRemoveFailure = false;
         RemoveFailure = "";
         row.Removing = true; // same frame: "Removing..."
         var error = row.StoreFolder is { } old
             ? await TryAsync(() => _shell.Host.RemoveOldModelAsync(row.Id, old))
+            : damaged ? await TryAsync(() => _shell.Host.RemoveDamagedModelAsync(row.Id))
             : await TryAsync(() => _shell.Host.RemoveModelAsync(row.Id, switchTo));
         if (error is not null)
         {
@@ -486,8 +503,10 @@ public sealed partial class ModelsViewModel : ObservableObject, IDisposable
             _s.Format(row.Active ? "Vm_RedownloadActiveBody" : "Vm_RedownloadBody", row.Name),
             _s.Format("Vm_RedownloadYes", row.Name), _s.Get("Vm_Cancel"));
         if (!ok) return;
-        if (!await RemoveRowAsync(row, null)) return;
-        await Run(() => _shell.Host.StartDownloadAsync(row.Id));
+        var wasActive = row.Active;
+        if (!await RemoveRowAsync(row, null, damaged: true)) return;
+        if (wasActive) _reactivate.Add(row.Id);
+        if (!await Run(() => _shell.Host.StartDownloadAsync(row.Id))) _reactivate.Remove(row.Id);
     }
 
     public Task CancelStoreOperationAsync() => Run(() => _shell.Host.CancelStoreOperationAsync());

@@ -33,6 +33,15 @@ internal sealed class ModelCenterHooks
 
     public Func<StoreProgressEvent, Task>? PushStore { get; init; }
 
+    /// <summary>While set, requests that need a model fail with this message instead of loading files that are being copied. Null clears it.</summary>
+    public Action<string?>? SetMaintenance { get; init; }
+
+    /// <summary>Records a folder in settings (the earlier-folders list) before anything is written there, so it is never an orphan.</summary>
+    public Action<string>? RememberFolder { get; init; }
+
+    /// <summary>Drops a folder from the earlier-folders list once nothing is left in it.</summary>
+    public Action<string>? ForgetFolder { get; init; }
+
     public ModelNotes? Notes { get; init; }
 
     /// <summary>How long removing the active model waits for the engine to let go of the files.</summary>
@@ -82,6 +91,19 @@ internal sealed class ModelCenter : IAsyncDisposable
         _activeId = activeId;
         _isLoaded = isLoaded ?? (_ => false);
         _push = push;
+    }
+
+    /// <summary>Throws "models are being moved/checked" while a move or a check runs, so nothing changes the store meanwhile.</summary>
+    public void AssertIdle()
+    {
+        lock (_opSync)
+        {
+            if (_op is not null)
+            {
+                throw new ControlPipeException(ErrorCodes.InvalidRequest,
+                    _opName == StoreOperations.Move ? "Your models are being moved. Wait until that finishes." : "A model is being checked. Wait until that finishes.");
+            }
+        }
     }
 
     /// <summary>Optional links to the rest of the host. Set once, right after construction.</summary>
@@ -292,6 +314,7 @@ internal sealed class ModelCenter : IAsyncDisposable
     /// </summary>
     public async Task StartAsync(string id, CancellationToken ct = default)
     {
+        AssertIdle();
         if (_disposed)
         {
             throw new ControlPipeException(ErrorCodes.HostStopping, "The host is shutting down.");
@@ -404,6 +427,7 @@ internal sealed class ModelCenter : IAsyncDisposable
     /// </summary>
     public async Task RemoveFromPreviousAsync(string id, string storeFolder, CancellationToken ct)
     {
+        AssertIdle();
         IModelStore? known;
         lock (_previous)
         {
@@ -468,8 +492,9 @@ internal sealed class ModelCenter : IAsyncDisposable
     /// the same kind) or, with none, goes to "no model"; the engine is stopped and the removal waits until it let go
     /// of the files. Only <see cref="IModelStore.RemoveAsync"/> deletes anything.
     /// </summary>
-    public async Task RemoveAsync(string id, CancellationToken ct, string? switchToId = null)
+    public async Task RemoveAsync(string id, CancellationToken ct, string? switchToId = null, bool removeDamaged = false)
     {
+        AssertIdle();
         if (_store is null || await _store.GetAsync(id, ct).ConfigureAwait(false) is not { } model)
         {
             throw new ControlPipeException(ErrorCodes.NotFound, "That model is not on this PC.");
@@ -480,8 +505,10 @@ internal sealed class ModelCenter : IAsyncDisposable
             throw new ControlPipeException(ErrorCodes.InvalidRequest, "Pause or cancel the download first.");
         }
 
+        var steppedAway = false;
         if (_activeId(model.Kind) == id)
         {
+            steppedAway = true;
             await StepAwayFromActiveAsync(model, switchToId, ct).ConfigureAwait(false);
         }
         else if (_isLoaded(id))
@@ -493,20 +520,31 @@ internal sealed class ModelCenter : IAsyncDisposable
         await _push(new DownloadProgressEvent { CatalogueId = id, State = "removing" }).ConfigureAwait(false);
         try
         {
-            await _store.RemoveAsync(id, ct).ConfigureAwait(false);
+            if (removeDamaged && Hooks.Notes?.DamagedReason(id) is not null && _store is IModelStoreRepair repair)
+            {
+                // A check found this copy damaged and the user confirmed: size and file-ID checks are skipped, all others stay.
+                await repair.RemoveDamagedAsync(id, ct).ConfigureAwait(false);
+            }
+            else
+            {
+                await _store.RemoveAsync(id, ct).ConfigureAwait(false);
+            }
         }
         catch (InvalidOperationException ex)
         {
+            await RestoreActiveAsync(id, steppedAway).ConfigureAwait(false);
             await PushRolledBackAsync(id, ex.Message).ConfigureAwait(false);
             throw new ControlPipeException(ErrorCodes.InvalidRequest, ex.Message);
         }
         catch (KeyNotFoundException)
         {
+            await RestoreActiveAsync(id, steppedAway).ConfigureAwait(false);
             throw new ControlPipeException(ErrorCodes.NotFound, "That model is not on this PC.");
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
             // Includes the store's safety refusals: nothing that failed a check was deleted.
+            await RestoreActiveAsync(id, steppedAway).ConfigureAwait(false);
             await PushRolledBackAsync(id, ex.Message).ConfigureAwait(false);
             throw new ControlPipeException(ErrorCodes.InvalidRequest, "The model could not be removed: " + ex.Message);
         }
@@ -514,6 +552,24 @@ internal sealed class ModelCenter : IAsyncDisposable
         _lastState.TryRemove(id, out _);
         Hooks.Notes?.ClearDamaged(id, forgetUsage: true);
         await _push(new DownloadProgressEvent { CatalogueId = id, State = "removed" }).ConfigureAwait(false);
+    }
+
+    /// <summary>A removal that failed after the model in use was set aside puts it back as the active model.</summary>
+    private async Task RestoreActiveAsync(string id, bool steppedAway)
+    {
+        if (!steppedAway || Hooks.Activate is not { } activate)
+        {
+            return;
+        }
+
+        try
+        {
+            await activate(id, CancellationToken.None).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is ControlPipeException or IOException or InvalidOperationException or KeyNotFoundException)
+        {
+            // The removal error is the one the user needs to see.
+        }
     }
 
     private Task PushRolledBackAsync(string id, string message) =>
@@ -671,6 +727,13 @@ internal sealed class ModelCenter : IAsyncDisposable
                 $"Not enough space on that drive: moving needs {needed / 1e9:0.0} GB and it has {free / 1e9:0.0} GB free.");
         }
 
+        await FinishPreviousMoveAsync(mover, ct).ConfigureAwait(false);
+        if (mover.PreviousLocation is { } pendingOld)
+        {
+            throw new ControlPipeException(ErrorCodes.InvalidRequest,
+                $"Your last move left old copies in '{pendingOld}'. Open Models and remove them under the earlier folder, or delete that folder yourself, then try again.");
+        }
+
         var cts = BeginOperation(StoreOperations.Move);
         try
         {
@@ -703,9 +766,94 @@ internal sealed class ModelCenter : IAsyncDisposable
         }
     }
 
+    /// <summary>
+    /// If an earlier move left old copies behind (a crash, a locked file, an unplugged drive), tries to finish removing
+    /// them, or forgets the pointer when that folder is gone. Runs at start and before a new move. Never blocks a move
+    /// forever: what cannot be finished is named for the user.
+    /// </summary>
+    public async Task ReconcilePreviousMoveAsync(CancellationToken ct)
+    {
+        if (_store is not IModelStoreMover mover || mover.PreviousLocation is null)
+        {
+            return;
+        }
+
+        CancellationTokenSource cts;
+        try
+        {
+            cts = BeginOperation(StoreOperations.Move);
+        }
+        catch (ControlPipeException)
+        {
+            return;
+        }
+
+        try
+        {
+            await FinishPreviousMoveAsync(mover, ct).ConfigureAwait(false);
+            _lastStored = null;
+        }
+        finally
+        {
+            EndOperation(cts);
+        }
+    }
+
+    private async Task FinishPreviousMoveAsync(IModelStoreMover mover, CancellationToken ct)
+    {
+        if (mover.PreviousLocation is not { } previous)
+        {
+            return;
+        }
+
+        Hooks.RememberFolder?.Invoke(previous); // stays listed (and removable) until nothing is left in it
+        try
+        {
+            var left = await mover.RemoveOldCopiesAsync(ct).ConfigureAwait(false);
+            if (left.Count == 0)
+            {
+                Hooks.ForgetFolder?.Invoke(previous);
+            }
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException)
+        {
+            // Marker or store.json gone: nothing left to remove, so the pointer is dropped. A drive that is only
+            // unplugged, or a file in use, keeps the pointer and the folder stays listed.
+            if (await mover.ClearStalePreviousStoreAsync(ct).ConfigureAwait(false))
+            {
+                Hooks.ForgetFolder?.Invoke(previous);
+            }
+        }
+    }
+
+    private bool TryApplyMovedFolder(string parent, string? oldRoot)
+    {
+        if (Hooks.ApplyMovedFolder is not { } apply)
+        {
+            return true;
+        }
+
+        for (var attempt = 0; attempt < 2; attempt++)
+        {
+            try
+            {
+                apply(parent, oldRoot);
+                return true;
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException)
+            {
+                // retried once
+            }
+        }
+
+        return false;
+    }
+
     private async Task MoveCoreAsync(IModelStoreMover mover, string parent, CancellationTokenSource cts)
     {
         var switched = false;
+        var target = ModelStore.StoreFolderIn(parent);
+        Hooks.SetMaintenance?.Invoke("Your models are being moved. Try again in a minute.");
         try
         {
             if (Hooks.StopEngines is { } stop)
@@ -713,6 +861,8 @@ internal sealed class ModelCenter : IAsyncDisposable
                 await stop(cts.Token).ConfigureAwait(false);
             }
 
+            // Persisted before anything is written there: a crash or a lost drive leaves a listed folder, never an orphan.
+            Hooks.RememberFolder?.Invoke(target);
             var progress = new SyncProgress(f => _ = PushStoreAsync(new StoreProgressEvent
             {
                 Operation = StoreOperations.Move, State = StoreStates.Running, Fraction = f,
@@ -720,13 +870,25 @@ internal sealed class ModelCenter : IAsyncDisposable
             await mover.MoveStoreAsync(parent, progress, cts.Token).ConfigureAwait(false);
             switched = true;
             var oldRoot = mover.PreviousLocation;
-            Hooks.ApplyMovedFolder?.Invoke(parent, oldRoot);
+            var applied = TryApplyMovedFolder(parent, oldRoot);
             if (Hooks.RefreshActive is { } refresh)
             {
                 await refresh(CancellationToken.None).ConfigureAwait(false);
             }
 
             _lastStored = await mover.ListAsync(CancellationToken.None).ConfigureAwait(false);
+            if (!applied)
+            {
+                // The old copies are kept: settings still name the old folder, and the next start opens it.
+                await PushStoreAsync(new StoreProgressEvent
+                {
+                    Operation = StoreOperations.Move, State = StoreStates.Done, Fraction = 1,
+                    Message = "Your models were copied to the new folder, but the settings could not be saved and still point at the old folder. "
+                        + "The old copies were kept. Pick the new folder in Settings again after fixing the problem.",
+                }).ConfigureAwait(false);
+                return;
+            }
+
             await PushStoreAsync(new StoreProgressEvent
             {
                 Operation = StoreOperations.Move, State = StoreStates.RemovingOld, Fraction = 1,
@@ -738,10 +900,14 @@ internal sealed class ModelCenter : IAsyncDisposable
             {
                 left = await mover.RemoveOldCopiesAsync(CancellationToken.None).ConfigureAwait(false);
             }
-            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException
-                or Portal.AiHost.Core.Store.StoreSafetyException or Portal.AiHost.Core.Store.StoreRefusedException)
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException)
             {
                 note = "Your models were moved, but the old copies could not be removed and stay where they were: " + ex.Message;
+            }
+
+            if (note is null && left.Count == 0 && oldRoot is not null)
+            {
+                Hooks.ForgetFolder?.Invoke(oldRoot); // nothing left there; otherwise it stays listed
             }
 
             await PushStoreAsync(new StoreProgressEvent
@@ -751,8 +917,17 @@ internal sealed class ModelCenter : IAsyncDisposable
                 LeftBehind = left.Count == 0 ? null : [.. left],
             }).ConfigureAwait(false);
         }
+        catch (StoreCleanupIncompleteException ex) when (!switched)
+        {
+            // The folder stays remembered: its leftovers are listed under earlier folders and can be removed there.
+            await PushStoreAsync(new StoreProgressEvent
+            {
+                Operation = StoreOperations.Move, State = StoreStates.Failed, Message = ex.Message,
+            }).ConfigureAwait(false);
+        }
         catch (OperationCanceledException) when (!switched)
         {
+            ForgetIfGone(target);
             await PushStoreAsync(new StoreProgressEvent
             {
                 Operation = StoreOperations.Move, State = StoreStates.Cancelled,
@@ -761,6 +936,11 @@ internal sealed class ModelCenter : IAsyncDisposable
         }
         catch (Exception ex) when (ex is not OutOfMemoryException)
         {
+            if (!switched)
+            {
+                ForgetIfGone(target);
+            }
+
             await PushStoreAsync(new StoreProgressEvent
             {
                 Operation = StoreOperations.Move, State = StoreStates.Failed,
@@ -770,7 +950,16 @@ internal sealed class ModelCenter : IAsyncDisposable
         }
         finally
         {
+            Hooks.SetMaintenance?.Invoke(null);
             EndOperation(cts);
+        }
+    }
+
+    private void ForgetIfGone(string folder)
+    {
+        if (!Directory.Exists(folder))
+        {
+            Hooks.ForgetFolder?.Invoke(folder);
         }
     }
 
@@ -860,6 +1049,16 @@ internal sealed class ModelCenter : IAsyncDisposable
             else
             {
                 var reason = string.Join(" ", problems);
+                if (_store is not null && await _store.GetAsync(id, CancellationToken.None).ConfigureAwait(false) is null)
+                {
+                    // Removed while it was being checked: nothing to mark.
+                    await PushStoreAsync(new StoreProgressEvent
+                    {
+                        Operation = StoreOperations.Verify, State = StoreStates.Cancelled, CatalogueId = id, Message = "The model was removed.",
+                    }).ConfigureAwait(false);
+                    return;
+                }
+
                 Hooks.Notes?.MarkDamaged(id, reason);
                 await PushStoreAsync(new StoreProgressEvent
                 {

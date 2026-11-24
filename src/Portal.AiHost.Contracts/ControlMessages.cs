@@ -248,6 +248,13 @@ public sealed class RemoveModelCommand
     /// to "no model" for that kind. Ignored when the model is not in use.
     /// </summary>
     public string? SwitchToId { get; init; }
+
+    /// <summary>
+    /// The user confirmed removing a model a file check marked damaged. Only then does the store skip its size and
+    /// file-ID checks (a truncated file still gets removed); all other store checks stay. Ignored for a model that is not marked damaged.
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public bool RemoveDamaged { get; init; }
 }
 
 /// <summary>Payload of models.verify.</summary>

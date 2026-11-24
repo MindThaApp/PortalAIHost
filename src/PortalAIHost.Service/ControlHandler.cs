@@ -118,7 +118,7 @@ internal sealed class ControlHandler(HostShell shell)
                 }
                 else
                 {
-                    await shell.Models.RemoveAsync(remove.CatalogueId, ct, remove.SwitchToId).ConfigureAwait(false);
+                    await shell.Models.RemoveAsync(remove.CatalogueId, ct, remove.SwitchToId, remove.RemoveDamaged).ConfigureAwait(false);
                     await shell.PushStatusAsync().ConfigureAwait(false);
                 }
                 return ControlPipe.Ok(id);
