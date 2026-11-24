@@ -56,6 +56,12 @@ public sealed record EngineLaunchSpec
     public Placement Placement { get; init; } = new();
     public bool SupportsTools { get; init; }
     public bool SupportsReasoning { get; init; }
+
+    /// <summary>Processor threads for generation (llama-server --threads), or null for the engine's own choice.</summary>
+    public int? Threads { get; init; }
+
+    /// <summary>Cap on the memory the engine process may commit (Windows job object), or null for none.</summary>
+    public long? MemoryLimitBytes { get; init; }
 }
 
 public sealed record EngineStateChange(

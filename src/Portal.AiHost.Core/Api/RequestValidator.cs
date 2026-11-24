@@ -56,9 +56,17 @@ public static class RequestValidator
             };
         }
 
+        // X-Portal-Context-Tokens is a hint: a value that is not a whole number is ignored, never an error.
+        int? contextTokens = null;
+        if (headers.TryGetValue(HeaderNames.ContextTokens, out var c) &&
+            long.TryParse(c.Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out var asked))
+        {
+            contextTokens = (int)Math.Min(asked, int.MaxValue);
+        }
+
         headers.TryGetValue(HeaderNames.ClientRequestId, out var clientId);
         return new PortalRequestOptions(priority, deadlineMs, now.AddMilliseconds(deadlineMs), failIfLoading,
-            clientId is not null && IsValidClientRequestId(clientId) ? clientId : null);
+            clientId is not null && IsValidClientRequestId(clientId) ? clientId : null, contextTokens);
     }
 
     public static bool IsValidClientRequestId(string? value)

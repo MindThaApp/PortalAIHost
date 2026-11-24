@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Globalization;
 using System.Text.Json;
 using Portal.AiHost.Contracts;
+using Portal.AiHost.Contracts.Control;
 using Portal.AiHost.Core.Abstractions;
 using Portal.AiHost.Core.Api;
 using Portal.AiHost.Core.Catalogue;
@@ -36,6 +37,18 @@ public sealed class AiHostRuntimeOptions
 
     public PlannerSettings Planner { get; init; } = new();
 
+    /// <summary>
+    /// The saved settings. When set, the performance limits (memory, graphics memory, threads, priority) come from
+    /// them and <see cref="AiHostRuntime.ApplyPerformanceAsync"/> re-reads them.
+    /// </summary>
+    public Func<HostSettings>? Settings { get; init; }
+
+    /// <summary>Catalogue entries, for the fit preview and the memory slider labels.</summary>
+    public IReadOnlyList<CatalogueEntry>? Catalogue { get; init; }
+
+    /// <summary>Host log line sink (never any prompt or reply text).</summary>
+    public Action<string>? Log { get; init; }
+
     public string HostVersion { get; init; } = "1.0.0";
 
     public string InstanceId { get; init; } = Guid.NewGuid().ToString("N");
@@ -66,7 +79,7 @@ public sealed class AiHostRuntimeOptions
 /// Composition entry for the host: owns the API pipeline, the engines and the load decisions. Transports
 /// (Kestrel, later LAN and relay) feed requests into <see cref="Pipeline"/>.
 /// </summary>
-public sealed class AiHostRuntime : IAsyncDisposable
+public sealed partial class AiHostRuntime : IAsyncDisposable
 {
     private readonly AiHostRuntimeOptions _o;
     private readonly ConcurrentDictionary<string, ActiveModel> _active = new(StringComparer.Ordinal);
@@ -452,7 +465,7 @@ public sealed class AiHostRuntime : IAsyncDisposable
             Endpoints =
             [
                 EndpointNames.ChatCompletions, EndpointNames.Embeddings, EndpointNames.Models,
-                EndpointNames.Tokenize, EndpointNames.Warmup,
+                EndpointNames.Tokenize, EndpointNames.Warmup, EndpointNames.Performance,
             ],
         };
     }
@@ -537,7 +550,7 @@ public sealed class AiHostRuntime : IAsyncDisposable
         }
 
         var hw = await _o.Hardware.ProbeAsync(ct).ConfigureAwait(false);
-        var plan = PlacementPlanner.Plan(model.Entry, hw, _o.Hardware.GetMemory(), _o.Planner,
+        var plan = PlacementPlanner.Plan(model.Entry, hw, _o.Hardware.GetMemory(), CurrentPlanner,
             CommittedExcept(model.Kind));
         if (!plan.Fits || plan.Placement is null)
         {
@@ -588,7 +601,7 @@ public sealed class AiHostRuntime : IAsyncDisposable
         try
         {
             ks.Progress = 0;
-            await sup.StartAsync(new EngineLaunchSpec
+            await StartWithCapFallbackAsync(sup, new EngineLaunchSpec
             {
                 Kind = kind,
                 ModelId = model.ModelId,
@@ -597,7 +610,9 @@ public sealed class AiHostRuntime : IAsyncDisposable
                 Placement = placement,
                 SupportsTools = model.SupportsTools,
                 SupportsReasoning = model.SupportsReasoning,
-            }, _lifetime.Token).ConfigureAwait(false);
+                Threads = _limits?.CpuThreads,
+                MemoryLimitBytes = _limits is { } lim ? PerformanceModel.CapFor(lim.MemoryLimitBytes) : null,
+            }, kind).ConfigureAwait(false);
             ks.LastPlan = plan;
             ks.LoadedSince = _o.Time.GetUtcNow();
             if (kind == ModelKinds.Chat)
@@ -676,6 +691,8 @@ public sealed class AiHostRuntime : IAsyncDisposable
         p.Map("GET", Routes.Capabilities, ctx => Tracked(ctx, c =>
             c.WriteJsonAsync(200, BuildCapabilities(), AiHostJsonContext.Default.HostCapabilities)));
         p.Map("GET", Routes.Models, ctx => Tracked(ctx, ListModelsAsync));
+        p.Map("GET", Routes.Performance, ctx => Tracked(ctx, c =>
+            PerformanceEndpointAsync(c)));
         p.Map("POST", Routes.Warmup, ctx => Tracked(ctx, WarmupAsync));
         p.Map("POST", Routes.Tokenize, ctx => Tracked(ctx, TokenizeAsync));
         p.Map("POST", Routes.ChatCompletions, ctx => Tracked(ctx, ChatAsync));
@@ -805,6 +822,7 @@ public sealed class AiHostRuntime : IAsyncDisposable
         var body = ctx.ReadJson(AiHostJsonContext.Default.ChatCompletionRequest);
         RequestValidator.ValidateChat(body);
         var (model, sup) = Require(ModelKinds.Chat);
+        ApplyContextLimit(ctx, body, model);
         ctx.ResponseHeaders[HeaderNames.Model] = model.ModelId;
         using var deadline = DeadlineToken(ctx);
         using var activity = BeginActivity(ctx);

@@ -338,6 +338,7 @@ public sealed class EngineSupervisor : IEngineSupervisor, IEngineProcess
         try
         {
             _job ??= new JobObject();
+            _job.SetMemoryLimit(spec.MemoryLimitBytes);
             _job.Assign(proc);
         }
         catch (Exception e) when (e is System.ComponentModel.Win32Exception or PlatformNotSupportedException)

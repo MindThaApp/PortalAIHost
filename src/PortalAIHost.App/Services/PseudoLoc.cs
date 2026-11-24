@@ -36,6 +36,9 @@ public static class Fmt
         return bytes >= gb ? $"{bytes / gb:0.#} GB" : $"{Math.Max(0, bytes) / mb:0} MB";
     }
 
+    /// <summary>A gigabyte count without a pointless decimal: 16 or 7.5.</summary>
+    public static string Gb(double gb) => gb.ToString("0.#", System.Globalization.CultureInfo.CurrentCulture);
+
     /// <summary>The model list scores quality from 0 to 100; people see 0 to 5 stars.</summary>
     public static double StarScale(double score100) => Math.Clamp(score100 / 20.0, 0, 5);
 

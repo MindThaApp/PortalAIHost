@@ -15,8 +15,8 @@ public sealed class ChatCompletionRequest
     public List<ChatMessage> Messages { get; set; } = new();
     public bool? Stream { get; init; }
     public StreamOptions? StreamOptions { get; init; }
-    public int? MaxTokens { get; init; }
-    public int? MaxCompletionTokens { get; init; }
+    public int? MaxTokens { get; set; }
+    public int? MaxCompletionTokens { get; set; }
     public double? Temperature { get; init; }
     public double? TopP { get; init; }
     public StringOrList? Stop { get; init; }

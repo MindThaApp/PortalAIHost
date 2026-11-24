@@ -32,6 +32,101 @@
                 </StackPanel>
             </Border>
 
+            <Grid x:Name="PerformanceHeader">
+                <TextBlock x:Uid="SettingsPerformanceHeader" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center" />
+                <HyperlinkButton x:Uid="SettingsResetPerformance" Command="{x:Bind ViewModel.ResetPerformanceCommand}" HorizontalAlignment="Right" />
+            </Grid>
+            <Border Style="{StaticResource CardBorder}">
+                <ContentControl IsEnabled="{x:Bind ViewModel.PerformanceAvailable, Mode=OneWay}" HorizontalContentAlignment="Stretch">
+                <StackPanel Spacing="16">
+                    <InfoBar
+                        x:Name="PerformanceResultBar"
+                        IsOpen="{x:Bind ViewModel.HasPerformanceMessage, Mode=OneWay}"
+                        Message="{x:Bind ViewModel.PerformanceMessage, Mode=OneWay}"
+                        IsClosable="False" />
+
+                    <StackPanel Spacing="4">
+                        <ComboBox
+                            x:Uid="SettingsPreset"
+                            ItemsSource="{x:Bind ViewModel.PresetChoices}"
+                            SelectedIndex="{x:Bind ViewModel.PresetIndex, Mode=TwoWay}"
+                            MinWidth="260" />
+                        <TextBlock Text="{x:Bind ViewModel.PresetHelp, Mode=OneWay}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <Slider
+                            x:Uid="SettingsMemory"
+                            Minimum="{x:Bind ViewModel.MemoryMinGb, Mode=OneWay}"
+                            Maximum="{x:Bind ViewModel.MemoryMaxGb, Mode=OneWay}"
+                            Value="{x:Bind ViewModel.MemoryGb, Mode=TwoWay}"
+                            StepFrequency="1" SmallChange="1" LargeChange="4" />
+                        <TextBlock Text="{x:Bind ViewModel.MemoryLabel, Mode=OneWay}" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="Wrap" />
+                        <TextBlock Text="{x:Bind ViewModel.MemoryRangeText, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock x:Uid="SettingsMemoryHelp" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <Slider
+                            x:Uid="SettingsKeepFree"
+                            Minimum="{x:Bind ViewModel.KeepFreeMinGb, Mode=OneWay}"
+                            Maximum="{x:Bind ViewModel.KeepFreeMaxGb, Mode=OneWay}"
+                            Value="{x:Bind ViewModel.KeepFreeGb, Mode=TwoWay}"
+                            StepFrequency="1" SmallChange="1" LargeChange="4" />
+                        <TextBlock Text="{x:Bind ViewModel.KeepFreeLabel, Mode=OneWay}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                        <TextBlock x:Uid="SettingsKeepFreeHelp" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <ComboBox
+                            x:Uid="SettingsRunOn"
+                            ItemsSource="{x:Bind ViewModel.RunOnChoices}"
+                            SelectedIndex="{x:Bind ViewModel.RunOnIndex, Mode=TwoWay}"
+                            IsEnabled="{x:Bind ViewModel.RunOnEnabled, Mode=OneWay}"
+                            MinWidth="260" />
+                        <TextBlock Text="{x:Bind ViewModel.RunOnHelp, Mode=OneWay}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock Text="{x:Bind ViewModel.GpuNote, Mode=OneWay}" Visibility="{x:Bind ViewModel.HasGpuNote, Mode=OneWay}" TextWrapping="Wrap" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    </StackPanel>
+
+                    <StackPanel Spacing="4" Visibility="{x:Bind ViewModel.GpuMemoryVisible, Mode=OneWay}">
+                        <Slider
+                            x:Uid="SettingsGpuMemory"
+                            Minimum="{x:Bind ViewModel.GpuMemoryMinGb, Mode=OneWay}"
+                            Maximum="{x:Bind ViewModel.GpuMemoryMaxGb, Mode=OneWay}"
+                            Value="{x:Bind ViewModel.GpuMemoryGb, Mode=TwoWay}"
+                            StepFrequency="0.5" SmallChange="0.5" LargeChange="2" />
+                        <TextBlock Text="{x:Bind ViewModel.GpuMemoryLabel, Mode=OneWay}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <Slider
+                            x:Uid="SettingsCores"
+                            Minimum="{x:Bind ViewModel.CoresMin, Mode=OneWay}"
+                            Maximum="{x:Bind ViewModel.CoresMax, Mode=OneWay}"
+                            Value="{x:Bind ViewModel.CoresValue, Mode=TwoWay}"
+                            StepFrequency="1" SmallChange="1" LargeChange="2" />
+                        <TextBlock Text="{x:Bind ViewModel.CoresLabel, Mode=OneWay}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                        <TextBlock x:Uid="SettingsCoresHelp" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <ComboBox
+                            x:Uid="SettingsPriority"
+                            ItemsSource="{x:Bind ViewModel.PriorityChoices}"
+                            SelectedIndex="{x:Bind ViewModel.PriorityIndex, Mode=TwoWay}"
+                            MinWidth="260" />
+                        <TextBlock Text="{x:Bind ViewModel.PriorityHelp, Mode=OneWay}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+
+                    <TextBlock
+                        Text="{x:Bind ViewModel.FitText, Mode=OneWay}"
+                        Visibility="{x:Bind ViewModel.HasFit, Mode=OneWay}"
+                        TextWrapping="Wrap"
+                        Style="{StaticResource BodyStrongTextBlockStyle}" />
+                </StackPanel>
+                </ContentControl>
+            </Border>
+
             <Grid>
                 <TextBlock x:Uid="SettingsPrivacyHeader" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center" />
                 <HyperlinkButton x:Uid="SettingsResetPrivacy" Command="{x:Bind ViewModel.ResetPrivacyCommand}" HorizontalAlignment="Right" />

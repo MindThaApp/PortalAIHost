@@ -60,6 +60,9 @@ public static class AppOptions
     /// <summary>Open this page first: home, models, apps, tryit, settings.</summary>
     public static string? StartPage { get; private set; }
 
+    /// <summary>Sets the page the next window opens on (a link or a second launch asked for it).</summary>
+    public static void SetStartPage(string? page) => StartPage = page;
+
     /// <summary>Where the tray icon was clicked (screen pixels) when the host started this window for the pop-up.</summary>
     public static (int X, int Y)? TrayPopup { get; private set; }
 
@@ -93,7 +96,7 @@ public static class AppOptions
     {
         foreach (var a in args)
         {
-            if (a.StartsWith("--page=", StringComparison.OrdinalIgnoreCase)) StartPage = a[7..];
+            if (a.StartsWith(Services.PageArgs.Switch, StringComparison.OrdinalIgnoreCase)) StartPage = a[Services.PageArgs.Switch.Length..];
             else if (Services.TrayPopupArgs.Find(a) is { } popupAt) TrayPopup = popupAt;
 #if DEBUG
             // Development and automated-check switches; Release builds ignore them.

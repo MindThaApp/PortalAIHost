@@ -66,6 +66,13 @@ seen as used RAM.
 - The host enforces `memory_limit_bytes` and (from 1.0.3) `cpu_ceiling_percent` on the engine process through a
   Windows job object, as well as planning against them.
 - `priority: low` runs the engine at BELOW_NORMAL priority.
+- **Cap margin (1.0.2):** the job object cap is `memory_limit_bytes` plus a margin of 1 GB or 10 %, whichever is
+  larger, because the engine needs some memory the planner does not count. The planner still plans against
+  `memory_limit_bytes` itself.
+- **Cap fallback (1.0.2):** the cap has not been tried against every engine build. If an engine fails to start while a
+  cap is set, the host starts it once more without the cap. It writes a line to the host's trace output (no prompt or
+  reply text) and `GET /host/performance` reports `"memory_cap_active": false` with a `memory_cap_reason`, until the
+  limits are applied again. Only start failures are retried; a crash after a successful start is not.
 
 **Tuning for Pro 1.1 (host only, not offered in apps):** context length, the number of graphics-card layers, batch
 size, memory locking, and several models loaded at once.
@@ -211,6 +218,24 @@ Each opens the host window on that page. If the host isn't installed, open the S
 
 ## 7. Timeline
 
+**Built for 1.0.2 (branch `performance`; UI checks pending):**
+- Settings model (section 2, 1.0.2 rows): the seven keys in `HostSettings`, with the defaults, ranges and presets;
+  an older `max_memory_percent` maps to `memory_limit_bytes` on first read.
+- Enforcement: the planner plans against the memory limit, "always leave free" and the graphics memory limit;
+  `compute` `cpu` forces zero graphics layers and `gpu` falls back to the processor without a card of 4 GB or more;
+  `cpu_threads` goes to llama-server `--threads`; `low` priority is BELOW_NORMAL; the memory limit is also a job object
+  cap on the engine process. Changes apply live (reload or unload, never a delete).
+- `GET /host/performance` and `"performance"` in `/host/capabilities` `endpoints`. `cpu_ceiling_percent` is fixed at
+  100, `ease_off` is empty and `eased_off_now` is `null` until 1.0.3.
+- `X-Portal-Context-Tokens`: clamps the reply length against an estimate of the prompt (the engine cannot change its
+  context per request); see `docs/api-v1.md` section 4.
+- Protocol links `portal-ai-host:settings/performance`, `:models` and `:apps`.
+- Settings > Performance page: preset, maximum memory (with what fits at each size), always leave free, run on,
+  graphics memory, processor cores, priority, the fit line and reset to default.
+- Already in place before this branch: `usage` in `GET /host/status` (section 5.2) and the `Portal.AiHost.Models` split
+  (planner and probe).
+
+**Planned timeline:**
 - **Host 1.0.2:**
   - the Settings > Performance page (section 2, 1.0.2 rows);
   - `GET /host/performance`, `usage`, `X-Portal-Context-Tokens`, and the protocol links;

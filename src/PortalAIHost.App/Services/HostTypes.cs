@@ -110,6 +110,12 @@ public interface IHostControl
     /// <summary>Saves settings. A new models folder never moves or deletes the models already downloaded.</summary>
     Task<SettingsSaved> SetSettingsAsync(HostSettings settings, CancellationToken ct = default);
 
+    /// <summary>
+    /// The performance limits in force, the hardware ranges and the fit preview. With <paramref name="candidate"/> the
+    /// preview is for those settings; nothing is saved.
+    /// </summary>
+    Task<PerformanceView> GetPerformanceAsync(HostSettings? candidate = null, CancellationToken ct = default);
+
     /// <summary>Streams the reply of a short chat request in pieces. Thinking text and answer text come as separate pieces.</summary>
     IAsyncEnumerable<TryItPiece> TryItAsync(string prompt, CancellationToken ct = default);
 

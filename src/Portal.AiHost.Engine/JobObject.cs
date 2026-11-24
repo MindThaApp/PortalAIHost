@@ -12,6 +12,7 @@ public sealed partial class JobObject : IDisposable
 {
     private const int JobObjectExtendedLimitInformation = 9;
     private const uint JobObjectLimitKillOnJobClose = 0x2000;
+    private const uint JobObjectLimitJobMemory = 0x0200;
 
     private readonly nint _handle;
     private bool _disposed;
@@ -38,6 +39,35 @@ public sealed partial class JobObject : IDisposable
             throw new Win32Exception(err);
         }
     }
+
+    /// <summary>
+    /// Caps the memory every process in the job may commit together (JobMemoryLimit), or removes the cap when
+    /// <paramref name="bytes"/> is null or not positive. Keeps kill-on-close. Allocations past the cap fail inside
+    /// the engine; nothing is deleted. Returns false when the OS refuses.
+    /// </summary>
+    public bool SetMemoryLimit(long? bytes)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        var info = new JOBOBJECT_EXTENDED_LIMIT_INFORMATION();
+        info.BasicLimitInformation.LimitFlags = JobObjectLimitKillOnJobClose;
+        if (bytes is > 0)
+        {
+            info.BasicLimitInformation.LimitFlags |= JobObjectLimitJobMemory;
+            info.JobMemoryLimit = (nuint)bytes.Value;
+        }
+
+        var ok = SetInformationJobObject(_handle, JobObjectExtendedLimitInformation, ref info,
+            (uint)Marshal.SizeOf<JOBOBJECT_EXTENDED_LIMIT_INFORMATION>());
+        if (ok)
+        {
+            MemoryLimitBytes = bytes is > 0 ? bytes : null;
+        }
+
+        return ok;
+    }
+
+    /// <summary>The memory cap in force, or null when none is set.</summary>
+    public long? MemoryLimitBytes { get; private set; }
 
     /// <summary>Puts a running process in the job. Throws if the OS refuses.</summary>
     public void Assign(Process process)

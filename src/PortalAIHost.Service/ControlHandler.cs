@@ -150,7 +150,22 @@ internal sealed class ControlHandler(HostShell shell)
                 return Ok(id, shell.Settings.Current, AiHostJsonContext.Default.HostSettings);
 
             case ControlTypes.SetSettings:
-                return Ok(id, SaveSettings(Payload(r, AiHostJsonContext.Default.HostSettings)!), AiHostJsonContext.Default.SettingsSaved);
+            {
+                var saved = SaveSettings(Payload(r, AiHostJsonContext.Default.HostSettings)!);
+                // Performance limits apply at once: the planner re-plans and a loaded model reloads if it must.
+                var applied = await runtime.ApplyPerformanceAsync(ct).ConfigureAwait(false);
+                saved.PerformanceReloaded = applied.Reloaded.Count > 0 || applied.Unloaded.Count > 0
+                    ? new PerformanceReloadInfo { Reloaded = applied.Reloaded.ToList(), Unloaded = applied.Unloaded.ToList() }
+                    : null;
+                return Ok(id, saved, AiHostJsonContext.Default.SettingsSaved);
+            }
+
+            case ControlTypes.GetPerformance:
+            {
+                var candidate = Payload(r, AiHostJsonContext.Default.HostSettings, optional: true);
+                var view = await runtime.BuildPerformanceViewAsync(candidate, withStops: true, ct).ConfigureAwait(false);
+                return Ok(id, view, AiHostJsonContext.Default.PerformanceView);
+            }
 
             case ControlTypes.TryItChat:
             {
@@ -213,7 +228,7 @@ internal sealed class ControlHandler(HostShell shell)
     }
 
     /// <summary>
-    /// Saves settings. Idle unload applies at once; memory cap, backend and the models folder at the next host start.
+    /// Saves settings. Idle unload and the performance limits apply at once; a new models folder at the next host start.
     /// A new models folder never moves or deletes the models already downloaded: they stay where they are.
     /// </summary>
     internal SettingsSaved SaveSettings(HostSettings next)
@@ -237,8 +252,7 @@ internal sealed class ControlHandler(HostShell shell)
 
         next.PreviousStoreFolders = previous.Count == 0 ? null : previous.Take(MaxPreviousStoreFolders).ToList();
         shell.Settings.Save(next);
-        var restart = folderChanged || old.MaxMemoryPercent != next.MaxMemoryPercent
-            || !string.Equals(old.Backend, next.Backend, StringComparison.Ordinal);
+        var restart = folderChanged;
         return new SettingsSaved
         {
             ModelsFolderChanged = folderChanged,

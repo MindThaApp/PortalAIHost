@@ -24,6 +24,9 @@ public sealed class FakeEngineOptions
     /// <summary>When set, non-streamed replies carry this as reasoning_content next to the text.</summary>
     public string? Reasoning { get; set; }
 
+    /// <summary>When true, a load that has a memory cap set fails (as an engine that cannot allocate under a cap would).</summary>
+    public bool FailLoadUnderMemoryCap { get; set; }
+
     public int EmbeddingDimensions { get; set; } = 8;
     public int ContextTokens { get; set; } = 4096;
 }
@@ -118,6 +121,12 @@ public sealed class FakeEngineSupervisor : IEngineSupervisor
                 Set(EngineState.Loading, (double)i / steps);
             }
 
+            if (Options.FailLoadUnderMemoryCap && spec.MemoryLimitBytes is not null)
+            {
+                Set(EngineState.Failed, 0, "load failed");
+                throw new EngineException(ErrorCodes.EngineError, "Simulated allocation failure under the memory cap.");
+            }
+
             if (Options.FailLoadWithCode is { } code)
             {
                 Set(EngineState.Failed, 0, "load failed");
@@ -175,8 +184,12 @@ public sealed class FakeEngineSupervisor : IEngineSupervisor
         _lifetime.Cancel();
     }
 
+    /// <summary>The last chat request this engine received (after the host's own clamping).</summary>
+    public ChatCompletionRequest? LastChatRequest { get; private set; }
+
     public async Task<ChatCompletionResponse> ChatAsync(ChatCompletionRequest request, CancellationToken ct)
     {
+        LastChatRequest = request;
         EnsureReady();
         using var guard = Begin(ct, out var token);
         var words = ReplyWords(request, out var finish);
@@ -221,6 +234,7 @@ public sealed class FakeEngineSupervisor : IEngineSupervisor
     public async IAsyncEnumerable<ChatCompletionChunk> StreamChatAsync(
         ChatCompletionRequest request, [EnumeratorCancellation] CancellationToken ct)
     {
+        LastChatRequest = request;
         EnsureReady();
         using var guard = Begin(ct, out var token);
         var words = ReplyWords(request, out var finish);

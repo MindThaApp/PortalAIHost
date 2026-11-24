@@ -283,7 +283,7 @@ internal sealed class ModelCenter : IAsyncDisposable
         var ctx = new RecommendContext(
             stored.Where(m => m.IsComplete).Select(m => m.Id).ToHashSet(StringComparer.Ordinal),
             FreeBytes(),
-            Settings: new PlannerSettings { MaxMemoryPercent = s.MaxMemoryPercent, Backend = s.Backend });
+            Settings: PerformanceModel.PlannerFor(s, hw));
         var mem = _hardware.GetMemory();
         foreach (var kind in new[] { ModelKinds.Chat, ModelKinds.Embedding })
         {

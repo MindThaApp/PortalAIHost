@@ -20,6 +20,9 @@ public static class AppServices
     /// <summary>Opens a page by name (home, models, apps, tryit, settings) and moves the menu selection. Set by the window.</summary>
     public static Action<string>? NavigateTo { get; set; }
 
+    /// <summary>Section of the Settings page to bring into view when it opens (for example "performance"), or null.</summary>
+    public static string? PendingSettingsSection { get; set; }
+
     /// <summary>Raised when the main window is shown or hidden (minimized). Live pages stop reading while hidden.</summary>
     public static Action<bool>? MainVisibilityChanged { get; set; }
     public static IStartupControl Startup { get; private set; } = new UnavailableStartupControl();

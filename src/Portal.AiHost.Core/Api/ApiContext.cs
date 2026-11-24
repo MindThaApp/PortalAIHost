@@ -15,7 +15,8 @@ public sealed record PortalRequestOptions(
     int DeadlineMs,
     DateTimeOffset Deadline,
     bool FailIfLoading,
-    string? ClientRequestId);
+    string? ClientRequestId,
+    int? ContextTokens = null);
 
 /// <summary>Everything a route handler needs: the request, the caller, parsed options and response helpers.</summary>
 public sealed class ApiContext

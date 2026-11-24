@@ -9,6 +9,18 @@ public sealed record PlannerSettings
     /// <summary>The host's models may use at most this share of total RAM (Settings "maximum memory use").</summary>
     public int MaxMemoryPercent { get; init; } = 80;
 
+    /// <summary>
+    /// When set, the most memory the models may use in total (Settings "Maximum memory for AI"); replaces the
+    /// <see cref="MaxMemoryPercent"/> share.
+    /// </summary>
+    public long? MemoryLimitBytes { get; init; }
+
+    /// <summary>Memory always left free for other programs; the larger of this and the usual headroom applies.</summary>
+    public long KeepFreeBytes { get; init; }
+
+    /// <summary>When set, the most graphics memory the models may use.</summary>
+    public long? GpuMemoryLimitBytes { get; init; }
+
     /// <summary>auto, gpu or cpu.</summary>
     public string Backend { get; init; } = "auto";
 
@@ -85,12 +97,13 @@ public sealed record MemoryBudget(long RamBudgetBytes, GpuProfile? Gpu, long Vra
     {
         committed ??= CommittedMemory.None;
         var total = hw.RamBytes;
-        var headroom = Math.Max(Math.Min(s.MinRamHeadroomBytes, total / 4), (long)(total * s.RamHeadroomFraction));
+        var headroom = Math.Max(Math.Max(Math.Min(s.MinRamHeadroomBytes, total / 4), (long)(total * s.RamHeadroomFraction)), s.KeepFreeBytes);
 
         // Unknown free RAM (0) is never read as "all free": use the conservative typical figure instead.
         var typical = total - Math.Max(2L << 30, (long)(total * s.TypicalOtherUseFraction));
         var available = mem.AvailableRamBytes > 0 ? Math.Min(mem.AvailableRamBytes, total) : typical;
-        var ram = Math.Max(0, Math.Min(available - headroom, total * s.MaxMemoryPercent / 100 - committed.RamBytes));
+        var cap = s.MemoryLimitBytes ?? total * s.MaxMemoryPercent / 100;
+        var ram = Math.Max(0, Math.Min(available - headroom, cap - committed.RamBytes));
 
         if (s.Backend == "cpu")
         {
@@ -102,7 +115,13 @@ public sealed record MemoryBudget(long RamBudgetBytes, GpuProfile? Gpu, long Vra
         {
             var gpuShare = (long)(total * s.UnifiedGpuFraction) - (total - available) - committed.VramFor(0);
             var bw = total >= 64L << 30 ? 400e9 : 250e9;
-            return new MemoryBudget(ram, unifiedGpu, Math.Max(0, Math.Min(ram, gpuShare)), true, bw);
+            var unifiedVram = Math.Max(0, Math.Min(ram, gpuShare));
+            if (s.GpuMemoryLimitBytes is { } unifiedCap)
+            {
+                unifiedVram = Math.Min(unifiedVram, Math.Max(0, unifiedCap - committed.VramFor(0)));
+            }
+
+            return new MemoryBudget(ram, unifiedGpu, unifiedVram, true, bw);
         }
 
         // Phase 1 uses the GPU with the most dedicated memory.
@@ -126,6 +145,10 @@ public sealed record MemoryBudget(long RamBudgetBytes, GpuProfile? Gpu, long Vra
             ? mem.FreeVramBytesPerGpu[best]
             : gpu.VramBudgetBytes > 0 ? Math.Min(gpu.VramBudgetBytes, unknownFree) : unknownFree;
         var vram = Math.Max(0, Math.Min(free, gpu.VramBytes) - (long)(gpu.VramBytes * s.VramReserveFraction) - committed.VramFor(best));
+        if (s.GpuMemoryLimitBytes is { } gpuCap)
+        {
+            vram = Math.Min(vram, Math.Max(0, gpuCap - committed.VramFor(best)));
+        }
         return new MemoryBudget(ram, gpu, vram, false, GuessGpuBandwidth(gpu.VramBytes));
     }
 

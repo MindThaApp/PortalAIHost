@@ -31,6 +31,9 @@ public static class HeaderNames
     public const string QueueMs = "X-Portal-Queue-Ms";
     public const string Model = "X-Portal-Model";
     public const string CapabilitiesRevision = "X-Portal-Capabilities-Revision";
+
+    /// <summary>Asks for a smaller working context for this request; clamped, never an error.</summary>
+    public const string ContextTokens = "X-Portal-Context-Tokens";
     public const string RetryAfter = "Retry-After";
 }
 
@@ -172,6 +175,7 @@ public static class EndpointNames
     public const string Models = "models";
     public const string Tokenize = "tokenize";
     public const string Warmup = "warmup";
+    public const string Performance = "performance";
 }
 
 /// <summary>Route paths.</summary>
@@ -180,6 +184,7 @@ public static class Routes
     public const string Ping = "/host/ping";
     public const string Status = "/host/status";
     public const string Capabilities = "/host/capabilities";
+    public const string Performance = "/host/performance";
     public const string Warmup = "/host/warmup";
     public const string Tokenize = "/host/tokenize";
     public const string AuthRequests = "/host/auth/requests";

@@ -352,8 +352,71 @@ public sealed class FakeHostControl : IHostControl, IDisposable
         lock (_gate) return Task.FromResult(_settings);
     }
 
+    /// <summary>Settings sent to <see cref="SetSettingsAsync"/>, oldest first (checks read them).</summary>
+    public List<HostSettings> SavedSettings { get; } = new();
+
+    /// <summary>A 64 GB, 12 core PC with an 8 GB card, so the page shows realistic ranges.</summary>
+    public Task<PerformanceView> GetPerformanceAsync(HostSettings? candidate = null, CancellationToken ct = default)
+    {
+        Require();
+        const long gb = 1L << 30;
+        HostSettings s;
+        lock (_gate) s = candidate ?? _settings;
+        var preset = s.Preset is "quiet" or "fast" or "custom" ? s.Preset : "balanced";
+        long memory = s.MemoryLimitBytes ?? (preset == "quiet" ? 32 * gb : preset == "fast" ? 56 * gb : 51 * gb);
+        var compute = s.Compute is "gpu" or "cpu" ? s.Compute : "auto";
+        var fit = memory < 12 * gb ? "needs_smaller_model" : compute == "cpu" ? "cpu_only" : memory < 20 * gb ? "fits_partial" : "fits_fully";
+        var view = new PerformanceView
+        {
+            Info = new PerformanceInfo
+            {
+                Preset = preset,
+                MemoryLimitBytes = memory,
+                KeepFreeBytes = s.KeepFreeBytes ?? 8 * gb,
+                Compute = compute,
+                ComputeEffective = compute == "cpu" ? "cpu" : "gpu",
+                GpuMemoryLimitBytes = s.GpuMemoryLimitBytes ?? 7 * gb + gb / 2,
+                CpuThreads = s.CpuThreads ?? (preset == "quiet" ? 6 : preset == "fast" ? 11 : 10),
+                Priority = s.Priority == "normal" ? "normal" : "low",
+                Fit = fit,
+                Ranges = new PerformanceRanges
+                {
+                    MemoryLimitBytes = new NumberRange { Min = 2 * gb, Max = 56 * gb, Step = gb },
+                    KeepFreeBytes = new NumberRange { Min = 2 * gb, Max = 32 * gb, Step = gb },
+                    GpuMemoryLimitBytes = new NumberRange { Min = gb, Max = 7 * gb + gb / 2, Step = gb / 2 },
+                    CpuThreads = new NumberRange { Min = 1, Max = 11 },
+                    GpuAvailable = true,
+                },
+            },
+            RamBytes = 64 * gb,
+            LogicalCores = 12,
+            GpuName = "AMD Radeon RX 6600",
+            GpuVramBytes = 8 * gb,
+            FitModel = "Qwen3 14B",
+            SmallerModel = fit == "needs_smaller_model" ? "Qwen3 4B" : null,
+            Presets = new()
+            {
+                ["quiet"] = new PerformancePresetValues { MemoryLimitBytes = 32 * gb, CpuThreads = 6, Priority = "low" },
+                ["balanced"] = new PerformancePresetValues { MemoryLimitBytes = 51 * gb, CpuThreads = 10, Priority = "low" },
+                ["fast"] = new PerformancePresetValues { MemoryLimitBytes = 56 * gb, CpuThreads = 11, Priority = "normal" },
+            },
+        };
+        for (var b = 2; b <= 56; b++)
+        {
+            view.MemoryStops.Add(new MemoryStop
+            {
+                Bytes = b * gb,
+                FitsModel = b < 5 ? null : b < 10 ? "Qwen3 8B" : b < 20 ? "Qwen3 14B" : "Qwen3 30B A3B",
+                Fit = b < 5 ? null : b < 12 ? "fits_partial" : "fits_fully",
+            });
+        }
+
+        return Task.FromResult(view);
+    }
+
     public Task<SettingsSaved> SetSettingsAsync(HostSettings settings, CancellationToken ct = default)
     {
+        lock (_gate) SavedSettings.Add(settings);
         bool moved;
         lock (_gate)
         {

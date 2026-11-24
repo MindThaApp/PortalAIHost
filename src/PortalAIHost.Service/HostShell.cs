@@ -7,6 +7,7 @@ using Portal.AiHost.Core.Auth;
 using Portal.AiHost.Core.Catalogue;
 using Portal.AiHost.Core.Download;
 using Portal.AiHost.Core.Store;
+using Portal.AiHost.Core.Planning;
 using Portal.AiHost.Core.Runtime;
 using Portal.AiHost.Core.Scheduling;
 using Portal.AiHost.Core.Settings;
@@ -216,6 +217,7 @@ public sealed class HostShell : IAsyncDisposable
         _marker = SafeModeMarker.Begin(root);
         _settings = HostSettingsFile.Create(root);
         var settings = _settings.Load();
+        settings = await MapOlderMemoryShareAsync(settings, ct).ConfigureAwait(false);
         if (_o.Store is null && _o.OpenStoreReporting is { } open)
         {
             var opened = open(settings);
@@ -266,11 +268,16 @@ public sealed class HostShell : IAsyncDisposable
             Supervisors = _o.Supervisors,
             Hardware = _o.Hardware,
             Planner = new() { MaxMemoryPercent = settings.MaxMemoryPercent, Backend = settings.Backend },
+            Settings = () => _settings.Current,
+            Catalogue = _o.Catalogue,
+            Log = line => System.Diagnostics.Trace.WriteLine("Portal AI Host: " + line),
             HostVersion = _o.HostVersion,
             SafeMode = _marker.SafeMode,
             IdlePolicy = IdlePolicyFor,
             UsageProbe = _o.UsageProbe,
         }, ct).ConfigureAwait(false);
+
+        await Runtime.ApplyPerformanceAsync(ct).ConfigureAwait(false);
 
         // A move that did not finish removing its old copies (crash, locked file) is finished, or named, at every start.
         _ = Task.Run(async () =>
@@ -298,6 +305,38 @@ public sealed class HostShell : IAsyncDisposable
 
         var keepLoaded = settings.Kinds.Where(k => k.Value.KeepLoaded).Select(k => k.Key).ToList();
         _ = Runtime.AutoLoadAsync(keepLoaded, CancellationToken.None);
+    }
+
+    /// <summary>
+    /// First read after an update: an older memory share (percent of RAM) becomes the byte limit, saved through the
+    /// settings store like any other change. Nothing is saved for a new install or when the file cannot be written.
+    /// </summary>
+    private async Task<HostSettings> MapOlderMemoryShareAsync(HostSettings settings, CancellationToken ct)
+    {
+        if (settings.MemoryLimitBytes is not null || _o.Hardware is not { } probe
+            || _settings.LoadState is not (SettingsLoadState.Loaded or SettingsLoadState.Migrated))
+        {
+            return settings;
+        }
+
+        try
+        {
+            var hw = await probe.ProbeAsync(ct).ConfigureAwait(false);
+            var limits = PerformanceModel.Resolve(settings, hw);
+            settings.MemoryLimitBytes = limits.MemoryLimitBytes;
+            if (settings.MaxMemoryPercent != 80 && settings.Preset == PerformancePresets.Balanced)
+            {
+                settings.Preset = PerformancePresets.Custom; // the user chose their own share
+            }
+
+            _settings.Save(settings);
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or IOException or UnauthorizedAccessException)
+        {
+            // Not saved: the older share still applies through the same resolver.
+        }
+
+        return _settings.Current;
     }
 
     public ControlStatus BuildControlStatus() => new()
