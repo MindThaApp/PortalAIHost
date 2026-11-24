@@ -10,6 +10,7 @@ using Portal.AiHost.Contracts.Control;
 using Portal.AiHost.Core.Auth;
 using Portal.AiHost.Core.Remote;
 using Portal.AiHost.Core.Tests.Remote;
+using Portal.AiHost.FakeEngine;
 
 namespace Portal.AiHost.Server.Tests;
 
@@ -22,7 +23,11 @@ public sealed class LanRemoteTests : IAsyncLifetime
 
     public async ValueTask InitializeAsync()
     {
-        _host = await TestHost.StartAsync();
+        _host = await TestHost.StartAsync(new FakeEngineOptions
+        {
+            TokenDelay = TimeSpan.FromMilliseconds(200),
+            Reply = string.Join(' ', Enumerable.Repeat("word", 200)),
+        });
         _remote = NewRemote(allow: _ => true);
         await _remote.ApplyAsync(new RemoteSettings { Enabled = true });
         _http = Client(_remote);
@@ -380,4 +385,43 @@ public sealed class LanRemoteTests : IAsyncLifetime
         using var ok = await _http.SendAsync(Signed(client, HttpMethod.Get, "/host/ping"));
         Assert.Equal(HttpStatusCode.OK, ok.StatusCode);
     }
-}
+
+    [Fact]
+    public async Task RemovingTheDeviceEndsItsRunningStreamAndFreesTheEngine()
+    {
+        using var client = await PairAsync();
+        var token = await GetTokenAsync(client);
+        const string body = """{ "messages": [ { "role": "user", "content": "Hi" } ], "stream": true }""";
+        using var response = await _http.SendAsync(Signed(client, HttpMethod.Post, Routes.ChatCompletions, body, token),
+            HttpCompletionOption.ResponseHeadersRead);
+        using var reader = new StreamReader(await response.Content.ReadAsStreamAsync());
+        string? line;
+        while ((line = await reader.ReadLineAsync()) is not null && !line.Contains("\"content\":\"word", StringComparison.Ordinal))
+        {
+        }
+
+        Assert.Equal(1, _host.Chat.ActiveRequests);
+
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        Assert.True(_remote.RemoveDevice(client.DeviceId!));
+        try
+        {
+            while (await reader.ReadLineAsync() is not null)
+            {
+            }
+        }
+        catch (IOException)
+        {
+            // The connection was closed under the stream: that is how it ends.
+        }
+
+        Assert.True(sw.Elapsed < TimeSpan.FromSeconds(2), $"stream took {sw.Elapsed} to end");
+        var until = DateTime.UtcNow.AddSeconds(2);
+        while ((_host.Chat.ActiveRequests != 0 || _host.Chat.CancelledRequests != 1) && DateTime.UtcNow < until)
+        {
+            await Task.Delay(20);
+        }
+
+        Assert.Equal(0, _host.Chat.ActiveRequests);
+        Assert.Equal(1, _host.Chat.CancelledRequests);
+    }}

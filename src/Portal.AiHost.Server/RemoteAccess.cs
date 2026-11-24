@@ -66,10 +66,14 @@ public sealed class RemoteAccess : IAsyncDisposable
         _time = options.Time ?? TimeProvider.System;
         _hostName = options.HostName ?? Environment.MachineName;
         Devices = new DeviceStore(options.DataDirectory, _time);
+        Sessions = new DeviceSessions(Devices);
         Devices.Changed += RaiseChanged;
     }
 
     public DeviceStore Devices { get; }
+
+    /// <summary>What each paired device has in flight; cancelled when the device is removed.</summary>
+    public DeviceSessions Sessions { get; }
 
     /// <summary>Raised when the devices, the pairing code or the listener changed.</summary>
     public event Action? Changed;
@@ -134,7 +138,7 @@ public sealed class RemoteAccess : IAsyncDisposable
             _pairing = new PairingService(Devices, _hostName, _fingerprint!, _time);
             _pairing.Changed += RaiseChanged;
             _verifier ??= new DeviceRequestVerifier(Devices, _time);
-            _server = await LanServer.StartAsync(_runtime, _pairing, _verifier, new LanServerOptions
+            _server = await LanServer.StartAsync(_runtime, _pairing, _verifier, Sessions, new LanServerOptions
             {
                 Certificate = _certificate,
                 Port = port,
@@ -199,6 +203,7 @@ public sealed class RemoteAccess : IAsyncDisposable
         var removed = Devices.Remove(deviceId);
         if (removed)
         {
+            Sessions.Revoke(deviceId);
             _o.RevokeDevice(deviceId);
         }
 

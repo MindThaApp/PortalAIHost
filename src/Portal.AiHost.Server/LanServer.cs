@@ -47,6 +47,7 @@ public sealed class LanServer : IAsyncDisposable
     private readonly AiHostRuntime _runtime;
     private readonly PairingService _pairing;
     private readonly DeviceRequestVerifier _verifier;
+    private readonly DeviceSessions _sessions;
     private readonly LanServerOptions _options;
     private WebApplication? _app;
 
@@ -54,8 +55,9 @@ public sealed class LanServer : IAsyncDisposable
     public const int MaxConnections = 64;
 
     private LanServer(AiHostRuntime runtime, PairingService pairing, DeviceRequestVerifier verifier,
-        LanServerOptions options)
+        DeviceSessions sessions, LanServerOptions options)
     {
+        _sessions = sessions;
         _runtime = runtime;
         _pairing = pairing;
         _verifier = verifier;
@@ -65,13 +67,13 @@ public sealed class LanServer : IAsyncDisposable
     public int Port { get; private set; }
 
     public static async Task<LanServer> StartAsync(AiHostRuntime runtime, PairingService pairing,
-        DeviceRequestVerifier verifier, LanServerOptions options, CancellationToken ct = default)
+        DeviceRequestVerifier verifier, DeviceSessions sessions, LanServerOptions options, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(runtime);
         ArgumentNullException.ThrowIfNull(pairing);
         ArgumentNullException.ThrowIfNull(verifier);
         ArgumentNullException.ThrowIfNull(options);
-        var server = new LanServer(runtime, pairing, verifier, options);
+        var server = new LanServer(runtime, pairing, verifier, sessions, options);
         var app = server.Build();
         try
         {
@@ -216,6 +218,19 @@ public sealed class LanServer : IAsyncDisposable
             return;
         }
 
+        // Admitted only while the device is still paired. Removing the device cancels this token: it is linked into
+        // the request (so queued and running generations stop) and it closes the connection (so a stream ends).
+        if (!_sessions.TryEnter(device.Id, out var revoked))
+        {
+            await AiHostServer.WriteErrorAsync(http, ErrorCodes.DeviceUnauthorized,
+                "This device is not paired with this PC, or the request signature is not valid.",
+                Reason(DeviceAuthReasons.UnknownDevice)).ConfigureAwait(false);
+            return;
+        }
+
+        using var link = CancellationTokenSource.CreateLinkedTokenSource(http.RequestAborted, revoked);
+        using var abort = revoked.Register(static state => ((HttpContext)state!).Abort(), http);
+
         var apiRequest = new ApiRequest
         {
             Method = request.Method,
@@ -226,7 +241,7 @@ public sealed class LanServer : IAsyncDisposable
             Caller = new CallerIdentity(0, null, null, Verified: false, SameUser: true,
                 Remote: new RemoteDevice(device.Id, device.Name)),
         };
-        await _runtime.Pipeline.HandleAsync(apiRequest, new KestrelResponseSink(http)).ConfigureAwait(false);
+        await _runtime.Pipeline.HandleAsync(apiRequest, new KestrelResponseSink(http, link.Token)).ConfigureAwait(false);
     }
 
     private async Task HandlePairingAsync(HttpContext http, string path, byte[] body)
