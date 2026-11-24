@@ -175,8 +175,12 @@ public sealed class FakeEngineSupervisor : IEngineSupervisor
         _lifetime.Cancel();
     }
 
+    /// <summary>The last chat request this engine received (after the host's own clamping).</summary>
+    public ChatCompletionRequest? LastChatRequest { get; private set; }
+
     public async Task<ChatCompletionResponse> ChatAsync(ChatCompletionRequest request, CancellationToken ct)
     {
+        LastChatRequest = request;
         EnsureReady();
         using var guard = Begin(ct, out var token);
         var words = ReplyWords(request, out var finish);
@@ -221,6 +225,7 @@ public sealed class FakeEngineSupervisor : IEngineSupervisor
     public async IAsyncEnumerable<ChatCompletionChunk> StreamChatAsync(
         ChatCompletionRequest request, [EnumeratorCancellation] CancellationToken ct)
     {
+        LastChatRequest = request;
         EnsureReady();
         using var guard = Begin(ct, out var token);
         var words = ReplyWords(request, out var finish);

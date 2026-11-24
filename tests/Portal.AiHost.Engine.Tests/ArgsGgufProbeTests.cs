@@ -18,6 +18,21 @@ public class ArgsTests
     private static readonly EngineEndpoint Ep = new(45123, "key123");
 
     [Fact]
+    public void ThreadsAreOnlyPassedWhenSet()
+    {
+        Assert.DoesNotContain("--threads", LlamaServerArgs.Build(Spec(), Ep));
+        var args = LlamaServerArgs.Build(Spec() with { Threads = 10 }, Ep).ToList();
+        Assert.Equal("10", args[args.IndexOf("--threads") + 1]);
+    }
+
+    [Fact]
+    public void CpuPlacementForcesZeroGpuLayers()
+    {
+        var args = LlamaServerArgs.Build(Spec(new Placement { Backend = "cpu", GpuLayers = 30, TotalLayers = 40, ContextTokens = 4096 }), Ep).ToList();
+        Assert.Equal("0", args[args.IndexOf("--n-gpu-layers") + 1]);
+    }
+
+    [Fact]
     public void BindsLoopbackOnly_NeverWildcard()
     {
         var args = LlamaServerArgs.Build(Spec(), Ep);
