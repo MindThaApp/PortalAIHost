@@ -80,6 +80,13 @@ public sealed class ClientStateStore
         var protectedKey = _protector.Protect(devicePrivateKeyPkcs8.ToArray());
         lock (_gate)
         {
+            // A token from a previously paired PC must never be sent to the new one. Removed first, so a failure
+            // here leaves the old pairing untouched; a lost token is only asked for again.
+            if (File.Exists(TokenPath))
+            {
+                File.Delete(TokenPath);
+            }
+
             var previousKey = File.Exists(KeyPath) ? File.ReadAllBytes(KeyPath) : null;
             AtomicFile.WriteAllBytes(KeyPath, protectedKey);
             try
@@ -99,9 +106,6 @@ public sealed class ClientStateStore
 
                 throw;
             }
-
-            // A token from a previously paired PC must never be sent to this one.
-            File.Delete(TokenPath);
         }
     }
 
