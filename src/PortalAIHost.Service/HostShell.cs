@@ -390,9 +390,11 @@ public sealed class HostShell : IAsyncDisposable
             CreateLink = () => _o.SecretProtector is null
                 ? null
                 : new Portal.AiHost.Core.Remote.Client.RemoteHostLink(new Portal.AiHost.Core.Remote.Client.ClientStateStore(root, _o.SecretProtector),
-                    _o.ClientConnector ?? new Portal.AiHost.Core.Remote.Client.LanConnector(Portal.AiHost.Core.Remote.Client.LanConnector.LinkConnectTimeout)),
+                    _o.ClientConnector ?? new Portal.AiHost.Core.Remote.Client.LanConnector(Portal.AiHost.Core.Remote.Client.LanConnector.LinkConnectTimeout),
+                    relayFactory: (url, fingerprint) => new Portal.AiHost.Core.Remote.Client.RelayConnector(url, fingerprint)),
             PersistMode = SaveMode,
         });
+        Runtime.ClientStatus = () => ClientMode.StatusRemote();
         ClientMode.Changed += () => _ = PushRemoteChangedAsync();
         await ClientMode.RestoreAsync(settings.Mode, ct).ConfigureAwait(false);
 

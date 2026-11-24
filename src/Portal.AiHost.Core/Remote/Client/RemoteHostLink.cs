@@ -39,10 +39,24 @@ public static class RemoteLinkReasons
     public const string Clock = "clock";
     public const string Refused = "refused";
     public const string CertChanged = "cert_changed";
+
+    /// <summary>The relay says the PC is not connected to it (HTTP 503 host_offline, close 4404 or 4410).</summary>
+    public const string RelayHostOffline = "relay_host_offline";
+
+    /// <summary>The relay refused for budget reasons (HTTP 429, close 4429): wait about a minute.</summary>
+    public const string RelayBusy = "relay_busy";
 }
 
 /// <summary>A snapshot of the link: state, why, the last round trip and whether the host has its own token.</summary>
-public sealed record RemoteLinkStatus(RemoteLinkState State, string? Reason, int? RttMs, bool HasToken);
+public sealed record RemoteLinkStatus(RemoteLinkState State, string? Reason, int? RttMs, bool HasToken, string? Route = null);
+
+/// <summary>The routes to the PC (docs/client-mode-v1.md section 3.1).</summary>
+public static class RemoteRoutes
+{
+    public const string Lan = "lan";
+    public const string Relay = "relay";
+    public const string Down = "down";
+}
 
 /// <summary>No answer could be obtained from the PC. Callers turn this into <c>503 remote_unreachable</c>.</summary>
 public sealed class RemoteUnreachableException(string reason, int? retryAfterMs = null)
@@ -113,7 +127,12 @@ public sealed class RemoteHostLink : IDisposable
     private readonly object _gate = new();
     private readonly CancellationTokenSource _lifetime = new();
 
-    private IRemoteChannel? _channel;
+    private readonly IRemoteConnector? _relayConnector;
+    private IRemoteChannel? _lanChannel;
+    private IRemoteChannel? _relayChannel;
+    private string _route = RemoteRoutes.Lan;
+    private long _lanProbedAt;
+    private long _relayBlockedUntil; // TimeProvider timestamp; 0 = not blocked
     private volatile bool _pinRejected;
     private RemoteLinkStatus _status;
     private string? _token;
@@ -130,7 +149,7 @@ public sealed class RemoteHostLink : IDisposable
     private bool _disposed;
 
     public RemoteHostLink(ClientStateStore store, IRemoteConnector connector, TimeProvider? time = null,
-        RemoteHostLinkOptions? options = null)
+        RemoteHostLinkOptions? options = null, Func<Uri, byte[], IRemoteConnector>? relayFactory = null)
     {
         _store = store ?? throw new ArgumentNullException(nameof(store));
         _connector = connector ?? throw new ArgumentNullException(nameof(connector));
@@ -144,6 +163,12 @@ public sealed class RemoteHostLink : IDisposable
         }
 
         var usable = _remote is not null && _pin is not null && _key is not null;
+        // The relay is used only when the saved pairing carries a valid relay address (re-checked here; null = none).
+        if (usable && relayFactory is not null && PairingLink.ValidateRelayUrl(_remote!.RelayUrl) is { } relayUrl)
+        {
+            _relayConnector = relayFactory(new Uri(relayUrl), _pin!);
+        }
+
         _status = new RemoteLinkStatus(usable ? RemoteLinkState.Stopped : RemoteLinkState.NotPaired, null, null,
             usable && Token() is not null);
         if (usable && _options.WatchNetwork)
@@ -235,20 +260,19 @@ public sealed class RemoteHostLink : IDisposable
         ArgumentNullException.ThrowIfNull(request);
         var (needsToken, token) = BeginRequest(request);
         ThrowIfTerminal();
-        var signed = Sign(request, token);
         var started = _time.GetTimestamp();
         RemoteStreamReply reply;
         try
         {
-            reply = await GetChannel().OpenAsync(signed, ct).ConfigureAwait(false);
+            reply = await OnRoutesAsync(channel => channel.OpenAsync(Sign(request, token), ct), ct).ConfigureAwait(false);
         }
         catch (OperationCanceledException) when (ct.IsCancellationRequested)
         {
             throw;
         }
-        catch (Exception ex) when (IsTransportFailure(ex))
+        catch (RoutesFailedException failed)
         {
-            throw TransportFailed();
+            throw TransportFailed(failed);
         }
 
         if (reply.Status != 401)
@@ -267,7 +291,7 @@ public sealed class RemoteHostLink : IDisposable
         }
         catch (Exception ex) when (ex is not OperationCanceledException || !ct.IsCancellationRequested)
         {
-            throw TransportFailed();
+            throw TransportFailed(new RoutesFailedException(ex, null));
         }
         finally
         {
@@ -395,36 +419,161 @@ public sealed class RemoteHostLink : IDisposable
         ex is HttpRequestException or IOException or SocketException or TaskCanceledException
             or AuthenticationException or ObjectDisposedException;
 
-    private RemoteUnreachableException TransportFailed()
+    /// <summary>Every route that was tried failed. <see cref="Relay"/> is what the relay said, if it was asked.</summary>
+    private sealed class RoutesFailedException(Exception inner, RelayException? relay) : Exception(inner.Message, inner)
+    {
+        public RelayException? Relay { get; } = relay;
+    }
+
+    private RemoteUnreachableException TransportFailed(RoutesFailedException failed)
     {
         DropChannel();
         if (_pinRejected)
         {
+            // Only the PC's own certificate can say this, on either route; a relay's words never do.
             SetStatus(RemoteLinkState.FingerprintChanged, RemoteLinkReasons.CertChanged);
             return new RemoteUnreachableException(RemoteLinkReasons.CertChanged);
+        }
+
+        if (failed.Relay is { } relay)
+        {
+            var wait = relay.RetryAfterMs ?? _retryAfterMs;
+            SetStatus(RemoteLinkState.Unreachable, relay.Reason);
+            return new RemoteUnreachableException(relay.Reason, wait);
         }
 
         SetStatus(RemoteLinkState.Unreachable, RemoteLinkReasons.Offline);
         return new RemoteUnreachableException(RemoteLinkReasons.Offline, _retryAfterMs);
     }
 
+    private static RelayException? FindRelay(Exception? ex)
+    {
+        for (; ex is not null; ex = ex.InnerException)
+        {
+            if (ex is RelayException relay)
+            {
+                return relay;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>True when nothing of the request can have reached the PC, so the other route may carry it.</summary>
+    private static bool NothingSent(Exception ex) =>
+        ex is HttpRequestException { HttpRequestError: HttpRequestError.ConnectionError or HttpRequestError.NameResolutionError }
+        || FindRelay(ex) is not null || ex.InnerException is SocketException or TimeoutException;
+
+    /// <summary>The routes in the order to try: the last one that worked first; the relay only when the pairing has one.</summary>
+    private List<string> RouteOrder()
+    {
+        var order = new List<string>(2);
+        var relay = _relayConnector is not null;
+        if (_route == RemoteRoutes.Relay && relay)
+        {
+            order.Add(RemoteRoutes.Relay);
+            order.Add(RemoteRoutes.Lan);
+        }
+        else
+        {
+            order.Add(RemoteRoutes.Lan);
+            if (relay)
+            {
+                order.Add(RemoteRoutes.Relay);
+            }
+        }
+
+        return order;
+    }
+
+    /// <summary>
+    /// Runs <paramref name="op"/> on the channel of the preferred route and, when that route could not be connected
+    /// (nothing sent), once on the other. A relay that is over its budget is left alone until its wait is over. A
+    /// pin mismatch on either route stops here: it is never papered over by the other one.
+    /// </summary>
+    private async Task<T> OnRoutesAsync<T>(Func<IRemoteChannel, Task<T>> op, CancellationToken ct)
+    {
+        RelayException? relayError = null;
+        Exception? last = null;
+        var order = RouteOrder();
+        foreach (var route in order)
+        {
+            if (route == RemoteRoutes.Relay && RelayWaitMs() is { } blocked)
+            {
+                relayError = new RelayException(RemoteLinkReasons.RelayBusy, blocked, "The relay budget is used up; waiting.");
+                last ??= relayError;
+                continue;
+            }
+
+            try
+            {
+                var result = await op(GetChannel(route)).ConfigureAwait(false);
+                _route = route;
+                return result;
+            }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch (Exception ex) when (IsTransportFailure(ex))
+            {
+                last = ex;
+                DropChannel(route);
+                if (route == RemoteRoutes.Relay)
+                {
+                    relayError = FindRelay(ex) ?? relayError;
+                    if (relayError is { Reason: RemoteLinkReasons.RelayBusy })
+                    {
+                        var wait = (relayError.RetryAfterMs ?? RelayException.BudgetRetryMs) / 1000.0;
+                        Interlocked.Exchange(ref _relayBlockedUntil, _time.GetTimestamp() + (long)(wait * _time.TimestampFrequency));
+                    }
+                }
+
+                if (_pinRejected || !NothingSent(ex))
+                {
+                    break;
+                }
+            }
+        }
+
+        throw new RoutesFailedException(last ?? new IOException("No route to the PC."), relayError);
+    }
+
+    /// <summary>Milliseconds the relay budget still asks for, or null when the relay may be used.</summary>
+    private int? RelayWaitMs()
+    {
+        var until = Interlocked.Read(ref _relayBlockedUntil);
+        if (until == 0)
+        {
+            return null;
+        }
+
+        var left = (until - _time.GetTimestamp()) * 1000.0 / _time.TimestampFrequency;
+        if (left <= 0)
+        {
+            Interlocked.Exchange(ref _relayBlockedUntil, 0);
+            return null;
+        }
+
+        return (int)Math.Ceiling(left);
+    }
+
     private async Task<RemoteReply> SendSignedAsync(RemoteRequest request, string? token, CancellationToken ct)
     {
         ThrowIfTerminal();
-        var signed = Sign(request, token);
         var started = _time.GetTimestamp();
         RemoteReply reply;
         try
         {
-            reply = await GetChannel().SendAsync(signed, ct).ConfigureAwait(false);
+            reply = await OnRoutesAsync(channel => channel.SendAsync(Sign(request, token), ct), ct).ConfigureAwait(false);
         }
         catch (OperationCanceledException) when (ct.IsCancellationRequested)
         {
             throw;
         }
-        catch (Exception ex) when (IsTransportFailure(ex))
+        catch (RoutesFailedException failed)
         {
-            throw TransportFailed();
+            throw TransportFailed(failed);
         }
 
         CheckDeviceAuth(reply);
@@ -460,19 +609,24 @@ public sealed class RemoteHostLink : IDisposable
         SetStatus(RemoteLinkState.Connected, null, rtt);
     }
 
-    private IRemoteChannel GetChannel()
+    private IRemoteChannel GetChannel(string route)
     {
         lock (_gate)
         {
-            return _channel ??= OpenChannel();
+            if (route == RemoteRoutes.Relay)
+            {
+                return _relayChannel ??= OpenChannel(_relayConnector!);
+            }
+
+            return _lanChannel ??= OpenChannel(_connector);
         }
     }
 
-    private IRemoteChannel OpenChannel()
+    private IRemoteChannel OpenChannel(IRemoteConnector connector)
     {
         _pinRejected = false;
         var pin = _pin!;
-        return _connector.Open(_remote!.Address, _remote.Port, der =>
+        return connector.Open(_remote!.Address, _remote.Port, der =>
         {
             // The whole saved fingerprint, on every connection: not just the code prefix.
             var ok = CryptographicOperations.FixedTimeEquals(SHA256.HashData(der), pin);
@@ -485,13 +639,39 @@ public sealed class RemoteHostLink : IDisposable
         });
     }
 
+    /// <summary>Drops the connections of both routes and goes back to trying the home network first.</summary>
     private void DropChannel()
+    {
+        IRemoteChannel? lan, relay;
+        lock (_gate)
+        {
+            lan = _lanChannel;
+            relay = _relayChannel;
+            _lanChannel = null;
+            _relayChannel = null;
+            _route = RemoteRoutes.Lan;
+        }
+
+        lan?.Dispose();
+        relay?.Dispose();
+    }
+
+    /// <summary>Drops one route's connection after a failure; the route order is kept.</summary>
+    private void DropChannel(string route)
     {
         IRemoteChannel? old;
         lock (_gate)
         {
-            old = _channel;
-            _channel = null;
+            if (route == RemoteRoutes.Relay)
+            {
+                old = _relayChannel;
+                _relayChannel = null;
+            }
+            else
+            {
+                old = _lanChannel;
+                _lanChannel = null;
+            }
         }
 
         old?.Dispose();
@@ -651,6 +831,10 @@ public sealed class RemoteHostLink : IDisposable
                 }
 
                 delay = busy ? _options.BusyInterval : _options.IdleInterval;
+                if (_route == RemoteRoutes.Relay)
+                {
+                    await TryBackToLanAsync(ct).ConfigureAwait(false);
+                }
             }
             else
             {
@@ -664,6 +848,59 @@ public sealed class RemoteHostLink : IDisposable
             }
 
             await SleepAsync(delay, ct).ConfigureAwait(false);
+        }
+    }
+
+    /// <summary>
+    /// While the relay carries the link, the home network is tried again about once a minute with a signed ping on a
+    /// separate connection. When it answers, new requests use it; requests already running on the relay are left alone
+    /// (they are never moved), and the relay connection is let go once idle.
+    /// </summary>
+    private async Task TryBackToLanAsync(CancellationToken ct)
+    {
+        if (_lanProbedAt != 0 && _time.GetElapsedTime(_lanProbedAt) < _options.IdleInterval)
+        {
+            return;
+        }
+
+        _lanProbedAt = _time.GetTimestamp();
+        var matched = true;
+        var pin = _pin!;
+        IRemoteChannel? probe = null;
+        try
+        {
+            probe = _connector.Open(_remote!.Address, _remote.Port, der =>
+                matched = CryptographicOperations.FixedTimeEquals(SHA256.HashData(der), pin));
+            var started = _time.GetTimestamp();
+            var reply = await probe.SendAsync(Sign(new RemoteRequest("GET", Routes.Ping, []), null), ct).ConfigureAwait(false);
+            if (reply.Status != 200 || !matched)
+            {
+                return;
+            }
+
+            IRemoteChannel? old;
+            lock (_gate)
+            {
+                old = _lanChannel;
+                _lanChannel = probe;
+                probe = null;
+                _route = RemoteRoutes.Lan;
+            }
+
+            old?.Dispose();
+            MarkConnected(started);
+        }
+        catch (OperationCanceledException) when (ct.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception ex) when (IsTransportFailure(ex))
+        {
+            // Still away from home.
+        }
+        finally
+        {
+            probe?.Dispose();
         }
     }
 
@@ -761,8 +998,10 @@ public sealed class RemoteHostLink : IDisposable
                 return; // A terminal state is left only by a new link.
             }
 
-            next = new RemoteLinkStatus(state, reason, rtt ?? _status.RttMs, hasToken ?? _status.HasToken);
-            changed = next.State != _status.State || next.Reason != _status.Reason || next.HasToken != _status.HasToken;
+            var route = state == RemoteLinkState.Connected ? _route : RemoteRoutes.Down;
+            next = new RemoteLinkStatus(state, reason, rtt ?? _status.RttMs, hasToken ?? _status.HasToken, route);
+            changed = next.State != _status.State || next.Reason != _status.Reason || next.HasToken != _status.HasToken
+                || next.Route != _status.Route;
             _status = next;
         }
 

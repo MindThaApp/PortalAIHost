@@ -113,7 +113,7 @@ public sealed class ClientModeStatus
     /// <summary>Link state while in client mode: connecting, connected, unreachable, revoked, fingerprint_changed, stopped.</summary>
     public string? State { get; set; }
 
-    /// <summary><c>lan</c> or <c>down</c> (the relay route comes later). Null in server mode.</summary>
+    /// <summary><c>lan</c>, <c>relay</c> or <c>down</c>. Null in server mode.</summary>
     public string? Route { get; set; }
 
     /// <summary>Why the link is down (the remote_unreachable reason), if it is.</summary>
