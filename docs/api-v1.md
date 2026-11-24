@@ -4,7 +4,8 @@ Status: draft 1, 2026-11-20. Audience: teams building apps that use Portal AI Ho
 Portal, a future chat app, third-party tools). This document is self-contained. .NET apps should use the
 `Portal.AiHost.Client` NuGet package, which implements everything here, but any HTTP client works.
 
-Phase 1 is **Windows, same PC only** (loopback). LAN and remote access come later, under the same API and tokens.
+Phase 1 is **Windows, same PC only** (loopback). **LAN access** (a paired device on the same home network) uses the
+same API and tokens over TLS; see [remote-v1.md](remote-v1.md). Internet relay access comes later.
 
 ## 1. Basics
 
@@ -175,6 +176,8 @@ and may be localised later. Each code always comes with the same `type` (OpenAI-
 | 401 | `auth_required` | `authentication_error` | no | The bearer token is missing. |
 | 401 | `token_invalid` | `authentication_error` | no | Unknown token. Delete it and ask the user before requesting again. |
 | 401 | `token_revoked` | `authentication_error` | no | The user removed access. Delete the token. |
+| 401 | `device_unauthorized` | `authentication_error` | no | LAN only: the device is not paired (or was removed), or its request signature is not valid. `details.reason` says which ([remote-v1.md](remote-v1.md) section 4). |
+| 403 | `pairing_failed` | `permission_error` | no | LAN only: a pairing step was refused. `details.reason` is `no_offer`, `expired`, `wrong_code`, `code_voided`, `invalid`, `no_session` or `too_many_devices` ([remote-v1.md](remote-v1.md) section 3). |
 | 403 | `access_denied` | `permission_error` | no | The user denied the access request (24 h cool-down). |
 | 403 | `app_paused` | `permission_error` | no | The user paused your app in the host. Approval is kept. Requests that were already queued wait; running ones finish. Tell the user generation is paused, and retry only after `GET /host/status` shows `client.paused: false`. |
 | 403 | `forbidden_origin` | `permission_error` | no | Browser origin or bad `Host` header. |
@@ -521,8 +524,13 @@ Everything a chat screen needs is in v1:
 - **Speech to text:** `POST /v1/audio/transcriptions` (OpenAI-compatible, optional and off by default). Until it is
   enabled it returns `404 feature_disabled`. When enabled, a `transcription` section appears in
   `/host/capabilities` and `/host/status`.
-- **LAN and remote access:** the same endpoints and tokens, over TLS or end-to-end encryption, after one-time
-  pairing. Tokens will be tied to a device; existing loopback tokens stay valid for local use.
+- **Remote access over the internet:** the same endpoints and tokens, end-to-end encrypted through a relay, after
+  the same one-time pairing. Not available yet.
+
+**LAN access** is available (off by default, host 1.0.3): the same endpoints and tokens over TLS on the home network,
+after one-time pairing. A token is tied to the device it was issued to: a loopback token does not work from a
+device, and a device token does not work on loopback. The full protocol (pairing, request signing, certificate
+pinning) is in [remote-v1.md](remote-v1.md).
 
 ## 10. Admin control pipe (the host's own window only)
 
@@ -659,6 +667,15 @@ only). Messages are JSON envelopes `{ "id", "type", "payload" }`; answers are `o
 - `settings.set` answers `SettingsSaved` `{ models_folder_changed, applies_at_restart, note, folder_refused,
   performance_reloaded }`. The performance limits apply at once; `performance_reloaded` (`{ reloaded: [kind],
   unloaded: [kind] }`) is set when a model was reloaded with a new placement or stopped because it no longer fits.
+- **Other devices (LAN access, [remote-v1.md](remote-v1.md)):** `remote` in `HostSettings` is `{ enabled, port }` (off,
+  48123 by default; the port is 48123 to 48133, the range the package firewall rule opens). Saving settings starts or
+  stops the LAN listener at once. Messages: `remote.get` answers `{ enabled, listening, port, problem?, host_name,
+  addresses, fingerprint?, devices: [{ device_id, name, created_at, last_seen_at? }], pairing? }`;
+  `remote.pair_start` opens a code and answers `{ code, expires_at, qr_text, host_name, address, port, fingerprint }`
+  (`feature_disabled` while the setting is off); `remote.pair_cancel`; `remote.device_remove` `{ device_id }` removes
+  the device and revokes its tokens (`not_found` for an unknown id). `event.remote_changed` (push, no payload) means
+  ask `remote.get` again. `approvals.list` and `event.approval_pending` carry `device_name` for a request from a
+  device, and `clients.list` carries `device_name`.
 - `health.get` answers the `GET /host/health` body (`HealthReport`). Read-only.
 - `performance.get` (optional `HostSettings` payload) answers `{ info, ram_bytes, logical_cores, gpu_name,
   gpu_vram_bytes, gpu_unavailable_reason, fit_model, smaller_model, memory_stops, presets }`: `info` is the
