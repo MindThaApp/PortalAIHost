@@ -13,7 +13,7 @@ public enum LaunchMode
 /// <summary>
 /// Reads the host's command line. Only these protocol links are understood: <c>portal-ai-host:start</c>,
 /// <c>portal-ai-host:open</c> and the page links <c>portal-ai-host:settings/performance</c>,
-/// <c>portal-ai-host:models</c> and <c>portal-ai-host:apps</c>. Anything else (other protocol paths, query strings,
+/// <c>portal-ai-host:models</c>, <c>portal-ai-host:apps</c> and <c>portal-ai-host:try</c>. Anything else (other protocol paths, query strings,
 /// extra text) is treated as a plain start; nothing from the command line is ever run or opened.
 /// </summary>
 internal static class LaunchArgs
@@ -42,7 +42,7 @@ internal static class LaunchArgs
         return args.Count == 0 ? LaunchMode.Open : LaunchMode.Start;
     }
 
-    /// <summary>The window page a protocol link asks for ("settings/performance", "models", "apps"), or null.</summary>
+    /// <summary>The window page a protocol link asks for ("settings/performance", "models", "apps", "try" which opens the Try it page), or null.</summary>
     public static string? PageFor(IReadOnlyList<string> args)
     {
         foreach (var raw in args)
@@ -58,6 +58,7 @@ internal static class LaunchArgs
                 "settings/performance" => "settings/performance",
                 "models" => "models",
                 "apps" => "apps",
+                "try" => "tryit",
                 _ => null,
             };
         }

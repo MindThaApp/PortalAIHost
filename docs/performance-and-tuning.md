@@ -194,6 +194,7 @@ Read-only, sampled at most every 1.5 s and only while someone asks. `ram_used_by
 - `portal-ai-host:settings/performance`
 - `portal-ai-host:models`
 - `portal-ai-host:apps`
+- `portal-ai-host:try` (the Try it page)
 
 Each opens the host window on that page. If the host isn't installed, open the Store page
 `ms-windows-store://pdp/?ProductId=9MW5MTZ8LWP8`.
@@ -229,7 +230,7 @@ Each opens the host window on that page. If the host isn't installed, open the S
   100, `ease_off` is empty and `eased_off_now` is `null` until 1.0.3 (see below).
 - `X-Portal-Context-Tokens`: clamps the reply length against an estimate of the prompt (the engine cannot change its
   context per request); see `docs/api-v1.md` section 4.
-- Protocol links `portal-ai-host:settings/performance`, `:models` and `:apps`.
+- Protocol links `portal-ai-host:settings/performance`, `:models`, `:apps` and `:try`.
 - Settings > Performance page: preset, maximum memory (with what fits at each size), always leave free, run on,
   graphics memory, processor cores, priority, the fit line and reset to default.
 - Already in place before this branch: `usage` in `GET /host/status` (section 5.2) and the `Portal.AiHost.Models` split

@@ -207,6 +207,63 @@ public sealed class HostShellTests
     }
 
     [Fact]
+    public async Task Try_it_streams_pieces_then_reports_timing_and_counts_as_try_it()
+    {
+        using var root = new TestRoot();
+        await using var harness = await ShellHarness.StartAsync(root);
+        harness.Chat.Options.Reply = "one two three four five";
+        await harness.Shell.Runtime.SetActiveAsync(ModelKinds.Chat,
+            new Core.Runtime.ActiveModel(ModelKinds.Chat, "m", "M", ["x.gguf"]), default);
+        await using var client = await ControlPipeClient.ConnectAsync(harness.Paths.PipeName);
+        var text = new System.Text.StringBuilder();
+        var done = await client.TryItStreamAsync(new ChatCompletionRequest
+        {
+            Messages = [new ChatMessage { Role = ChatRoles.User, Content = "Hello" }],
+        }, (c, _) => { lock (text) text.Append(c); });
+        Assert.False(done.Cancelled);
+        Assert.Equal("one two three four five", text.ToString().Trim());
+        Assert.True(done.Tokens >= 5);
+        Assert.NotNull(done.FirstTokenMs);
+        var counted = Assert.Single(harness.Shell.Runtime.Activity.Snapshot(),
+            a => a.AppId == Core.Runtime.AiHostRuntime.TryItAppId);
+        Assert.Equal(1, counted.Requests);
+        Assert.Equal(0, counted.Running);
+    }
+
+    [Fact]
+    public async Task Try_it_stop_cancels_the_run_and_frees_the_queue_slot()
+    {
+        using var root = new TestRoot();
+        await using var harness = await ShellHarness.StartAsync(root);
+        harness.Chat.Options.Reply = string.Join(' ', Enumerable.Repeat("word", 200));
+        harness.Chat.Options.TokenDelay = TimeSpan.FromMilliseconds(50);
+        await harness.Shell.Runtime.SetActiveAsync(ModelKinds.Chat,
+            new Core.Runtime.ActiveModel(ModelKinds.Chat, "m", "M", ["x.gguf"]), default);
+        await using var client = await ControlPipeClient.ConnectAsync(harness.Paths.PipeName);
+        using var stop = new CancellationTokenSource();
+        var first = new TaskCompletionSource();
+        var run = client.TryItStreamAsync(new ChatCompletionRequest
+        {
+            Messages = [new ChatMessage { Role = ChatRoles.User, Content = "Hello" }],
+        }, (_, _) => first.TrySetResult(), stop.Token);
+        await first.Task.WaitAsync(TimeSpan.FromSeconds(10));
+        Assert.Equal(1, harness.Chat.ActiveRequests);
+        stop.Cancel();
+        var done = await run.WaitAsync(TimeSpan.FromSeconds(10));
+        Assert.True(done.Cancelled);
+        Assert.Equal(0, harness.Chat.ActiveRequests);
+        Assert.Equal(0, harness.Shell.Runtime.Activity.Snapshot().Sum(a => a.Running));
+        // The slot is free again: a second run completes.
+        harness.Chat.Options.Reply = "ok";
+        harness.Chat.Options.TokenDelay = TimeSpan.Zero;
+        var again = await client.TryItStreamAsync(new ChatCompletionRequest
+        {
+            Messages = [new ChatMessage { Role = ChatRoles.User, Content = "Hello" }],
+        }, (_, _) => { });
+        Assert.False(again.Cancelled);
+    }
+
+    [Fact]
     public async Task Try_it_passes_the_reasoning_text_back_with_the_answer()
     {
         using var root = new TestRoot();

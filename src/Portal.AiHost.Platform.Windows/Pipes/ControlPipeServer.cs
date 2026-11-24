@@ -382,8 +382,9 @@ public sealed class ControlPipeServer : IAsyncDisposable
                 {
                     if (_queue.Count >= MaxQueuedPushes)
                     {
+                        // Reply text of "Try it" is dropped last: losing it would leave a hole in the answer.
                         var drop = Find(ControlTypes.EventDownloadProgress) ?? Find(ControlTypes.EventEngineState) ??
-                            _queue.First!;
+                            FindNot(ControlTypes.EventTryItChunk) ?? _queue.First!;
                         _queue.Remove(drop);
                         signal = false;
                     }
@@ -396,6 +397,19 @@ public sealed class ControlPipeServer : IAsyncDisposable
             {
                 _pushSignal.Release();
             }
+        }
+
+        private LinkedListNode<ControlEnvelope>? FindNot(string type)
+        {
+            for (var n = _queue.First; n is not null; n = n.Next)
+            {
+                if (n.Value.Type != type)
+                {
+                    return n;
+                }
+            }
+
+            return null;
         }
 
         private LinkedListNode<ControlEnvelope>? Find(string type)

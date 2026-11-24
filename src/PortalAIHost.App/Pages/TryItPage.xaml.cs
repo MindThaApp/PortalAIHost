@@ -1,7 +1,6 @@
-using Microsoft.UI.Text;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
 using PortalAIHost.App.Services;
 using PortalAIHost.App.ViewModels;
 
@@ -15,32 +14,22 @@ public sealed partial class TryItPage : Page
         InitializeComponent();
         ViewModel.PropertyChanged += (_, e) =>
         {
-            if (e.PropertyName == nameof(TryItViewModel.Reply)) ShowReply();
+            // Keep the newest words in view while an answer streams in.
+            if (e.PropertyName == nameof(TryItViewModel.Reply) && ViewModel.IsBusy)
+                Scroller.ChangeView(null, Scroller.ScrollableHeight, null, true);
         };
-        ShowReply();
     }
 
     public TryItViewModel ViewModel { get; }
 
-    /// <summary>Shows the reply with bold, italic, code and lists styled instead of raw markers.</summary>
-    private void ShowReply()
+    private void OnSuggestion(object sender, RoutedEventArgs e)
     {
-        ReplyBlock.Blocks.Clear();
-        foreach (var line in MiniMarkdown.Parse(ViewModel.Reply))
-        {
-            var p = new Paragraph();
-            foreach (var run in line)
-            {
-                var r = new Run { Text = run.Text };
-                switch (run.Kind)
-                {
-                    case MdKind.Bold: r.FontWeight = FontWeights.SemiBold; break;
-                    case MdKind.Italic: r.FontStyle = Windows.UI.Text.FontStyle.Italic; break;
-                    case MdKind.Code: r.FontFamily = new FontFamily("Cascadia Mono, Consolas"); break;
-                }
-                p.Inlines.Add(r);
-            }
-            ReplyBlock.Blocks.Add(p);
-        }
+        if (sender is Button { Content: string text }) ViewModel.UseSuggestionCommand.Execute(text);
+    }
+
+    private void OnSendAccelerator(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+    {
+        args.Handled = true;
+        if (ViewModel.SendCommand.CanExecute(null)) ViewModel.SendCommand.Execute(null);
     }
 }

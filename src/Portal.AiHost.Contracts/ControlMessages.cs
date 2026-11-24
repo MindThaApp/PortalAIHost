@@ -57,6 +57,12 @@ public static class ControlTypes
     public const string SetSettings = "settings.set";
     public const string TryItChat = "tryit.chat";
     public const string TryItCancel = "tryit.cancel";
+
+    /// <summary>
+    /// Streaming "Try it". Payload <see cref="TryItRequest"/> (with a run id). The answer, <see cref="TryItDone"/>, comes when
+    /// the reply has finished; meanwhile the reply arrives as <see cref="EventTryItChunk"/> pushes carrying the same run id.
+    /// </summary>
+    public const string TryItStream = "tryit.stream";
     public const string Quit = "quit";
 
     /// <summary>Per-app activity today and which apps generate now. Answers <see cref="ActivityReport"/>.</summary>
@@ -77,6 +83,9 @@ public static class ControlTypes
     public const string EventApprovalPending = "event.approval_pending";
     public const string EventDownloadProgress = "event.download_progress";
     public const string EventStatusChanged = "event.status_changed";
+
+    /// <summary>A piece of a streaming "Try it" reply. Payload <see cref="TryItChunkEvent"/>.</summary>
+    public const string EventTryItChunk = "event.tryit_chunk";
 
     /// <summary>Progress of a move or a check. Payload <see cref="StoreProgressEvent"/>.</summary>
     public const string EventStoreProgress = "event.store_progress";
@@ -547,6 +556,53 @@ public sealed class KindSettings
 public sealed class TryItRequest
 {
     public ChatCompletionRequest Request { get; set; } = new();
+
+    /// <summary>Chosen by the window; the chunk pushes of this run carry it so a window ignores other runs.</summary>
+    public string? RunId { get; set; }
+}
+
+/// <summary>A piece of the reply (event.tryit_chunk). Pieces of one run arrive in order and none are dropped.</summary>
+public sealed class TryItChunkEvent
+{
+    public string RunId { get; set; } = "";
+
+    /// <summary>1, 2, 3 ... per run, so the window can tell when it has every piece (the final answer can overtake the last pushes).</summary>
+    public int Seq { get; set; }
+
+    /// <summary>Answer text, or null.</summary>
+    public string? Content { get; set; }
+
+    /// <summary>Thinking text, or null.</summary>
+    public string? Reasoning { get; set; }
+}
+
+/// <summary>Result of a streaming "Try it" run (answer to tryit.stream). Counts and timing only, never text.</summary>
+public sealed class TryItDone
+{
+    public string RunId { get; set; } = "";
+
+    /// <summary>True when the run was stopped before the model finished; the numbers are then for what ran.</summary>
+    public bool Cancelled { get; set; }
+
+    /// <summary>Why the model stopped (stop, length), or null.</summary>
+    public string? FinishReason { get; set; }
+
+    /// <summary>Milliseconds from the start of generation (after waiting in the queue and loading) to the first piece, or null if none came.</summary>
+    public long? FirstTokenMs { get; set; }
+
+    /// <summary>Milliseconds from the start of generation to the end.</summary>
+    public long TotalMs { get; set; }
+
+    /// <summary>Milliseconds spent waiting in the queue and loading the model before generation began.</summary>
+    public long WaitMs { get; set; }
+
+    public long Tokens { get; set; }
+
+    /// <summary>How many chunk pushes this run sent; the window waits for that many before it shows the numbers.</summary>
+    public int Chunks { get; set; }
+
+    /// <summary>Tokens per second after the first piece, or null when too short to measure.</summary>
+    public double? TokensPerSecond { get; set; }
 }
 
 /// <summary>Answer to status.get and payload of event.status_changed: the HTTP status plus host-only state.</summary>

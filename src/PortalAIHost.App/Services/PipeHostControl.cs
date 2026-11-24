@@ -149,22 +149,88 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
             : new SettingsSaved();
     }
 
-    public async IAsyncEnumerable<TryItPiece> TryItAsync(string prompt,
+    private readonly object _tryItGate = new();
+    private string? _tryItRun;
+    private Action<TryItChunkEvent>? _tryItSink;
+
+    public async IAsyncEnumerable<TryItPiece> TryItAsync(IReadOnlyList<TryItTurn> turns,
         [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct = default)
     {
+        var runId = Guid.NewGuid().ToString("N");
         var request = new TryItRequest
         {
-            Request = new ChatCompletionRequest { Messages = [new ChatMessage { Role = ChatRoles.User, Content = prompt }] },
+            RunId = runId,
+            Request = new ChatCompletionRequest
+            {
+                Messages = turns.Select(t => new ChatMessage { Role = t.IsUser ? ChatRoles.User : ChatRoles.Assistant, Content = t.Text }).ToList(),
+            },
         };
-        var answer = await CallAsync(ControlTypes.TryItChat, JsonSerializer.SerializeToElement(request, AiHostJsonContext.Default.TryItRequest), ct)
-            .ConfigureAwait(false);
-        var response = Read(answer, AiHostJsonContext.Default.ChatCompletionResponse);
-        // The host answers in one piece today; the window still reads it as pieces.
-        var message = response.Choices.FirstOrDefault()?.Message;
-        var (thinking, answer2) = TryItText.Split(message?.ReasoningContent, message?.Content);
-        if (thinking.Length > 0)
-            yield return new TryItPiece(thinking, true);
-        yield return new TryItPiece(answer2);
+        var pieces = System.Threading.Channels.Channel.CreateUnbounded<TryItPiece>(new() { SingleReader = true });
+        var received = 0;
+        void Sink(TryItChunkEvent c)
+        {
+            if (c.Reasoning is { Length: > 0 } r) pieces.Writer.TryWrite(new TryItPiece(r, true));
+            if (c.Content is { Length: > 0 } t) pieces.Writer.TryWrite(new TryItPiece(t));
+            Interlocked.Increment(ref received);
+        }
+
+        lock (_tryItGate)
+        {
+            _tryItRun = runId;
+            _tryItSink = Sink;
+        }
+
+        // The exchange is not tied to ct: Stop asks the host to cancel, and the host answers with what ran.
+        var call = CallAsync(ControlTypes.TryItStream, JsonSerializer.SerializeToElement(request, AiHostJsonContext.Default.TryItRequest),
+            CancellationToken.None);
+        _ = call.ContinueWith(async t =>
+        {
+            if (t.IsCompletedSuccessfully)
+            {
+                TryItDone done;
+                try
+                {
+                    done = Read(t.Result, AiHostJsonContext.Default.TryItDone);
+                }
+                catch (Exception ex)
+                {
+                    pieces.Writer.TryComplete(ex);
+                    return;
+                }
+
+                // The answer can overtake the last chunk pushes; give them a moment to arrive.
+                for (var i = 0; i < 600 && Volatile.Read(ref received) < done.Chunks; i++)
+                    await Task.Delay(5).ConfigureAwait(false);
+                pieces.Writer.TryWrite(new TryItPiece("", false,
+                    new TryItStats(done.FirstTokenMs, done.TotalMs, done.Tokens, done.TokensPerSecond, done.Cancelled)));
+                pieces.Writer.TryComplete();
+            }
+            else
+            {
+                pieces.Writer.TryComplete(t.Exception?.GetBaseException());
+            }
+        }, CancellationToken.None, TaskContinuationOptions.None, TaskScheduler.Default);
+        try
+        {
+            while (await pieces.Reader.WaitToReadAsync(ct).ConfigureAwait(false))
+            {
+                while (pieces.Reader.TryRead(out var piece))
+                {
+                    yield return piece;
+                }
+            }
+        }
+        finally
+        {
+            lock (_tryItGate)
+            {
+                if (_tryItRun == runId)
+                {
+                    _tryItRun = null;
+                    _tryItSink = null;
+                }
+            }
+        }
     }
 
     public async Task CancelTryItAsync()
@@ -303,6 +369,11 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
                     break;
                 case ControlTypes.EventTrayPopup when p.Deserialize(AiHostJsonContext.Default.TrayPopupEvent) is { } tp:
                     TrayPopup?.Invoke(tp);
+                    break;
+                case ControlTypes.EventTryItChunk when p.Deserialize(AiHostJsonContext.Default.TryItChunkEvent) is { } chunk:
+                    Action<TryItChunkEvent>? sink;
+                    lock (_tryItGate) sink = chunk.RunId == _tryItRun ? _tryItSink : null;
+                    sink?.Invoke(chunk);
                     break;
                 case ControlTypes.EventEngineState when p.Deserialize(AiHostJsonContext.Default.EngineStateEvent) is { } en:
                     EngineStateChanged?.Invoke(en);

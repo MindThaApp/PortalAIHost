@@ -10,6 +10,7 @@ public sealed class ProtocolLinkTests
     [InlineData("portal-ai-host://settings/performance/", "settings/performance")]
     [InlineData("\"portal-ai-host:models\"", "models")]
     [InlineData("portal-ai-host:apps", "apps")]
+    [InlineData("portal-ai-host:try", "tryit")]
     public void Page_links_open_the_window_on_that_page(string arg, string page)
     {
         Assert.Equal(LaunchMode.Open, LaunchArgs.Parse([arg]));

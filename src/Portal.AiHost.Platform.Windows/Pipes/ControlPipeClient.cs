@@ -126,6 +126,54 @@ public sealed class ControlPipeClient : IAsyncDisposable
         return Read(answer, AiHostJsonContext.Default.ChatCompletionResponse);
     }
 
+    /// <summary>
+    /// Streaming "Try it": <paramref name="onPiece"/> gets each piece (answer text, thinking text) as it arrives; the result
+    /// holds the timing. Cancelling <paramref name="ct"/> sends tryit.cancel so the host stops generating at once.
+    /// </summary>
+    public async Task<TryItDone> TryItStreamAsync(ChatCompletionRequest request, Action<string?, string?> onPiece,
+        CancellationToken ct = default)
+    {
+        var runId = Guid.NewGuid().ToString("N");
+        var received = 0;
+        var gate = new object();
+        void Handler(object? _, ControlEnvelope e)
+        {
+            if (e.Type == ControlTypes.EventTryItChunk && e.Payload?.Deserialize(AiHostJsonContext.Default.TryItChunkEvent) is { } c
+                && c.RunId == runId)
+            {
+                onPiece(c.Content, c.Reasoning);
+                lock (gate) received++;
+            }
+        }
+
+        EventReceived += Handler;
+        try
+        {
+            using var stopper = ct.Register(() => _ = ExchangeAsync(ControlTypes.TryItCancel, null, CancellationToken.None));
+            var answer = await ExchangeAsync(ControlTypes.TryItStream,
+                JsonSerializer.SerializeToElement(new TryItRequest { Request = request, RunId = runId }, AiHostJsonContext.Default.TryItRequest),
+                CancellationToken.None).ConfigureAwait(false);
+            var done = Read(answer, AiHostJsonContext.Default.TryItDone);
+            // The answer can overtake the last pushes; wait (briefly) until every piece has arrived.
+            var patience = Environment.TickCount64 + 3000;
+            while (Environment.TickCount64 < patience)
+            {
+                lock (gate)
+                {
+                    if (received >= done.Chunks) break;
+                }
+
+                await Task.Delay(5).ConfigureAwait(false);
+            }
+
+            return done;
+        }
+        finally
+        {
+            EventReceived -= Handler;
+        }
+    }
+
     public Task QuitAsync(CancellationToken ct = default) => ExchangeAsync(ControlTypes.Quit, null, ct);
 
     // ---- plumbing -------------------------------------------------------------------------------

@@ -69,7 +69,7 @@
   <data name="SettingsFolder.Header" xml:space="preserve"><value>Folder for downloaded models</value></data>
   <data name="SettingsFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Folder for downloaded models</value></data>
   <data name="TryItTitle.Text" xml:space="preserve"><value>Try it</value></data>
-  <data name="TryItIntro.Text" xml:space="preserve"><value>Ask the model something short to check that it works. Nothing you type here is saved.</value></data>
+  <data name="TryItIntro.Text" xml:space="preserve"><value>Ask the model something short to check that it works and to see how fast it answers. Nothing you type here is saved. Press Ctrl+Enter to ask.</value></data>
   <data name="TryItPrompt.Header" xml:space="preserve"><value>Your question</value></data>
   <data name="TryItPrompt.PlaceholderText" xml:space="preserve"><value>For example: Write one sentence about the sea.</value></data>
   <data name="TryItPrompt.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Your question</value></data>
@@ -195,6 +195,17 @@
   <data name="Vm_FolderTitle" xml:space="preserve"><value>Use this folder for models?</value></data>
   <data name="Vm_FolderBody" xml:space="preserve"><value>The host will use {0} for models. Models you already have are not moved or deleted.</value></data>
   <data name="Vm_FolderYes" xml:space="preserve"><value>Use folder</value></data>
+  <data name="TryItClear.Content" xml:space="preserve"><value>Clear</value></data>
+  <data name="TryItClear.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Clear the conversation</value></data>
+  <data name="TryItSuggestLabel.Text" xml:space="preserve"><value>Not sure what to ask? Try one of these.</value></data>
+  <data name="HomeTryItButton.Content" xml:space="preserve"><value>Try it</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Try the model with a question</value></data>
+  <data name="Vm_TrySuggest1" xml:space="preserve"><value>Write one friendly sentence about the sea.</value></data>
+  <data name="Vm_TrySuggest2" xml:space="preserve"><value>Explain in two sentences what a router does.</value></data>
+  <data name="Vm_TrySuggest3" xml:space="preserve"><value>Give me three names for a cat.</value></data>
+  <data name="Vm_TryStats" xml:space="preserve"><value>First words after {0} s, then {1} tokens per second.</value></data>
+  <data name="Vm_TryStatsShort" xml:space="preserve"><value>First words after {0} s.</value></data>
+  <data name="Vm_TryStatsStopped" xml:space="preserve"><value>Stopped. {0}</value></data>
   <data name="TryItThinking.Header" xml:space="preserve"><value>What the model thought first</value></data>
   <data name="Vm_TryWorking" xml:space="preserve"><value>Working on it. A small PC can take a minute.</value></data>
   <data name="Vm_TryThinking" xml:space="preserve"><value>Thinking it through...</value></data>

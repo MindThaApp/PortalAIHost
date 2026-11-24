@@ -7,6 +7,48 @@ using Portal.AiHost.Platform.Windows.Pipes;
 
 namespace PortalAIHost.Service;
 
+/// <summary>Sends the pieces of a streaming "Try it" reply to the windows, a few at a time so the pipe is not flooded.</summary>
+internal sealed class TryItBatcher(ControlPipeServer pipe, string runId, TimeProvider time)
+{
+    private static readonly TimeSpan Interval = TimeSpan.FromMilliseconds(40);
+    private readonly System.Text.StringBuilder _content = new();
+    private readonly System.Text.StringBuilder _reasoning = new();
+    private long _last = time.GetTimestamp();
+
+    public int Sent { get; private set; }
+
+    public void Add(string? content, string? reasoning)
+    {
+        if (content is not null) _content.Append(content);
+        if (reasoning is not null) _reasoning.Append(reasoning);
+        if (time.GetElapsedTime(_last) >= Interval)
+        {
+            Flush();
+        }
+    }
+
+    public void Flush()
+    {
+        _last = time.GetTimestamp();
+        if (_content.Length == 0 && _reasoning.Length == 0)
+        {
+            return;
+        }
+
+        var piece = new TryItChunkEvent
+        {
+            RunId = runId,
+            Seq = ++Sent,
+            Content = _content.Length > 0 ? _content.ToString() : null,
+            Reasoning = _reasoning.Length > 0 ? _reasoning.ToString() : null,
+        };
+        _content.Clear();
+        _reasoning.Clear();
+        _ = pipe.BroadcastAsync(ControlTypes.EventTryItChunk,
+            JsonSerializer.SerializeToElement(piece, AiHostJsonContext.Default.TryItChunkEvent));
+    }
+}
+
 /// <summary>Answers admin pipe requests. This is the only place admin actions exist; HTTP has none.</summary>
 internal sealed class ControlHandler(HostShell shell)
 {
@@ -207,6 +249,27 @@ internal sealed class ControlHandler(HostShell shell)
                 }
             }
 
+            case ControlTypes.TryItStream:
+            {
+                var tryIt = Payload(r, AiHostJsonContext.Default.TryItRequest)!;
+                var runId = tryIt.RunId ?? "";
+                using var mine = CancellationTokenSource.CreateLinkedTokenSource(ct);
+                var previous = Interlocked.Exchange(ref _tryIt, mine);
+                CancelQuietly(previous);
+                var batch = new TryItBatcher(shell.Pipe, runId, TimeProvider.System);
+                try
+                {
+                    var done = await runtime.TryItStreamAsync(tryIt.Request, runId, batch.Add, mine.Token).ConfigureAwait(false);
+                    batch.Flush();
+                    done.Chunks = batch.Sent;
+                    return Ok(id, done, AiHostJsonContext.Default.TryItDone);
+                }
+                finally
+                {
+                    Interlocked.CompareExchange(ref _tryIt, null, mine);
+                }
+            }
+
             case ControlTypes.TryItCancel:
                 CancelQuietly(Volatile.Read(ref _tryIt));
                 return ControlPipe.Ok(id);
@@ -215,6 +278,7 @@ internal sealed class ControlHandler(HostShell shell)
             {
                 var known = (await runtime.Registry.ListAsync(ct).ConfigureAwait(false))
                     .GroupBy(c => c.AppId).ToDictionary(g => g.Key, g => g.First().AppName);
+                known[Portal.AiHost.Core.Runtime.AiHostRuntime.TryItAppId] = "Try it";
                 var apps = runtime.Activity.Snapshot(a => known.GetValueOrDefault(a));
                 return Ok(id, new ActivityReport { Apps = apps }, AiHostJsonContext.Default.ActivityReport);
             }

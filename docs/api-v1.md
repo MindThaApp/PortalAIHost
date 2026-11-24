@@ -613,6 +613,20 @@ only). Messages are JSON envelopes `{ "id", "type", "payload" }`; answers are `o
   its small status pop-up. With no window connected the host starts the window with `--tray-popup=x,y` instead.
 - `status.get` carries the same `usage` as `GET /host/status`.
 
+**Try it**
+
+- `tryit.stream` `{ run_id, request }` (`request` is a chat request; `run_id` is chosen by the window): runs the chat
+  through the same queue and engine as app requests, with the host itself as the caller (`app_id` `host.tryit`,
+  shown as "Try it" in `activity.get`). The reply is capped at 768 tokens and never beyond the room left in one
+  context slot. Pieces arrive as `event.tryit_chunk` pushes `{ run_id, seq, content?, reasoning? }`, batched about
+  every 40 ms and numbered from 1. The answer comes when generation has ended: `{ run_id, cancelled, finish_reason?,
+  first_token_ms?, total_ms, wait_ms, tokens, chunks, tokens_per_second? }`. `chunks` is the number of pushes sent;
+  the answer can arrive before the last pushes, so the window waits until it has `chunks` pieces. `first_token_ms`
+  counts from the start of generation (after queueing and loading, `wait_ms`). Nothing is stored; no text is kept.
+- `tryit.cancel` stops the running Try it request at once (the stream answer then has `cancelled: true`) and frees its
+  queue slot. A new `tryit.stream` also replaces a running one. `tryit.chat` is the older one-piece version.
+- The same path exists only on the pipe; there is no HTTP route for it.
+
 **Settings**
 
 - `settings.get` / `settings.set` carry `HostSettings` (`start_with_windows, backend, models_folder,

@@ -177,6 +177,8 @@
                         <TextBlock Text="{x:Bind ViewModel.AppsLine, Mode=OneWay}" TextWrapping="Wrap" />
                         <HyperlinkButton x:Uid="HomeSeeAppsLink" Click="OnSeeApps" Padding="0,2" />
                     </StackPanel>
+                    <Button x:Uid="HomeTryItButton" Click="OnTryIt" HorizontalAlignment="Left"
+                            IsEnabled="{x:Bind ViewModel.CanTryIt, Mode=OneWay}" />
                     <StackPanel Spacing="2">
                         <TextBlock x:Uid="HomeRequestsLabel" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                         <TextBlock Text="{x:Bind ViewModel.QueueLine, Mode=OneWay}" TextWrapping="Wrap" />
