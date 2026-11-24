@@ -66,7 +66,7 @@ public enum TokenOutcome
 
 public sealed class RemoteHostLinkOptions
 {
-    public string AppId { get; init; } = "portal-ai-host-client";
+    public string AppId { get; init; } = "com.mindthaapp.portalaihost.client";
 
     public string AppName { get; init; } = "Portal AI Host (client mode)";
 

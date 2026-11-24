@@ -43,6 +43,48 @@ public sealed class ClientStateTests : IDisposable
     }
 
     [Fact]
+    public void Saving_a_new_pairing_removes_the_old_token_and_nothing_else()
+    {
+        var store = new ClientStateStore(_root, new FakeProtector());
+        store.SavePairing(Remote(), ECDsa.Create(ECCurve.NamedCurves.nistP256).ExportPkcs8PrivateKey());
+        store.SaveToken("token-of-the-first-pc");
+        var other = Path.Combine(_root, "client", "apps.json");
+        File.WriteAllText(other, "{}");
+
+        store.SavePairing(Remote() with { DeviceId = "dev_2" }, ECDsa.Create(ECCurve.NamedCurves.nistP256).ExportPkcs8PrivateKey());
+
+        Assert.Null(store.LoadToken());
+        Assert.False(File.Exists(Path.Combine(_root, "client", "token.dat")));
+        Assert.Equal("dev_2", store.LoadRemote()!.DeviceId);
+        Assert.True(File.Exists(other));
+    }
+
+    [Theory]
+    [InlineData("http://relay.example.com")]
+    [InlineData("https://user:pw@relay.example.com")]
+    [InlineData("ftp://relay.example.com")]
+    [InlineData("not a url")]
+    public void An_unsafe_saved_relay_address_counts_as_no_relay(string saved)
+    {
+        var store = new ClientStateStore(_root, new FakeProtector());
+        store.SavePairing(Remote() with { RelayUrl = saved }, ECDsa.Create(ECCurve.NamedCurves.nistP256).ExportPkcs8PrivateKey());
+
+        var loaded = store.LoadRemote();
+
+        Assert.NotNull(loaded);
+        Assert.Null(loaded.RelayUrl);
+    }
+
+    [Fact]
+    public void A_loopback_http_relay_address_is_kept()
+    {
+        var store = new ClientStateStore(_root, new FakeProtector());
+        store.SavePairing(Remote() with { RelayUrl = "http://127.0.0.1:8787" }, ECDsa.Create(ECCurve.NamedCurves.nistP256).ExportPkcs8PrivateKey());
+
+        Assert.Equal("http://127.0.0.1:8787", store.LoadRemote()!.RelayUrl);
+    }
+
+    [Fact]
     public void Forget_removes_only_the_own_files()
     {
         var store = new ClientStateStore(_root, new FakeProtector());
