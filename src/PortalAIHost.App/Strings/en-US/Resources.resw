@@ -350,6 +350,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="Vm_RemoveFrees" xml:space="preserve"><value>This frees {0}.</value></data>
   <data name="Vm_StepOf" xml:space="preserve"><value>Step {0} of {1}</value></data>
   <data name="Vm_LiveIdle" xml:space="preserve"><value>Nothing is being written right now</value></data>
+  <data name="Vm_LiveBusy" xml:space="preserve"><value>Writing an answer now</value></data>
   <data name="Vm_LiveGenerating" xml:space="preserve"><value>{0} is getting an answer</value></data>
   <data name="Vm_LiveSpeed" xml:space="preserve"><value>About {0} words a second</value></data>
   <data name="Vm_LiveMemory" xml:space="preserve"><value>{0} of {1}</value></data>

@@ -159,7 +159,7 @@ public sealed partial class LiveViewModel : ObservableObject, IDisposable
         ActivityTitleApps = string.Join(", ", generating.Select(a => a.AppName));
         ActivityTitle = generating.Count > 0
             ? _s.Format("Vm_LiveGenerating", string.Join(", ", generating.Select(a => a.AppName)))
-            : _s.Get("Vm_LiveIdle");
+            : status is { Queue.Running: > 0 } ? _s.Get("Vm_LiveBusy") : _s.Get("Vm_LiveIdle");
         var tps = status?.Usage?.GenerationTokensPerSecond;
         HasSpeed = generating.Count > 0 && tps is > 0;
         SpeedLine = HasSpeed ? _s.Format("Vm_LiveSpeed", Math.Max(1, (int)Math.Round(tps!.Value * WordsPerToken))) : "";
