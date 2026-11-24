@@ -59,8 +59,8 @@ public sealed class FakeHostControl : IHostControl, IDisposable
             case FakeScenario.ApprovalPending:
                 Install("chat-14b");
                 _activeId = "chat-14b";
-                _clients.Add(new ClientSummary { TokenId = "t1", AppId = "voice-portal", AppName = "Voice Portal", DeviceId = "local", CreatedAt = DateTimeOffset.Now.AddDays(-3), LastUsedAt = DateTimeOffset.Now.AddMinutes(-12) });
-                _clients.Add(new ClientSummary { TokenId = "t2", AppId = "pdf-portal", AppName = "PDF Portal Editor", DeviceId = "local", CreatedAt = DateTimeOffset.Now.AddDays(-1) });
+                _clients.Add(new ClientSummary { TokenId = "t1", AppId = "voice-portal", AppName = "Voice Portal", DeviceId = "local", CreatedAt = DateTimeOffset.Now.AddDays(-3), LastUsedAt = DateTimeOffset.Now.AddMinutes(-12), Priority = AppPriorities.High });
+                _clients.Add(new ClientSummary { TokenId = "t2", AppId = "pdf-portal", AppName = "PDF Portal Editor", DeviceId = "local", CreatedAt = DateTimeOffset.Now.AddDays(-1), Paused = true });
                 break;
         }
         if (scenario == FakeScenario.ApprovalPending)
@@ -182,6 +182,30 @@ public sealed class FakeHostControl : IHostControl, IDisposable
     {
         Require();
         lock (_gate) return Task.FromResult<IReadOnlyList<ClientSummary>>(_clients.Where(c => !c.Revoked).ToList());
+    }
+
+    /// <summary>Every pause/priority call received, for tests.</summary>
+    public List<(string AppId, bool? Paused, string? Priority)> ControlCalls { get; } = new();
+
+    public Task SetAppControlAsync(string appId, bool? paused, string? priority, CancellationToken ct = default)
+    {
+        Require();
+        lock (_gate)
+        {
+            ControlCalls.Add((appId, paused, priority));
+            for (var i = 0; i < _clients.Count; i++)
+            {
+                var c = _clients[i];
+                if (c.AppId != appId) continue;
+                _clients[i] = new ClientSummary
+                {
+                    TokenId = c.TokenId, AppId = c.AppId, AppName = c.AppName, DeviceId = c.DeviceId,
+                    CreatedAt = c.CreatedAt, LastUsedAt = c.LastUsedAt, Revoked = c.Revoked,
+                    Paused = paused ?? c.Paused, Priority = priority ?? c.Priority,
+                };
+            }
+        }
+        return Task.CompletedTask;
     }
 
     public Task RevokeClientAsync(string tokenId, CancellationToken ct = default)

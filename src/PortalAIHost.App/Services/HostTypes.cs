@@ -76,6 +76,9 @@ public interface IHostControl
     Task DenyAsync(string requestId, CancellationToken ct = default);
     Task<IReadOnlyList<ClientSummary>> ListClientsAsync(CancellationToken ct = default);
     Task RevokeClientAsync(string tokenId, CancellationToken ct = default);
+
+    /// <summary>Pauses or resumes an approved app and/or sets its queue priority ("high", "normal", "low"). Null keeps the value. Approval is kept.</summary>
+    Task SetAppControlAsync(string appId, bool? paused, string? priority, CancellationToken ct = default);
     Task<ModelCatalogView> ListModelsAsync(CancellationToken ct = default);
     Task StartDownloadAsync(string catalogueId, CancellationToken ct = default);
     Task PauseDownloadAsync(string catalogueId, CancellationToken ct = default);

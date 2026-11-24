@@ -43,6 +43,20 @@
   <data name="AppsNone.Text" xml:space="preserve"><value>No apps have been allowed yet. When an app asks to use the host, you will be asked here.</value></data>
   <data name="AppAllow.Content" xml:space="preserve"><value>Allow</value></data>
   <data name="AppDeny.Content" xml:space="preserve"><value>Deny</value></data>
+  <data name="Vm_AppTodayNone" xml:space="preserve"><value>No requests today</value></data>
+  <data name="Vm_AppToday1" xml:space="preserve"><value>{0} request today</value></data>
+  <data name="Vm_AppToday" xml:space="preserve"><value>{0} requests today</value></data>
+  <data name="Vm_PriorityHigh" xml:space="preserve"><value>High</value></data>
+  <data name="Vm_PriorityNormal" xml:space="preserve"><value>Normal</value></data>
+  <data name="Vm_PriorityLow" xml:space="preserve"><value>Low</value></data>
+  <data name="Vm_AutoPriority" xml:space="preserve"><value>Priority for {0}</value></data>
+  <data name="Vm_AppPausedBadge" xml:space="preserve"><value>Paused</value></data>
+  <data name="Vm_AppPausedHint" xml:space="preserve"><value>{0} is paused. New requests are refused until you resume it. It keeps its access.</value></data>
+  <data name="Vm_AppPause" xml:space="preserve"><value>Pause</value></data>
+  <data name="Vm_AppResume" xml:space="preserve"><value>Resume</value></data>
+  <data name="Vm_AutoPause" xml:space="preserve"><value>Pause {0}</value></data>
+  <data name="Vm_AutoResume" xml:space="preserve"><value>Resume {0}</value></data>
+  <data name="AppPriority.Header" xml:space="preserve"><value>Priority</value></data>
   <data name="AppRevoke.Content" xml:space="preserve"><value>Remove access</value></data>
   <data name="SettingsTitle.Text" xml:space="preserve"><value>Settings</value></data>
   <data name="SettingsStartWithWindows.Header" xml:space="preserve"><value>Start with Windows</value></data>

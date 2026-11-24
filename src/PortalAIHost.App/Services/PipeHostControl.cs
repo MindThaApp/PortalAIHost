@@ -63,6 +63,10 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
     public async Task<IReadOnlyList<ClientSummary>> ListClientsAsync(CancellationToken ct = default) =>
         (await RequestAsync(ControlTypes.ListClients, AiHostJsonContext.Default.ClientList, ct).ConfigureAwait(false)).Clients;
 
+    public Task SetAppControlAsync(string appId, bool? paused, string? priority, CancellationToken ct = default) =>
+        SendAsync(ControlTypes.SetAppControl, new AppControlCommand { AppId = appId, Paused = paused, Priority = priority },
+            AiHostJsonContext.Default.AppControlCommand, ct);
+
     public Task RevokeClientAsync(string tokenId, CancellationToken ct = default) =>
         SendAsync(ControlTypes.RevokeClient, new ClientRevoke { TokenId = tokenId }, AiHostJsonContext.Default.ClientRevoke, ct);
 
