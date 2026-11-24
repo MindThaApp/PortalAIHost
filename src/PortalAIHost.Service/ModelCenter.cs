@@ -5,9 +5,39 @@ using Portal.AiHost.Core.Abstractions;
 using Portal.AiHost.Core.Catalogue;
 using Portal.AiHost.Core.Download;
 using Portal.AiHost.Core.Planning;
+using Portal.AiHost.Core.Store;
 using Portal.AiHost.Platform.Windows.Pipes;
 
 namespace PortalAIHost.Service;
+
+/// <summary>What the model center needs from the rest of the host for removing the active model and for moves. All optional.</summary>
+internal sealed class ModelCenterHooks
+{
+    /// <summary>Stops the engine of a kind and clears its active model ("no model"). Never touches files.</summary>
+    public Func<string, CancellationToken, Task>? ClearActive { get; init; }
+
+    /// <summary>Makes another installed model the active one (the old engine stops).</summary>
+    public Func<string, CancellationToken, Task>? Activate { get; init; }
+
+    /// <summary>Stops every engine and waits until the store no longer marks a model as in use.</summary>
+    public Func<CancellationToken, Task>? StopEngines { get; init; }
+
+    /// <summary>Points the active models at the current store after a move.</summary>
+    public Func<CancellationToken, Task>? RefreshActive { get; init; }
+
+    /// <summary>After a move: saves the new models folder and forgets the old store folder in settings.</summary>
+    public Action<string, string?>? ApplyMovedFolder { get; init; }
+
+    /// <summary>Free bytes on the drive that holds a folder; defaults to the real drive.</summary>
+    public Func<string, long>? FreeBytesOf { get; init; }
+
+    public Func<StoreProgressEvent, Task>? PushStore { get; init; }
+
+    public ModelNotes? Notes { get; init; }
+
+    /// <summary>How long removing the active model waits for the engine to let go of the files.</summary>
+    public TimeSpan UnloadWait { get; init; } = TimeSpan.FromSeconds(30);
+}
 
 /// <summary>
 /// The models page behind the control pipe: catalogue plus installed models, downloads (start, pause, resume,
@@ -29,6 +59,10 @@ internal sealed class ModelCenter : IAsyncDisposable
     private readonly ConcurrentDictionary<string, Running> _running = new(StringComparer.Ordinal);
     private readonly ConcurrentDictionary<string, string> _lastState = new(StringComparer.Ordinal);
     private readonly object _profileSync = new();
+    private readonly object _opSync = new();
+    private CancellationTokenSource? _op;
+    private string? _opName;
+    private IReadOnlyList<StoredModel>? _lastStored;
     private Task<HardwareProfile>? _profile;
     private volatile bool _disposed;
 
@@ -50,6 +84,9 @@ internal sealed class ModelCenter : IAsyncDisposable
         _push = push;
     }
 
+    /// <summary>Optional links to the rest of the host. Set once, right after construction.</summary>
+    public ModelCenterHooks Hooks { get; init; } = new();
+
     /// <summary>False when no trusted model list was loaded (fail closed): only installed models are listed.</summary>
     public bool CatalogueAvailable => _catalogue is not null;
 
@@ -60,7 +97,10 @@ internal sealed class ModelCenter : IAsyncDisposable
 
     public async Task<ModelListing> ListAsync(CancellationToken ct)
     {
-        var stored = _store is null ? [] : await _store.ListAsync(ct).ConfigureAwait(false);
+        // A move holds the store's inventory for its whole run; the page keeps showing the last list meanwhile.
+        var stored = _store is null ? []
+            : _opName == StoreOperations.Move && _lastStored is { } cached ? cached
+            : _lastStored = await _store.ListAsync(ct).ConfigureAwait(false);
         var byId = stored.ToDictionary(m => m.Id, StringComparer.Ordinal);
         var models = new List<CatalogueModelSummary>();
         var plans = await RecommendAsync(stored, ct).ConfigureAwait(false);
@@ -78,6 +118,15 @@ internal sealed class ModelCenter : IAsyncDisposable
                 ExistingCopy = s is { Origin: ModelOrigin.External },
                 DownloadState = installed ? null : DownloadStateFor(e.Id, s),
                 BytesDone = installed || s is null ? 0 : s.Files.Sum(f => f.SizeBytes),
+                LastUsedAt = Hooks.Notes?.LastUsed(e.Id),
+                Damaged = installed && Hooks.Notes?.DamagedReason(e.Id) is not null,
+                DamagedReason = installed ? Hooks.Notes?.DamagedReason(e.Id) : null,
+                AdviceSummary = e.Advice?.Summary,
+                GoodFor = e.Advice is { GoodFor.Count: > 0 } a1 ? a1.GoodFor : null,
+                Caveats = e.Advice is { Caveats.Count: > 0 } a2 ? a2.Caveats : null,
+                MemoryNeededBytes = c.Candidate is { } cand ? cand.Plan.GpuBytes + cand.Plan.CpuBytes : 0,
+                LicenceName = string.IsNullOrEmpty(e.Licence?.Spdx) ? null : e.Licence.Spdx,
+                LicenceUrl = string.IsNullOrEmpty(e.Licence?.Url) ? null : e.Licence.Url,
             });
         }
 
@@ -91,6 +140,7 @@ internal sealed class ModelCenter : IAsyncDisposable
                 ExistingCopy = s.Origin == ModelOrigin.External,
                 DownloadState = s.IsComplete ? null : DownloadStateFor(s.Id, s),
                 BytesDone = s.IsComplete ? 0 : s.Files.Sum(f => f.SizeBytes),
+                LastUsedAt = Hooks.Notes?.LastUsed(s.Id),
             });
         }
 
@@ -129,6 +179,7 @@ internal sealed class ModelCenter : IAsyncDisposable
             Models = models,
             ModelsFolder = _store?.Location.Path,
             FreeBytes = FreeBytes(),
+            ModelsBytes = stored.Where(m => m.Origin == ModelOrigin.Catalogue).Sum(m => m.Files.Sum(f => f.SizeBytes)),
             UpgradeModelId = UpgradeModelId,
             CatalogueAvailable = CatalogueAvailable,
         };
@@ -411,8 +462,13 @@ internal sealed class ModelCenter : IAsyncDisposable
         }
     }
 
-    /// <summary>Removes a model through the store: host-created files only; an external model is only forgotten.</summary>
-    public async Task RemoveAsync(string id, CancellationToken ct)
+    /// <summary>
+    /// Removes a model through the store: host-created files only; an external model is only forgotten. The model in
+    /// use may be removed too: the host first switches to <paramref name="switchToId"/> (another installed model of
+    /// the same kind) or, with none, goes to "no model"; the engine is stopped and the removal waits until it let go
+    /// of the files. Only <see cref="IModelStore.RemoveAsync"/> deletes anything.
+    /// </summary>
+    public async Task RemoveAsync(string id, CancellationToken ct, string? switchToId = null)
     {
         if (_store is null || await _store.GetAsync(id, ct).ConfigureAwait(false) is not { } model)
         {
@@ -426,21 +482,22 @@ internal sealed class ModelCenter : IAsyncDisposable
 
         if (_activeId(model.Kind) == id)
         {
-            throw new ControlPipeException(ErrorCodes.InvalidRequest, "This model is in use. Pick another model first.");
+            await StepAwayFromActiveAsync(model, switchToId, ct).ConfigureAwait(false);
         }
-
-        // After a switch the old engine can still be stopping with this model's file open.
-        if (_isLoaded(id))
+        else if (_isLoaded(id))
         {
+            // After a switch the old engine can still be stopping with this model's file open.
             throw new ControlPipeException(ErrorCodes.InvalidRequest, "This model is still loaded. Try again in a few seconds.");
         }
 
+        await _push(new DownloadProgressEvent { CatalogueId = id, State = "removing" }).ConfigureAwait(false);
         try
         {
             await _store.RemoveAsync(id, ct).ConfigureAwait(false);
         }
         catch (InvalidOperationException ex)
         {
+            await PushRolledBackAsync(id, ex.Message).ConfigureAwait(false);
             throw new ControlPipeException(ErrorCodes.InvalidRequest, ex.Message);
         }
         catch (KeyNotFoundException)
@@ -450,11 +507,414 @@ internal sealed class ModelCenter : IAsyncDisposable
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
             // Includes the store's safety refusals: nothing that failed a check was deleted.
+            await PushRolledBackAsync(id, ex.Message).ConfigureAwait(false);
             throw new ControlPipeException(ErrorCodes.InvalidRequest, "The model could not be removed: " + ex.Message);
         }
 
         _lastState.TryRemove(id, out _);
+        Hooks.Notes?.ClearDamaged(id, forgetUsage: true);
         await _push(new DownloadProgressEvent { CatalogueId = id, State = "removed" }).ConfigureAwait(false);
+    }
+
+    private Task PushRolledBackAsync(string id, string message) =>
+        _push(new DownloadProgressEvent { CatalogueId = id, State = "remove_failed", Message = message });
+
+    /// <summary>Moves the active slot off a model that is about to be removed, then waits until no engine holds its files.</summary>
+    private async Task StepAwayFromActiveAsync(StoredModel model, string? switchToId, CancellationToken ct)
+    {
+        if (switchToId is { Length: > 0 })
+        {
+            var next = await _store!.GetAsync(switchToId, ct).ConfigureAwait(false);
+            if (next is not { IsComplete: true } || next.Kind != model.Kind || next.Id == model.Id)
+            {
+                throw new ControlPipeException(ErrorCodes.InvalidRequest, "That model cannot take over: it is not installed.");
+            }
+
+            if (Hooks.Activate is null)
+            {
+                throw new ControlPipeException(ErrorCodes.InvalidRequest, "This model is in use. Pick another model first.");
+            }
+
+            await Hooks.Activate(switchToId, ct).ConfigureAwait(false);
+        }
+        else
+        {
+            if (Hooks.ClearActive is null)
+            {
+                throw new ControlPipeException(ErrorCodes.InvalidRequest, "This model is in use. Pick another model first.");
+            }
+
+            await Hooks.ClearActive(model.Kind, ct).ConfigureAwait(false);
+        }
+
+        var deadline = DateTime.UtcNow + Hooks.UnloadWait;
+        while (true)
+        {
+            var now = await _store!.GetAsync(model.Id, ct).ConfigureAwait(false);
+            if (now is null || (!_isLoaded(model.Id) && now.Files.All(f => f.State != StoredFileState.InUse)))
+            {
+                return;
+            }
+
+            if (DateTime.UtcNow > deadline)
+            {
+                throw new ControlPipeException(ErrorCodes.InvalidRequest, "The model is still in use. Try again in a few seconds.");
+            }
+
+            await Task.Delay(25, ct).ConfigureAwait(false);
+        }
+    }
+
+    // ---- storage: open folder, move, check ------------------------------------------------------
+
+    /// <summary>The models folder, for the window to open in Explorer. Reads only.</summary>
+    public string StoreFolder()
+    {
+        if (_store is null)
+        {
+            throw new ControlPipeException(ErrorCodes.FeatureDisabled, "The models folder is not available.");
+        }
+
+        var path = _store.Location.Path;
+        if (!Directory.Exists(path))
+        {
+            throw new ControlPipeException(ErrorCodes.NotFound, "The models folder does not exist (yet).");
+        }
+
+        return path;
+    }
+
+    /// <summary>Cancels the running move or check, if any. A cancelled move leaves the old models folder as it was.</summary>
+    public void CancelOperation()
+    {
+        lock (_opSync)
+        {
+            try
+            {
+                _op?.Cancel();
+            }
+            catch (ObjectDisposedException)
+            {
+            }
+        }
+    }
+
+    private CancellationTokenSource BeginOperation(string name)
+    {
+        lock (_opSync)
+        {
+            if (_op is not null)
+            {
+                throw new ControlPipeException(ErrorCodes.InvalidRequest,
+                    _opName == StoreOperations.Move ? "Your models are being moved. Wait until that finishes." : "A model is being checked. Wait until that finishes.");
+            }
+
+            _opName = name;
+            return _op = new CancellationTokenSource();
+        }
+    }
+
+    private void EndOperation(CancellationTokenSource cts)
+    {
+        lock (_opSync)
+        {
+            if (ReferenceEquals(_op, cts))
+            {
+                _op = null;
+                _opName = null;
+            }
+        }
+
+        cts.Dispose();
+    }
+
+    private Task PushStoreAsync(StoreProgressEvent e) => Hooks.PushStore?.Invoke(e) ?? Task.CompletedTask;
+
+    /// <summary>
+    /// Starts moving the models to another folder or drive and returns the running work (the pipe handler ignores it;
+    /// progress arrives as events). Problems known up front are pipe errors, including "not enough space" with the
+    /// amount needed. Copy, verify, switch, and only then the old copies are removed (see <see cref="ModelStore"/>).
+    /// </summary>
+    public async Task<Task> StartMoveAsync(string parentFolder, CancellationToken ct)
+    {
+        if (_store is not IModelStoreMover mover)
+        {
+            throw new ControlPipeException(ErrorCodes.FeatureDisabled, "The models folder is not available.");
+        }
+
+        if (_disposed)
+        {
+            throw new ControlPipeException(ErrorCodes.HostStopping, "The host is shutting down.");
+        }
+
+        if (!Path.IsPathFullyQualified(parentFolder))
+        {
+            throw new ControlPipeException(ErrorCodes.InvalidRequest, "Pick a full folder path, for example D:\\Models.");
+        }
+
+        if (!_running.IsEmpty)
+        {
+            throw new ControlPipeException(ErrorCodes.InvalidRequest, "Pause or finish the downloads before moving your models.");
+        }
+
+        var why = ControlHandler.CheckModelsFolder(parentFolder, mover.Location.Path) ?? mover.CheckMoveTarget(parentFolder);
+        if (why is not null)
+        {
+            throw new ControlPipeException(ErrorCodes.InvalidRequest, why);
+        }
+
+        var needed = mover.MoveBytesNeeded;
+        var free = FreeBytesOfFolder(parentFolder);
+        if (free < needed)
+        {
+            throw new ControlPipeException(ErrorCodes.InvalidRequest,
+                $"Not enough space on that drive: moving needs {needed / 1e9:0.0} GB and it has {free / 1e9:0.0} GB free.");
+        }
+
+        var cts = BeginOperation(StoreOperations.Move);
+        try
+        {
+            _lastStored = await _store.ListAsync(ct).ConfigureAwait(false);
+            await PushStoreAsync(new StoreProgressEvent { Operation = StoreOperations.Move, State = StoreStates.Running }).ConfigureAwait(false);
+        }
+        catch
+        {
+            EndOperation(cts);
+            throw;
+        }
+
+        return Task.Run(() => MoveCoreAsync(mover, parentFolder, cts), CancellationToken.None);
+    }
+
+    private long FreeBytesOfFolder(string folder)
+    {
+        if (Hooks.FreeBytesOf is { } f)
+        {
+            return f(folder);
+        }
+
+        try
+        {
+            return new DriveInfo(Path.GetPathRoot(folder)!).AvailableFreeSpace;
+        }
+        catch (Exception ex) when (ex is IOException or ArgumentException or UnauthorizedAccessException)
+        {
+            return 0;
+        }
+    }
+
+    private async Task MoveCoreAsync(IModelStoreMover mover, string parent, CancellationTokenSource cts)
+    {
+        var switched = false;
+        try
+        {
+            if (Hooks.StopEngines is { } stop)
+            {
+                await stop(cts.Token).ConfigureAwait(false);
+            }
+
+            var progress = new SyncProgress(f => _ = PushStoreAsync(new StoreProgressEvent
+            {
+                Operation = StoreOperations.Move, State = StoreStates.Running, Fraction = f,
+            }));
+            await mover.MoveStoreAsync(parent, progress, cts.Token).ConfigureAwait(false);
+            switched = true;
+            var oldRoot = mover.PreviousLocation;
+            Hooks.ApplyMovedFolder?.Invoke(parent, oldRoot);
+            if (Hooks.RefreshActive is { } refresh)
+            {
+                await refresh(CancellationToken.None).ConfigureAwait(false);
+            }
+
+            _lastStored = await mover.ListAsync(CancellationToken.None).ConfigureAwait(false);
+            await PushStoreAsync(new StoreProgressEvent
+            {
+                Operation = StoreOperations.Move, State = StoreStates.RemovingOld, Fraction = 1,
+                Message = "Your models are in the new folder. Removing the old copies.",
+            }).ConfigureAwait(false);
+            IReadOnlyList<string> left = [];
+            string? note = null;
+            try
+            {
+                left = await mover.RemoveOldCopiesAsync(CancellationToken.None).ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException
+                or Portal.AiHost.Core.Store.StoreSafetyException or Portal.AiHost.Core.Store.StoreRefusedException)
+            {
+                note = "Your models were moved, but the old copies could not be removed and stay where they were: " + ex.Message;
+            }
+
+            await PushStoreAsync(new StoreProgressEvent
+            {
+                Operation = StoreOperations.Move, State = StoreStates.Done, Fraction = 1,
+                Message = note ?? (left.Count == 0 ? "Your models were moved." : "Your models were moved. Some old files were left in place."),
+                LeftBehind = left.Count == 0 ? null : [.. left],
+            }).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (!switched)
+        {
+            await PushStoreAsync(new StoreProgressEvent
+            {
+                Operation = StoreOperations.Move, State = StoreStates.Cancelled,
+                Message = "The move was cancelled. Your models are where they were.",
+            }).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException)
+        {
+            await PushStoreAsync(new StoreProgressEvent
+            {
+                Operation = StoreOperations.Move, State = StoreStates.Failed,
+                Message = switched ? "Your models were moved, but a step after that failed: " + ex.Message
+                    : "The move did not finish and was undone. Your models are where they were. " + ex.Message,
+            }).ConfigureAwait(false);
+        }
+        finally
+        {
+            EndOperation(cts);
+        }
+    }
+
+    /// <summary>
+    /// Re-hashes the files of an installed model against the model list's SHA-256 values and returns the running work.
+    /// A mismatch marks the model damaged and offers nothing automatic: no file is deleted or changed.
+    /// </summary>
+    public async Task<Task> StartVerifyAsync(string id, CancellationToken ct)
+    {
+        if (_store is null || await _store.GetAsync(id, ct).ConfigureAwait(false) is not { } model)
+        {
+            throw new ControlPipeException(ErrorCodes.NotFound, "That model is not on this PC.");
+        }
+
+        if (!model.IsComplete)
+        {
+            throw new ControlPipeException(ErrorCodes.InvalidRequest, "That model is not completely downloaded.");
+        }
+
+        if (model.Origin == ModelOrigin.External)
+        {
+            throw new ControlPipeException(ErrorCodes.InvalidRequest, "A file you added yourself has no checksum in the model list, so it cannot be checked.");
+        }
+
+        var entry = Find(id) ?? throw new ControlPipeException(ErrorCodes.InvalidRequest, "That model is not in the model list, so there is nothing to check it against.");
+        if (!entry.IsDownloadable)
+        {
+            throw new ControlPipeException(ErrorCodes.InvalidRequest, "The model list has no verified checksums for this model.");
+        }
+
+        var cts = BeginOperation(StoreOperations.Verify);
+        try
+        {
+            await PushStoreAsync(new StoreProgressEvent { Operation = StoreOperations.Verify, State = StoreStates.Running, CatalogueId = id, BytesTotal = model.TotalBytes }).ConfigureAwait(false);
+        }
+        catch
+        {
+            EndOperation(cts);
+            throw;
+        }
+
+        return Task.Run(() => VerifyCoreAsync(model, entry, cts), CancellationToken.None);
+    }
+
+    private async Task VerifyCoreAsync(StoredModel model, CatalogueEntry entry, CancellationTokenSource cts)
+    {
+        var id = model.Id;
+        var total = Math.Max(1, model.TotalBytes);
+        long done = 0;
+        var problems = new List<string>();
+        try
+        {
+            foreach (var expected in entry.Files)
+            {
+                var stored = model.Files.FirstOrDefault(f => f.Name == expected.Name);
+                if (stored is null || !File.Exists(stored.Path))
+                {
+                    problems.Add($"{expected.Name} is missing.");
+                    continue;
+                }
+
+                var baseDone = done;
+                var hash = await HashAsync(stored.Path, read =>
+                {
+                    _ = PushStoreAsync(new StoreProgressEvent
+                    {
+                        Operation = StoreOperations.Verify, State = StoreStates.Running, CatalogueId = id,
+                        Fraction = Math.Min(1.0, (double)(baseDone + read) / total), BytesDone = baseDone + read, BytesTotal = model.TotalBytes,
+                    });
+                }, cts.Token).ConfigureAwait(false);
+                done = baseDone + stored.SizeBytes;
+                if (!string.Equals(hash, expected.Sha256, StringComparison.OrdinalIgnoreCase))
+                {
+                    problems.Add($"{expected.Name} does not match the model list.");
+                }
+            }
+
+            if (problems.Count == 0)
+            {
+                Hooks.Notes?.ClearDamaged(id);
+                await PushStoreAsync(new StoreProgressEvent
+                {
+                    Operation = StoreOperations.Verify, State = StoreStates.Done, CatalogueId = id, Fraction = 1,
+                    BytesDone = model.TotalBytes, BytesTotal = model.TotalBytes, Message = "All files are intact.",
+                }).ConfigureAwait(false);
+            }
+            else
+            {
+                var reason = string.Join(" ", problems);
+                Hooks.Notes?.MarkDamaged(id, reason);
+                await PushStoreAsync(new StoreProgressEvent
+                {
+                    Operation = StoreOperations.Verify, State = StoreStates.Damaged, CatalogueId = id, Fraction = 1,
+                    BytesDone = model.TotalBytes, BytesTotal = model.TotalBytes, Message = reason,
+                }).ConfigureAwait(false);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            await PushStoreAsync(new StoreProgressEvent
+            {
+                Operation = StoreOperations.Verify, State = StoreStates.Cancelled, CatalogueId = id, Message = "The check was cancelled.",
+            }).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            await PushStoreAsync(new StoreProgressEvent
+            {
+                Operation = StoreOperations.Verify, State = StoreStates.Failed, CatalogueId = id,
+                Message = "The check could not read the file: " + ex.Message,
+            }).ConfigureAwait(false);
+        }
+        finally
+        {
+            EndOperation(cts);
+        }
+    }
+
+    /// <summary>Read-only SHA-256 of a file with a byte counter. Shares the file with an engine that has it open.</summary>
+    private static async Task<string> HashAsync(string path, Action<long> onRead, CancellationToken ct)
+    {
+        using var sha = System.Security.Cryptography.IncrementalHash.CreateHash(System.Security.Cryptography.HashAlgorithmName.SHA256);
+        await using var input = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete, 1 << 20, useAsync: true);
+        var buffer = new byte[1 << 20];
+        long read = 0;
+        var lastReport = Environment.TickCount64;
+        int n;
+        while ((n = await input.ReadAsync(buffer, ct).ConfigureAwait(false)) > 0)
+        {
+            sha.AppendData(buffer, 0, n);
+            read += n;
+            if (Environment.TickCount64 - lastReport > 150)
+            {
+                lastReport = Environment.TickCount64;
+                onRead(read);
+            }
+        }
+
+        return Convert.ToHexStringLower(sha.GetHashAndReset());
+    }
+
+    private sealed class SyncProgress(Action<double> report) : IProgress<double>
+    {
+        public void Report(double value) => report(value);
     }
 
     public async ValueTask DisposeAsync()
@@ -539,6 +999,11 @@ internal sealed class ModelCenter : IAsyncDisposable
             if (p.State is "failed" or "paused")
             {
                 owner._lastState[p.ModelId] = p.State;
+            }
+
+            if (p.State == "done")
+            {
+                owner.Hooks.Notes?.ClearDamaged(p.ModelId); // a fresh download replaces a damaged copy
             }
 
             owner.Push(new DownloadProgressEvent

@@ -118,8 +118,27 @@ internal sealed class ControlHandler(HostShell shell)
                 }
                 else
                 {
-                    await shell.Models.RemoveAsync(remove.CatalogueId, ct).ConfigureAwait(false);
+                    await shell.Models.RemoveAsync(remove.CatalogueId, ct, remove.SwitchToId).ConfigureAwait(false);
+                    await shell.PushStatusAsync().ConfigureAwait(false);
                 }
+                return ControlPipe.Ok(id);
+
+            case ControlTypes.VerifyModel:
+                // Answers once the check has started; progress and the result arrive as event.store_progress.
+                _ = await shell.Models.StartVerifyAsync(Payload(r, AiHostJsonContext.Default.VerifyModelCommand)!.CatalogueId, ct)
+                    .ConfigureAwait(false);
+                return ControlPipe.Ok(id);
+
+            case ControlTypes.OpenStoreFolder:
+                return Ok(id, new StoreFolderInfo { Path = shell.Models.StoreFolder() }, AiHostJsonContext.Default.StoreFolderInfo);
+
+            case ControlTypes.MoveStore:
+                _ = await shell.Models.StartMoveAsync(Payload(r, AiHostJsonContext.Default.MoveStoreCommand)!.ParentFolder, ct)
+                    .ConfigureAwait(false);
+                return ControlPipe.Ok(id);
+
+            case ControlTypes.CancelStoreOperation:
+                shell.Models.CancelOperation();
                 return ControlPipe.Ok(id);
 
             case ControlTypes.ActivateModel:

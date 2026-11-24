@@ -17,6 +17,7 @@ namespace PortalAIHost.Service;
 
 [JsonSourceGenerationOptions(WriteIndented = true)]
 [JsonSerializable(typeof(Dictionary<string, string>))]
+[JsonSerializable(typeof(ModelNotesData))]
 internal sealed partial class ServiceJsonContext : JsonSerializerContext;
 
 public sealed class HostShellOptions
@@ -89,6 +90,7 @@ public sealed class HostShell : IAsyncDisposable
     private IModelStore? _store;
     private bool _ownsStore;
     private readonly Lock _inUseGate = new();
+    private ModelNotes? _notes;
     private Task _inUseChain = Task.CompletedTask;
     private readonly Dictionary<string, string> _inUse = new(StringComparer.Ordinal); // kind -> model marked in use
     private readonly List<(IEngineSupervisor Supervisor, EventHandler<EngineStateChange> Handler)> _inUseHandlers = [];
@@ -239,7 +241,19 @@ public sealed class HostShell : IAsyncDisposable
         Models = new ModelCenter(_store, _o.Catalogue,
             _store is IModelStoreWriter writer ? _o.CreateDownloader?.Invoke(writer) : null,
             _o.Hardware, () => _settings.Current, kind => Runtime?.GetActive(kind)?.ModelId, PushDownloadAsync,
-            isLoaded: IsLoaded, previousStores: previous);
+            isLoaded: IsLoaded, previousStores: previous)
+        {
+            Hooks = new ModelCenterHooks
+            {
+                Notes = _notes = new ModelNotes(Path.Combine(root, "model-notes.json")),
+                ClearActive = ClearActiveAsync,
+                Activate = ActivateAsync,
+                StopEngines = StopEnginesAsync,
+                RefreshActive = RefreshActiveAsync,
+                ApplyMovedFolder = ApplyMovedFolder,
+                PushStore = PushStoreAsync,
+            },
+        };
         _registry = new ClientRegistry(new ClientRegistryOptions { DataDirectory = root }, _o.KeyProtector);
         _scheduler = new FairScheduler();
         Runtime = await AiHostRuntime.StartAsync(new AiHostRuntimeOptions
@@ -433,6 +447,7 @@ public sealed class HostShell : IAsyncDisposable
         if (modelId is not null && await TrySetInUseAsync(store, modelId, true).ConfigureAwait(false))
         {
             _inUse[kind] = modelId;
+            _notes?.MarkUsed(modelId, DateTimeOffset.UtcNow);
         }
     }
 
@@ -596,6 +611,11 @@ public sealed class HostShell : IAsyncDisposable
         }
 
         await Runtime.SetActiveAsync(stored.Kind, ToActive(stored), ct).ConfigureAwait(false);
+        await PersistActiveAsync().ConfigureAwait(false);
+    }
+
+    private void WriteActiveModels()
+    {
         var map = new Dictionary<string, string>(StringComparer.Ordinal);
         foreach (var kind in new[] { ModelKinds.Chat, ModelKinds.Embedding })
         {
@@ -606,7 +626,83 @@ public sealed class HostShell : IAsyncDisposable
         }
 
         AtomicFile.WriteAllBytes(ActiveModelsPath, JsonSerializer.SerializeToUtf8Bytes(map, ServiceJsonContext.Default.DictionaryStringString));
+    }
+
+    private async Task PersistActiveAsync()
+    {
+        WriteActiveModels();
         await PushStatusAsync().ConfigureAwait(false);
+    }
+
+    /// <summary>Stops the engine of a kind and leaves it with no model. Files are never touched.</summary>
+    private async Task ClearActiveAsync(string kind, CancellationToken ct)
+    {
+        await Runtime.SetActiveAsync(kind, null, ct).ConfigureAwait(false);
+        await PersistActiveAsync().ConfigureAwait(false);
+    }
+
+    /// <summary>Stops every engine and waits for the in-use marks in the store to clear.</summary>
+    private async Task StopEnginesAsync(CancellationToken ct)
+    {
+        foreach (var sup in _o.Supervisors.Values)
+        {
+            if (sup.State is not EngineState.Stopped)
+            {
+                await Runtime.UnloadAsync(sup.Kind, ct).ConfigureAwait(false);
+            }
+        }
+
+        Task chain;
+        lock (_inUseGate)
+        {
+            chain = _inUseChain;
+        }
+
+        await chain.WaitAsync(ct).ConfigureAwait(false);
+        await PushStatusAsync().ConfigureAwait(false);
+    }
+
+    /// <summary>After a move the active models live in the new store: point them there (engines are stopped).</summary>
+    private async Task RefreshActiveAsync(CancellationToken ct)
+    {
+        if (_store is null)
+        {
+            return;
+        }
+
+        foreach (var kind in new[] { ModelKinds.Chat, ModelKinds.Embedding })
+        {
+            if (Runtime.GetActive(kind) is { } m && await _store.GetAsync(m.ModelId, ct).ConfigureAwait(false) is { IsComplete: true } stored)
+            {
+                await Runtime.SetActiveAsync(kind, ToActive(stored), ct).ConfigureAwait(false);
+            }
+        }
+
+        await PushStatusAsync().ConfigureAwait(false);
+    }
+
+    /// <summary>After a move: the new folder is the models folder from now on, and the old store is not listed as an earlier one.</summary>
+    private void ApplyMovedFolder(string parent, string? oldRoot)
+    {
+        var next = _settings.Current;
+        next.ModelsFolder = parent;
+        var previous = (next.PreviousStoreFolders ?? []).Where(p =>
+            !string.Equals(p, oldRoot, StringComparison.OrdinalIgnoreCase)
+            && !string.Equals(p, _store?.Location.Path, StringComparison.OrdinalIgnoreCase)).ToList();
+        next.PreviousStoreFolders = previous.Count == 0 ? null : previous;
+        _settings.Save(next);
+    }
+
+    private async Task PushStoreAsync(StoreProgressEvent e)
+    {
+        try
+        {
+            await _pipe.BroadcastAsync(ControlTypes.EventStoreProgress,
+                JsonSerializer.SerializeToElement(e, AiHostJsonContext.Default.StoreProgressEvent)).ConfigureAwait(false);
+        }
+        catch (ObjectDisposedException)
+        {
+        }
     }
 
     private static ActiveModel ToActive(StoredModel m) =>
