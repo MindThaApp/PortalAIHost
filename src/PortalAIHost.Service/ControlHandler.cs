@@ -361,6 +361,39 @@ internal sealed class ControlHandler(HostShell shell)
                 return Ok(id, status, AiHostJsonContext.Default.ClientModeStatus);
             }
 
+            case ControlTypes.ClientSetFallback:
+            {
+                var fallback = Payload(r, AiHostJsonContext.Default.SetFallbackCommand)!.Fallback;
+                if (fallback is not (ClientFallbackModes.None or ClientFallbackModes.Local))
+                {
+                    return ControlPipe.Error(id, ErrorCodes.InvalidRequest, "fallback must be none or local.");
+                }
+
+                shell.ClientMode.SetFallback(fallback);
+                await shell.PushStatusAsync().ConfigureAwait(false);
+                return Ok(id, shell.ClientMode.Snapshot(), AiHostJsonContext.Default.ClientModeStatus);
+            }
+
+            case ControlTypes.ClientSetRelayMode:
+            {
+                var relayMode = Payload(r, AiHostJsonContext.Default.SetRelayModeCommand)!.RelayMode;
+                if (relayMode is not (RelayModes.Auto or RelayModes.Manual))
+                {
+                    return ControlPipe.Error(id, ErrorCodes.InvalidRequest, "relay mode must be auto or manual.");
+                }
+
+                shell.ClientMode.SetRelayMode(relayMode);
+                return Ok(id, shell.ClientMode.Snapshot(), AiHostJsonContext.Default.ClientModeStatus);
+            }
+
+            case ControlTypes.ClientUseRelay:
+                shell.ClientMode.SetUseRelay(Payload(r, AiHostJsonContext.Default.UseRelayCommand)!.Enabled);
+                return Ok(id, shell.ClientMode.Snapshot(), AiHostJsonContext.Default.ClientModeStatus);
+
+            case ControlTypes.ClientPromptShown:
+                shell.ClientMode.MarkPromptShown();
+                return Ok(id, shell.ClientMode.Snapshot(), AiHostJsonContext.Default.ClientModeStatus);
+
             case ControlTypes.Quit:
                 // Answer first, then quit, so the window sees the acknowledgement.
                 _ = Task.Run(async () =>
@@ -383,6 +416,9 @@ internal sealed class ControlHandler(HostShell shell)
     {
         var old = shell.Settings.Current;
         next.Mode = old.Mode; // Host-owned: only client.setmode changes the mode.
+        next.ClientFallback = old.ClientFallback; // Host-owned: client.setfallback.
+        next.FallbackPromptShown = old.FallbackPromptShown;
+        next.RelayMode = old.RelayMode; // Host-owned: client.setrelaymode.
         var folderChanged = !string.Equals(old.ModelsFolder ?? "", next.ModelsFolder ?? "", StringComparison.OrdinalIgnoreCase);
         var refused = folderChanged ? CheckModelsFolder(next.ModelsFolder, shell.Store?.Location.Path) : null;
         if (refused is not null)

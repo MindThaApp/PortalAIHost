@@ -177,6 +177,12 @@ public sealed class RemoteHostLink : IDisposable
         }
     }
 
+    /// <summary>
+    /// Asked before every route choice: false keeps the relay out of it (relay_mode Manual with the session switch off).
+    /// Null means the relay may be used. The home network is always tried.
+    /// </summary>
+    public Func<bool>? RelayPolicy { get; set; }
+
     public RemoteLinkStatus Status
     {
         get
@@ -468,7 +474,7 @@ public sealed class RemoteHostLink : IDisposable
     private List<string> RouteOrder()
     {
         var order = new List<string>(2);
-        var relay = _relayConnector is not null;
+        var relay = _relayConnector is not null && (RelayPolicy?.Invoke() ?? true);
         if (_route == RemoteRoutes.Relay && relay)
         {
             order.Add(RemoteRoutes.Relay);

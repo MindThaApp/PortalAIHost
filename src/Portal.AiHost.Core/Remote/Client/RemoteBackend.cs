@@ -122,7 +122,7 @@ public sealed class RemoteBackend(RemoteHostLink link, RemoteBackendOptions? opt
         RemoteStreamReply reply;
         try
         {
-            var opening = link.OpenStreamAsync(request, ct);
+            var opening = OpenWithBatchRetryAsync(request, endpoint, context, ct);
             if (early)
             {
                 // If the PC is slow to answer, the app's stream opens anyway and gets a "queued" comment every few
@@ -163,7 +163,7 @@ public sealed class RemoteBackend(RemoteHostLink link, RemoteBackendOptions? opt
             var isStream = (reply.Header("Content-Type") ?? "").StartsWith("text/event-stream", StringComparison.OrdinalIgnoreCase);
             if (reply.Status >= 400 || (early && !isStream))
             {
-                await RelayErrorOrBodyAsync(context, reply, ct).ConfigureAwait(false);
+                await RelayErrorOrBodyAsync(route, context, reply, ct).ConfigureAwait(false);
                 return;
             }
 
@@ -195,6 +195,32 @@ public sealed class RemoteBackend(RemoteHostLink link, RemoteBackendOptions? opt
             await context.StartRawAsync(reply.Status, ContentTypeOf(reply), context.ResponseHeaders).ConfigureAwait(false);
             await CopyBodyAsync(context, reply, ct).ConfigureAwait(false);
             await context.CompleteAsync().ConfigureAwait(false);
+        }
+    }
+
+    /// <summary>
+    /// Opens the request on the PC. A batch request that the relay refused for its budget (nothing was sent) waits the
+    /// 60 seconds the relay asks for and tries once more, when its deadline leaves room; interactive requests fail at
+    /// once (docs/client-mode-v1.md section 4.6). The request is built again so the PC gets the deadline that is left.
+    /// </summary>
+    private async Task<RemoteStreamReply> OpenWithBatchRetryAsync(RemoteRequest request,
+        (string Method, string Target) endpoint, ApiContext context, CancellationToken ct)
+    {
+        try
+        {
+            return await link.OpenStreamAsync(request, ct).ConfigureAwait(false);
+        }
+        catch (RemoteUnreachableException ex) when (ex.Reason == RemoteLinkReasons.RelayBusy
+            && context.Options.Priority == RequestPriority.Batch)
+        {
+            var wait = TimeSpan.FromMilliseconds(ex.RetryAfterMs ?? RelayException.BudgetRetryMs);
+            if (context.Options.Deadline - _time.GetUtcNow() <= wait + _o.DeadlineMargin)
+            {
+                throw;
+            }
+
+            await Task.Delay(wait, _time, ct).ConfigureAwait(false);
+            return await link.OpenStreamAsync(BuildRequest(endpoint, context), ct).ConfigureAwait(false);
         }
     }
 
@@ -314,7 +340,7 @@ public sealed class RemoteBackend(RemoteHostLink link, RemoteBackendOptions? opt
         }
     }
 
-    private async Task RelayErrorOrBodyAsync(ApiContext context, RemoteStreamReply reply, CancellationToken ct)
+    private async Task RelayErrorOrBodyAsync(InferenceRoute route, ApiContext context, RemoteStreamReply reply, CancellationToken ct)
     {
         byte[] body;
         try
@@ -330,7 +356,15 @@ public sealed class RemoteBackend(RemoteHostLink link, RemoteBackendOptions? opt
         var (code, message, details, retryMs) = ParseError(body);
         if (code is not null && PausedReasons.TryGetValue(code, out var reason))
         {
-            throw Unreachable(reason, retryMs ?? RetryHeaderMs(reply));
+            // Paused, quiet hours, gaming and limits fall back like any unreachable PC (section 4.5).
+            var refused = Unreachable(reason, retryMs ?? RetryHeaderMs(reply));
+            if (!context.ResponseStarted && _o.OnUnreachable is { } fallback &&
+                await fallback(route, context, refused).ConfigureAwait(false))
+            {
+                return;
+            }
+
+            throw refused;
         }
 
         if (context.ResponseStarted)
