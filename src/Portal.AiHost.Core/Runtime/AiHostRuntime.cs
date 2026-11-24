@@ -119,7 +119,7 @@ public sealed class AiHostRuntime : IAsyncDisposable
     /// </summary>
     public async Task UnloadAsync(string kind, CancellationToken ct)
     {
-        var (_, sup) = Require(kind);
+        var (_, sup) = Require(kind, duringMaintenance: true);
         var ks = _kinds[kind];
         Task? pending;
         lock (ks)
@@ -461,11 +461,28 @@ public sealed class AiHostRuntime : IAsyncDisposable
 
     private IEngineSupervisor? Supervisor(string kind) => _o.Supervisors.TryGetValue(kind, out var s) ? s : null;
 
-    private (ActiveModel Model, IEngineSupervisor Sup) Require(string kind)
+    private volatile string? _maintenance;
+
+    /// <summary>
+    /// While set (for example "Your models are being moved"), requests that need a model fail with that message
+    /// instead of loading an engine from files that are being copied. Cleared when the work ends.
+    /// </summary>
+    public string? MaintenanceMessage
+    {
+        get => _maintenance;
+        set => _maintenance = value;
+    }
+
+    private (ActiveModel Model, IEngineSupervisor Sup) Require(string kind, bool duringMaintenance = false)
     {
         if (_stopping)
         {
             throw new ApiException(ErrorCodes.HostStopping, "Portal AI Host is quitting.");
+        }
+
+        if (_maintenance is { } busy && !duringMaintenance)
+        {
+            throw new ApiException(ErrorCodes.EngineRestarting, busy, retryAfterMs: 5000);
         }
 
         var model = GetActive(kind);

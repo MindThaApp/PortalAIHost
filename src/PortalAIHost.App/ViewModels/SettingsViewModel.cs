@@ -7,7 +7,7 @@ using PortalAIHost.App.Services;
 namespace PortalAIHost.App.ViewModels;
 
 /// <summary>Settings page. Every change applies straight away: it is checked, then saved. There is no Apply button.</summary>
-public sealed partial class SettingsViewModel : ObservableObject
+public sealed partial class SettingsViewModel : ObservableObject, IDisposable
 {
     public const int KeepLoadedIndex = 0;
     public const int FiveMinutesIndex = 1;
@@ -22,6 +22,8 @@ public sealed partial class SettingsViewModel : ObservableObject
     private readonly IUiDispatcher _ui;
     private readonly IStrings _s;
     private readonly IStartupControl _startup;
+    private readonly IDialogService _dialogs;
+    private string _moveTarget = "";
     private readonly IAppearanceApplier? _applier;
     private HostSettings _current = new();
     private bool _loading;
@@ -34,7 +36,8 @@ public sealed partial class SettingsViewModel : ObservableObject
         _shell = shell;
         _ui = ui;
         _s = strings;
-        _ = dialogs;
+        _dialogs = dialogs;
+        shell.Host.StoreProgress += OnStoreProgress;
         IdleChoices = new[] { _s.Get("Vm_Idle_Keep"), _s.Get("Vm_Idle_5"), _s.Get("Vm_Idle_10") };
         ThemeChoices = Names("Vm_Theme_", "System", "Light", "Dark");
         MaterialChoices = Names("Vm_Material_", "Mica", "Acrylic", "Solid");
@@ -44,6 +47,101 @@ public sealed partial class SettingsViewModel : ObservableObject
         MotionChoices = Names("Vm_Motion_", "Follow", "Reduced", "Off");
         ShowAppearance(shell.State.Appearance);
     }
+
+    public void Dispose() => _shell.Host.StoreProgress -= OnStoreProgress;
+
+    /// <summary>After a new models folder is saved: offers to move the models already downloaded into it.</summary>
+    [ObservableProperty] private bool _moveOfferVisible;
+    [ObservableProperty] private string _moveOfferText = "";
+    [ObservableProperty] private bool _moving;
+    [ObservableProperty] private double _movePercent;
+
+    private async Task OfferMoveAsync(string folder)
+    {
+        long bytes;
+        try
+        {
+            bytes = (await _shell.Host.ListModelsAsync().ConfigureAwait(false)).ModelsBytes;
+        }
+        catch (Exception ex) when (ex is HostUnavailableException or HostRequestException)
+        {
+            return;
+        }
+
+        _ui.Post(() =>
+        {
+            _moveTarget = folder;
+            MoveOfferText = _s.Format("Vm_MoveOffer", Fmt.Bytes(bytes));
+            MoveOfferVisible = bytes > 0;
+        });
+    }
+
+    /// <summary>
+    /// Moves the models into the chosen folder after a confirmation. The host copies, checks the copies, switches,
+    /// and only then removes the old copies; it refuses when the drive has too little space and says how much is needed.
+    /// </summary>
+    [RelayCommand]
+    private async Task MoveAsync()
+    {
+        if (_moveTarget.Length == 0) return;
+        var target = Fmt.PrivatePath(Path.Combine(_moveTarget, HostFolders.ModelsSubfolder));
+        var ok = await _dialogs.ConfirmAsync(_s.Get("Vm_MoveTitle"), _s.Format("Vm_MoveBody", target), _s.Get("Vm_MoveYes"), _s.Get("Vm_Cancel"));
+        if (!ok) return;
+        _ui.Post(() => { Moving = true; MovePercent = 0; });
+        try
+        {
+            await _shell.Host.MoveStoreAsync(_moveTarget).ConfigureAwait(false);
+        }
+        catch (HostUnavailableException)
+        {
+            _ui.Post(() => { Moving = false; Say(_s.Get("Vm_SaveFailed"), MessageError); });
+        }
+        catch (HostRequestException ex)
+        {
+            _ui.Post(() => { Moving = false; Say(ex.Message, MessageError); });
+        }
+    }
+
+    [RelayCommand]
+    private async Task CancelMoveAsync()
+    {
+        try
+        {
+            await _shell.Host.CancelStoreOperationAsync().ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is HostUnavailableException or HostRequestException)
+        {
+        }
+    }
+
+    private void OnStoreProgress(StoreProgressEvent e) => _ui.Post(() =>
+    {
+        if (e.Operation != StoreOperations.Move) return;
+        switch (e.State)
+        {
+            case StoreStates.Running:
+                Moving = true;
+                MovePercent = 100 * e.Fraction;
+                Say(_s.Format("Vm_MoveSettingsRunning", (int)MovePercent), MessageInfo);
+                break;
+            case StoreStates.RemovingOld:
+                Say(_s.Get("Vm_MoveRemovingOld"), MessageInfo);
+                break;
+            case StoreStates.Done:
+                Moving = false;
+                MoveOfferVisible = false;
+                Say(e.Message ?? _s.Get("Vm_MoveDone"), MessageSuccess);
+                break;
+            case StoreStates.Cancelled:
+                Moving = false;
+                Say(_s.Get("Vm_MoveCancelled"), MessageInfo);
+                break;
+            default:
+                Moving = false;
+                Say(_s.Format("Vm_MoveFailed", e.Message ?? ""), MessageError);
+                break;
+        }
+    });
 
     private string[] Names(string prefix, params string[] keys) => keys.Select(k => _s.Get(prefix + k)).ToArray();
 
@@ -271,6 +369,10 @@ public sealed partial class SettingsViewModel : ObservableObject
                 else
                     Message = "";
             });
+            if (saved.FolderRefused is null && saved.ModelsFolderChanged && !string.IsNullOrEmpty(next.ModelsFolder))
+                await OfferMoveAsync(next.ModelsFolder);
+            else
+                _ui.Post(() => MoveOfferVisible = false);
         }
         catch (HostUnavailableException)
         {

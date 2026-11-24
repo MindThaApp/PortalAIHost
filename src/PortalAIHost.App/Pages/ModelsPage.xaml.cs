@@ -9,7 +9,7 @@ public sealed partial class ModelsPage : Page
 {
     public ModelsPage()
     {
-        ViewModel = new ModelsViewModel(AppServices.Shell, AppServices.Ui, AppServices.Strings, AppServices.Dialogs);
+        ViewModel = new ModelsViewModel(AppServices.Shell, AppServices.Ui, AppServices.Strings, AppServices.Dialogs, AppServices.Folders);
         InitializeComponent();
     }
 

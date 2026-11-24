@@ -442,8 +442,10 @@ public class SafetyFixTests
             }
         });
 
-        var ex = await Assert.ThrowsAsync<IOException>(() => store.MoveStoreAsync(parent, progress, Ct));
-        Assert.Contains("did not verify", ex.Message, StringComparison.Ordinal);
+        var ex = await Assert.ThrowsAnyAsync<IOException>(() => store.MoveStoreAsync(parent, progress, Ct));
+        Assert.IsType<StoreCleanupIncompleteException>(ex);
+        Assert.NotNull(ex.InnerException); // the original error is kept // says the cleanup was partial
+        Assert.Contains("partly cleaned up", ex.Message, StringComparison.Ordinal);
     }
 
     // ---- 9 + reserved names ----

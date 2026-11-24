@@ -43,6 +43,45 @@ public interface IModelStoreWriter : IModelStore
     Task WriteResumeStateAsync(string modelId, string partPath, string json, CancellationToken ct);
 }
 
+/// <summary>The move side of the store: what a move needs, and the removal of the old copies once the new ones verified.</summary>
+public interface IModelStoreMover : IModelStore
+{
+    /// <summary>Free space a move to another drive needs: the models' size plus 2 % plus 2 GB headroom.</summary>
+    long MoveBytesNeeded { get; }
+
+    /// <summary>Folder of the previous store after a move, until its copies are removed; otherwise null.</summary>
+    string? PreviousLocation { get; }
+
+    /// <summary>Deletes the old copies of the last move that the old store lists and the new store holds verified. Returns what was left.</summary>
+    Task<IReadOnlyList<string>> RemoveOldCopiesAsync(CancellationToken ct);
+
+    /// <summary>The plain-language reason a folder cannot receive the models, or null when it can. Reads only.</summary>
+    string? CheckMoveTarget(string newParentFolder);
+
+    /// <summary>
+    /// Forgets the pointer to a previous store whose folder is gone, unmarked, empty of listed files or without a usable
+    /// store.json (so a new move is not blocked forever). Deletes nothing. False when there is nothing stale.
+    /// </summary>
+    Task<bool> ClearStalePreviousStoreAsync(CancellationToken ct);
+}
+
+/// <summary>Removing a model a check found damaged, after the user confirmed.</summary>
+public interface IModelStoreRepair : IModelStore
+{
+    /// <summary>
+    /// Like <see cref="IModelStore.RemoveAsync"/> for a model whose file changed on disk (a truncated or altered file):
+    /// the size and file-ID checks are skipped; the marker, the strictly-inside, the no-links and the
+    /// listed-by-the-store checks stay, and nothing is deleted recursively.
+    /// </summary>
+    Task RemoveDamagedAsync(string modelId, CancellationToken ct);
+}
+
+/// <summary>A failed or cancelled move could not remove everything it had copied; the leftovers are listed in the new folder.</summary>
+public sealed class StoreCleanupIncompleteException(string message, string leftoverFolder, Exception inner) : IOException(message, inner)
+{
+    public string LeftoverFolder { get; } = leftoverFolder;
+}
+
 internal sealed class StoreManifest
 {
     public int Version { get; init; } = 1;
@@ -105,7 +144,7 @@ internal sealed class ManifestFile
 /// touched. Moves copy, verify by re-hashing the copy, switch, and leave the old copies until
 /// <see cref="RemoveOldCopiesAsync"/> is called.
 /// </summary>
-public sealed partial class ModelStore : IModelStoreWriter, IDisposable
+public sealed partial class ModelStore : IModelStoreWriter, IModelStoreMover, IModelStoreRepair, IDisposable
 {
     public const string UserFolderName = StoreOptions.DefaultFolderName;
 
@@ -710,7 +749,11 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
             return ToStored(model);
         });
 
-    public Task RemoveAsync(string modelId, CancellationToken ct) =>
+    public Task RemoveAsync(string modelId, CancellationToken ct) => RemoveCore(modelId, skipIdentity: false, ct);
+
+    public Task RemoveDamagedAsync(string modelId, CancellationToken ct) => RemoveCore(modelId, skipIdentity: true, ct);
+
+    private Task RemoveCore(string modelId, bool skipIdentity, CancellationToken ct) =>
         Locked(ct, () =>
         {
             var m = Find(modelId) ?? throw new KeyNotFoundException(modelId);
@@ -735,8 +778,8 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
             // Check every file first, so a refusal leaves the whole model untouched.
             foreach (var f in m.Files)
             {
-                _folder.AssertDeletable(f.Path, f.State == StoredFileState.Partial ? null : f.Size,
-                    f.State == StoredFileState.Partial ? null : f.FileId);
+                _folder.AssertDeletable(f.Path, f.State == StoredFileState.Partial || skipIdentity ? null : f.Size,
+                    f.State == StoredFileState.Partial || skipIdentity ? null : f.FileId);
                 if (f.PartPath is { } part)
                 {
                     _folder.AssertDeletable(part);
@@ -748,7 +791,14 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
             {
                 if (f.State != StoredFileState.Partial)
                 {
-                    _folder.DeleteOwnedFile(f.Path, f.Size, f.FileId);
+                    if (skipIdentity)
+                    {
+                        _folder.DeleteOwnedFile(f.Path);
+                    }
+                    else
+                    {
+                        _folder.DeleteOwnedFile(f.Path, f.Size, f.FileId);
+                    }
                 }
 
                 if (f.PartPath is { } part)
@@ -766,6 +816,103 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
             SaveManifest();
         });
 
+    public Task<bool> ClearStalePreviousStoreAsync(CancellationToken ct) => Locked(ct, ClearStaleCore);
+
+    private bool ClearStaleCore()
+    {
+        if (_manifest.PreviousStore is not { } prev || !IsStalePrevious(prev))
+        {
+            return false;
+        }
+
+        _manifest.PreviousStore = null;
+        SaveManifest();
+        return true;
+    }
+
+    /// <summary>Reads only. An unplugged drive is not "stale": the old copies may still be there.</summary>
+    private bool IsStalePrevious(PreviousStore prev)
+    {
+        try
+        {
+            var driveRoot = Path.GetPathRoot(prev.Path);
+            if (driveRoot is null || !Directory.Exists(driveRoot))
+            {
+                return false;
+            }
+
+            if (!Directory.Exists(prev.Path) || OwnedFolder.ReadMarker(prev.Path, _options) != prev.StoreId)
+            {
+                return true;
+            }
+
+            var manifestPath = Path.Combine(prev.Path, OwnedFolder.ManifestFileName);
+            if (!File.Exists(manifestPath))
+            {
+                return true;
+            }
+
+            StoreManifest? old;
+            try
+            {
+                old = JsonSerializer.Deserialize(File.ReadAllBytes(manifestPath), StoreJsonContext.Default.StoreManifest);
+            }
+            catch (JsonException)
+            {
+                return true;
+            }
+
+            return old is null || old.StoreId != prev.StoreId
+                || !old.Models.Where(m => m.Origin == ModelOrigin.Catalogue).SelectMany(m => m.Files)
+                    .Any(f => File.Exists(Path.Combine(prev.Path, f.Path)));
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException)
+        {
+            return false;
+        }
+    }
+
+    public long MoveBytesNeeded
+    {
+        get
+        {
+            var total = _manifest.Models.Where(m => m.Origin == ModelOrigin.Catalogue).SelectMany(m => m.Files).Sum(f => f.Size);
+            return total + (long)(total * 0.02) + (2L << 30);
+        }
+    }
+
+    public string? CheckMoveTarget(string newParentFolder)
+    {
+        try
+        {
+            var parent = CheckedParent(newParentFolder, _disk);
+            if (new DirectoryInfo(parent).Attributes.HasFlag(FileAttributes.ReparsePoint))
+            {
+                return "That folder is a link to another place. Pick the real folder.";
+            }
+
+            var canonicalParent = FinalPath.Resolve(parent) ?? parent;
+            var canonicalRoot = FinalPath.Resolve(_folder.Root) ?? _folder.Root;
+            if (string.Equals(canonicalParent, canonicalRoot, PathComparison)
+                || canonicalParent.StartsWith(canonicalRoot + Path.DirectorySeparatorChar, PathComparison))
+            {
+                return "That folder is inside the current models folder. Pick a folder outside it.";
+            }
+
+            return Directory.Exists(StoreFolderIn(parent, _options))
+                ? "That folder already has a Portal AI Host Models folder. Pick another folder."
+                : null;
+        }
+        catch (StoreRefusedException ex)
+        {
+            return ex.Message;
+        }
+        catch (Exception ex) when (ex is IOException or ArgumentException or UnauthorizedAccessException or NotSupportedException)
+        {
+            return $"'{newParentFolder}' cannot be used: {ex.Message}";
+        }
+    }
+
     public async Task MoveStoreAsync(string newParentFolder, IProgress<double>? progress, CancellationToken ct)
     {
         await EnterGateAsync(ct).ConfigureAwait(false);
@@ -781,9 +928,15 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
 
     private async Task MoveCoreAsync(string newParentFolder, IProgress<double>? progress, CancellationToken ct)
     {
-        if (_manifest.PreviousStore is not null)
+        if (_manifest.PreviousStore is { } pending && !ClearStaleCore())
         {
-            throw new InvalidOperationException("Remove or keep the copies of the previous move first.");
+            throw new InvalidOperationException(
+                $"Your last move left old copies in '{pending.Path}'. Open Models and remove them under the earlier folder, or delete that folder yourself, then try again.");
+        }
+
+        if (CheckMoveTarget(newParentFolder) is { } refusedTarget)
+        {
+            throw new StoreRefusedException(refusedTarget);
         }
 
         var files = _manifest.Models.Where(m => m.Origin == ModelOrigin.Catalogue).SelectMany(m => m.Files).ToList();
@@ -794,7 +947,7 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
 
         var total = files.Sum(f => f.Size);
         var root = PickNewStoreFolder(newParentFolder, _disk, _options);
-        var needed = total + (long)(total * 0.02) + (2L << 30);
+        var needed = MoveBytesNeeded;
         var free = _disk.GetFreeBytes(Path.GetDirectoryName(root)!);
         if (free < needed)
         {
@@ -844,6 +997,11 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
                     var dest = target.Resolve(f.Path);
                     var partRel = f.Path + ".part";
                     var part = target.Resolve(partRel);
+                    // Listed in the new store.json before the first byte is copied, so a crash or a lost drive leaves a
+                    // folder whose leftovers the store itself can remove later.
+                    var entry = new ManifestFile { Name = f.Name, Path = f.Path, PartPath = partRel, State = StoredFileState.Partial };
+                    copy.Files.Add(entry);
+                    target.ReplaceOwnedFile(OwnedFolder.ManifestFileName, JsonSerializer.SerializeToUtf8Bytes(newManifest, StoreJsonContext.Default.StoreManifest));
                     created.Add(partRel);
                     var sourceHash = await CopyNewAsync(source, part, ct).ConfigureAwait(false);
                     var copyHash = await HashFileAsync(part, ct).ConfigureAwait(false);
@@ -857,10 +1015,10 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
                     File.Move(part, dest, overwrite: false);
                     created.Remove(partRel);
                     created.Add(f.Path);
-                    copy.Files.Add(new ManifestFile
-                    {
-                        Name = f.Name, Path = f.Path, Size = f.Size, Sha256 = expected, State = StoredFileState.Verified,
-                    });
+                    entry.PartPath = null;
+                    entry.Size = f.Size;
+                    entry.Sha256 = expected;
+                    entry.State = StoredFileState.Verified;
                     done += f.Size;
                     progress?.Report(total == 0 ? 1 : (double)done / total);
                 }
@@ -868,9 +1026,10 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
 
             target.ReplaceOwnedFile(OwnedFolder.ManifestFileName, JsonSerializer.SerializeToUtf8Bytes(newManifest, StoreJsonContext.Default.StoreManifest));
         }
-        catch
+        catch (Exception original)
         {
             targetLock.Dispose();
+            var cleanupFailed = false;
 
             // Undo only what this move created inside the new, freshly marked folder. A cleanup problem never hides
             // the original error; anything left over stays in the new marked folder for the user to see.
@@ -888,11 +1047,16 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
 
                 target.TryRetireEmptyStore();
             }
-            catch (IOException)
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
+                cleanupFailed = true;
             }
-            catch (UnauthorizedAccessException)
+
+            if (cleanupFailed)
             {
+                throw new StoreCleanupIncompleteException(
+                    "The move did not finish and could only be partly cleaned up. What is left is listed under earlier folders at '"
+                    + target.Root + "' and can be removed there. Your models are where they were. " + original.Message, target.Root, original);
             }
 
             throw;
@@ -980,65 +1144,79 @@ public sealed partial class ModelStore : IModelStoreWriter, IDisposable
         }
 
         var kept = new List<string>();
-        foreach (var m in oldManifest.Models.Where(m => m.Origin == ModelOrigin.Catalogue))
+        var retired = false;
+        try
         {
-            foreach (var f in m.Files.ToList())
+            foreach (var m in oldManifest.Models.Where(m => m.Origin == ModelOrigin.Catalogue))
             {
-                // The new copy must exist, be recorded as verified, and hash to the old copy's recorded SHA-256.
-                var current = Find(m.Id)?.Files.FirstOrDefault(c => c.Name == f.Name);
-                var copyOk = false;
-                if (current is { State: not StoredFileState.Partial } && f.State != StoredFileState.Partial
-                    && f.Sha256 is not null && current.Size == f.Size
-                    && string.Equals(current.Sha256, f.Sha256, StringComparison.OrdinalIgnoreCase))
+                foreach (var f in m.Files.ToList())
                 {
-                    var copyPath = _folder.Resolve(current.Path);
-                    copyOk = new FileInfo(copyPath) is { Exists: true } ci && ci.Length == current.Size
-                        && string.Equals(await HashFileAsync(copyPath, ct).ConfigureAwait(false), f.Sha256, StringComparison.OrdinalIgnoreCase);
+                    try
+                    {
+                        // The new copy must exist, be recorded as verified, and hash to the old copy's recorded SHA-256.
+                        var current = Find(m.Id)?.Files.FirstOrDefault(c => c.Name == f.Name);
+                        var copyOk = false;
+                        if (current is { State: not StoredFileState.Partial } && f.State != StoredFileState.Partial
+                            && f.Sha256 is not null && current.Size == f.Size
+                            && string.Equals(current.Sha256, f.Sha256, StringComparison.OrdinalIgnoreCase))
+                        {
+                            var copyPath = _folder.Resolve(current.Path);
+                            copyOk = new FileInfo(copyPath) is { Exists: true } ci && ci.Length == current.Size
+                                && string.Equals(await HashFileAsync(copyPath, ct).ConfigureAwait(false), f.Sha256, StringComparison.OrdinalIgnoreCase);
+                        }
+
+                        if (!copyOk)
+                        {
+                            kept.Add(Path.Combine(old.Root, f.Path));
+                            continue;
+                        }
+
+                        old.DeleteOwnedFile(f.Path, f.Size, f.FileId);
+                        m.Files.Remove(f);
+                    }
+                    catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+                    {
+                        kept.Add(Path.Combine(old.Root, f.Path)); // one locked or vanished file never stops the others
+                    }
                 }
 
-                if (!copyOk)
+                if (m.Files.Count == 0 && m.Folder is not null)
                 {
-                    kept.Add(Path.Combine(old.Root, f.Path));
-                    continue;
+                    try
+                    {
+                        old.TryRemoveEmptyFolder(m.Folder);
+                    }
+                    catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+                    {
+                    }
                 }
+            }
 
+            oldManifest.Models.RemoveAll(m => m.Origin == ModelOrigin.External || m.Files.Count == 0);
+            if (oldManifest.Models.Count == 0)
+            {
                 try
                 {
-                    old.DeleteOwnedFile(f.Path, f.Size, f.FileId);
-                    m.Files.Remove(f);
+                    retired = old.TryRetireEmptyStore(ownLockHeld: true);
                 }
-                catch (StoreSafetyException)
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
                 {
-                    kept.Add(Path.Combine(old.Root, f.Path));
                 }
             }
-
-            if (m.Files.Count == 0 && m.Folder is not null)
-            {
-                old.TryRemoveEmptyFolder(m.Folder);
-            }
         }
-
-        oldManifest.Models.RemoveAll(m => m.Origin == ModelOrigin.External || m.Files.Count == 0);
-        var retired = false;
-        if (oldManifest.Models.Count == 0)
+        finally
         {
-            try
+            if (!retired)
             {
-                retired = old.TryRetireEmptyStore(ownLockHeld: true);
+                // Always record what is really left (also after an error or a cancel), so no model is listed whose files are gone.
+                try
+                {
+                    old.ReplaceOwnedFile(OwnedFolder.ManifestFileName, JsonSerializer.SerializeToUtf8Bytes(oldManifest, StoreJsonContext.Default.StoreManifest));
+                }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+                {
+                }
             }
-            catch (IOException)
-            {
-            }
-            catch (UnauthorizedAccessException)
-            {
-            }
-        }
-
-        if (!retired)
-        {
-            // Always record what is really left, so no model is listed whose files are gone.
-            old.ReplaceOwnedFile(OwnedFolder.ManifestFileName, JsonSerializer.SerializeToUtf8Bytes(oldManifest, StoreJsonContext.Default.StoreManifest));
         }
 
         if (kept.Count == 0)

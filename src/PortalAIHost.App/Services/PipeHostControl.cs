@@ -24,6 +24,7 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
     public event Action<DownloadProgressEvent>? DownloadProgress;
     public event Action<EngineStateEvent>? EngineStateChanged;
     public event Action<TrayPopupEvent>? TrayPopup;
+    public event Action<StoreProgressEvent>? StoreProgress;
 
     /// <summary>True while a connection is open.</summary>
     public bool IsConnected => Volatile.Read(ref _channel) is not null;
@@ -78,6 +79,7 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
         listing.FreeBytes,
         listing.UpgradeModelId)
     {
+        ModelsBytes = listing.ModelsBytes,
         CatalogueAvailable = listing.CatalogueAvailable,
     };
 
@@ -91,6 +93,25 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
 
     public Task RemoveModelAsync(string catalogueId, CancellationToken ct = default) =>
         SendAsync(ControlTypes.RemoveModel, new RemoveModelCommand { CatalogueId = catalogueId }, AiHostJsonContext.Default.RemoveModelCommand, ct);
+
+    public Task RemoveModelAsync(string catalogueId, string? switchToId, CancellationToken ct = default) =>
+        SendAsync(ControlTypes.RemoveModel, new RemoveModelCommand { CatalogueId = catalogueId, SwitchToId = switchToId },
+            AiHostJsonContext.Default.RemoveModelCommand, ct);
+
+    public Task RemoveDamagedModelAsync(string catalogueId, CancellationToken ct = default) =>
+        SendAsync(ControlTypes.RemoveModel, new RemoveModelCommand { CatalogueId = catalogueId, RemoveDamaged = true },
+            AiHostJsonContext.Default.RemoveModelCommand, ct);
+
+    public Task VerifyModelAsync(string catalogueId, CancellationToken ct = default) =>
+        SendAsync(ControlTypes.VerifyModel, new VerifyModelCommand { CatalogueId = catalogueId }, AiHostJsonContext.Default.VerifyModelCommand, ct);
+
+    public async Task<string> GetStoreFolderAsync(CancellationToken ct = default) =>
+        (await RequestAsync(ControlTypes.OpenStoreFolder, AiHostJsonContext.Default.StoreFolderInfo, ct).ConfigureAwait(false)).Path;
+
+    public Task MoveStoreAsync(string parentFolder, CancellationToken ct = default) =>
+        SendAsync(ControlTypes.MoveStore, new MoveStoreCommand { ParentFolder = parentFolder }, AiHostJsonContext.Default.MoveStoreCommand, ct);
+
+    public Task CancelStoreOperationAsync(CancellationToken ct = default) => CallAsync(ControlTypes.CancelStoreOperation, null, ct);
 
     public Task RemoveOldModelAsync(string catalogueId, string storeFolder, CancellationToken ct = default) =>
         SendAsync(ControlTypes.RemoveModel, new RemoveModelCommand { CatalogueId = catalogueId, StoreFolder = storeFolder },
@@ -259,6 +280,9 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
                     break;
                 case ControlTypes.EventDownloadProgress when p.Deserialize(AiHostJsonContext.Default.DownloadProgressEvent) is { } d:
                     DownloadProgress?.Invoke(d);
+                    break;
+                case ControlTypes.EventStoreProgress when p.Deserialize(AiHostJsonContext.Default.StoreProgressEvent) is { } sp:
+                    StoreProgress?.Invoke(sp);
                     break;
                 case ControlTypes.EventTrayPopup when p.Deserialize(AiHostJsonContext.Default.TrayPopupEvent) is { } tp:
                     TrayPopup?.Invoke(tp);

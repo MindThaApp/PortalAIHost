@@ -142,7 +142,7 @@
   <data name="Vm_InUse" xml:space="preserve"><value>In use</value></data>
   <data name="Vm_Installed" xml:space="preserve"><value>Installed</value></data>
   <data name="Vm_BestForYou" xml:space="preserve"><value>Best for your PC</value></data>
-  <data name="Vm_StorageLine" xml:space="preserve"><value>Models are stored in {0} ({1} free).</value></data>
+  <data name="Vm_StorageLine" xml:space="preserve"><value>Models use {2} in {0}. {1} free on that drive.</value></data>
   <data name="Vm_ExistingCopy" xml:space="preserve"><value>A copy of {0} is already on this PC. The host will use it instead of downloading it again.</value></data>
   <data name="Vm_UpgradeOffer" xml:space="preserve"><value>{0} is a better fit. Your current model stays until the new one is ready.</value></data>
   <data name="Vm_CancelDlTitle" xml:space="preserve"><value>Stop this download?</value></data>
@@ -272,7 +272,7 @@ Esc: close What's new or a dialog</value></data>
   <data name="SettingsModelsHeader.Text" xml:space="preserve"><value>Models folder</value></data>
   <data name="SettingsResetFolder.Content" xml:space="preserve"><value>Reset to default</value></data>
   <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Reset models folder to default</value></data>
-  <data name="SettingsFolderHelp.Text" xml:space="preserve"><value>Applies when you press Enter or leave the box. Leave it empty for the default folder. Models you already have are not moved or deleted.</value></data>
+  <data name="SettingsFolderHelp.Text" xml:space="preserve"><value>Applies when you press Enter or leave the box. Leave it empty for the default folder. Models you already have stay where they are unless you choose to move them.</value></data>
   <data name="SettingsAppearanceHeader.Text" xml:space="preserve"><value>Appearance</value></data>
   <data name="SettingsResetAppearance.Content" xml:space="preserve"><value>Reset to default</value></data>
   <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Reset appearance to default</value></data>
@@ -391,4 +391,56 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="TrayOpenButton.Content" xml:space="preserve"><value>Open app</value></data>
   <data name="TrayUnloadButton.Content" xml:space="preserve"><value>Unload model</value></data>
   <data name="TrayWindowTitle" xml:space="preserve"><value>Portal AI Host status</value></data>
+  <data name="ModelsDownloadedHeader.Text" xml:space="preserve"><value>Downloaded</value></data>
+  <data name="ModelsMoreHeader.Text" xml:space="preserve"><value>Models you can add</value></data>
+  <data name="ModelCheck.Content" xml:space="preserve"><value>Check files</value></data>
+  <data name="ModelRedownload.Content" xml:space="preserve"><value>Download again</value></data>
+  <data name="ModelCancelCheck.Content" xml:space="preserve"><value>Stop checking</value></data>
+  <data name="ModelDetails.Header" xml:space="preserve"><value>Details</value></data>
+  <data name="ModelsOpenFolder.Content" xml:space="preserve"><value>Open folder</value></data>
+  <data name="ModelsMoveHint.Text" xml:space="preserve"><value>To move your models to another drive, pick a new folder in Settings under Models folder.</value></data>
+  <data name="ModelsMoveCancel.Content" xml:space="preserve"><value>Cancel move</value></data>
+  <data name="ModelsRemoveFailedBar.Title" xml:space="preserve"><value>Could not remove the model</value></data>
+  <data name="SettingsMoveButton.Content" xml:space="preserve"><value>Move my models there</value></data>
+  <data name="SettingsMoveCancel.Content" xml:space="preserve"><value>Cancel move</value></data>
+  <data name="Vm_NeverUsed" xml:space="preserve"><value>Not used yet</value></data>
+  <data name="Vm_UsedToday" xml:space="preserve"><value>Last used today</value></data>
+  <data name="Vm_UsedYesterday" xml:space="preserve"><value>Last used yesterday</value></data>
+  <data name="Vm_UsedDays" xml:space="preserve"><value>Last used {0} days ago</value></data>
+  <data name="Vm_UsedMonths" xml:space="preserve"><value>Last used {0} months ago</value></data>
+  <data name="Vm_GoodFor" xml:space="preserve"><value>Good for: {0}</value></data>
+  <data name="Vm_Caveats" xml:space="preserve"><value>Keep in mind: {0}</value></data>
+  <data name="Vm_MemoryNeeded" xml:space="preserve"><value>Needs about {0} of memory on this PC.</value></data>
+  <data name="Vm_Licence" xml:space="preserve"><value>Licence: {0}</value></data>
+  <data name="Vm_RemoveActiveBody" xml:space="preserve"><value>{0} is in use. The host unloads it first, then removes it from this PC. Only files the host downloaded are deleted; a model file you added yourself is only taken off the list and stays where it is.</value></data>
+  <data name="Vm_RemoveVerb" xml:space="preserve"><value>Remove {0} ({1})</value></data>
+  <data name="Vm_RemoveVerbNoSize" xml:space="preserve"><value>Remove {0}</value></data>
+  <data name="Vm_AutoCheck" xml:space="preserve"><value>Check files of {0}</value></data>
+  <data name="Vm_AutoRedownload" xml:space="preserve"><value>Download {0} again</value></data>
+  <data name="Vm_Removing" xml:space="preserve"><value>Removing...</value></data>
+  <data name="Vm_RemovingBadge" xml:space="preserve"><value>Removing</value></data>
+  <data name="Vm_DamagedBadge" xml:space="preserve"><value>Damaged</value></data>
+  <data name="Vm_Checking" xml:space="preserve"><value>Checking files, {0}%</value></data>
+  <data name="Vm_CheckOk" xml:space="preserve"><value>All files are intact.</value></data>
+  <data name="Vm_CheckDamaged" xml:space="preserve"><value>Damaged: {0} Nothing was deleted.</value></data>
+  <data name="Vm_CheckFailed" xml:space="preserve"><value>The check could not finish: {0}</value></data>
+  <data name="Vm_SwitchTitle" xml:space="preserve"><value>Use another model?</value></data>
+  <data name="Vm_SwitchBody" xml:space="preserve"><value>{0} is in use. Switch to {1} afterwards, or use no model for now?</value></data>
+  <data name="Vm_SwitchYes" xml:space="preserve"><value>Switch to {0}</value></data>
+  <data name="Vm_SwitchNo" xml:space="preserve"><value>Use no model for now</value></data>
+  <data name="Vm_RemoveFailed" xml:space="preserve"><value>{0} was not removed and is still here. {1}</value></data>
+  <data name="Vm_RedownloadTitle" xml:space="preserve"><value>Download this model again?</value></data>
+  <data name="Vm_RedownloadBody" xml:space="preserve"><value>{0} has a damaged file. It is removed from this PC and downloaded again. Nothing else is deleted.</value></data>
+  <data name="Vm_RedownloadActiveBody" xml:space="preserve"><value>{0} has a damaged file and is in use. The host unloads it, removes it from this PC and downloads it again. Choose it again when the download is done.</value></data>
+  <data name="Vm_RedownloadYes" xml:space="preserve"><value>Remove and download {0} again</value></data>
+  <data name="Vm_MoveRunning" xml:space="preserve"><value>Moving your models, {0}%</value></data>
+  <data name="Vm_MoveRemovingOld" xml:space="preserve"><value>Your models are in the new folder. Removing the old copies.</value></data>
+  <data name="Vm_MoveDone" xml:space="preserve"><value>Your models were moved.</value></data>
+  <data name="Vm_MoveCancelled" xml:space="preserve"><value>The move was cancelled. Your models are where they were.</value></data>
+  <data name="Vm_MoveFailed" xml:space="preserve"><value>The move did not finish. {0}</value></data>
+  <data name="Vm_MoveOffer" xml:space="preserve"><value>Move your {0} of models to the new folder too?</value></data>
+  <data name="Vm_MoveTitle" xml:space="preserve"><value>Move your models?</value></data>
+  <data name="Vm_MoveBody" xml:space="preserve"><value>Your models are copied to {0}, checked, and only then the old copies are removed. The model in use is unloaded while this runs. Files in the old folder that the host did not put there are never touched.</value></data>
+  <data name="Vm_MoveYes" xml:space="preserve"><value>Move my models</value></data>
+  <data name="Vm_MoveSettingsRunning" xml:space="preserve"><value>Moving your models, {0}%</value></data>
 </root>

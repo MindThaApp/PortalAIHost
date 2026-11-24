@@ -20,10 +20,16 @@ internal sealed class ScriptedDialogs : IDialogService
     public bool Answer { get; set; }
     public int Asked { get; private set; }
 
+    /// <summary>When filled, each question takes the next answer; after that <see cref="Answer"/> applies.</summary>
+    public Queue<bool> Script { get; } = new();
+
+    public List<string> ConfirmTexts { get; } = new();
+
     public Task<bool> ConfirmAsync(string title, string body, string confirmText, string cancelText)
     {
         Asked++;
-        return Task.FromResult(Answer);
+        ConfirmTexts.Add(confirmText);
+        return Task.FromResult(Script.Count > 0 ? Script.Dequeue() : Answer);
     }
 }
 

@@ -247,7 +247,7 @@ public sealed class ModelControlTests
     }
 
     [Fact(Timeout = 30000)]
-    public async Task The_active_model_cannot_be_removed()
+    public async Task The_active_model_can_be_removed_it_is_unloaded_first_and_a_file_you_added_stays()
     {
         using var root = new TestRoot();
         var body = RandomNumberGenerator.GetBytes(4096);
@@ -258,10 +258,11 @@ public sealed class ModelControlTests
         var external = await store.AddExternalAsync(outside, ModelKinds.Chat, EngineKinds.LlamaServer, CancellationToken.None);
         await using var client = await ControlPipeClient.ConnectAsync(shell.Paths().PipeName);
         await client.ActivateModelAsync(external.Id);
-        var ex = await Assert.ThrowsAsync<ControlPipeException>(() => client.ExchangeAsync(ControlTypes.RemoveModel,
-            System.Text.Json.JsonSerializer.SerializeToElement(new RemoveModelCommand { CatalogueId = external.Id }, AiHostJsonContext.Default.RemoveModelCommand)));
-        Assert.Equal(ErrorCodes.InvalidRequest, ex.Code);
-        Assert.True(File.Exists(outside));
+        await client.ExchangeAsync(ControlTypes.RemoveModel, System.Text.Json.JsonSerializer.SerializeToElement(
+            new RemoveModelCommand { CatalogueId = external.Id }, AiHostJsonContext.Default.RemoveModelCommand));
+        Assert.Null(shell.Runtime.GetActive(ModelKinds.Chat));
+        Assert.Null(await store.GetAsync(external.Id, CancellationToken.None)); // forgotten
+        Assert.True(File.Exists(outside)); // the user's own file is never touched
     }
 
     [Fact(Timeout = 30000)]
