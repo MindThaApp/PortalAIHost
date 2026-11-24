@@ -672,7 +672,7 @@ public sealed class HostShell : IAsyncDisposable
 
     internal async Task ActivateAsync(string modelId, CancellationToken ct)
     {
-        Models.AssertIdle();
+        using var activation = Models.EnterActivation(); // refuses while a move, check or clean runs; a clean waits for this
         var stored = _store is null ? null : await _store.GetAsync(modelId, ct).ConfigureAwait(false);
         if (stored is not { IsComplete: true })
         {

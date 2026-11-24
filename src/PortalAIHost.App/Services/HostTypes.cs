@@ -106,6 +106,10 @@ public interface IHostControl
     Task MoveStoreAsync(string parentFolder, CancellationToken ct = default);
     /// <summary>Cancels a running move or check.</summary>
     Task CancelStoreOperationAsync(CancellationToken ct = default);
+    /// <summary>Reads only: what the host itself left behind and could remove (old unfinished downloads, old copies after a move, models a check found damaged).</summary>
+    Task<CleanupScan> ScanCleanupAsync(CancellationToken ct = default);
+    /// <summary>After the user confirmed: removes the scanned items with these ids. The host checks each item again right before deleting it.</summary>
+    Task<CleanupResult> CleanupAsync(IReadOnlyCollection<string> itemIds, CancellationToken ct = default);
     /// <summary>Has the host remove a model left in an earlier models folder, with the same store rules.</summary>
     Task RemoveOldModelAsync(string catalogueId, string storeFolder, CancellationToken ct = default);
     Task ActivateModelAsync(string catalogueId, CancellationToken ct = default);

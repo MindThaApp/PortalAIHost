@@ -4,6 +4,17 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:PortalAIHost.App.ViewModels">
     <Page.Resources>
+        <DataTemplate x:Key="CleanupItemTemplate" x:DataType="vm:CleanupItemViewModel">
+            <CheckBox IsChecked="{x:Bind Selected, Mode=TwoWay}" Margin="0,0,0,4">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <TextBlock Text="{x:Bind Name}" />
+                        <TextBlock Text="{x:Bind SizeText}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+                    <TextBlock Text="{x:Bind Detail}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Style="{StaticResource CaptionTextBlockStyle}" />
+                </StackPanel>
+            </CheckBox>
+        </DataTemplate>
         <DataTemplate x:Key="ModelRowTemplate" x:DataType="vm:ModelRowViewModel">
             <Border Style="{StaticResource CardBorder}" Margin="0,0,0,10">
                 <Grid ColumnSpacing="16">
@@ -85,11 +96,33 @@
                     <TextBlock Text="{x:Bind ViewModel.StorageLine, Mode=OneWay}" TextWrapping="Wrap" IsTextSelectionEnabled="True" />
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <Button x:Uid="ModelsOpenFolder" Command="{x:Bind ViewModel.OpenFolderCommand}" IsEnabled="{x:Bind ViewModel.CanOpenFolder, Mode=OneWay}" />
+                        <Button x:Uid="ModelsFreeUp" Command="{x:Bind ViewModel.FreeUpSpaceCommand}" />
                     </StackPanel>
                     <ProgressBar Value="{x:Bind ViewModel.StoreBusyPercent, Mode=OneWay}" Maximum="100" Visibility="{x:Bind ViewModel.StoreBusy, Mode=OneWay}" />
                     <TextBlock Text="{x:Bind ViewModel.StoreBusyLine, Mode=OneWay}" TextWrapping="Wrap" />
                     <Button x:Uid="ModelsMoveCancel" Command="{x:Bind ViewModel.CancelMoveCommand}" Visibility="{x:Bind ViewModel.StoreBusy, Mode=OneWay}" />
                     <TextBlock x:Uid="ModelsMoveHint" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Style="{StaticResource CaptionTextBlockStyle}" />
+                    <StackPanel Spacing="8" Visibility="{x:Bind ViewModel.CleanupOpen, Mode=OneWay}">
+                        <TextBlock x:Uid="ModelsCleanupTitle" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                        <TextBlock Text="{x:Bind ViewModel.CleanupLine, Mode=OneWay}" TextWrapping="Wrap" />
+                        <StackPanel Spacing="4" Visibility="{x:Bind ViewModel.CleanupHasPartial, Mode=OneWay}">
+                            <TextBlock x:Uid="ModelsCleanupPartialHeader" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            <ItemsControl ItemsSource="{x:Bind ViewModel.CleanupPartial}" ItemTemplate="{StaticResource CleanupItemTemplate}" />
+                        </StackPanel>
+                        <StackPanel Spacing="4" Visibility="{x:Bind ViewModel.CleanupHasOld, Mode=OneWay}">
+                            <TextBlock x:Uid="ModelsCleanupOldHeader" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            <ItemsControl ItemsSource="{x:Bind ViewModel.CleanupOld}" ItemTemplate="{StaticResource CleanupItemTemplate}" />
+                        </StackPanel>
+                        <StackPanel Spacing="4" Visibility="{x:Bind ViewModel.CleanupHasDamaged, Mode=OneWay}">
+                            <TextBlock x:Uid="ModelsCleanupDamagedHeader" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            <ItemsControl ItemsSource="{x:Bind ViewModel.CleanupDamaged}" ItemTemplate="{StaticResource CleanupItemTemplate}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Button Content="{x:Bind ViewModel.CleanupButtonText, Mode=OneWay}" Command="{x:Bind ViewModel.ConfirmCleanupCommand}" IsEnabled="{x:Bind ViewModel.CanCleanup, Mode=OneWay}" Visibility="{x:Bind ViewModel.CleanupHasItems, Mode=OneWay}" Style="{StaticResource AccentButtonStyle}" />
+                            <Button x:Uid="ModelsCleanupClose" Command="{x:Bind ViewModel.CloseCleanupCommand}" />
+                        </StackPanel>
+                        <TextBlock x:Uid="ModelsCleanupHint" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Style="{StaticResource CaptionTextBlockStyle}" />
+                    </StackPanel>
                 </StackPanel>
             </Border>
 

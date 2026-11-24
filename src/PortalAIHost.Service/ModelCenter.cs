@@ -53,7 +53,7 @@ internal sealed class ModelCenterHooks
 /// cancel) and remove. Files are only ever changed through the model store and the downloader, which keep to the
 /// store rules (marker folder, recorded files only, external files only forgotten).
 /// </summary>
-internal sealed class ModelCenter : IAsyncDisposable
+internal sealed partial class ModelCenter : IAsyncDisposable
 {
     private readonly IModelStore? _store;
     private readonly IReadOnlyList<CatalogueEntry>? _catalogue;
@@ -101,7 +101,40 @@ internal sealed class ModelCenter : IAsyncDisposable
             if (_op is not null)
             {
                 throw new ControlPipeException(ErrorCodes.InvalidRequest,
-                    _opName == StoreOperations.Move ? "Your models are being moved. Wait until that finishes." : "A model is being checked. Wait until that finishes.");
+                    _opName == StoreOperations.Move ? "Your models are being moved. Wait until that finishes." : _opName == StoreOperations.Cleanup ? "Space is being freed up. Wait until that finishes." : "A model is being checked. Wait until that finishes.");
+            }
+        }
+    }
+
+    private int _activating;
+
+    /// <summary>
+    /// Held while a model is being switched on: checks for a running move, check or clean and marks the activation in one
+    /// step, so a clean cannot start (and remove that model) until it is done.
+    /// </summary>
+    public IDisposable EnterActivation()
+    {
+        lock (_opSync)
+        {
+            AssertIdle();
+            _activating++;
+        }
+
+        return new ActivationGuard(this);
+    }
+
+    private sealed class ActivationGuard(ModelCenter owner) : IDisposable
+    {
+        private int _done;
+
+        public void Dispose()
+        {
+            if (Interlocked.Exchange(ref _done, 1) == 0)
+            {
+                lock (owner._opSync)
+                {
+                    owner._activating--;
+                }
             }
         }
     }
@@ -352,7 +385,20 @@ internal sealed class ModelCenter : IAsyncDisposable
         }
 
         var run = new Running();
-        if (_disposed || !_running.TryAdd(id, run))
+        bool added;
+        lock (_opSync)
+        {
+            // Taking the download slot and checking for a running move, check or clean is one step, so a clean cannot slip in between.
+            if (_op is not null)
+            {
+                run.Dispose();
+                AssertIdle();
+            }
+
+            added = !_disposed && _running.TryAdd(id, run);
+        }
+
+        if (!added)
         {
             run.Dispose();
             return; // already downloading, or the host started shutting down
@@ -662,7 +708,7 @@ internal sealed class ModelCenter : IAsyncDisposable
             if (_op is not null)
             {
                 throw new ControlPipeException(ErrorCodes.InvalidRequest,
-                    _opName == StoreOperations.Move ? "Your models are being moved. Wait until that finishes." : "A model is being checked. Wait until that finishes.");
+                    _opName == StoreOperations.Move ? "Your models are being moved. Wait until that finishes." : _opName == StoreOperations.Cleanup ? "Space is being freed up. Wait until that finishes." : "A model is being checked. Wait until that finishes.");
             }
 
             _opName = name;

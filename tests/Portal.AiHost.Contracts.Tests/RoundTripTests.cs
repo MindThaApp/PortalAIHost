@@ -344,6 +344,11 @@ public class RoundTripTests
         RoundTrip("""{ "parent_folder": "D:/Models" }""", Ctx.MoveStoreCommand);
         RoundTrip("""{ "path": "D:/Models/Portal AI Host Models" }""", Ctx.StoreFolderInfo);
         RoundTrip("""
+            { "items": [ { "id": "p1", "kind": "partial", "label": "m.gguf", "detail": "d", "bytes": 5, "file_count": 1 } ], "total_bytes": 5, "busy_reason": "b" }
+            """, Ctx.CleanupScan);
+        RoundTrip("""{ "item_ids": [ "p1", "p2" ] }""", Ctx.CleanupCommand);
+        RoundTrip("""{ "freed_bytes": 5, "removed": [ "m.gguf" ], "skipped": [ { "label": "x", "reason": "y" } ] }""", Ctx.CleanupResult);
+        RoundTrip("""
             { "operation": "move", "state": "done", "fraction": 1, "bytes_done": 10, "bytes_total": 10,
               "message": "Your models were moved.", "left_behind": [ "D:/old/a.gguf" ] }
             """, Ctx.StoreProgressEvent);
