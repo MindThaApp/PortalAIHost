@@ -109,6 +109,9 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
     public Task VerifyModelAsync(string catalogueId, CancellationToken ct = default) =>
         SendAsync(ControlTypes.VerifyModel, new VerifyModelCommand { CatalogueId = catalogueId }, AiHostJsonContext.Default.VerifyModelCommand, ct);
 
+    public Task ImportModelAsync(string path, CancellationToken ct = default) =>
+        SendAsync(ControlTypes.ImportModel, new ImportModelCommand { Path = path }, AiHostJsonContext.Default.ImportModelCommand, ct);
+
     public async Task<string> GetStoreFolderAsync(CancellationToken ct = default) =>
         (await RequestAsync(ControlTypes.OpenStoreFolder, AiHostJsonContext.Default.StoreFolderInfo, ct).ConfigureAwait(false)).Path;
 

@@ -97,10 +97,12 @@
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <Button x:Uid="ModelsOpenFolder" Command="{x:Bind ViewModel.OpenFolderCommand}" IsEnabled="{x:Bind ViewModel.CanOpenFolder, Mode=OneWay}" />
                         <Button x:Uid="ModelsFreeUp" Command="{x:Bind ViewModel.FreeUpSpaceCommand}" />
+                        <Button x:Uid="ModelsAddOwn" Command="{x:Bind ViewModel.AddOwnModelCommand}" />
                     </StackPanel>
                     <ProgressBar Value="{x:Bind ViewModel.StoreBusyPercent, Mode=OneWay}" Maximum="100" Visibility="{x:Bind ViewModel.StoreBusy, Mode=OneWay}" />
                     <TextBlock Text="{x:Bind ViewModel.StoreBusyLine, Mode=OneWay}" TextWrapping="Wrap" />
                     <Button x:Uid="ModelsMoveCancel" Command="{x:Bind ViewModel.CancelMoveCommand}" Visibility="{x:Bind ViewModel.StoreBusy, Mode=OneWay}" />
+                    <TextBlock x:Uid="ModelsAddOwnHint" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Style="{StaticResource CaptionTextBlockStyle}" />
                     <TextBlock x:Uid="ModelsMoveHint" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Style="{StaticResource CaptionTextBlockStyle}" />
                     <StackPanel Spacing="8" Visibility="{x:Bind ViewModel.CleanupOpen, Mode=OneWay}">
                         <TextBlock x:Uid="ModelsCleanupTitle" Style="{StaticResource BodyStrongTextBlockStyle}" />

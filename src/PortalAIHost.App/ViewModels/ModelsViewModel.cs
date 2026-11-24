@@ -26,12 +26,14 @@ public sealed partial class ModelRowViewModel : ObservableObject
         QualityScore = m.Quality;
         QualityText = Fmt.Stars(stars);
         QualityName = strings.Format("Vm_QualityName", Math.Round(stars, 1));
-        Reason = m.StoreFolder is { } oldFolder ? strings.Format("Vm_OldFolderRow", Fmt.PrivatePath(oldFolder)) : m.Reason ?? "";
+        Reason = m.StoreFolder is { } oldFolder ? strings.Format("Vm_OldFolderRow", Fmt.PrivatePath(oldFolder))
+            : m.UserAdded ? strings.Get("Vm_UserAddedReason") : m.Reason ?? "";
         Recommended = m.Recommended;
         Installed = m.Installed;
         Active = m.Active;
         FitsThisPc = m.FitsThisPc;
         ExistingCopy = existingCopy;
+        UserAdded = m.UserAdded;
         StoreFolder = m.StoreFolder;
         State = m.Installed ? "done" : m.DownloadState ?? "none";
         if (!m.Installed && m.DownloadState is not null && m.SizeBytes > 0)
@@ -87,7 +89,7 @@ public sealed partial class ModelRowViewModel : ObservableObject
     {
         get
         {
-            var body = _s.Format(Active ? "Vm_RemoveActiveBody" : "Vm_RemoveBody", Name);
+            var body = _s.Format(UserAdded ? "Vm_RemoveUserBody" : Active ? "Vm_RemoveActiveBody" : "Vm_RemoveBody", Name);
             return FreesText.Length == 0 ? body : body + "\n\n" + FreesText;
         }
     }
@@ -101,6 +103,9 @@ public sealed partial class ModelRowViewModel : ObservableObject
     public bool Recommended { get; }
     public bool FitsThisPc { get; }
     public bool ExistingCopy { get; }
+
+    /// <summary>A model file the user added ("Add your own model"): the host holds its own copy; fit is not estimated.</summary>
+    public bool UserAdded { get; }
 
     /// <summary>Set for a model left in an earlier models folder: it can only be removed.</summary>
     public string? StoreFolder { get; }
@@ -208,7 +213,7 @@ public sealed partial class ModelRowViewModel : ObservableObject
         CanActivate = !InOldFolder && Installed && !Active && !Removing && !Damaged;
         // The model in use can be removed too: the host unloads it first.
         CanRemove = InOldFolder || (Installed && !busy && !Removing && !Checking);
-        CanCheck = !InOldFolder && Installed && !ExistingCopy && !Checking && !Removing;
+        CanCheck = !InOldFolder && Installed && !ExistingCopy && !UserAdded && !Checking && !Removing;
         CanRedownload = !InOldFolder && Installed && Damaged && !Checking && !Removing && !ExistingCopy;
         if (InOldFolder)
         {
@@ -226,7 +231,7 @@ public sealed partial class ModelRowViewModel : ObservableObject
         Badge = InOldFolder ? _s.Get("Vm_OldFolderBadge")
             : Removing ? _s.Get("Vm_RemovingBadge")
             : Damaged ? _s.Get("Vm_DamagedBadge")
-            : Active ? _s.Get("Vm_InUse") : Installed ? _s.Get("Vm_Installed") : Recommended ? _s.Get("Vm_BestForYou") : "";
+            : Active ? _s.Get("Vm_InUse") : Installed ? _s.Get(UserAdded ? "Vm_UserAddedBadge" : "Vm_Installed") : Recommended ? _s.Get("Vm_BestForYou") : "";
     }
 
     partial void OnActiveChanged(bool value) => Refresh();
@@ -267,19 +272,21 @@ public sealed partial class ModelsViewModel : ObservableObject, IDisposable
     private readonly IStrings _s;
     private readonly IDialogService _dialogs;
     private readonly IFolderOpener? _folders;
+    private readonly IModelFilePicker? _picker;
     private readonly Func<DateTimeOffset> _clock;
 
     /// <summary>Models that were in use when "Download again" removed them: chosen again when the download is done.</summary>
     private readonly HashSet<string> _reactivate = new(StringComparer.Ordinal);
 
     public ModelsViewModel(ShellViewModel shell, IUiDispatcher ui, IStrings strings, IDialogService dialogs,
-        IFolderOpener? folders = null, Func<DateTimeOffset>? clock = null)
+        IFolderOpener? folders = null, Func<DateTimeOffset>? clock = null, IModelFilePicker? picker = null)
     {
         _shell = shell;
         _ui = ui;
         _s = strings;
         _dialogs = dialogs;
         _folders = folders;
+        _picker = picker;
         _clock = clock ?? (() => DateTimeOffset.UtcNow);
         shell.Host.DownloadProgress += OnProgress;
         shell.Host.StoreProgress += OnStoreProgress;
@@ -396,6 +403,21 @@ public sealed partial class ModelsViewModel : ObservableObject, IDisposable
         if (e.Operation == StoreOperations.Verify)
         {
             Models.FirstOrDefault(m => m.Id == e.CatalogueId && !m.InOldFolder)?.ApplyCheck(e);
+            return;
+        }
+
+        if (e.Operation == StoreOperations.Import)
+        {
+            StoreBusy = e.State == StoreStates.Running;
+            StoreBusyPercent = 100 * e.Fraction;
+            StoreBusyLine = e.State switch
+            {
+                StoreStates.Running => _s.Format("Vm_ImportRunning", (int)StoreBusyPercent),
+                StoreStates.Done => e.Message ?? _s.Get("Vm_ImportDone"),
+                StoreStates.Cancelled => _s.Get("Vm_ImportCancelled"),
+                _ => _s.Format("Vm_ImportFailed", e.Message ?? ""),
+            };
+            if (!StoreBusy) _ = LoadAsync();
             return;
         }
 
@@ -534,6 +556,24 @@ public sealed partial class ModelsViewModel : ObservableObject, IDisposable
         catch (Exception ex) when (ex is HostRequestException or IOException or InvalidOperationException or System.ComponentModel.Win32Exception)
         {
             _ui.Post(() => ErrorLine = ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// "Add your own model": the only entry point. Asks for a .gguf file, then has the host copy it into its models
+    /// folder; progress and the result arrive as events. Pro gating, when it comes, goes at the top of this method.
+    /// </summary>
+    [RelayCommand]
+    private async Task AddOwnModelAsync()
+    {
+        if (_picker is null || StoreBusy) return;
+        var path = await _picker.PickModelFileAsync();
+        if (string.IsNullOrEmpty(path)) return;
+        _ui.Post(() => { StoreBusy = true; StoreBusyPercent = 0; StoreBusyLine = _s.Format("Vm_ImportRunning", 0); });
+        var error = await TryAsync(() => _shell.Host.ImportModelAsync(path));
+        if (error is not null)
+        {
+            _ui.Post(() => { StoreBusy = false; StoreBusyLine = _s.Format("Vm_ImportFailed", error); });
         }
     }
 

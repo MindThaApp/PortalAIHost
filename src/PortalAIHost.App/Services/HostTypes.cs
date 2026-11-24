@@ -100,6 +100,8 @@ public interface IHostControl
     Task RemoveDamagedModelAsync(string catalogueId, CancellationToken ct = default);
     /// <summary>Has the host re-hash an installed model against the model list. Read-only; progress arrives as <see cref="StoreProgress"/>.</summary>
     Task VerifyModelAsync(string catalogueId, CancellationToken ct = default);
+    /// <summary>"Add your own model": has the host copy a .gguf file into its models folder. Progress and the result arrive as <see cref="StoreProgress"/> (operation import). The original is only read.</summary>
+    Task ImportModelAsync(string path, CancellationToken ct = default);
     /// <summary>The models folder, to open in Explorer. The host changes nothing.</summary>
     Task<string> GetStoreFolderAsync(CancellationToken ct = default);
     /// <summary>Moves the models to a folder (the host adds its own "Portal AI Host Models" subfolder); progress arrives as <see cref="StoreProgress"/>.</summary>
@@ -144,6 +146,12 @@ public sealed record TryItTurn(bool IsUser, string Text);
 
 /// <summary>Timing of one finished "Try it" answer. Counts and times only.</summary>
 public sealed record TryItStats(long? FirstTokenMs, long TotalMs, long Tokens, double? TokensPerSecond, bool Cancelled);
+
+/// <summary>Lets the user pick a model file. Returns the full path, or null when they cancel.</summary>
+public interface IModelFilePicker
+{
+    Task<string?> PickModelFileAsync();
+}
 
 /// <summary>Shows a folder in Explorer. Opening only: nothing is changed.</summary>
 public interface IFolderOpener
