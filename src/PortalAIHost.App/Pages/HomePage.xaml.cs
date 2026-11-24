@@ -27,6 +27,8 @@ public sealed partial class HomePage : Page
 
     private void OnSeeApps(object sender, RoutedEventArgs e) => Go("apps", typeof(AppsPage));
 
+    private void OnTryIt(object sender, RoutedEventArgs e) => Go("tryit", typeof(TryItPage));
+
     private void OnOpenSettings(object sender, RoutedEventArgs e) => Go("settings", typeof(SettingsPage));
 
     protected override async void OnNavigatedTo(NavigationEventArgs e)

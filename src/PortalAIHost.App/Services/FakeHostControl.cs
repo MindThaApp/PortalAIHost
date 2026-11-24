@@ -489,20 +489,34 @@ public sealed class FakeHostControl : IHostControl, IDisposable
         return Task.FromResult(new SettingsSaved { ModelsFolderChanged = moved, AppliesAtRestart = moved });
     }
 
-    public async IAsyncEnumerable<TryItPiece> TryItAsync(string prompt, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct = default)
+    /// <summary>The turns of the latest "Try it" request (for tests).</summary>
+    public IReadOnlyList<TryItTurn> LastTryItTurns { get; private set; } = [];
+
+    public async IAsyncEnumerable<TryItPiece> TryItAsync(IReadOnlyList<TryItTurn> turns, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct = default)
     {
         Require();
+        LastTryItTurns = turns.ToList();
+        var prompt = turns.LastOrDefault(t => t.IsUser)?.Text ?? "";
+        var first = Environment.TickCount64;
+        long firstAt = 0, count = 0;
         if (prompt.Contains("[think]", StringComparison.Ordinal))
         {
             await Task.Delay(40, ct).ConfigureAwait(false);
+            firstAt = Environment.TickCount64;
+            count++;
             yield return new TryItPiece("Working out what to say. ", true);
         }
 
         foreach (var word in ("This is a sample reply from the practice host. You asked: " + prompt).Split(' '))
         {
             await Task.Delay(40, ct).ConfigureAwait(false);
+            if (firstAt == 0) firstAt = Environment.TickCount64;
+            count++;
             yield return new TryItPiece(word + " ");
         }
+
+        var end = Environment.TickCount64;
+        yield return new TryItPiece("", false, new TryItStats(firstAt - first, end - first, count, 25.0, false));
     }
 
     public Task CancelTryItAsync() => Task.CompletedTask;

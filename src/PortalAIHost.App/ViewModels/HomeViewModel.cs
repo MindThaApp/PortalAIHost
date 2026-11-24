@@ -44,9 +44,16 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
     public HealthViewModel Health { get; }
 
     // Which block is on screen.
-    [ObservableProperty] private bool _noHost;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanTryIt))]
+    private bool _noHost;
     [ObservableProperty] private bool _showOnboarding;
-    [ObservableProperty] private bool _showInstalled;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanTryIt))]
+    private bool _showInstalled;
+
+    /// <summary>The Try it button: a model is installed and the host is running.</summary>
+    public bool CanTryIt => ShowInstalled && !NoHost;
 
     // Bars shared by every state.
     [ObservableProperty] private bool _safeMode;

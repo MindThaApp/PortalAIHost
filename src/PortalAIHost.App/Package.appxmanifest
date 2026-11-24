@@ -53,7 +53,7 @@
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
       <Extensions>
-        <!-- The host exe is started by the startup task and by the portal-ai-host: protocol (only :start, :open and the page links :settings/performance, :models and :apps). -->
+        <!-- The host exe is started by the startup task and by the portal-ai-host: protocol (only :start, :open and the page links :settings/performance, :models, :apps and :try). -->
         <desktop:Extension Category="windows.startupTask" Executable="PortalAIHost.Service.exe"
                            EntryPoint="Windows.FullTrustApplication">
           <desktop:StartupTask TaskId="PortalAIHostStartup" Enabled="false" DisplayName="Portal AI Host" />

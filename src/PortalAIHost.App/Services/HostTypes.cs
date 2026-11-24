@@ -122,15 +122,24 @@ public interface IHostControl
     /// <summary>The health checks: whether the host works, and a fix for what does not. Read-only.</summary>
     Task<HealthReport> GetHealthAsync(CancellationToken ct = default);
 
-    /// <summary>Streams the reply of a short chat request in pieces. Thinking text and answer text come as separate pieces.</summary>
-    IAsyncEnumerable<TryItPiece> TryItAsync(string prompt, CancellationToken ct = default);
+    /// <summary>
+    /// Streams the reply to the conversation so far (oldest turn first, last turn from the user) in pieces. Thinking text and
+    /// answer text come as separate pieces; the last piece has no text and carries the timing.
+    /// </summary>
+    IAsyncEnumerable<TryItPiece> TryItAsync(IReadOnlyList<TryItTurn> turns, CancellationToken ct = default);
 
     /// <summary>Has the host stop the running "Try it" request so it stops using the processor.</summary>
     Task CancelTryItAsync();
 }
 
 /// <summary>One piece of a "Try it" reply: the model's thinking text or its answer.</summary>
-public sealed record TryItPiece(string Text, bool IsThinking = false);
+public sealed record TryItPiece(string Text, bool IsThinking = false, TryItStats? Stats = null);
+
+/// <summary>One turn of the "Try it" conversation (kept in memory only).</summary>
+public sealed record TryItTurn(bool IsUser, string Text);
+
+/// <summary>Timing of one finished "Try it" answer. Counts and times only.</summary>
+public sealed record TryItStats(long? FirstTokenMs, long TotalMs, long Tokens, double? TokensPerSecond, bool Cancelled);
 
 /// <summary>Shows a folder in Explorer. Opening only: nothing is changed.</summary>
 public interface IFolderOpener
