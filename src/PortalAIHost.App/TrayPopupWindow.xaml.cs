@@ -91,6 +91,7 @@ public sealed partial class TrayPopupWindow : Window
     public void ShowAt(int x, int y)
     {
         _graceTimer.Stop();
+        DebugLog.Write("ShowAt begin");
         var display = DisplayArea.GetFromPoint(new PointInt32(x, y), DisplayAreaFallback.Nearest);
         var scale = Math.Max(1.0, GetDpiForWindow(_hwnd) / 96.0);
         var width = (int)Math.Round(WidthDip * scale);
@@ -98,7 +99,9 @@ public sealed partial class TrayPopupWindow : Window
         var height = (int)Math.Round(Math.Min(MaxHeightDip, Math.Max(160, Root.DesiredSize.Height)) * scale);
         var (px, py) = TrayPlacement.Place((x, y), ToBox(display.OuterBounds), ToBox(display.WorkArea), width, height,
             (int)Math.Round(MarginDip * scale));
+        DebugLog.Write("measured");
         AppWindow.MoveAndResize(new RectInt32(px, py, width, height));
+        DebugLog.Write("moved");
         ViewModel.Show(); // reading the host starts only now
         _shown = true;
         if (AppOptions.NoActivate) AppWindow.Show(false);
@@ -107,7 +110,9 @@ public sealed partial class TrayPopupWindow : Window
             AppWindow.Show();
             Activate();
         }
+        DebugLog.Write("window shown");
         PlayOpen();
+        DebugLog.Write("opened");
         PopupTiming.Shown();
     }
 
@@ -139,19 +144,20 @@ public sealed partial class TrayPopupWindow : Window
             Slide.Y = 0;
             return;
         }
+        var board = new Storyboard();
+        board.Children.Add(Animate(Root, "Opacity", 0, 1));
+        board.Children.Add(Animate(Slide, "Y", 8, 0));
+        board.Begin();
+    }
+
+    private static DoubleAnimationUsingKeyFrames Animate(DependencyObject target, string property, double from, double to)
+    {
+        // Each key frame needs its own KeySpline: one instance cannot be attached to two frames (E_INVALIDARG).
         var spline = new KeySpline
         {
             ControlPoint1 = new Windows.Foundation.Point(Motion.CurveX1, Motion.CurveY1),
             ControlPoint2 = new Windows.Foundation.Point(Motion.CurveX2, Motion.CurveY2),
         };
-        var board = new Storyboard();
-        board.Children.Add(Animate(Root, "Opacity", 0, 1, spline));
-        board.Children.Add(Animate(Slide, "Y", 8, 0, spline));
-        board.Begin();
-    }
-
-    private static DoubleAnimationUsingKeyFrames Animate(DependencyObject target, string property, double from, double to, KeySpline spline)
-    {
         var a = new DoubleAnimationUsingKeyFrames();
         a.KeyFrames.Add(new DiscreteDoubleKeyFrame { KeyTime = TimeSpan.Zero, Value = from });
         a.KeyFrames.Add(new SplineDoubleKeyFrame { KeyTime = Motion.Base, Value = to, KeySpline = spline });
@@ -197,5 +203,22 @@ public static class PopupTiming
         {
         }
 #endif
+    }
+}
+
+/// <summary>Debug builds append timestamped steps to a log in the temp folder; release builds do nothing.</summary>
+public static class DebugLog
+{
+    [System.Diagnostics.Conditional("DEBUG")]
+    public static void Write(string text)
+    {
+        try
+        {
+            File.AppendAllText(Path.Combine(Path.GetTempPath(), "PortalAIHost-crash.log"),
+                $"{DateTime.Now:O} {text}{Environment.NewLine}");
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+        }
     }
 }

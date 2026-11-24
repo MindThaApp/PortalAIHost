@@ -18,6 +18,10 @@ public partial class App : Application
     public App()
     {
         InitializeComponent();
+#if DEBUG
+        UnhandledException += (_, e) => DebugLog.Write("UnhandledException: " + e.Message + Environment.NewLine + e.Exception);
+        AppDomain.CurrentDomain.UnhandledException += (_, e) => DebugLog.Write("AppDomain.UnhandledException: " + e.ExceptionObject);
+#endif
         UnhandledException += (_, e) => e.Handled = true;
     }
 
