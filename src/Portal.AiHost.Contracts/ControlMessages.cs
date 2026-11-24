@@ -44,6 +44,12 @@ public static class ControlTypes
 
     /// <summary>Cancels the running move or check. A cancelled move leaves the old models folder as it was.</summary>
     public const string CancelStoreOperation = "store.cancel";
+
+    /// <summary>Answers <see cref="CleanupScan"/>: what the host itself left behind and could remove. Reads only; nothing is deleted.</summary>
+    public const string ScanCleanup = "store.cleanup_scan";
+
+    /// <summary>Removes the items of an earlier scan the user confirmed (<see cref="CleanupCommand"/>); answers <see cref="CleanupResult"/>. Every item is checked again right before it is deleted.</summary>
+    public const string RunCleanup = "store.cleanup";
     public const string GetSettings = "settings.get";
 
     /// <summary>
@@ -320,11 +326,71 @@ public sealed class StoreFolderInfo
     public string Path { get; init; } = "";
 }
 
+/// <summary>One thing "Free up space" could remove.</summary>
+public sealed class CleanupItemInfo
+{
+    /// <summary>Opaque; sent back unchanged in <see cref="CleanupCommand"/>.</summary>
+    public string Id { get; init; } = "";
+
+    /// <summary><see cref="CleanupKinds"/> value.</summary>
+    public string Kind { get; init; } = CleanupKinds.Partial;
+
+    public string Label { get; init; } = "";
+    public string? Detail { get; init; }
+    public long Bytes { get; init; }
+    public int FileCount { get; init; }
+}
+
+/// <summary>Group names of <see cref="CleanupItemInfo.Kind"/>.</summary>
+public static class CleanupKinds
+{
+    /// <summary>An unfinished download nothing is resuming (older than the keep-for-resume age).</summary>
+    public const string Partial = "partial";
+
+    /// <summary>Old copies left in the earlier folder after a move, whose new copies are recorded as checked.</summary>
+    public const string OldCopies = "old_copies";
+
+    /// <summary>A model a check found damaged.</summary>
+    public const string Damaged = "damaged";
+}
+
+/// <summary>Answer to store.cleanup_scan.</summary>
+public sealed class CleanupScan
+{
+    public List<CleanupItemInfo> Items { get; init; } = new();
+    public long TotalBytes { get; init; }
+
+    /// <summary>Why nothing can be cleaned right now (a move, check or download is running); null otherwise.</summary>
+    public string? BusyReason { get; init; }
+}
+
+/// <summary>Payload of store.cleanup: the ids from the scan the user ticked.</summary>
+public sealed class CleanupCommand
+{
+    public List<string> ItemIds { get; set; } = new();
+}
+
+/// <summary>An item the clean left in place, with the plain-language reason.</summary>
+public sealed class CleanupSkipped
+{
+    public string Label { get; init; } = "";
+    public string Reason { get; init; } = "";
+}
+
+/// <summary>Answer to store.cleanup.</summary>
+public sealed class CleanupResult
+{
+    public long FreedBytes { get; init; }
+    public List<string> Removed { get; init; } = new();
+    public List<CleanupSkipped> Skipped { get; init; } = new();
+}
+
 /// <summary>Operation names of <see cref="StoreProgressEvent"/>.</summary>
 public static class StoreOperations
 {
     public const string Move = "move";
     public const string Verify = "verify";
+    public const string Cleanup = "cleanup";
 }
 
 /// <summary>State names of <see cref="StoreProgressEvent"/>.</summary>

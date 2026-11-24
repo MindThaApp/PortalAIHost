@@ -371,6 +371,40 @@ public sealed class FakeHostControl : IHostControl, IDisposable
         return Task.CompletedTask;
     }
 
+    /// <summary>What the fake host offers to free up; a clean removes the ticked items from it.</summary>
+    public List<CleanupItemInfo> CleanupSample { get; } =
+    [
+        new() { Id = "part|sample-a", Kind = CleanupKinds.Partial, Label = "sample-model-q4.gguf", Detail = "Unfinished download, untouched for 12 days", Bytes = 1_800_000_000, FileCount = 1 },
+        new() { Id = "old|sample-b", Kind = CleanupKinds.OldCopies, Label = "Old copies of your models", Detail = "Left in the earlier folder after a move; the new copies are recorded as checked", Bytes = 4_200_000_000, FileCount = 2 },
+        new() { Id = "damaged|sample-c|900", Kind = CleanupKinds.Damaged, Label = "Sample damaged model", Detail = "x.gguf does not match the model list.", Bytes = 900_000_000, FileCount = 1 },
+    ];
+
+    /// <summary>When set, the next scan reports the host as busy with this reason.</summary>
+    public string? CleanupBusy { get; set; }
+
+    public int CleanupCalls { get; private set; }
+
+    public Task<CleanupScan> ScanCleanupAsync(CancellationToken ct = default)
+    {
+        lock (_gate)
+        {
+            return Task.FromResult(CleanupBusy is { } busy
+                ? new CleanupScan { BusyReason = busy }
+                : new CleanupScan { Items = [.. CleanupSample], TotalBytes = CleanupSample.Sum(i => i.Bytes) });
+        }
+    }
+
+    public Task<CleanupResult> CleanupAsync(IReadOnlyCollection<string> itemIds, CancellationToken ct = default)
+    {
+        lock (_gate)
+        {
+            CleanupCalls++;
+            var taken = CleanupSample.Where(i => itemIds.Contains(i.Id)).ToList();
+            CleanupSample.RemoveAll(i => itemIds.Contains(i.Id));
+            return Task.FromResult(new CleanupResult { FreedBytes = taken.Sum(i => i.Bytes), Removed = [.. taken.Select(i => i.Label)] });
+        }
+    }
+
     public Task CancelStoreOperationAsync(CancellationToken ct = default)
     {
         CancelStoreCalls++;

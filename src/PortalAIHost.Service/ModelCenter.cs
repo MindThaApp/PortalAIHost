@@ -53,7 +53,7 @@ internal sealed class ModelCenterHooks
 /// cancel) and remove. Files are only ever changed through the model store and the downloader, which keep to the
 /// store rules (marker folder, recorded files only, external files only forgotten).
 /// </summary>
-internal sealed class ModelCenter : IAsyncDisposable
+internal sealed partial class ModelCenter : IAsyncDisposable
 {
     private readonly IModelStore? _store;
     private readonly IReadOnlyList<CatalogueEntry>? _catalogue;
@@ -101,7 +101,7 @@ internal sealed class ModelCenter : IAsyncDisposable
             if (_op is not null)
             {
                 throw new ControlPipeException(ErrorCodes.InvalidRequest,
-                    _opName == StoreOperations.Move ? "Your models are being moved. Wait until that finishes." : "A model is being checked. Wait until that finishes.");
+                    _opName == StoreOperations.Move ? "Your models are being moved. Wait until that finishes." : _opName == StoreOperations.Cleanup ? "Space is being freed up. Wait until that finishes." : "A model is being checked. Wait until that finishes.");
             }
         }
     }
@@ -662,7 +662,7 @@ internal sealed class ModelCenter : IAsyncDisposable
             if (_op is not null)
             {
                 throw new ControlPipeException(ErrorCodes.InvalidRequest,
-                    _opName == StoreOperations.Move ? "Your models are being moved. Wait until that finishes." : "A model is being checked. Wait until that finishes.");
+                    _opName == StoreOperations.Move ? "Your models are being moved. Wait until that finishes." : _opName == StoreOperations.Cleanup ? "Space is being freed up. Wait until that finishes." : "A model is being checked. Wait until that finishes.");
             }
 
             _opName = name;

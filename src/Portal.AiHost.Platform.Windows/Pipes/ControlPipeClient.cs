@@ -106,6 +106,14 @@ public sealed class ControlPipeClient : IAsyncDisposable
     public Task MoveStoreAsync(string parentFolder, CancellationToken ct = default) =>
         SendAsync(ControlTypes.MoveStore, new MoveStoreCommand { ParentFolder = parentFolder }, AiHostJsonContext.Default.MoveStoreCommand, ct);
 
+    public Task<CleanupScan> ScanCleanupAsync(CancellationToken ct = default) =>
+        RequestAsync(ControlTypes.ScanCleanup, AiHostJsonContext.Default.CleanupScan, ct);
+
+    public async Task<CleanupResult> CleanupAsync(IReadOnlyCollection<string> itemIds, CancellationToken ct = default) =>
+        Read(await ExchangeAsync(ControlTypes.RunCleanup,
+            JsonSerializer.SerializeToElement(new CleanupCommand { ItemIds = [.. itemIds] }, AiHostJsonContext.Default.CleanupCommand), ct).ConfigureAwait(false),
+            AiHostJsonContext.Default.CleanupResult);
+
     public Task CancelStoreOperationAsync(CancellationToken ct = default) => ExchangeAsync(ControlTypes.CancelStoreOperation, null, ct);
 
     public Task ActivateModelAsync(string catalogueId, CancellationToken ct = default) =>

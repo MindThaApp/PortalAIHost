@@ -193,6 +193,17 @@ internal sealed class ControlHandler(HostShell shell)
             case ControlTypes.OpenStoreFolder:
                 return Ok(id, new StoreFolderInfo { Path = shell.Models.StoreFolder() }, AiHostJsonContext.Default.StoreFolderInfo);
 
+            case ControlTypes.ScanCleanup:
+                return Ok(id, await shell.Models.ScanCleanupAsync(ct).ConfigureAwait(false), AiHostJsonContext.Default.CleanupScan);
+
+            case ControlTypes.RunCleanup:
+            {
+                var cleaned = await shell.Models.CleanupAsync(Payload(r, AiHostJsonContext.Default.CleanupCommand)!.ItemIds, ct)
+                    .ConfigureAwait(false);
+                await shell.PushStatusAsync().ConfigureAwait(false);
+                return Ok(id, cleaned, AiHostJsonContext.Default.CleanupResult);
+            }
+
             case ControlTypes.MoveStore:
                 _ = await shell.Models.StartMoveAsync(Payload(r, AiHostJsonContext.Default.MoveStoreCommand)!.ParentFolder, ct)
                     .ConfigureAwait(false);
