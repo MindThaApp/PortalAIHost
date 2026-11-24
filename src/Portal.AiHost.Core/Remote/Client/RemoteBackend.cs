@@ -163,7 +163,7 @@ public sealed class RemoteBackend(RemoteHostLink link, RemoteBackendOptions? opt
             var isStream = (reply.Header("Content-Type") ?? "").StartsWith("text/event-stream", StringComparison.OrdinalIgnoreCase);
             if (reply.Status >= 400 || (early && !isStream))
             {
-                await RelayErrorOrBodyAsync(context, reply, ct).ConfigureAwait(false);
+                await RelayErrorOrBodyAsync(route, context, reply, ct).ConfigureAwait(false);
                 return;
             }
 
@@ -340,7 +340,7 @@ public sealed class RemoteBackend(RemoteHostLink link, RemoteBackendOptions? opt
         }
     }
 
-    private async Task RelayErrorOrBodyAsync(ApiContext context, RemoteStreamReply reply, CancellationToken ct)
+    private async Task RelayErrorOrBodyAsync(InferenceRoute route, ApiContext context, RemoteStreamReply reply, CancellationToken ct)
     {
         byte[] body;
         try
@@ -356,7 +356,15 @@ public sealed class RemoteBackend(RemoteHostLink link, RemoteBackendOptions? opt
         var (code, message, details, retryMs) = ParseError(body);
         if (code is not null && PausedReasons.TryGetValue(code, out var reason))
         {
-            throw Unreachable(reason, retryMs ?? RetryHeaderMs(reply));
+            // Paused, quiet hours, gaming and limits fall back like any unreachable PC (section 4.5).
+            var refused = Unreachable(reason, retryMs ?? RetryHeaderMs(reply));
+            if (!context.ResponseStarted && _o.OnUnreachable is { } fallback &&
+                await fallback(route, context, refused).ConfigureAwait(false))
+            {
+                return;
+            }
+
+            throw refused;
         }
 
         if (context.ResponseStarted)
