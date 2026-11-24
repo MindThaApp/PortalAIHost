@@ -175,6 +175,13 @@
                         <TextBlock x:Uid="SettingsPairingSteps" TextWrapping="Wrap" />
                         <TextBlock Text="{x:Bind ViewModel.PairingCode, Mode=OneWay}" FontSize="36" FontFamily="Consolas" IsTextSelectionEnabled="True" />
                         <Image x:Name="PairingQr" x:Uid="SettingsPairingQr" Width="220" Height="220" HorizontalAlignment="Left" />
+                        <TextBlock Text="{x:Bind ViewModel.PairingAddressText, Mode=OneWay}" IsTextSelectionEnabled="True" />
+                        <Button x:Uid="SettingsPairingCopyLink" Click="OnCopyPairingLink" HorizontalAlignment="Left">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE8C8;" FontSize="16" />
+                                <TextBlock x:Uid="SettingsPairingCopyLinkText" />
+                            </StackPanel>
+                        </Button>
                         <TextBlock Text="{x:Bind ViewModel.PairingExpiryText, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" />
                         <TextBlock Text="{x:Bind ViewModel.PairingFingerprintText, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" IsTextSelectionEnabled="True" />
                         <Button x:Uid="SettingsPairingCancel" Command="{x:Bind ViewModel.CancelPairingCommand}" HorizontalAlignment="Left" />
