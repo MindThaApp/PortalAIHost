@@ -34,7 +34,7 @@ public sealed partial class AiHostRuntime
     }
 
     /// <summary>First flag that is both on and currently true, in the order app_busy, fullscreen, gpu_busy, battery.</summary>
-    internal static string? ChooseReason(IReadOnlyCollection<string> flags, bool appBusy, Func<bool> fullscreen,
+    public static string? ChooseReason(IReadOnlyCollection<string> flags, bool appBusy, Func<bool> fullscreen,
         Func<bool> gpuBusy, Func<bool> battery)
     {
         if (flags.Contains(EaseOffReasons.AppBusy) && appBusy)

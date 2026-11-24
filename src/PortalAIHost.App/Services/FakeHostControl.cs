@@ -378,6 +378,8 @@ public sealed class FakeHostControl : IHostControl, IDisposable
                 GpuMemoryLimitBytes = s.GpuMemoryLimitBytes ?? 7 * gb + gb / 2,
                 CpuThreads = s.CpuThreads ?? (preset == "quiet" ? 6 : preset == "fast" ? 11 : 10),
                 Priority = s.Priority == "normal" ? "normal" : "low",
+                CpuCeilingPercent = Math.Clamp(s.CpuCeilingPercent, 20, 100),
+                EaseOff = EaseOffReasons.Normalize(s.EaseOff),
                 Fit = fit,
                 Ranges = new PerformanceRanges
                 {

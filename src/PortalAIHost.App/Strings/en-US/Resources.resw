@@ -478,6 +478,16 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="Vm_Perf_RunHelp_gpu" xml:space="preserve"><value>Fastest, if the model fits.</value></data>
   <data name="Vm_Perf_RunHelp_cpu" xml:space="preserve"><value>Slower, but leaves the graphics card free for games.</value></data>
   <data name="Vm_Perf_NoGpu" xml:space="preserve"><value>Processor only: no supported graphics card found</value></data>
+  <data name="SettingsCeiling.Header" xml:space="preserve"><value>Maximum processor use</value></data>
+  <data name="SettingsCeiling.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Maximum processor use</value></data>
+  <data name="SettingsCeilingHelp.Text" xml:space="preserve"><value>The AI never uses more of your processor than this. Lower keeps your PC smoother, with slower replies.</value></data>
+  <data name="Vm_Perf_CeilingNone" xml:space="preserve"><value>No limit</value></data>
+  <data name="Vm_Perf_Percent" xml:space="preserve"><value>{0}%</value></data>
+  <data name="SettingsEaseOffHeader.Text" xml:space="preserve"><value>Ease off when</value></data>
+  <data name="SettingsEaseOffFullscreen.Content" xml:space="preserve"><value>A game or full-screen program is running</value></data>
+  <data name="SettingsEaseOffBattery.Content" xml:space="preserve"><value>The PC is on battery</value></data>
+  <data name="SettingsEaseOffAppBusy.Content" xml:space="preserve"><value>A Portal app is busy with live work, such as dictation</value></data>
+  <data name="SettingsEaseOffHelp.Text" xml:space="preserve"><value>The AI then runs at the lowest priority and uses at most half of your processor, and goes back to normal when it ends.</value></data>
   <data name="Vm_Perf_Prio_Low" xml:space="preserve"><value>Low</value></data>
   <data name="Vm_Perf_Prio_Normal" xml:space="preserve"><value>Normal</value></data>
   <data name="Vm_Perf_PrioHelp_Low" xml:space="preserve"><value>Your own work always comes first.</value></data>

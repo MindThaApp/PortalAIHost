@@ -118,6 +118,24 @@
                         <TextBlock Text="{x:Bind ViewModel.PriorityHelp, Mode=OneWay}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                     </StackPanel>
 
+                    <StackPanel Spacing="4">
+                        <Slider
+                            x:Uid="SettingsCeiling"
+                            Minimum="20" Maximum="100"
+                            Value="{x:Bind ViewModel.CeilingValue, Mode=TwoWay}"
+                            StepFrequency="5" SmallChange="5" LargeChange="10" />
+                        <TextBlock Text="{x:Bind ViewModel.CeilingLabel, Mode=OneWay}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                        <TextBlock x:Uid="SettingsCeilingHelp" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <TextBlock x:Uid="SettingsEaseOffHeader" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                        <CheckBox x:Uid="SettingsEaseOffFullscreen" IsChecked="{x:Bind ViewModel.EaseOffFullscreen, Mode=TwoWay}" />
+                        <CheckBox x:Uid="SettingsEaseOffBattery" IsChecked="{x:Bind ViewModel.EaseOffBattery, Mode=TwoWay}" />
+                        <CheckBox x:Uid="SettingsEaseOffAppBusy" IsChecked="{x:Bind ViewModel.EaseOffAppBusy, Mode=TwoWay}" />
+                        <TextBlock x:Uid="SettingsEaseOffHelp" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+
                     <TextBlock
                         Text="{x:Bind ViewModel.FitText, Mode=OneWay}"
                         Visibility="{x:Bind ViewModel.HasFit, Mode=OneWay}"
