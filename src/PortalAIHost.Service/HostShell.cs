@@ -266,11 +266,12 @@ public sealed class HostShell : IAsyncDisposable
             },
         };
         _registry = new ClientRegistry(new ClientRegistryOptions { DataDirectory = root }, _o.KeyProtector);
-        _scheduler = new FairScheduler();
+        _scheduler = new FairScheduler(new FairSchedulerOptions { AppControls = _registry });
         Runtime = await AiHostRuntime.StartAsync(new AiHostRuntimeOptions
         {
             Registry = _registry,
             Scheduler = _scheduler,
+            AppControls = _registry,
             Supervisors = _o.Supervisors,
             Hardware = _o.Hardware,
             Planner = new() { MaxMemoryPercent = settings.MaxMemoryPercent, Backend = settings.Backend },

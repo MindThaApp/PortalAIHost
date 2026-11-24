@@ -196,8 +196,19 @@ internal sealed class StoredBinding
     public DateTimeOffset BoundAt { get; set; }
 }
 
+/// <summary>The user's pause and priority for one app. Absent means not paused, normal priority.</summary>
+internal sealed class StoredAppControl
+{
+    public string AppId { get; set; } = "";
+    public bool Paused { get; set; }
+
+    /// <summary>0 low, 1 normal, 2 high.</summary>
+    public int Priority { get; set; } = 1;
+}
+
 internal sealed class ClientRegistryData
 {
+    public List<StoredAppControl> AppControls { get; set; } = new();
     public List<StoredClient> Clients { get; set; } = new();
     public List<StoredDenial> Denials { get; set; } = new();
     public List<StoredBinding> Bindings { get; set; } = new();

@@ -29,6 +29,9 @@ public sealed class AiHostRuntimeOptions
 
     public required IScheduler Scheduler { get; init; }
 
+    /// <summary>Per-app pause and priority. Null means every app is active at normal priority.</summary>
+    public IAppControls? AppControls { get; init; }
+
     /// <summary>One supervisor per model kind.</summary>
     public required IReadOnlyDictionary<string, IEngineSupervisor> Supervisors { get; init; }
 
@@ -174,6 +177,8 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
     public long CapabilitiesRevision => Interlocked.Read(ref _revision);
 
     public IClientRegistry Registry => _o.Registry;
+
+    public IAppControls? AppControls => _o.AppControls;
 
     public int InFlightRequests => Volatile.Read(ref _inFlight);
 
@@ -389,7 +394,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
             HostVersion = _o.HostVersion,
             InstanceId = _o.InstanceId,
             State = hostState,
-            Client = principal is null ? null : new StatusClient { AppId = principal.AppId, TokenId = principal.TokenId },
+            Client = principal is null ? null : ClientFor(principal, null),
             Models = models,
             Usage = _sampler?.Get(Activity.LastTokensPerSecond),
             Queue = new QueueStatus
@@ -735,14 +740,21 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
             var clients = await _o.Registry.ListAsync(ctx.Aborted).ConfigureAwait(false);
             if (clients.FirstOrDefault(c => c.TokenId == principal.TokenId) is { } registered)
             {
-                status = CopyWithClient(status, new StatusClient
-                {
-                    AppId = client.AppId, TokenId = client.TokenId, ApprovedAt = registered.CreatedAt,
-                });
+                status = CopyWithClient(status, ClientFor(principal, registered.CreatedAt));
             }
         }
 
         await ctx.WriteJsonAsync(200, status, AiHostJsonContext.Default.HostStatus).ConfigureAwait(false);
+    }
+
+    private StatusClient ClientFor(ClientPrincipal principal, DateTimeOffset? approvedAt)
+    {
+        var control = _o.AppControls?.Get(principal.AppId) ?? AppControl.Default;
+        return new StatusClient
+        {
+            AppId = principal.AppId, TokenId = principal.TokenId, ApprovedAt = approvedAt ?? default,
+            Paused = control.Paused, Priority = control.Priority.ToWire(),
+        };
     }
 
     private static HostStatus CopyWithClient(HostStatus s, StatusClient client) => new()

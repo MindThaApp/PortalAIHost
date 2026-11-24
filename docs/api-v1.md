@@ -168,6 +168,7 @@ and may be localised later. Each code always comes with the same `type` (OpenAI-
 | 401 | `token_invalid` | `authentication_error` | no | Unknown token. Delete it and ask the user before requesting again. |
 | 401 | `token_revoked` | `authentication_error` | no | The user removed access. Delete the token. |
 | 403 | `access_denied` | `permission_error` | no | The user denied the access request (24 h cool-down). |
+| 403 | `app_paused` | `permission_error` | no | The user paused your app in the host. Approval is kept. Requests that were already queued wait; running ones finish. Tell the user generation is paused, and retry only after `GET /host/status` shows `client.paused: false`. |
 | 403 | `forbidden_origin` | `permission_error` | no | Browser origin or bad `Host` header. |
 | 404 | `not_found` | `not_found_error` | no | Unknown route or request id. |
 | 404 | `feature_disabled` | `not_found_error` | no | The endpoint exists in the API but is switched off on this host (for example a future feature). |
