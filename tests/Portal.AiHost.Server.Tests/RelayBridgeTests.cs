@@ -77,7 +77,7 @@ public sealed class RelayBridgeTests : IAsyncLifetime
         return relay;
     }
 
-    private RelayBridge NewBridge(Uri url, TimeSpan? initial = null, TimeSpan? max = null)
+    private RelayBridge NewBridge(Uri url, TimeSpan? initial = null, TimeSpan? max = null, TimeSpan? sendTimeout = null)
     {
         var bridge = RelayBridge.Start(new RelayBridgeOptions
         {
@@ -86,6 +86,7 @@ public sealed class RelayBridgeTests : IAsyncLifetime
             LocalTarget = (IPEndPoint)_echo.LocalEndpoint,
             InitialDelay = initial ?? TimeSpan.FromMilliseconds(50),
             MaxDelay = max ?? TimeSpan.FromMilliseconds(400),
+            SendTimeout = sendTimeout ?? TimeSpan.FromSeconds(30),
         });
         _disposables.Add(bridge);
         return bridge;
@@ -258,6 +259,68 @@ public sealed class RelayBridgeTests : IAsyncLifetime
         await Task.Delay(1500);
         Assert.InRange(relay.HostConnections, 1, 3); // a refusal waits for the longest delay
         Assert.False(relay.HasHost);
+    }
+
+    [Theory]
+    [InlineData("{}")]
+    [InlineData("[]")]
+    [InlineData("{\"t\":5,\"room\":[],\"nonce\":{}}")]
+    public async Task AMalformedChallengeEndsOnlyThatLinkAndTheBridgeKeepsTrying(string bad)
+    {
+        var relay = await NewRelayAsync();
+        relay.SendInsteadOfChallenge(bad);
+        var bridge = NewBridge(relay.Url);
+        await relay.WaitHostAsync(); // the next dial gets a normal challenge
+        await WaitUntilAsync(() => bridge.State == RelayStates.Connected, "connected after the bad challenge");
+        await bridge.DisposeAsync();
+    }
+
+    [Theory]
+    [InlineData("[]")]
+    [InlineData("5")]
+    public async Task AControlMessageThatIsNotAnObjectReconnectsAndDisposesCleanly(string bad)
+    {
+        var relay = await NewRelayAsync();
+        relay.SendAfterReady(bad);
+        var bridge = NewBridge(relay.Url);
+        await WaitUntilAsync(() => relay.HostConnections >= 2, "second connection after the bad message");
+        await WaitUntilAsync(() => bridge.State == RelayStates.Connected, "connected again");
+        await bridge.DisposeAsync(); // must not throw
+    }
+
+    [Theory]
+    [InlineData("{}")]
+    [InlineData("{\"t\":[],\"s\":\"x\"}")]
+    [InlineData("{\"t\":\"open\",\"s\":-1}")]
+    public async Task AnObjectWithoutUsableFieldsIsIgnoredAndTheLinkStaysUp(string odd)
+    {
+        var relay = await NewRelayAsync();
+        relay.SendAfterReady(odd);
+        var bridge = NewBridge(relay.Url);
+        await relay.WaitHostAsync();
+        await Task.Delay(500);
+        Assert.Equal(1, relay.HostConnections);
+        Assert.Equal(RelayStates.Connected, bridge.State);
+        await bridge.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task ARelayThatStopsReadingDropsTheLinkAtTheSendDeadline()
+    {
+        var relay = await NewRelayAsync();
+        relay.StopReadingNextHost();
+        var bridge = NewBridge(relay.Url, sendTimeout: TimeSpan.FromMilliseconds(500));
+        await relay.WaitHostAsync();
+        await using var device = await DeviceAsync(relay, relay.Room!);
+        var data = new byte[64 * 1024];
+        var pump = Task.Run(async () =>
+        {
+            try { for (var i = 0; i < 4000; i++) await device.WriteAsync(data); }
+            catch (Exception ex) when (ex is IOException or WebSocketException or ObjectDisposedException or OperationCanceledException) { }
+        });
+        await WaitUntilAsync(() => relay.HostConnections >= 2, "the bridge re-dialled after its send stalled", seconds: 30);
+        await bridge.DisposeAsync();
+        await Task.WhenAny(pump, Task.Delay(5000));
     }
 
     [Fact]
