@@ -322,3 +322,101 @@ public sealed class HostUsage
 
     public DateTimeOffset UpdatedAt { get; init; }
 }
+
+// ---- /host/performance -------------------------------------------------------
+
+/// <summary>GET /host/performance: the limits the host runs under. Read-only for apps.</summary>
+public sealed class PerformanceInfo
+{
+    public string Preset { get; set; } = "balanced";
+    public long MemoryLimitBytes { get; set; }
+    public long KeepFreeBytes { get; set; }
+    public string Compute { get; set; } = "auto";
+
+    /// <summary>gpu or cpu: where the model really runs under these limits.</summary>
+    public string ComputeEffective { get; set; } = "cpu";
+
+    /// <summary>Graphics memory the AI may use; omitted when the PC has no supported graphics card.</summary>
+    public long? GpuMemoryLimitBytes { get; set; }
+
+    public int CpuThreads { get; set; }
+    public string Priority { get; set; } = "low";
+
+    /// <summary>Always 100 until the processor ceiling ships.</summary>
+    public int CpuCeilingPercent { get; set; } = 100;
+
+    /// <summary>Always empty until the ease-off rules ship.</summary>
+    public List<string> EaseOff { get; set; } = new();
+
+    /// <summary>Always null until the ease-off rules ship; written as null so apps can rely on the key.</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+    public string? EasedOffNow { get; set; }
+
+    /// <summary>fits_fully, fits_partial, cpu_only, needs_smaller_model or too_big; omitted when no chat model is active.</summary>
+    public string? Fit { get; set; }
+
+    public PerformanceRanges Ranges { get; set; } = new();
+    public string SettingsLink { get; set; } = "portal-ai-host:settings/performance";
+}
+
+public sealed class PerformanceRanges
+{
+    public NumberRange MemoryLimitBytes { get; set; } = new();
+    public NumberRange KeepFreeBytes { get; set; } = new();
+    public NumberRange? GpuMemoryLimitBytes { get; set; }
+    public NumberRange CpuThreads { get; set; } = new();
+    public bool GpuAvailable { get; set; }
+}
+
+public sealed class NumberRange
+{
+    public long Min { get; set; }
+    public long Max { get; set; }
+
+    /// <summary>Slider step; omitted for integer ranges that step by one.</summary>
+    public long? Step { get; set; }
+}
+
+/// <summary>What a memory slider stop would fit, for the label "16 GB · fits Qwen3 14B fully".</summary>
+public sealed class MemoryStop
+{
+    public long Bytes { get; set; }
+
+    /// <summary>Display name of the largest installed or catalogue chat model that fits fully, or null.</summary>
+    public string? FitsModel { get; set; }
+
+    /// <summary>fits_fully or fits_partial for <see cref="FitsModel"/>, or null when nothing fits.</summary>
+    public string? Fit { get; set; }
+}
+
+/// <summary>Answer to performance.get: the limits plus what the window needs to draw its controls.</summary>
+public sealed class PerformanceView
+{
+    public PerformanceInfo Info { get; set; } = new();
+    public long RamBytes { get; set; }
+    public int LogicalCores { get; set; }
+    public string? GpuName { get; set; }
+    public long GpuVramBytes { get; set; }
+
+    /// <summary>Why "Graphics card" is not offered, or null when it is.</summary>
+    public string? GpuUnavailableReason { get; set; }
+
+    /// <summary>Display name of the chat model the fit refers to, or null.</summary>
+    public string? FitModel { get; set; }
+
+    /// <summary>Smaller model that would fit, when Fit is needs_smaller_model.</summary>
+    public string? SmallerModel { get; set; }
+
+    /// <summary>One entry per memory slider stop.</summary>
+    public List<MemoryStop> MemoryStops { get; set; } = new();
+
+    /// <summary>The values of each preset on this PC, so the window shows them at once.</summary>
+    public Dictionary<string, PerformancePresetValues> Presets { get; set; } = new();
+}
+
+public sealed class PerformancePresetValues
+{
+    public long MemoryLimitBytes { get; set; }
+    public int CpuThreads { get; set; }
+    public string Priority { get; set; } = "low";
+}

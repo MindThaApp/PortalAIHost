@@ -66,6 +66,12 @@ public static class LlamaServerArgs
             "--n-gpu-layers", (cpu ? 0 : Math.Max(0, p.GpuLayers)).ToString(CultureInfo.InvariantCulture),
         };
 
+        if (spec.Threads is int threads && threads > 0)
+        {
+            args.Add("--threads");
+            args.Add(threads.ToString(CultureInfo.InvariantCulture));
+        }
+
         if (p.CpuMoeLayers is int moe && moe > 0)
         {
             args.Add("--n-cpu-moe");

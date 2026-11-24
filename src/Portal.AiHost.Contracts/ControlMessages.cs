@@ -42,6 +42,12 @@ public static class ControlTypes
     /// <summary>Cancels the running move or check. A cancelled move leaves the old models folder as it was.</summary>
     public const string CancelStoreOperation = "store.cancel";
     public const string GetSettings = "settings.get";
+
+    /// <summary>
+    /// Answers <see cref="PerformanceView"/>: the limits in force, hardware ranges and the fit preview. An optional
+    /// <see cref="HostSettings"/> payload previews those values without saving them.
+    /// </summary>
+    public const string GetPerformance = "performance.get";
     public const string SetSettings = "settings.set";
     public const string TryItChat = "tryit.chat";
     public const string TryItCancel = "tryit.cancel";
@@ -339,6 +345,16 @@ public sealed class SettingsSaved
     /// settings were saved; the models folder stayed as it was.
     /// </summary>
     public string? FolderRefused { get; init; }
+
+    /// <summary>Set when the new performance limits made the host reload or unload a model.</summary>
+    public PerformanceReloadInfo? PerformanceReloaded { get; set; }
+}
+
+/// <summary>Which engines the host restarted (<see cref="Reloaded"/>) or stopped (<see cref="Unloaded"/>, no longer fits) after a limit change.</summary>
+public sealed class PerformanceReloadInfo
+{
+    public List<string> Reloaded { get; set; } = new();
+    public List<string> Unloaded { get; set; } = new();
 }
 
 /// <summary>Start-with-Windows states (Windows StartupTask). The window reads and changes these itself.</summary>
@@ -398,7 +414,30 @@ public sealed class HostSettings
     /// </summary>
     public List<string>? PreviousStoreFolders { get; set; }
 
+    /// <summary>Older memory share. Kept so settings from earlier versions still read; <see cref="MemoryLimitBytes"/> replaces it.</summary>
     public int MaxMemoryPercent { get; set; } = 80;
+
+    /// <summary>Performance preset: quiet, balanced, fast or custom (performance-and-tuning section 2).</summary>
+    public string Preset { get; set; } = PerformancePresets.Balanced;
+
+    /// <summary>Most memory the AI may use. Null: derived from <see cref="MaxMemoryPercent"/> (first read saves it).</summary>
+    public long? MemoryLimitBytes { get; set; }
+
+    /// <summary>Memory always left free for other programs. Null: 4 GB, or 8 GB on PCs with 32 GB or more.</summary>
+    public long? KeepFreeBytes { get; set; }
+
+    /// <summary>auto, gpu or cpu. When auto, the older <see cref="Backend"/> still applies.</summary>
+    public string Compute { get; set; } = "auto";
+
+    /// <summary>Most graphics memory the AI may use. Null: all of the card minus 0.5 GB.</summary>
+    public long? GpuMemoryLimitBytes { get; set; }
+
+    /// <summary>Processor cores for generation. Null: logical cores minus 2 (minimum 1).</summary>
+    public int? CpuThreads { get; set; }
+
+    /// <summary>low (below normal) or normal.</summary>
+    public string Priority { get; set; } = PerformancePriorities.Low;
+
     public bool PreventSleepWhileDownloading { get; set; } = true;
 
     /// <summary>Send scrubbed crash reports. On unless the user turns it off; the host follows the window's choice.</summary>
@@ -407,6 +446,32 @@ public sealed class HostSettings
 
     /// <summary>Per model kind: keep loaded and idle timeout.</summary>
     public Dictionary<string, KindSettings> Kinds { get; set; } = new();
+}
+
+/// <summary>Values of <see cref="HostSettings.Preset"/>.</summary>
+public static class PerformancePresets
+{
+    public const string Quiet = "quiet";
+    public const string Balanced = "balanced";
+    public const string Fast = "fast";
+    public const string Custom = "custom";
+}
+
+/// <summary>Values of <see cref="HostSettings.Priority"/>.</summary>
+public static class PerformancePriorities
+{
+    public const string Low = "low";
+    public const string Normal = "normal";
+}
+
+/// <summary>Values fit in <see cref="PerformanceInfo.Fit"/> (performance-and-tuning section 3).</summary>
+public static class PerformanceFits
+{
+    public const string FitsFully = "fits_fully";
+    public const string FitsPartial = "fits_partial";
+    public const string CpuOnly = "cpu_only";
+    public const string NeedsSmallerModel = "needs_smaller_model";
+    public const string TooBig = "too_big";
 }
 
 public sealed class KindSettings
