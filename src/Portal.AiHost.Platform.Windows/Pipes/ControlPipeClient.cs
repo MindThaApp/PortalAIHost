@@ -97,6 +97,9 @@ public sealed class ControlPipeClient : IAsyncDisposable
     public Task CancelDownloadAsync(string catalogueId, CancellationToken ct = default) =>
         SendAsync(ControlTypes.CancelDownload, new DownloadCommand { CatalogueId = catalogueId }, AiHostJsonContext.Default.DownloadCommand, ct);
 
+    public Task ImportModelAsync(string path, CancellationToken ct = default) =>
+        SendAsync(ControlTypes.ImportModel, new ImportModelCommand { Path = path }, AiHostJsonContext.Default.ImportModelCommand, ct);
+
     public Task VerifyModelAsync(string catalogueId, CancellationToken ct = default) =>
         SendAsync(ControlTypes.VerifyModel, new VerifyModelCommand { CatalogueId = catalogueId }, AiHostJsonContext.Default.VerifyModelCommand, ct);
 

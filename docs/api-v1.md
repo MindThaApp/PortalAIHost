@@ -569,6 +569,20 @@ only). Messages are JSON envelopes `{ "id", "type", "payload" }`; answers are `o
   which the user confirms; it is `models.remove` followed by `downloads.start`. `invalid_request` for a file the user
   added (no checksum), a model that is not fully downloaded, a model not in the model list, or while another move or
   check runs.
+- `models.import` `{ path }`: "Add your own model". `path` is the full path of a `.gguf` file on this PC. The host
+  checks the header up front (`GGUF` magic, version 2 or 3, readable metadata) and refuses anything else with
+  `invalid_request` and a plain message (not a GGUF file, cut short, unknown format version; `not_found` when the file
+  is missing). Then it copies the file into its own models folder: written as a `.part` inside the store, size and
+  SHA-256 checked, renamed into place, and recorded in `store.json` with its file ID and a `user_added` flag (older
+  versions ignore the flag). The original file is only read: never moved, changed or deleted. The answer comes when
+  the copy has started; progress and the result arrive as `event.store_progress` with `operation` `import`: `running`
+  with `bytes_done`/`bytes_total`, then `done` (`catalogue_id` is the new model, `message` says what was added; the
+  same file added twice ends `done` with the existing model), `failed` (not enough free space, read error, the file
+  changed while copying) or `cancelled`. A cancelled or failed import removes only its own `.part`. The new model
+  appears in `models.list` with `user_added` true, kind `chat` (or `embedding` for BERT-style architectures), name
+  from the file's `general.name`, no memory-fit estimate (`fits_this_pc` is not meaningful), and activates and
+  removes like any other model; removing it deletes only the host's copy. It has no checksum in the model list, so
+  `models.verify` refuses it. Refused while a move, check, clean or another import runs.
 - `store.open_folder` answers `{ path }`: the models folder. The host changes nothing; the window opens the path in
   Explorer itself. `not_found` when the folder does not exist, `feature_disabled` without a models folder.
 - `store.move` `{ parent_folder }`: moves the models to `parent_folder\Portal AI Host Models`. Copy, verify (re-hash
@@ -578,10 +592,10 @@ only). Messages are JSON envelopes `{ "id", "type", "payload" }`; answers are `o
   plus 2 GB), a folder that is missing, FAT32, inside the current models folder or already holding a store, a
   download running, or another move or check running. The answer comes when the move has started; progress arrives
   as `event.store_progress` with `operation` `move`. On success the models folder setting is the new folder.
-- `store.cancel`: cancels a running move or check. A cancelled move undoes the copy and leaves the old folder as
+- `store.cancel`: cancels a running move, check or import. A cancelled move undoes the copy and leaves the old folder as
   it was (`state` `cancelled`). Once the host has switched, the move can no longer be cancelled.
 - `event.store_progress` `{ operation, state, catalogue_id?, fraction, bytes_done, bytes_total, message?,
-  left_behind? }`: `operation` is `move` or `verify`; `state` is `running`, `removing_old` (move: switched, removing the
+  left_behind? }`: `operation` is `move`, `verify` or `import`; `state` is `running`, `removing_old` (move: switched, removing the
   old copies), `done`, `failed`, `cancelled` or `damaged` (verify). `left_behind` lists old files a finished move
   did not delete because they did not pass the checks.
 - `event.download_progress` `{ catalogue_id, state, bytes_done, bytes_total, eta_seconds, message }`, `state` one
