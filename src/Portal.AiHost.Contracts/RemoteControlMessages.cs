@@ -24,7 +24,7 @@ public sealed class PairedDeviceSummary
     public DateTimeOffset? LastSeenAt { get; set; }
 }
 
-/// <summary>A pairing code to show to the user: the digits, and the QR text that carries the same code.</summary>
+/// <summary>A pairing code to show to the user (XXXX-XXXX-XXXX), and the QR text that carries the same code.</summary>
 public sealed class PairingOfferInfo
 {
     public string Code { get; set; } = "";

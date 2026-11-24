@@ -13,7 +13,7 @@ public static class RemoteApi
     public const string PairStartPath = "/pair/start";
     public const string PairFinishPath = "/pair/finish";
     public const string PairingScheme = "portalai";
-    public const int CodeLength = 6;
+    public const int CodeLength = 12;
     public const int CodeLifetimeMinutes = 5;
     public const int MaxWrongAttempts = 5;
     public const int MaxClockSkewSeconds = 120;

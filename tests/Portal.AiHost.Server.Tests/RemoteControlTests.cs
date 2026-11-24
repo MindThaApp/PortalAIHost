@@ -55,9 +55,9 @@ public sealed class RemoteControlTests
         Assert.NotNull(status.Fingerprint);
 
         var offer = await client.StartPairingAsync();
-        Assert.Matches(@"^\d{6}$", offer.Code);
+        Assert.Matches("^[0-9A-HJKMNP-TV-Z]{4}-[0-9A-HJKMNP-TV-Z]{4}-[0-9A-HJKMNP-TV-Z]{4}$", offer.Code);
         Assert.StartsWith("portalai://pair?h=192.168.1.20&p=", offer.QrText);
-        Assert.Contains("&c=" + offer.Code, offer.QrText);
+        Assert.Contains("&c=" + offer.Code.Replace("-", ""), offer.QrText);
         Assert.Equal(offer.Code, (await client.GetRemoteAsync()).Pairing!.Code);
 
         await client.CancelPairingAsync();

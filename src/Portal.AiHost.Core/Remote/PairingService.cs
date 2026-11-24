@@ -61,7 +61,7 @@ public sealed class PairingService
         PairingOffer result;
         lock (_gate)
         {
-            var code = PairingCrypto.NewCode();
+            var code = PairingCrypto.NewCode(_fingerprint);
             _offer = new Offer(code, PairingCrypto.DeriveKey(code),
                 _time.GetUtcNow().AddMinutes(RemoteApi.CodeLifetimeMinutes));
             result = new PairingOffer(code, _offer.ExpiresAt);

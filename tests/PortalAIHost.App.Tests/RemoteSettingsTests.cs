@@ -56,9 +56,9 @@ public class RemoteSettingsTests
         vm.RemoteEnabled = true;
         await vm.PairDeviceCommand.ExecuteAsync(null);
         Assert.True(vm.PairingOpen);
-        Assert.Equal("123456", vm.PairingCode);
+        Assert.Equal("ABCD-EFGH-JKMN", vm.PairingCode);
         Assert.StartsWith("portalai://pair?", vm.PairingQrText);
-        Assert.Contains("c=123456", vm.PairingQrText);
+        Assert.Contains("c=ABCDEFGHJKMN", vm.PairingQrText);
 
         await vm.CancelPairingCommand.ExecuteAsync(null);
         Assert.False(vm.PairingOpen);

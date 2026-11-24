@@ -172,15 +172,58 @@ public sealed class LanRemoteTests : IAsyncLifetime
     public async Task TheOfferCarriesTheQrTextTheClientScans()
     {
         var offer = _remote.StartPairing();
-        Assert.Equal($"portalai://pair?h=192.168.1.20&p={_remote.Port}&f={offer.Fingerprint}&c={offer.Code}&n=Desk%20PC", offer.QrText);
+        Assert.Equal($"portalai://pair?h=192.168.1.20&p={_remote.Port}&f={offer.Fingerprint}&c={PairingCrypto.Normalize(offer.Code)}&n=Desk%20PC", offer.QrText);
         Assert.Equal(offer.Code, _remote.Snapshot().Pairing!.Code);
     }
 
     [Fact]
+    public async Task AnImpersonatingCertificateIsRejectedBeforeAnyProofIsSent()
+    {
+        var offer = _remote.StartPairing();
+
+        // The device typed a code whose first 40 bits are not the start of this certificate's hash (as with a code
+        // for the real host seen on an impersonator's certificate). It refuses the certificate during the handshake,
+        // so the proof is never sent.
+        var canonical = PairingCrypto.Normalize(offer.Code)!;
+        var foreign = PairingCrypto.Display((canonical[0] == '0' ? "1" : "0") + canonical[1..]);
+        using var device = new PairingClient("Laptop");
+        var attempts = RemoteApi.MaxWrongAttempts + 2;
+        for (var i = 0; i < attempts; i++)
+        {
+            using var refusing = new HttpClient(new SocketsHttpHandler
+            {
+                SslOptions = new SslClientAuthenticationOptions
+                {
+                    RemoteCertificateValidationCallback = (_, cert, _, _) =>
+                        cert is not null && PairingCrypto.CodeMatchesCertificate(foreign, SHA256.HashData(cert.GetRawCertData())),
+                },
+            })
+            { BaseAddress = new Uri($"https://127.0.0.1:{_remote.Port}") };
+            await Assert.ThrowsAsync<HttpRequestException>(() => refusing.PostAsync(RemoteApi.PairStartPath,
+                Json(JsonSerializer.Serialize(device.Start(foreign), AiHostJsonContext.Default.PairStartRequest))));
+        }
+
+        // Nothing reached the host, so the real code was not used up: the right device still pairs.
+        using var good = new PairingClient("Laptop 2");
+        using var accepting = new HttpClient(new SocketsHttpHandler
+        {
+            SslOptions = new SslClientAuthenticationOptions
+            {
+                RemoteCertificateValidationCallback = (_, cert, _, _) =>
+                    cert is not null && PairingCrypto.CodeMatchesCertificate(offer.Code, SHA256.HashData(cert.GetRawCertData())),
+            },
+        })
+        { BaseAddress = new Uri($"https://127.0.0.1:{_remote.Port}") };
+        using var response = await accepting.PostAsync(RemoteApi.PairStartPath,
+            Json(JsonSerializer.Serialize(good.Start(offer.Code), AiHostJsonContext.Default.PairStartRequest)));
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+    [Fact]
     public async Task WrongCodeIsRefusedAndTheFifthMistakeVoidsTheCode()
     {
         var offer = _remote.StartPairing();
-        var wrong = offer.Code == "000000" ? "000001" : "000000";
+        var canonical = PairingCrypto.Normalize(offer.Code)!;
+        var wrong = PairingCrypto.Display(canonical[..^1] + (canonical[^1] == '0' ? '1' : '0'));
         using var attacker = new PairingClient("Attacker");
         for (var i = 1; i < RemoteApi.MaxWrongAttempts; i++)
         {

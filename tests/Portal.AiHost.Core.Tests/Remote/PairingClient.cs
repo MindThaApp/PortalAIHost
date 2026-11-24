@@ -34,6 +34,13 @@ public sealed class PairingClient : IDisposable
         };
     }
 
+    /// <summary>
+    /// What a client does with a typed code: check the certificate it saw against the code first, and send nothing
+    /// (null) when it does not match.
+    /// </summary>
+    public PairStartRequest? StartForCertificate(string code, byte[] seenFingerprint) =>
+        PairingCrypto.CodeMatchesCertificate(code, seenFingerprint) ? Start(code) : null;
+
     /// <summary>True when the host proved it knows the code and names this fingerprint.</summary>
     public bool VerifyHost(PairStartResponse response, string code, byte[]? pinnedFingerprint = null)
     {

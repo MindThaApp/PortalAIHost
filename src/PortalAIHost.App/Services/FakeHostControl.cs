@@ -622,13 +622,13 @@ public sealed class FakeHostControl : IHostControl, IDisposable
             PairingStarts++;
             Pairing = new PairingOfferInfo
             {
-                Code = "123456",
+                Code = "ABCD-EFGH-JKMN",
                 ExpiresAt = DateTimeOffset.UtcNow.AddMinutes(5),
                 HostName = "Desk PC",
                 Address = "192.168.1.20",
                 Port = _settings.Remote.Port,
                 Fingerprint = "fake-fingerprint",
-                QrText = "portalai://pair?h=192.168.1.20&p=48123&f=fake-fingerprint&c=123456&n=Desk%20PC",
+                QrText = "portalai://pair?h=192.168.1.20&p=48123&f=fake-fingerprint&c=ABCDEFGHJKMN&n=Desk%20PC",
             };
             return Task.FromResult(Pairing);
         }

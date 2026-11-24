@@ -187,7 +187,7 @@ public sealed class RemoteAccess : IAsyncDisposable
             Address = address,
             Port = _server.Port,
             Fingerprint = fingerprint,
-            QrText = RemoteNetwork.QrText(address, _server.Port, fingerprint, offer.Code, ShortName(_hostName)),
+            QrText = RemoteNetwork.QrText(address, _server.Port, fingerprint, PairingCrypto.Normalize(offer.Code)!, ShortName(_hostName)),
         };
     }
 
@@ -232,7 +232,7 @@ public sealed class RemoteAccess : IAsyncDisposable
                 Port = _server.Port,
                 Fingerprint = fingerprint ?? "",
                 QrText = RemoteNetwork.QrText(addresses.FirstOrDefault() ?? "", _server.Port, fingerprint ?? "",
-                    offer.Code, ShortName(_hostName)),
+                    PairingCrypto.Normalize(offer.Code)!, ShortName(_hostName)),
             },
         };
     }

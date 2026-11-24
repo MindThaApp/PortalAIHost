@@ -17,8 +17,8 @@ public sealed class ProtocolVectorTests
     [Fact]
     public void PairingProofsMatchTheDocumentedValues()
     {
-        var key = PairingCrypto.DeriveKey("042917");
-        Assert.Equal("5f3abb16fdf627e6606db39cb11c1770dae1e12118f241b72289f6095c40d017", Convert.ToHexStringLower(key));
+        var key = PairingCrypto.DeriveKey("M2GT-58X4-7K3Q");
+        Assert.Equal("0181418c89c8b739fdf913fad5453c77b7a79765fe3ad773bd97dc29d1d4a674", Convert.ToHexStringLower(key));
 
         var clientNonce = Enumerable.Range(0, 16).Select(i => (byte)i).ToArray();
         var hostNonce = Enumerable.Range(0x20, 32).Select(i => (byte)i).ToArray();
@@ -29,15 +29,28 @@ public sealed class ProtocolVectorTests
         Assert.Equal("AAECAwQFBgcICQoLDA0ODw", RemoteCodec.Encode(clientNonce));
         Assert.Equal("ICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj8", RemoteCodec.Encode(hostNonce));
         Assert.Equal("oKGio6SlpqeoqaqrrK2ur7CxsrO0tba3uLm6u7y9vr8", RemoteCodec.Encode(fingerprint));
-        Assert.Equal("_mVgkyCbQBBPwtuB1KEJHycZ_DBsr2nphSyweWk4GpM",
+        Assert.Equal("NVg6_dPR4WnirC8PK0LPSxFFQR4gsJGNCvwgMOVGcCk",
             RemoteCodec.Encode(PairingCrypto.Mac(key, "start", clientNonce, name, spki)));
-        Assert.Equal("9kf1LBbviBmOCTM1dfN_nICMUONW2izxZEI45QNgXIE",
+        Assert.Equal("991fMO6W38DQnzcUWWOFFbUG8w2v-QLrc57y6aV4ju8",
             RemoteCodec.Encode(PairingCrypto.Mac(key, "host", clientNonce, name, spki, hostNonce, fingerprint)));
-        Assert.Equal("V89eqyNSMfWmq7-5WEbN_c7isxKZLuGwU74AniA0xCY",
+        Assert.Equal("TCO2jZIvRw75PKbJWmCQfcb46W7AjtTDRRdz2OO7WNc",
             RemoteCodec.Encode(PairingCrypto.Mac(key, "finish", clientNonce, name, spki, hostNonce, fingerprint)));
-        Assert.Equal("zf7Hj8380FourQgCI-PG8zz7oXEMl9m-aj8f-sgIcOE",
+        Assert.Equal("pN69WGM6OotASkGecpTZ61KG80O80xYHQmrlC4OD3-I",
             RemoteCodec.Encode(PairingCrypto.Mac(key, "done", clientNonce, name, spki, hostNonce, fingerprint,
                 Encoding.ASCII.GetBytes("dev_AAAAAAAAAAAAAAAAAAAAAA"))));
+    }
+
+    [Fact]
+    public void TheDocumentedCodeCarriesTheStartOfTheCertificateHash()
+    {
+        var fingerprint = Enumerable.Range(0xA0, 32).Select(i => (byte)i).ToArray();
+        Assert.True(PairingCrypto.CodeMatchesCertificate("M2GT-58X4-7K3Q", fingerprint));
+        Assert.True(PairingCrypto.CodeMatchesCertificate("m2gt58x47k3q", fingerprint));
+        Assert.False(PairingCrypto.CodeMatchesCertificate("M2GT-58X5-7K3Q", fingerprint));
+        Assert.Equal("M2GT58X47K3Q", PairingCrypto.Normalize("m2gt-58x4-7k3q"));
+        Assert.Equal("001100000000", PairingCrypto.Normalize("OoIl00000000"));
+        Assert.Null(PairingCrypto.Normalize("M2GT-58X4-7K3"));
+        Assert.Null(PairingCrypto.Normalize("M2GT-58X4-7K3U"));
     }
 
     [Fact]

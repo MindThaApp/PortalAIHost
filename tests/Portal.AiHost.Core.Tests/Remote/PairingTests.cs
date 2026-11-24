@@ -21,7 +21,11 @@ public sealed class PairingTests : IDisposable
 
     public void Dispose() => _dir.Dispose();
 
-    private static string WrongCodeFor(string code) => code == "000000" ? "000001" : "000000";
+    private static string WrongCodeFor(string code)
+    {
+        var canonical = PairingCrypto.Normalize(code)!;
+        return PairingCrypto.Display(canonical[..^1] + (canonical[^1] == '0' ? '1' : '0'));
+    }
 
     private static string ReasonOf(Action action) => Assert.Throws<PairingException>(action).Reason;
 
@@ -29,7 +33,8 @@ public sealed class PairingTests : IDisposable
     public void GoodCodePairsTheDeviceAndEachSideProvesTheCode()
     {
         var offer = _pairing.Begin();
-        Assert.Matches(@"^\d{6}$", offer.Code);
+        Assert.Matches("^[0-9A-HJKMNP-TV-Z]{4}-[0-9A-HJKMNP-TV-Z]{4}-[0-9A-HJKMNP-TV-Z]{4}$", offer.Code);
+        Assert.True(PairingCrypto.CodeMatchesCertificate(offer.Code, _fingerprint));
         using var client = new PairingClient("Laptop");
 
         var id = client.Pair(_pairing, offer.Code);
@@ -50,6 +55,19 @@ public sealed class PairingTests : IDisposable
 
         var reopened = new DeviceStore(_dir.Path, _time);
         Assert.Equal(id, Assert.Single(reopened.List()).Id);
+    }
+
+    [Fact]
+    public void ACodeCommitsToTheHostCertificateSoAnImpersonatorIsStoppedBeforeAnyProofIsSent()
+    {
+        var offer = _pairing.Begin();
+        using var client = new PairingClient();
+        var impostor = new byte[32];
+        impostor[0] = 9;
+
+        Assert.Null(client.StartForCertificate(offer.Code, impostor));
+        Assert.NotNull(client.StartForCertificate(offer.Code, _fingerprint));
+        Assert.NotNull(client.StartForCertificate(offer.Code.ToLowerInvariant().Replace("-", ""), _fingerprint));
     }
 
     [Fact]
@@ -112,7 +130,7 @@ public sealed class PairingTests : IDisposable
     public void NoOpenCodeMeansNoPairing()
     {
         using var client = new PairingClient();
-        Assert.Equal(PairingReasons.NoOffer, ReasonOf(() => _pairing.Start(client.Start("123456"))));
+        Assert.Equal(PairingReasons.NoOffer, ReasonOf(() => _pairing.Start(client.Start("ABCD-EFGH-JKMN"))));
 
         var offer = _pairing.Begin();
         _pairing.Cancel();

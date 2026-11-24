@@ -599,7 +599,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="SettingsRemoteHelp.Text" xml:space="preserve"><value>Off by default. When on, your own phone, laptop or tablet on this home network can ask to use this PC&apos;s AI. A device must be paired with a code first, and each app on it still needs your approval. You can remove a device at any time.</value></data>
   <data name="SettingsPairDevice.Content" xml:space="preserve"><value>Pair a device</value></data>
   <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Pair a device</value></data>
-  <data name="SettingsPairingSteps.Text" xml:space="preserve"><value>On the other device, open its Portal app, choose to connect to a PC, then scan this code or type the numbers. The code works once, for 5 minutes.</value></data>
+  <data name="SettingsPairingSteps.Text" xml:space="preserve"><value>On the other device, open its Portal app, choose to connect to a PC, then scan this code or type the letters and numbers. It checks it is talking to this PC before it sends anything. The code works once, for 5 minutes.</value></data>
   <data name="SettingsPairingQr.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Pairing QR code</value></data>
   <data name="SettingsPairingCancel.Content" xml:space="preserve"><value>Cancel pairing</value></data>
   <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Cancel pairing</value></data>
@@ -611,7 +611,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="Vm_RemoteNeverSeen" xml:space="preserve"><value>Not used yet</value></data>
   <data name="Vm_AutoRemoveDevice" xml:space="preserve"><value>Remove {0}</value></data>
   <data name="Vm_PairingExpires" xml:space="preserve"><value>The code is valid until {0}.</value></data>
-  <data name="Vm_PairingFingerprint" xml:space="preserve"><value>Security check, the same on both devices: {0}</value></data>
+  <data name="Vm_PairingFingerprint" xml:space="preserve"><value>Certificate check: {0}</value></data>
   <data name="Vm_RemoveDeviceTitle" xml:space="preserve"><value>Remove {0}?</value></data>
   <data name="Vm_RemoveDeviceBody" xml:space="preserve"><value>{0} loses access to this PC&apos;s AI at once. Its apps stop working until you pair it again.</value></data>
   <data name="Vm_RemoveDeviceConfirm" xml:space="preserve"><value>Remove device</value></data>
