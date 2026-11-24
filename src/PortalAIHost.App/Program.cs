@@ -86,6 +86,9 @@ public static class AppOptions
     /// <summary>Treat first-run setup as already done.</summary>
     public static bool SkipFirstRun { get; private set; }
 
+    /// <summary>Test runs: show windows without activating them, so a check never takes the keyboard (debug builds only).</summary>
+    public static bool NoActivate { get; private set; }
+
     public static void Parse(string[] args)
     {
         foreach (var a in args)
@@ -102,6 +105,7 @@ public static class AppOptions
             else if (a.Equals("--pseudo-loc", StringComparison.OrdinalIgnoreCase)) PseudoLoc = true;
             else if (a.Equals("--offscreen", StringComparison.OrdinalIgnoreCase)) OffScreen = true;
             else if (a.Equals("--skip-first-run", StringComparison.OrdinalIgnoreCase)) SkipFirstRun = true;
+            else if (a.Equals("--no-activate", StringComparison.OrdinalIgnoreCase)) NoActivate = true;
             else if (a.StartsWith("--state-dir=", StringComparison.OrdinalIgnoreCase)) StateFolder = a[12..];
             else if (a.StartsWith("--shot-dir=", StringComparison.OrdinalIgnoreCase)) ShotDir = a[11..];
             else if (a.StartsWith("--theme=", StringComparison.OrdinalIgnoreCase)) ThemeOverride = a[8..].ToLowerInvariant();

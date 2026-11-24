@@ -237,7 +237,7 @@ public sealed partial class MainWindow : Window, IAppearanceApplier
             // The welcome is its own window; the main window stays out of sight until it closes.
             _firstRunShown = true;
             HideForWelcome();
-            new WelcomeWindow().Activate();
+            WindowShow.Open(new WelcomeWindow());
         }
         else if (!_shell.ShowFirstRun && _firstRunShown)
         {
@@ -266,8 +266,12 @@ public sealed partial class MainWindow : Window, IAppearanceApplier
     {
         if (!_hidden) return;
         _hidden = false;
-        AppWindow.Show();
-        Activate();
+        if (AppOptions.NoActivate) AppWindow.Show(false);
+        else
+        {
+            AppWindow.Show();
+            Activate();
+        }
     }
 
     private void OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)

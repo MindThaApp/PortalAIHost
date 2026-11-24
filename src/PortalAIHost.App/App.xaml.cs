@@ -56,7 +56,7 @@ public partial class App : Application
             _popup?.Close(); // the process ends with its last window
             _popup = null;
         };
-        window.Activate();
+        WindowShow.Open(window);
         // A new install opens the welcome first, so the main window stays hidden until that is decided.
         if (!AppServices.Shell.State.FirstRunDone) window.HideForWelcome();
         _ = window.StartAsync();

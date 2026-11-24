@@ -101,8 +101,12 @@ public sealed partial class TrayPopupWindow : Window
         AppWindow.MoveAndResize(new RectInt32(px, py, width, height));
         ViewModel.Show(); // reading the host starts only now
         _shown = true;
-        AppWindow.Show();
-        Activate();
+        if (AppOptions.NoActivate) AppWindow.Show(false);
+        else
+        {
+            AppWindow.Show();
+            Activate();
+        }
         PlayOpen();
         PopupTiming.Shown();
     }
