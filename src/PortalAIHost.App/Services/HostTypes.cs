@@ -34,6 +34,9 @@ public sealed record ModelCatalogView(
     long FreeBytes,
     string? UpgradeModelId)
 {
+    /// <summary>Disk space the models in the current folder use.</summary>
+    public long ModelsBytes { get; init; }
+
     /// <summary>False when the host has no trusted model list: only installed models are shown.</summary>
     public bool CatalogueAvailable { get; init; } = true;
 }
@@ -51,6 +54,9 @@ public interface IHostControl
     event Action<PendingApproval>? ApprovalPending;
     event Action<DownloadProgressEvent>? DownloadProgress;
     event Action<EngineStateEvent>? EngineStateChanged;
+
+    /// <summary>Progress of a models-folder move or a file check.</summary>
+    event Action<StoreProgressEvent>? StoreProgress;
 
     /// <summary>The host says the tray icon was clicked: show the small status pop-up.</summary>
     event Action<TrayPopupEvent>? TrayPopup;
@@ -79,6 +85,19 @@ public interface IHostControl
     Task CancelDownloadAsync(string catalogueId, CancellationToken ct = default);
     /// <summary>Has the host remove a model (its own files only; a file added in place is only forgotten).</summary>
     Task RemoveModelAsync(string catalogueId, CancellationToken ct = default);
+    /// <summary>
+    /// Has the host remove a model, including the one in use: the host unloads it first and, with
+    /// <paramref name="switchToId"/>, switches to that installed model; without it the host has no model afterwards.
+    /// </summary>
+    Task RemoveModelAsync(string catalogueId, string? switchToId, CancellationToken ct = default);
+    /// <summary>Has the host re-hash an installed model against the model list. Read-only; progress arrives as <see cref="StoreProgress"/>.</summary>
+    Task VerifyModelAsync(string catalogueId, CancellationToken ct = default);
+    /// <summary>The models folder, to open in Explorer. The host changes nothing.</summary>
+    Task<string> GetStoreFolderAsync(CancellationToken ct = default);
+    /// <summary>Moves the models to a folder (the host adds its own "Portal AI Host Models" subfolder); progress arrives as <see cref="StoreProgress"/>.</summary>
+    Task MoveStoreAsync(string parentFolder, CancellationToken ct = default);
+    /// <summary>Cancels a running move or check.</summary>
+    Task CancelStoreOperationAsync(CancellationToken ct = default);
     /// <summary>Has the host remove a model left in an earlier models folder, with the same store rules.</summary>
     Task RemoveOldModelAsync(string catalogueId, string storeFolder, CancellationToken ct = default);
     Task ActivateModelAsync(string catalogueId, CancellationToken ct = default);
@@ -95,6 +114,12 @@ public interface IHostControl
 
 /// <summary>One piece of a "Try it" reply: the model's thinking text or its answer.</summary>
 public sealed record TryItPiece(string Text, bool IsThinking = false);
+
+/// <summary>Shows a folder in Explorer. Opening only: nothing is changed.</summary>
+public interface IFolderOpener
+{
+    void Open(string path);
+}
 
 /// <summary>Starts the host process when the control pipe is absent.</summary>
 public interface IHostLauncher

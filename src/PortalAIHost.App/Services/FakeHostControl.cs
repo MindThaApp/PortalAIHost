@@ -84,6 +84,27 @@ public sealed class FakeHostControl : IHostControl, IDisposable
     public event Action<EngineStateEvent>? EngineStateChanged;
     public event Action<TrayPopupEvent>? TrayPopup;
 #pragma warning restore CS0067
+    public event Action<StoreProgressEvent>? StoreProgress;
+
+    /// <summary>When set, the next remove is refused with this reason (after "removing" was announced).</summary>
+    public string? RefuseNextRemove { get; set; }
+
+    /// <summary>What a check of an installed model finds: "ok" or "damaged".</summary>
+    public string VerifyOutcome { get; set; } = "ok";
+
+    /// <summary>When set, a move is refused up front with this reason.</summary>
+    public string? RefuseMove { get; set; }
+
+    /// <summary>True: a move stays "running" until cancelled (so tests can cancel it).</summary>
+    public bool HoldMove { get; set; }
+
+    public List<string> Moves { get; } = new();
+    public List<(string Id, string? SwitchTo)> Removals { get; } = new();
+    public List<string> Verifies { get; } = new();
+    public int CancelStoreCalls { get; private set; }
+
+    /// <summary>Ids the fake reports as damaged after a failed check.</summary>
+    public HashSet<string> DamagedIds { get; } = new();
 
     /// <summary>Called by the fake launcher: the host "starts" and shows a fresh install.</summary>
     public void HostStarted()
@@ -215,18 +236,76 @@ public sealed class FakeHostControl : IHostControl, IDisposable
         return Task.CompletedTask;
     }
 
-    public Task RemoveModelAsync(string catalogueId, CancellationToken ct = default)
+    public Task RemoveModelAsync(string catalogueId, string? switchToId, CancellationToken ct = default)
     {
+        DownloadProgress?.Invoke(new DownloadProgressEvent { CatalogueId = catalogueId, State = "removing" });
+        if (RefuseNextRemove is { } why)
+        {
+            RefuseNextRemove = null;
+            DownloadProgress?.Invoke(new DownloadProgressEvent { CatalogueId = catalogueId, State = "remove_failed", Message = why });
+            throw new HostRequestException(ErrorCodes.InvalidRequest, why);
+        }
+
         lock (_gate)
         {
+            Removals.Add((catalogueId, switchToId));
+            var wasActive = _activeId == catalogueId;
             RemoveCalls++;
             _downloads.Remove(catalogueId);
+            DamagedIds.Remove(catalogueId);
             var i = _models.FindIndex(m => m.Id == catalogueId);
             if (i >= 0) _models[i] = With(_models[i], installed: false, active: false);
-            if (_activeId == catalogueId) _activeId = null;
+            if (wasActive) _activeId = switchToId;
         }
+
+        StatusChanged?.Invoke(Snapshot());
+        DownloadProgress?.Invoke(new DownloadProgressEvent { CatalogueId = catalogueId, State = "removed" });
         return Task.CompletedTask;
     }
+
+    public Task VerifyModelAsync(string catalogueId, CancellationToken ct = default)
+    {
+        Verifies.Add(catalogueId);
+        StoreProgress?.Invoke(new StoreProgressEvent { Operation = StoreOperations.Verify, State = StoreStates.Running, CatalogueId = catalogueId, Fraction = 0.5 });
+        if (VerifyOutcome == "damaged")
+        {
+            DamagedIds.Add(catalogueId);
+            StoreProgress?.Invoke(new StoreProgressEvent { Operation = StoreOperations.Verify, State = StoreStates.Damaged, CatalogueId = catalogueId, Fraction = 1, Message = "x.gguf does not match the model list." });
+        }
+        else
+        {
+            DamagedIds.Remove(catalogueId);
+            StoreProgress?.Invoke(new StoreProgressEvent { Operation = StoreOperations.Verify, State = StoreStates.Done, CatalogueId = catalogueId, Fraction = 1 });
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public Task<string> GetStoreFolderAsync(CancellationToken ct = default) => Task.FromResult(_settings.ModelsFolder ?? "");
+
+    public Task MoveStoreAsync(string parentFolder, CancellationToken ct = default)
+    {
+        if (RefuseMove is { } why) throw new HostRequestException(ErrorCodes.InvalidRequest, why);
+        Moves.Add(parentFolder);
+        StoreProgress?.Invoke(new StoreProgressEvent { Operation = StoreOperations.Move, State = StoreStates.Running, Fraction = 0.4 });
+        if (!HoldMove)
+            StoreProgress?.Invoke(new StoreProgressEvent { Operation = StoreOperations.Move, State = StoreStates.Done, Fraction = 1, Message = "Your models were moved." });
+        return Task.CompletedTask;
+    }
+
+    public Task CancelStoreOperationAsync(CancellationToken ct = default)
+    {
+        CancelStoreCalls++;
+        if (HoldMove)
+        {
+            HoldMove = false;
+            StoreProgress?.Invoke(new StoreProgressEvent { Operation = StoreOperations.Move, State = StoreStates.Cancelled, Message = "The move was cancelled. Your models are where they were." });
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public Task RemoveModelAsync(string catalogueId, CancellationToken ct = default) => RemoveModelAsync(catalogueId, null, ct);
 
     private static CatalogueModelSummary With(CatalogueModelSummary m, bool installed, bool active) => new()
     {
@@ -392,6 +471,12 @@ public sealed class FakeHostControl : IHostControl, IDisposable
         Id = m.Id, DisplayName = m.DisplayName, Kind = m.Kind, Engine = m.Engine, SizeBytes = m.SizeBytes,
         Quality = m.Quality, Recommended = m.Recommended, Installed = m.Installed, Active = m.Id == _activeId,
         FitsThisPc = m.FitsThisPc, Reason = m.Reason,
+        Damaged = m.Installed && DamagedIds.Contains(m.Id),
+        LastUsedAt = m.Installed ? DateTimeOffset.UtcNow.AddDays(-2) : null,
+        MemoryNeededBytes = m.SizeBytes + 1_000_000_000,
+        LicenceName = "apache-2.0", LicenceUrl = "https://www.apache.org/licenses/LICENSE-2.0",
+        AdviceSummary = m.Id == "chat-14b" ? "A good all-rounder for writing and questions." : null,
+        GoodFor = m.Id == "chat-14b" ? ["everyday chat", "writing"] : null,
         DownloadState = !m.Installed && _downloads.TryGetValue(m.Id, out var d) && d.State != "done" ? d.State : null,
         BytesDone = !m.Installed && _downloads.TryGetValue(m.Id, out var d2) ? d2.BytesDone : 0,
     };
