@@ -278,7 +278,7 @@ public sealed class RemoteAccess : IAsyncDisposable
             Address = address,
             Port = _server.Port,
             Fingerprint = fingerprint,
-            QrText = RemoteNetwork.QrText(address, _server.Port, fingerprint, PairingCrypto.Normalize(offer.Code)!, ShortName(_hostName)),
+            QrText = RemoteNetwork.QrText(address, _server.Port, fingerprint, PairingCrypto.Normalize(offer.Code)!, ShortName(_hostName), PairingRelayUrl()),
         };
     }
 
@@ -325,10 +325,13 @@ public sealed class RemoteAccess : IAsyncDisposable
                 Port = _server.Port,
                 Fingerprint = fingerprint ?? "",
                 QrText = RemoteNetwork.QrText(addresses.FirstOrDefault() ?? "", _server.Port, fingerprint ?? "",
-                    PairingCrypto.Normalize(offer.Code)!, ShortName(_hostName)),
+                    PairingCrypto.Normalize(offer.Code)!, ShortName(_hostName), PairingRelayUrl()),
             },
         };
     }
+
+    /// <summary>The relay address that goes into the pairing QR code: null while the relay is off or has no usable address.</summary>
+    private string? PairingRelayUrl() => _settings.Enabled && _settings.Relay ? RelayUrl(_settings, _o.UseDefaultRelay) : null;
 
     private string RelayState() => _bridge?.State ?? RelayStates.Off;
 

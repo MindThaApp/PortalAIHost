@@ -182,6 +182,20 @@ public sealed class LanRemoteTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task TheOfferCarriesTheRelayAddressOnlyWhileTheRelayIsOn()
+    {
+        await using var remote = NewRemote(allow: _ => true);
+        await remote.ApplyAsync(new RemoteSettings { Enabled = true, Relay = true, RelayUrl = "https://relay.example.test" });
+        var withRelay = remote.StartPairing();
+        Assert.EndsWith("&r=https://relay.example.test", withRelay.QrText);
+        Assert.True(PairingLink.TryParse(remote.Snapshot().Pairing!.QrText, out var link));
+        Assert.Equal("https://relay.example.test", link!.RelayUrl);
+
+        await remote.ApplyAsync(new RemoteSettings { Enabled = true, Relay = false, RelayUrl = "https://relay.example.test" });
+        Assert.DoesNotContain("&r=", remote.StartPairing().QrText);
+    }
+
+    [Fact]
     public async Task AnImpersonatingCertificateIsRejectedBeforeAnyProofIsSent()
     {
         var offer = _remote.StartPairing();

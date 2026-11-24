@@ -79,10 +79,20 @@ public static class RemoteNetwork
         return withGateway;
     }
 
-    /// <summary>The text of the pairing QR code (docs/remote-v1.md section 2).</summary>
-    public static string QrText(string address, int port, string fingerprint, string code, string hostName) =>
+    /// <summary>
+    /// The text of the pairing QR code (docs/remote-v1.md section 2). <paramref name="relayUrl"/> is the relay base
+    /// address, or null when the relay is off (no <c>r</c> field: LAN only).
+    /// </summary>
+    public static string QrText(string address, int port, string fingerprint, string code, string hostName,
+        string? relayUrl = null) =>
         $"{RemoteApi.PairingScheme}://pair?h={Uri.EscapeDataString(address)}&p={port}&f={fingerprint}&c={code}" +
-        $"&n={Uri.EscapeDataString(hostName)}";
+        $"&n={Uri.EscapeDataString(hostName)}" +
+        (string.IsNullOrEmpty(relayUrl) ? "" : $"&r={EscapeRelay(relayUrl)}");
+
+    // ':' and '/' are legal in a query value; keeping them readable saves 4 characters, which the QR code's
+    // 213-byte limit (version 10) can use for a long custom relay address.
+    private static string EscapeRelay(string url) =>
+        Uri.EscapeDataString(url).Replace("%3A", ":", StringComparison.Ordinal).Replace("%2F", "/", StringComparison.Ordinal);
 }
 
 /// <summary>Result of <see cref="RemoteAccessGate.Check"/>.</summary>
