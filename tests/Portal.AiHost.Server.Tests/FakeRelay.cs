@@ -62,6 +62,21 @@ internal sealed class FakeRelay : IAsyncDisposable
 
     public int DeviceCount => _devices.Count;
 
+    private int _deviceAttempts;
+    private int _maxDeviceFrame;
+
+    /// <summary>Device connections that reached the relay (accepted or refused).</summary>
+    public int DeviceAttempts => Volatile.Read(ref _deviceAttempts);
+
+    /// <summary>The largest binary message a device sent.</summary>
+    public int MaxDeviceFrame => Volatile.Read(ref _maxDeviceFrame);
+
+    /// <summary>While set, device connections are refused with this HTTP status before the upgrade.</summary>
+    public int? RefuseDevicesWith { get; set; }
+
+    /// <summary>While set, a device is accepted and then closed at once with this code (no open message).</summary>
+    public int? CloseDevicesWith { get; set; }
+
     /// <summary>The room id the proven host belongs to.</summary>
     public string? Room { get; private set; }
 
@@ -210,6 +225,13 @@ internal sealed class FakeRelay : IAsyncDisposable
 
     private async Task DeviceAsync(HttpContext ctx)
     {
+        Interlocked.Increment(ref _deviceAttempts);
+        if (RefuseDevicesWith is { } refused)
+        {
+            ctx.Response.StatusCode = refused;
+            return;
+        }
+
         var host = _host;
         if (host is not { State: WebSocketState.Open })
         {
@@ -225,6 +247,12 @@ internal sealed class FakeRelay : IAsyncDisposable
 
         var id = Interlocked.Increment(ref _next);
         using var ws = await ctx.WebSockets.AcceptWebSocketAsync();
+        if (CloseDevicesWith is { } closeWith)
+        {
+            await CloseQuietly(ws, (WebSocketCloseStatus)closeWith);
+            return;
+        }
+
         _devices[id] = ws;
         await SendHostAsync(host, Encoding.UTF8.GetBytes($"{{\"t\":\"open\",\"s\":{id}}}"), WebSocketMessageType.Text);
         await SendTextAsync(ws, """{"t":"open"}""");
@@ -236,6 +264,8 @@ internal sealed class FakeRelay : IAsyncDisposable
                 var m = await ReceiveAsync(ws, buffer.AsMemory(4));
                 if (m.Closed) break;
                 if (m.Text is not null) break;
+                int seen;
+                while (m.Length > (seen = Volatile.Read(ref _maxDeviceFrame)) && Interlocked.CompareExchange(ref _maxDeviceFrame, m.Length, seen) != seen) { }
                 BinaryPrimitives.WriteUInt32BigEndian(buffer, id);
                 await SendHostAsync(host, buffer.AsMemory(0, 4 + m.Length), WebSocketMessageType.Binary);
             }

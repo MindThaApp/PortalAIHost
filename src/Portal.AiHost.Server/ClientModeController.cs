@@ -61,12 +61,30 @@ public sealed class ClientModeController : IAsyncDisposable
             var s = link.Status;
             status.PcName = link.Remote?.PcName;
             status.State = StateName(s.State);
-            status.Route = s.State == RemoteLinkState.Connected ? "lan" : "down";
+            status.Route = s.State == RemoteLinkState.Connected ? s.Route ?? RemoteRoutes.Lan : RemoteRoutes.Down;
             status.Reason = s.Reason;
             status.RttMs = s.RttMs;
         }
 
         return status;
+    }
+
+    /// <summary>For <c>/host/status</c>: null in server mode; in client mode the PC's name, the route and the last round trip.</summary>
+    public StatusRemote? StatusRemote()
+    {
+        var link = _link;
+        if (_mode != HostModes.Client || link is null)
+        {
+            return null;
+        }
+
+        var s = link.Status;
+        return new StatusRemote
+        {
+            Name = link.Remote?.PcName ?? "",
+            Route = s.State == RemoteLinkState.Connected ? s.Route ?? RemoteRoutes.Lan : RemoteRoutes.Down,
+            RttMs = s.RttMs,
+        };
     }
 
     private static string StateName(RemoteLinkState state) => state switch

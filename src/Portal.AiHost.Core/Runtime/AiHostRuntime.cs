@@ -837,9 +837,18 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         }
     }
 
+    /// <summary>Set while this host is in client mode: the paired PC's name, the route and the last round trip.</summary>
+    public Func<StatusRemote?>? ClientStatus { get; set; }
+
     private async Task StatusAsync(ApiContext ctx)
     {
         var status = BuildStatus(ctx.Principal);
+        if (ClientStatus?.Invoke() is { } remote)
+        {
+            status.Mode = HostModes.Client;
+            status.Remote = remote;
+        }
+
         if (ctx.Principal is { } principal && status.Client is { } client)
         {
             var clients = await _o.Registry.ListAsync(ctx.Aborted).ConfigureAwait(false);

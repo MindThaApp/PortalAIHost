@@ -50,7 +50,7 @@ public interface IRemoteChannel : IDisposable
     Task<RemoteStreamReply> OpenAsync(RemoteRequest request, CancellationToken ct);
 }
 
-/// <summary>Opens channels to the PC. Only the LAN connector exists in this step; the relay connector comes later.</summary>
+/// <summary>Opens channels to the PC: <see cref="LanConnector"/> on the home network, <see cref="RelayConnector"/> through the relay.</summary>
 public interface IRemoteConnector
 {
     /// <summary>
@@ -89,7 +89,7 @@ public sealed class LanConnector(TimeSpan? connectTimeout = null) : IRemoteConne
         });
     }
 
-    private sealed class Channel(HttpClient http) : IRemoteChannel
+    internal sealed class Channel(HttpClient http) : IRemoteChannel
     {
         private static readonly TimeSpan ShortCallTimeout = TimeSpan.FromSeconds(20);
 

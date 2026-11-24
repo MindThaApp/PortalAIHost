@@ -70,6 +70,12 @@ public sealed class HostStatus
     public string State { get; set; } = HostStates.NoModel;
     public StatusClient? Client { get; init; }
 
+    /// <summary><c>client</c> while this host uses a paired PC (docs/client-mode-v1.md section 4.2); omitted in server mode.</summary>
+    public string? Mode { get; set; }
+
+    /// <summary>The paired PC and the route to it, in client mode only. Never an address, a key or a token.</summary>
+    public StatusRemote? Remote { get; set; }
+
     /// <summary>Keyed by model kind. Expect unknown kinds and ignore them.</summary>
     public Dictionary<string, ModelStatus> Models { get; set; } = new();
 
@@ -80,6 +86,17 @@ public sealed class HostStatus
 
     /// <summary>Live use of the engine. Counts and speeds only. Null until the host has sampled.</summary>
     public HostUsage? Usage { get; set; }
+}
+
+/// <summary>The paired PC as <c>/host/status</c> shows it in client mode.</summary>
+public sealed class StatusRemote
+{
+    public string Name { get; set; } = "";
+
+    /// <summary><c>lan</c>, <c>relay</c> or <c>down</c>.</summary>
+    public string Route { get; set; } = "down";
+
+    public int? RttMs { get; set; }
 }
 
 public sealed class StatusClient
