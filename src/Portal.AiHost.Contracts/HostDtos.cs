@@ -325,6 +325,19 @@ public sealed class HostUsage
 
 // ---- /host/performance -------------------------------------------------------
 
+/// <summary>POST /host/ease-off: an app asks the host to ease off while it does time-critical work.</summary>
+public sealed class EaseOffRequest
+{
+    /// <summary>Short label such as live_audio. Never shown with content.</summary>
+    public string Reason { get; set; } = "";
+
+    /// <summary>How long the request lasts unless renewed, 1000 to 120000 ms.</summary>
+    public int TtlMs { get; set; }
+
+    /// <summary>Memory the app's own models hold, so the host plans around it.</summary>
+    public long? ReservedBytes { get; set; }
+}
+
 /// <summary>GET /host/performance: the limits the host runs under. Read-only for apps.</summary>
 public sealed class PerformanceInfo
 {
@@ -342,13 +355,13 @@ public sealed class PerformanceInfo
     public int CpuThreads { get; set; }
     public string Priority { get; set; } = "low";
 
-    /// <summary>Always 100 until the processor ceiling ships.</summary>
+    /// <summary>The most of the processor the AI may use, 20 to 100.</summary>
     public int CpuCeilingPercent { get; set; } = 100;
 
-    /// <summary>Always empty until the ease-off rules ship.</summary>
+    /// <summary>The ease-off flags that are on.</summary>
     public List<string> EaseOff { get; set; } = new();
 
-    /// <summary>Always null until the ease-off rules ship; written as null so apps can rely on the key.</summary>
+    /// <summary>The reason the host is easing off now, or null; written as null so apps can rely on the key.</summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public string? EasedOffNow { get; set; }
 

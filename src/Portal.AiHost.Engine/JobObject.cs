@@ -13,6 +13,9 @@ public sealed partial class JobObject : IDisposable
     private const int JobObjectExtendedLimitInformation = 9;
     private const uint JobObjectLimitKillOnJobClose = 0x2000;
     private const uint JobObjectLimitJobMemory = 0x0200;
+    private const int JobObjectCpuRateControlInformation = 15;
+    private const uint CpuRateControlEnable = 0x1;
+    private const uint CpuRateControlHardCap = 0x4;
 
     private readonly nint _handle;
     private bool _disposed;
@@ -66,6 +69,33 @@ public sealed partial class JobObject : IDisposable
         return ok;
     }
 
+    /// <summary>
+    /// Caps the processor share of every process in the job (hard cap), as hundredths of a percent of the whole PC
+    /// (1 to 10000), or removes the cap when <paramref name="rate"/> is null. Returns false when the OS refuses.
+    /// </summary>
+    public bool SetCpuRate(int? rate)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        var info = new JOBOBJECT_CPU_RATE_CONTROL_INFORMATION();
+        if (rate is > 0)
+        {
+            info.ControlFlags = CpuRateControlEnable | CpuRateControlHardCap;
+            info.CpuRate = (uint)Math.Clamp(rate.Value, 1, 10000);
+        }
+
+        var ok = SetInformationJobObject(_handle, JobObjectCpuRateControlInformation, ref info,
+            (uint)Marshal.SizeOf<JOBOBJECT_CPU_RATE_CONTROL_INFORMATION>());
+        if (ok)
+        {
+            CpuRate = rate is > 0 ? Math.Clamp(rate.Value, 1, 10000) : null;
+        }
+
+        return ok;
+    }
+
+    /// <summary>The processor cap in force (hundredths of a percent), or null when none is set.</summary>
+    public int? CpuRate { get; private set; }
+
     /// <summary>The memory cap in force, or null when none is set.</summary>
     public long? MemoryLimitBytes { get; private set; }
 
@@ -106,6 +136,13 @@ public sealed partial class JobObject : IDisposable
     }
 
     [StructLayout(LayoutKind.Sequential)]
+    private struct JOBOBJECT_CPU_RATE_CONTROL_INFORMATION
+    {
+        public uint ControlFlags;
+        public uint CpuRate;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
     private struct IO_COUNTERS
     {
         public ulong ReadOperationCount;
@@ -133,6 +170,10 @@ public sealed partial class JobObject : IDisposable
     [LibraryImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool SetInformationJobObject(nint job, int infoClass, ref JOBOBJECT_EXTENDED_LIMIT_INFORMATION info, uint size);
+
+    [LibraryImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool SetInformationJobObject(nint job, int infoClass, ref JOBOBJECT_CPU_RATE_CONTROL_INFORMATION info, uint size);
 
     [LibraryImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]

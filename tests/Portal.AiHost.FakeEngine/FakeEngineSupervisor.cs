@@ -159,6 +159,23 @@ public sealed class FakeEngineSupervisor : IEngineSupervisor
         }
     }
 
+    public int? RequestedCpuCeiling
+    {
+        get { lock (_gate) { return _cpuCeiling; } }
+    }
+
+    /// <summary>Records the wanted ceiling; true only while an engine is loaded.</summary>
+    public bool SetCpuCeiling(int percent)
+    {
+        lock (_gate)
+        {
+            _cpuCeiling = percent;
+            return _state != EngineState.Stopped;
+        }
+    }
+
+    private int? _cpuCeiling;
+
     public Task StopAsync(CancellationToken ct)
     {
         lock (_gate)

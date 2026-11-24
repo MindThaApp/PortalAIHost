@@ -99,3 +99,18 @@ public interface IHardwareProbe
     /// <summary>True on battery power (idle unload uses a shorter timeout).</summary>
     bool IsOnBattery { get; }
 }
+
+/// <summary>
+/// Cheap checks for the ease-off rules. Each call must be quick (no busy loops): the host asks every few seconds.
+/// </summary>
+public interface IEaseOffSensors
+{
+    /// <summary>A full-screen program (game, video, presentation) is in front.</summary>
+    bool IsFullscreen();
+
+    /// <summary>Another program is using the graphics card heavily.</summary>
+    bool IsGpuBusy();
+
+    /// <summary>The PC runs from its battery.</summary>
+    bool IsOnBattery();
+}

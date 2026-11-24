@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using Portal.AiHost.Contracts;
 using Portal.AiHost.Core.Abstractions;
+using Portal.AiHost.Core.Planning;
 
 namespace Portal.AiHost.Engine;
 
@@ -64,6 +65,7 @@ public sealed class EngineSupervisor : IEngineSupervisor, IEngineProcess
     private readonly CancellationTokenSource _disposeCts = new();
     private readonly List<DateTime> _crashes = new();
     private JobObject? _job;
+    private int? _cpuCeiling;
     private System.Diagnostics.ProcessPriorityClass? _priority;
     private EngineState _state = EngineState.Stopped;
     private EngineLaunchSpec? _current;
@@ -143,6 +145,35 @@ public sealed class EngineSupervisor : IEngineSupervisor, IEngineProcess
         }
 
         return proc is not null && TryApplyPriority(proc, priority);
+    }
+
+    public int? RequestedCpuCeiling
+    {
+        get { lock (_sync) { return _cpuCeiling; } }
+    }
+
+    public bool SetCpuCeiling(int percent)
+    {
+        JobObject? job;
+        lock (_sync)
+        {
+            _cpuCeiling = percent;
+            job = _run is null ? null : _job;
+        }
+
+        return job is not null && TryApplyCpuCeiling(job, percent);
+    }
+
+    private static bool TryApplyCpuCeiling(JobObject job, int percent)
+    {
+        try
+        {
+            return job.SetCpuRate(PerformanceModel.CpuRateFor(percent));
+        }
+        catch (ObjectDisposedException)
+        {
+            return false;
+        }
     }
 
     private static bool TryApplyPriority(Process proc, System.Diagnostics.ProcessPriorityClass priority)
@@ -339,6 +370,13 @@ public sealed class EngineSupervisor : IEngineSupervisor, IEngineProcess
         {
             _job ??= new JobObject();
             _job.SetMemoryLimit(spec.MemoryLimitBytes);
+            int? wantedCeiling;
+            lock (_sync)
+            {
+                wantedCeiling = _cpuCeiling;
+            }
+
+            _job.SetCpuRate(wantedCeiling is { } c ? PerformanceModel.CpuRateFor(c) : null);
             _job.Assign(proc);
         }
         catch (Exception e) when (e is System.ComponentModel.Win32Exception or PlatformNotSupportedException)

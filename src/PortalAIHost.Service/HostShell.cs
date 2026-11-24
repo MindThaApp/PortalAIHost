@@ -37,6 +37,9 @@ public sealed class HostShellOptions
     /// <summary>Reads engine memory and processor time for status usage; null leaves usage out.</summary>
     public IProcessUsageProbe? UsageProbe { get; init; }
 
+    /// <summary>Screen and power checks for the ease-off rules; null uses only the hardware probe's battery state.</summary>
+    public IEaseOffSensors? EaseOffSensors { get; init; }
+
     public IModelStore? Store { get; init; }
 
     /// <summary>Opens the model store once this host holds the single-instance lock (used when Store is null).</summary>
@@ -275,6 +278,7 @@ public sealed class HostShell : IAsyncDisposable
             SafeMode = _marker.SafeMode,
             IdlePolicy = IdlePolicyFor,
             UsageProbe = _o.UsageProbe,
+            EaseOffSensors = _o.EaseOffSensors,
         }, ct).ConfigureAwait(false);
 
         await Runtime.ApplyPerformanceAsync(ct).ConfigureAwait(false);
