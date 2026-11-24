@@ -222,7 +222,8 @@ public sealed partial class ModelStore : IModelStoreCleaner
                 }
 
                 var (links, id) = _folder.GetIdentity(f.Path);
-                if (links != 1 || id is null)
+                // Only the very file the host stored is ever removed: a file the user put at that name has another ID (or none is recorded).
+                if (links != 1 || id is null || f.FileId is null || !string.Equals(id, f.FileId, StringComparison.Ordinal))
                 {
                     return null;
                 }
@@ -450,7 +451,7 @@ public sealed partial class ModelStore : IModelStoreCleaner
 
                         var (links, id) = _folder.GetIdentity(f.Path);
                         if (info.Attributes.HasFlag(FileAttributes.ReparsePoint) || links != 1 || info.Length != f.Size
-                            || (f.FileId is not null && !string.Equals(id, f.FileId, StringComparison.Ordinal)))
+                            || f.FileId is null || !string.Equals(id, f.FileId, StringComparison.Ordinal))
                         {
                             ok = false;
                             break;

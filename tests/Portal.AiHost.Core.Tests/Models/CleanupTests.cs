@@ -469,4 +469,40 @@ public class CleanupTests
         Assert.Null(await store.DescribeDamagedAsync("dm", Ct));
         Assert.True(File.Exists(a.Path));
     }
+
+    [Fact]
+    public async Task AFileTheUserPutAtADamagedModelsPathIsNeverOfferedOrDeleted()
+    {
+        using var root = new TestRoot();
+        var store = NewStore(root);
+        var a = await AddFileAsync(store, "dm", "dm.gguf", TestData.RandomBytes(400, 6));
+        File.Delete(a.Path); // the check said "missing"
+        File.WriteAllBytes(a.Path, TestData.RandomBytes(400, 11)); // the user copies their own file in
+
+        Assert.Null(await store.DescribeDamagedAsync("dm", Ct));
+        var result = await store.CleanDamagedAsync("dm", "damaged|dm|forged", Ct);
+
+        Assert.Equal(0, result.FreedBytes);
+        Assert.True(File.Exists(a.Path));
+    }
+
+    [Fact]
+    public async Task FilesWithoutARecordedFileIdAreNeverOffered()
+    {
+        using var root = new TestRoot();
+        var folder = Path.Combine(root.Path, "models");
+        var store = ModelStore.OpenOrCreate(folder, new FakeDisk());
+        var dm = await AddFileAsync(store, "dm", "dm.gguf", TestData.RandomBytes(400, 6));
+        var done = await AddFileAsync(store, "big", "big-00001-of-00002.gguf", TestData.RandomBytes(300, 1));
+        var part = await store.BeginFileAsync("big", "big-00002-of-00002.gguf", Ct);
+        File.SetLastWriteTimeUtc(part, DateTime.UtcNow.AddDays(-20));
+        var storeFolder = store.Location.Path;
+        Tamper(store, storeFolder, t => System.Text.RegularExpressions.Regex.Replace(t, @"""file_id"":\s*""[^""]*""", "\"file_id\": null"));
+
+        var reopened = ModelStore.Open(storeFolder, new FakeDisk());
+
+        Assert.Null(await reopened.DescribeDamagedAsync("dm", Ct));
+        Assert.Empty(await ScanAsync(reopened));
+        Assert.True(File.Exists(dm.Path) && File.Exists(done.Path) && File.Exists(part));
+    }
 }
