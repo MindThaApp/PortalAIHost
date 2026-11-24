@@ -58,6 +58,8 @@ namespace Portal.AiHost.Contracts;
 [JsonSerializable(typeof(EngineStateEvent))]
 [JsonSerializable(typeof(HostSettings))]
 [JsonSerializable(typeof(TryItRequest))]
+[JsonSerializable(typeof(TryItChunkEvent))]
+[JsonSerializable(typeof(TryItDone))]
 [JsonSerializable(typeof(ControlStatus))]
 [JsonSerializable(typeof(EngineCommand))]
 [JsonSerializable(typeof(ActivityReport))]

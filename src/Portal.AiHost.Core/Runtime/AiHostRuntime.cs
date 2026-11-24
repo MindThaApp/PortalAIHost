@@ -673,17 +673,124 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         }
     }
 
+    /// <summary>
+    /// Streaming "Try it" from the window (admin pipe): same queue, same engine, the host as its own caller. Each piece goes to
+    /// <paramref name="onPiece"/> as it arrives. Counts as the app "host.tryit" in the activity counters. Stopping (cancelling
+    /// <paramref name="ct"/>) frees the queue slot and returns a summary with <see cref="TryItDone.Cancelled"/> set.
+    /// </summary>
+    public async Task<TryItDone> TryItStreamAsync(ChatCompletionRequest request, string runId,
+        Action<string?, string?> onPiece, CancellationToken ct)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(onPiece);
+        RequestValidator.ValidateChat(request);
+        var (active, sup) = Require(ModelKinds.Chat);
+        request = ForTryIt(request, active.SupportsReasoning, stream: true, MaxTryItReplyTokens(active, request));
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(ct, _lifetime.Token);
+        linked.CancelAfter(TimeSpan.FromMilliseconds(ApiLimits.DefaultInteractiveDeadlineMs));
+        var done = new TryItDone { RunId = runId };
+        var clock = _o.Time;
+        var begun = clock.GetTimestamp();
+        using var activity = Activity.Begin(TryItAppId);
+        Interlocked.Increment(ref _inFlight);
+        try
+        {
+            await using var lease = await _o.Scheduler.AcquireAsync(new SchedulingRequest
+            {
+                AppId = TryItAppId,
+                Kind = ModelKinds.Chat,
+                Deadline = _o.Time.GetUtcNow().AddMilliseconds(ApiLimits.DefaultInteractiveDeadlineMs),
+            }, null, linked.Token).ConfigureAwait(false);
+            await EnsureLoadedAsync(ModelKinds.Chat, linked.Token).ConfigureAwait(false);
+            var started = clock.GetTimestamp();
+            done.WaitMs = (long)clock.GetElapsedTime(begun, started).TotalMilliseconds;
+            activity.StartGeneration();
+            long usageTokens = 0, pieces = 0, firstAt = 0;
+            try
+            {
+                await foreach (var chunk in sup.StreamChatAsync(request, linked.Token).ConfigureAwait(false))
+                {
+                    if (chunk.Usage is { CompletionTokens: > 0 } u)
+                    {
+                        usageTokens = u.CompletionTokens;
+                    }
+
+                    foreach (var choice in chunk.Choices)
+                    {
+                        var text = choice.Delta.Content;
+                        var thinking = choice.Delta.ReasoningContent;
+                        if (!string.IsNullOrEmpty(text) || !string.IsNullOrEmpty(thinking))
+                        {
+                            if (pieces++ == 0)
+                            {
+                                firstAt = clock.GetTimestamp();
+                                done.FirstTokenMs = (long)clock.GetElapsedTime(started, firstAt).TotalMilliseconds;
+                            }
+
+                            onPiece(string.IsNullOrEmpty(text) ? null : text, string.IsNullOrEmpty(thinking) ? null : thinking);
+                        }
+
+                        done.FinishReason = choice.FinishReason ?? done.FinishReason;
+                    }
+                }
+            }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested && !_lifetime.IsCancellationRequested)
+            {
+                done.Cancelled = true;
+            }
+            finally
+            {
+                var end = clock.GetTimestamp();
+                done.TotalMs = (long)clock.GetElapsedTime(started, end).TotalMilliseconds;
+                done.Tokens = usageTokens > 0 ? usageTokens : pieces;
+                if (firstAt != 0 && done.Tokens > 1)
+                {
+                    var seconds = clock.GetElapsedTime(firstAt, end).TotalSeconds;
+                    if (seconds >= 0.05)
+                    {
+                        done.TokensPerSecond = Math.Round((done.Tokens - 1) / seconds, 1);
+                    }
+                }
+
+                activity.AddTokens(done.Tokens);
+            }
+
+            return done;
+        }
+        catch (OperationCanceledException) when (ct.IsCancellationRequested && !_lifetime.IsCancellationRequested)
+        {
+            // Stopped while still waiting in the queue or loading: the slot is released by leaving the scheduler call.
+            done.Cancelled = true;
+            return done;
+        }
+        finally
+        {
+            Interlocked.Decrement(ref _inFlight);
+        }
+    }
+
+    /// <summary>The reply length "Try it" may use: its own cap, never more than the room left in one slot's context.</summary>
+    private int MaxTryItReplyTokens(ActiveModel model, ChatCompletionRequest request)
+    {
+        var placement = Supervisor(ModelKinds.Chat)?.Current?.Placement;
+        var slots = Math.Max(1, placement?.ParallelSlots ?? model.ParallelSlots);
+        var perSlot = Math.Max(1, (placement?.ContextTokens ?? model.ContextTokens) / slots);
+        var room = Math.Max(MinOutputTokens, perSlot - EstimatePromptTokens(request));
+        return Math.Min(TryItMaxTokens, room);
+    }
+
     /// <summary>Longest reply "Try it" asks for, so a model that rambles or thinks aloud cannot run for minutes.</summary>
     public const int TryItMaxTokens = 768;
 
     private static readonly JsonElement DisableThinking = JsonDocument.Parse("{\"enable_thinking\":false}").RootElement.Clone();
 
-    private static ChatCompletionRequest ForTryIt(ChatCompletionRequest request, bool supportsReasoning) => new()
+    private static ChatCompletionRequest ForTryIt(ChatCompletionRequest request, bool supportsReasoning,
+        bool stream = false, int cap = TryItMaxTokens) => new()
     {
         Model = request.Model,
         Messages = request.Messages,
-        Stream = false,
-        MaxTokens = request.MaxTokens ?? request.MaxCompletionTokens ?? TryItMaxTokens,
+        Stream = stream,
+        MaxTokens = Math.Min(request.MaxTokens ?? request.MaxCompletionTokens ?? cap, cap),
         Temperature = request.Temperature,
         TopP = request.TopP,
         Seed = request.Seed,
