@@ -213,7 +213,7 @@ Differences from loopback:
 
 - A device token only works from the device it was issued to, and a loopback token does not work from a device
   (`401 token_invalid`).
-- Removing the device in the host revokes its tokens; the owner can also remove one app (Apps page) as usual.
+- Removing the device in the host revokes its tokens and ends its requests in flight (queued and running generations are cancelled, open streams are closed); the owner can also remove one app (Apps page) as usual.
 - Pausing, priorities and the fair queue apply by app id, the same as for local apps.
 - `GET /host/ping` also needs the signature headers over the LAN.
 - Browser requests (`Origin`, `Sec-Fetch-*` headers) are refused, as on loopback.
