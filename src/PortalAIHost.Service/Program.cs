@@ -4,6 +4,7 @@ using Portal.AiHost.Contracts.Control;
 using Portal.AiHost.Core.Abstractions;
 using Portal.AiHost.CrashReports;
 using Portal.AiHost.Core.Download;
+using Portal.AiHost.Core.Runtime;
 using Portal.AiHost.Core.Store;
 using Portal.AiHost.Platform.Windows.Power;
 using Portal.AiHost.Engine;
@@ -53,6 +54,8 @@ internal static class Program
             {
                 Paths = paths,
                 Supervisors = supervisors,
+                EngineFiles = () => [.. new[] { RuntimeProbe.Cpu, RuntimeProbe.Vulkan }.Select(f =>
+                    new EngineFileStatus(f, File.Exists(Path.Combine(AppContext.BaseDirectory, "engine", f, RuntimeProbe.ExeName))))],
                 KeyProtector = new DpapiHostKeyProtector(),
                 CallerResolver = new WindowsCallerIdentityResolver(),
                 Hardware = new WindowsHardwareProbe(),

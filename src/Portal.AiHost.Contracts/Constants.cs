@@ -177,6 +177,7 @@ public static class EndpointNames
     public const string Warmup = "warmup";
     public const string Performance = "performance";
     public const string EaseOff = "ease-off";
+    public const string Health = "health";
 }
 
 /// <summary>Route paths.</summary>
@@ -187,6 +188,7 @@ public static class Routes
     public const string Capabilities = "/host/capabilities";
     public const string Performance = "/host/performance";
     public const string EaseOff = "/host/ease-off";
+    public const string Health = "/host/health";
     public const string Warmup = "/host/warmup";
     public const string Tokenize = "/host/tokenize";
     public const string AuthRequests = "/host/auth/requests";

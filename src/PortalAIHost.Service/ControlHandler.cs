@@ -167,6 +167,10 @@ internal sealed class ControlHandler(HostShell shell)
                 return Ok(id, view, AiHostJsonContext.Default.PerformanceView);
             }
 
+            case ControlTypes.GetHealth:
+                return Ok(id, await runtime.BuildHealthAsync(shell.Server is not null, ct).ConfigureAwait(false),
+                    AiHostJsonContext.Default.HealthReport);
+
             case ControlTypes.TryItChat:
             {
                 var tryIt = Payload(r, AiHostJsonContext.Default.TryItRequest)!;

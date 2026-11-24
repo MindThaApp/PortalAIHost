@@ -76,6 +76,9 @@ public sealed class AiHostRuntimeOptions
 
     /// <summary>Screen and power checks for the ease-off rules. Null: only the battery state of <see cref="Hardware"/> is used.</summary>
     public IEaseOffSensors? EaseOffSensors { get; init; }
+
+    /// <summary>Facts for GET /host/health that only the hosting process knows (engine files, free disk, damaged marks).</summary>
+    public HealthSources? Health { get; init; }
 }
 
 /// <summary>
@@ -471,7 +474,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
             [
                 EndpointNames.ChatCompletions, EndpointNames.Embeddings, EndpointNames.Models,
                 EndpointNames.Tokenize, EndpointNames.Warmup, EndpointNames.Performance,
-                EndpointNames.EaseOff,
+                EndpointNames.EaseOff, EndpointNames.Health,
             ],
         };
     }
@@ -700,6 +703,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         p.Map("GET", Routes.Models, ctx => Tracked(ctx, ListModelsAsync));
         p.Map("GET", Routes.Performance, ctx => Tracked(ctx, c =>
             PerformanceEndpointAsync(c)));
+        p.Map("GET", Routes.Health, ctx => Tracked(ctx, HealthEndpointAsync));
         p.Map("POST", Routes.EaseOff, ctx => Tracked(ctx, EaseOffSetAsync));
         p.Map("DELETE", Routes.EaseOff, ctx => Tracked(ctx, EaseOffClearAsync));
         p.Map("POST", Routes.Warmup, ctx => Tracked(ctx, WarmupAsync));

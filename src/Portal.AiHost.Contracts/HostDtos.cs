@@ -440,3 +440,82 @@ public sealed class PerformancePresetValues
     public int CpuThreads { get; set; }
     public string Priority { get; set; } = "low";
 }
+
+// ---- /host/health ------------------------------------------------------------
+
+/// <summary>Values of <see cref="HealthCheck.Status"/>.</summary>
+public static class HealthStatuses
+{
+    public const string Ok = "ok";
+    public const string Warn = "warn";
+    public const string Fail = "fail";
+}
+
+/// <summary>Values of <see cref="HealthCheck.Id"/>. New ids may appear; clients ignore ids they do not know.</summary>
+public static class HealthIds
+{
+    public const string Service = "service";
+    public const string Engine = "engine_files";
+    public const string Graphics = "graphics";
+    public const string Model = "model";
+    public const string Disk = "disk";
+    public const string Memory = "memory";
+    public const string EaseOff = "ease_off";
+    public const string MemoryCap = "memory_cap";
+}
+
+/// <summary>
+/// Values of <see cref="HealthCheck.FixAction"/>. Each one is an operation the host already has: nothing here
+/// deletes or overwrites anything.
+/// </summary>
+public static class HealthFixes
+{
+    /// <summary>Load the active model now (engine.load).</summary>
+    public const string LoadModel = "load_model";
+
+    /// <summary>Stop the engine and load the model again (engine.unload, then engine.load).</summary>
+    public const string RestartEngine = "restart_engine";
+
+    /// <summary>Re-check the files of the model in <see cref="HealthCheck.FixTarget"/> (models.verify).</summary>
+    public const string CheckFiles = "check_files";
+
+    /// <summary>Open Settings, Performance (the link in <see cref="HealthCheck.FixTarget"/>).</summary>
+    public const string OpenPerformance = "open_performance";
+
+    /// <summary>Open the Models page.</summary>
+    public const string OpenModels = "open_models";
+}
+
+/// <summary>One line of the health report.</summary>
+public sealed class HealthCheck
+{
+    /// <summary>One of <see cref="HealthIds"/>.</summary>
+    public string Id { get; set; } = "";
+
+    /// <summary>ok, warn or fail (<see cref="HealthStatuses"/>).</summary>
+    public string Status { get; set; } = HealthStatuses.Ok;
+
+    /// <summary>Short plain-language name, for example "Graphics card".</summary>
+    public string Title { get; set; } = "";
+
+    /// <summary>One or two plain sentences on what was found.</summary>
+    public string Detail { get; set; } = "";
+
+    /// <summary>One of <see cref="HealthFixes"/>, or omitted when nothing the host can do fixes it.</summary>
+    public string? FixAction { get; set; }
+
+    /// <summary>What the fix applies to: a model id for check_files, a portal-ai-host: link for open_performance.</summary>
+    public string? FixTarget { get; set; }
+}
+
+/// <summary>GET /host/health: whether the host is working, one entry per check. Read-only; changes nothing.</summary>
+public sealed class HealthReport
+{
+    /// <summary>The worst status of the checks.</summary>
+    public string Status { get; set; } = HealthStatuses.Ok;
+
+    /// <summary>How many checks are not ok.</summary>
+    public int NeedsAttention { get; set; }
+
+    public List<HealthCheck> Checks { get; set; } = new();
+}
