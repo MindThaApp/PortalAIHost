@@ -276,4 +276,197 @@ public class CleanupTests
         Assert.Equal(0, result.FreedBytes);
         Assert.True(File.Exists(oldFile));
     }
+
+    // ---- unfinished models are removed whole, or not at all ----
+
+    [Fact]
+    public async Task UnfinishedMultiFileModelIsOneItemAndGoesWholeWithItsFinishedPart()
+    {
+        using var root = new TestRoot();
+        var store = NewStore(root);
+        var done = await AddFileAsync(store, "big", "big-00001-of-00002.gguf", TestData.RandomBytes(2000, 1));
+        var part = await store.BeginFileAsync("big", "big-00002-of-00002.gguf", Ct);
+        await File.WriteAllBytesAsync(part, TestData.RandomBytes(500, 2), Ct);
+        File.SetLastWriteTimeUtc(part, DateTime.UtcNow.AddDays(-3));
+        Assert.Empty(await ScanAsync(store)); // a recent partial keeps the whole model, nothing is dropped alone
+        Assert.True(File.Exists(done.Path));
+
+        File.SetLastWriteTimeUtc(part, DateTime.UtcNow.AddDays(-9));
+        var found = Assert.Single(await ScanAsync(store));
+        Assert.Equal(2500, found.Bytes);
+
+        var result = await store.CleanLeftoversAsync([found.Id], Week, Ct);
+
+        Assert.Equal(["big"], result.RemovedModelIds.ToArray());
+        Assert.False(File.Exists(done.Path));
+        Assert.False(File.Exists(part));
+        Assert.Null(await store.GetAsync("big", Ct)); // never a "complete" model made of the finished part alone
+    }
+
+    private static string Tamper(ModelStore store, string storeFolder, Func<string, string> edit)
+    {
+        store.Dispose();
+        var json = Path.Combine(storeFolder, "store.json");
+        File.WriteAllText(json, edit(File.ReadAllText(json)));
+        return json;
+    }
+
+    [Theory]
+    [InlineData("..\\\\outside.part")]
+    [InlineData("C:\\\\Windows\\\\x.part")]
+    [InlineData("good\\\\good.gguf")]
+    [InlineData("good\\\\other.part")]
+    [InlineData("store.json.part")]
+    public async Task TamperedPartPathIsNeverACandidate(string tampered)
+    {
+        using var root = new TestRoot();
+        var folder = Path.Combine(root.Path, "models");
+        var store = ModelStore.OpenOrCreate(folder, new FakeDisk());
+        var good = await AddFileAsync(store, "good", "good.gguf", TestData.RandomBytes(300, 4));
+        await AddPartialAsync(store, "m", "m.gguf", 100, ageDays: 30);
+        var outside = Path.Combine(root.Path, "outside.part");
+        File.WriteAllText(outside, "x");
+        var storeFolder = store.Location.Path;
+        var json = Tamper(store, storeFolder, t => System.Text.RegularExpressions.Regex.Replace(t, @"""part_path"":\s*""[^""]*""", "\"part_path\": \"" + tampered + "\""));
+
+        var reopened = ModelStore.Open(storeFolder, new FakeDisk());
+
+        Assert.Empty(await ScanAsync(reopened));
+        Assert.True(File.Exists(good.Path) && File.Exists(outside) && File.Exists(json));
+    }
+
+    [Fact]
+    public async Task TwoModelsSharingOnePartPathAreNeitherCandidates()
+    {
+        using var root = new TestRoot();
+        var store = NewStore(root);
+        var part = await AddPartialAsync(store, "a", "a.gguf", 100, ageDays: 30);
+        await AddPartialAsync(store, "b", "b.gguf", 100, ageDays: 30);
+        var storeFolder = store.Location.Path;
+        var rel = Path.GetRelativePath(storeFolder, part).Replace("\\", "\\\\");
+        Tamper(store, storeFolder, t => System.Text.RegularExpressions.Regex.Replace(t, @"""part_path"":\s*""b[^""]*""", "\"part_path\": \"" + rel + "\""));
+
+        Assert.Empty(await ScanAsync(ModelStore.Open(storeFolder, new FakeDisk())));
+        Assert.True(File.Exists(part));
+    }
+
+    // ---- sidecars ----
+
+    [Fact]
+    public async Task SidecarThatAppearedAfterTheScanIsNotDeleted()
+    {
+        using var root = new TestRoot();
+        var store = NewStore(root);
+        await store.EnsureModelAsync("m", "m", "chat", "llama-server", Ct);
+        var part = await store.BeginFileAsync("m", "m.gguf", Ct);
+        File.SetLastWriteTimeUtc(part, DateTime.UtcNow.AddDays(-20));
+        var found = Assert.Single(await ScanAsync(store));
+
+        File.WriteAllText(part + ".json", ""); // a resume file appears (even an empty one)
+        var result = await store.CleanLeftoversAsync([found.Id], Week, Ct);
+
+        Assert.Equal(0, result.FreedBytes);
+        Assert.True(File.Exists(part));
+        Assert.True(File.Exists(part + ".json"));
+    }
+
+    [Fact]
+    public async Task SidecarThatIsALinkMakesTheItemNotACandidate()
+    {
+        using var root = new TestRoot();
+        var store = NewStore(root);
+        await store.EnsureModelAsync("m", "m", "chat", "llama-server", Ct);
+        var part = await store.BeginFileAsync("m", "m.gguf", Ct);
+        File.SetLastWriteTimeUtc(part, DateTime.UtcNow.AddDays(-20));
+        var target = Path.Combine(root.Sub("elsewhere"), "t.json");
+        File.WriteAllText(target, "{}");
+        try
+        {
+            File.CreateSymbolicLink(part + ".json", target);
+        }
+        catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
+        {
+            TestRoot.CreateHardLink(part + ".json", target); // no symlink right here: a hard link is refused the same way
+        }
+
+        Assert.Empty(await ScanAsync(store));
+        Assert.True(File.Exists(target) && File.Exists(part));
+    }
+
+    [Fact]
+    public async Task DownloadStartedBetweenScanAndCleanKeepsTheFiles()
+    {
+        using var root = new TestRoot();
+        var store = NewStore(root);
+        var part = await AddPartialAsync(store, "m", "m.gguf", 100, ageDays: 30);
+        var found = Assert.Single(await ScanAsync(store));
+
+        using (store.AcquireDownload("m"))
+        {
+            var result = await store.CleanLeftoversAsync([found.Id], Week, Ct);
+            Assert.Equal(0, result.FreedBytes);
+            Assert.Single(result.Skipped);
+        }
+
+        Assert.True(File.Exists(part));
+        Assert.NotNull(await store.GetAsync("m", Ct));
+    }
+
+    // ---- damaged models ----
+
+    [Fact]
+    public async Task DamagedModelIsRemovedFileByFileAndOnlyThePresentOnes()
+    {
+        using var root = new TestRoot();
+        var store = NewStore(root);
+        var a = await AddFileAsync(store, "dm", "dm-00001-of-00002.gguf", TestData.RandomBytes(400, 6));
+        var b = await AddFileAsync(store, "dm", "dm-00002-of-00002.gguf", TestData.RandomBytes(300, 7));
+        File.WriteAllBytes(a.Path, new byte[100]); // damaged: truncated on disk
+        File.Delete(b.Path); // and one file is already gone
+
+        var item = (await store.DescribeDamagedAsync("dm", Ct))!;
+        Assert.Equal(100, item.Bytes);
+
+        var result = await store.CleanDamagedAsync("dm", item.Id, Ct);
+
+        Assert.Equal(100, result.FreedBytes);
+        Assert.Equal(["dm"], result.RemovedModelIds.ToArray());
+        Assert.False(File.Exists(a.Path));
+        Assert.Null(await store.GetAsync("dm", Ct));
+    }
+
+    [Fact]
+    public async Task DamagedModelWhoseFileChangedAfterTheScanIsLeftAlone()
+    {
+        using var root = new TestRoot();
+        var store = NewStore(root);
+        var a = await AddFileAsync(store, "dm", "dm.gguf", TestData.RandomBytes(400, 6));
+        File.WriteAllBytes(a.Path, new byte[100]);
+        var item = (await store.DescribeDamagedAsync("dm", Ct))!;
+
+        File.Delete(a.Path); // the user put a different file at that name since (new file ID)
+        File.WriteAllBytes(a.Path, TestData.RandomBytes(100, 9));
+        var result = await store.CleanDamagedAsync("dm", item.Id, Ct);
+
+        Assert.Equal(0, result.FreedBytes);
+        Assert.Single(result.Skipped);
+        Assert.True(File.Exists(a.Path));
+        Assert.NotNull(await store.GetAsync("dm", Ct));
+    }
+
+    [Fact]
+    public async Task HardLinkedOrDownloadingDamagedModelIsNotDescribed()
+    {
+        using var root = new TestRoot();
+        var store = NewStore(root);
+        var a = await AddFileAsync(store, "dm", "dm.gguf", TestData.RandomBytes(400, 6));
+        using (store.AcquireDownload("dm"))
+        {
+            Assert.Null(await store.DescribeDamagedAsync("dm", Ct));
+        }
+
+        TestRoot.CreateHardLink(Path.Combine(root.Sub("elsewhere"), "l.bin"), a.Path);
+        Assert.Null(await store.DescribeDamagedAsync("dm", Ct));
+        Assert.True(File.Exists(a.Path));
+    }
 }

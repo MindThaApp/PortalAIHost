@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using Portal.AiHost.Contracts;
 using Portal.AiHost.Contracts.Control;
 using Portal.AiHost.Core.Abstractions;
@@ -109,5 +110,45 @@ public sealed partial class ModelManagementTests
         Assert.False(File.Exists(fileB));
         Assert.Contains(oldRoot, h.Forgotten, StringComparer.OrdinalIgnoreCase);
         Assert.Equal(a, File.ReadAllBytes(await PathOfAsync(store, "model-a")));
+    }
+
+    [Fact(Timeout = 30000)]
+    public async Task A_stale_damaged_note_does_not_remove_a_file_that_changed_after_the_scan()
+    {
+        var (root, store, h, fileA, fileB, oldRoot, a, b) = await TwoModelsAsync();
+        using var _r = root;
+        using var _s = store;
+        h.Notes.MarkDamaged("model-a", "x");
+        var scan = await h.Center.ScanCleanupAsync(CancellationToken.None);
+        var item = Assert.Single(scan.Items);
+
+        File.Delete(fileA); // replaced by a different file since the check
+        File.WriteAllBytes(fileA, RandomNumberGenerator.GetBytes(77));
+        var result = await h.Center.CleanupAsync([item.Id], CancellationToken.None);
+
+        Assert.Empty(result.Removed);
+        Assert.Single(result.Skipped);
+        Assert.True(File.Exists(fileA));
+        Assert.NotNull(await store.GetAsync("model-a", CancellationToken.None));
+    }
+
+    [Fact(Timeout = 30000)]
+    public async Task A_model_being_switched_on_blocks_a_clean_and_a_clean_blocks_switching()
+    {
+        var (root, store, h, fileA, fileB, oldRoot, a, b) = await TwoModelsAsync();
+        using var _r = root;
+        using var _s = store;
+        h.Notes.MarkDamaged("model-a", "x");
+        var scan = await h.Center.ScanCleanupAsync(CancellationToken.None);
+
+        using (h.Center.EnterActivation())
+        {
+            Assert.NotNull((await h.Center.ScanCleanupAsync(CancellationToken.None)).BusyReason);
+            await Assert.ThrowsAsync<ControlPipeException>(() => h.Center.CleanupAsync([scan.Items.Single().Id], CancellationToken.None));
+        }
+
+        Assert.True(File.Exists(fileA));
+        var result = await h.Center.CleanupAsync([scan.Items.Single().Id], CancellationToken.None);
+        Assert.Single(result.Removed);
     }
 }

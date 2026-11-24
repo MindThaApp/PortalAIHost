@@ -210,7 +210,7 @@ public sealed partial class ModelStore : IModelStoreCleaner
             foreach (var f in m.Files)
             {
                 var info = new FileInfo(_folder.Resolve(f.Path));
-                if (Directory.Exists(info.FullName) || info.Attributes.HasFlag(FileAttributes.ReparsePoint))
+                if (Directory.Exists(info.FullName) || (info.Exists && info.Attributes.HasFlag(FileAttributes.ReparsePoint)))
                 {
                     return null;
                 }
