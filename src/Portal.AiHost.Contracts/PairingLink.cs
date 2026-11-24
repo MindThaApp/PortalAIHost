@@ -46,11 +46,15 @@ public sealed record PairingLink(
 
         fields.TryGetValue("n", out var name);
         fields.TryGetValue("r", out var relay);
-        link = new PairingLink(host, port, fingerprint, code, name ?? "", SafeRelay(relay));
+        link = new PairingLink(host, port, fingerprint, code, name ?? "", ValidateRelayUrl(relay));
         return true;
     }
 
-    private static string? SafeRelay(string? text)
+    /// <summary>
+    /// The relay address in its canonical form, or null when it is missing or unsafe (not https, has user info, or http on a
+    /// non-loopback host). Used for pairing links and for a saved relay address before it is used.
+    /// </summary>
+    public static string? ValidateRelayUrl(string? text)
     {
         if (!Uri.TryCreate(text, UriKind.Absolute, out var uri) || uri.UserInfo.Length > 0)
         {
