@@ -23,7 +23,10 @@ public sealed class RemoteAccessOptions
     /// <summary>Name shown to a new device. Default: the computer name.</summary>
     public string? HostName { get; init; }
 
-    /// <summary>Tests: listen on this address (null: every interface).</summary>
+    /// <summary>
+    /// Tests only: listen on this address instead of every interface. Must be a loopback address, so that no test
+    /// ever opens a port on the real network (that raises a Windows Firewall prompt).
+    /// </summary>
     public IPAddress? BindAddress { get; init; }
 
     /// <summary>Tests: which source addresses are served (default: private networks only).</summary>
@@ -34,6 +37,18 @@ public sealed class RemoteAccessOptions
 
     /// <summary>Tests: addresses to put in the QR code instead of this PC's network addresses.</summary>
     public Func<List<string>>? Addresses { get; init; }
+
+    /// <summary>
+    /// Use the built-in relay address when the setting names none. Off unless the real host turns it on, so that no
+    /// test ever reaches the internet by accident.
+    /// </summary>
+    public bool UseDefaultRelay { get; init; }
+
+    /// <summary>Tests: wait this long before the first reconnect to the relay (default 2 s).</summary>
+    public TimeSpan? RelayInitialDelay { get; init; }
+
+    /// <summary>Tests: longest wait between reconnects to the relay (default 5 minutes).</summary>
+    public TimeSpan? RelayMaxDelay { get; init; }
 }
 
 /// <summary>
@@ -49,6 +64,9 @@ public sealed class RemoteAccess : IAsyncDisposable
     private readonly SemaphoreSlim _applyGate = new(1, 1);
     private readonly string _hostName;
     private LanServer? _server;
+    private bool _serverHasBridge;
+    private RelayBridge? _bridge;
+    private string? _bridgeUrl;
     private PairingService? _pairing;
     private DeviceRequestVerifier? _verifier;
     private System.Security.Cryptography.X509Certificates.X509Certificate2? _certificate;
@@ -59,8 +77,13 @@ public sealed class RemoteAccess : IAsyncDisposable
 
     public RemoteAccess(AiHostRuntime runtime, RemoteAccessOptions options)
     {
-        ArgumentNullException.ThrowIfNull(runtime);
         ArgumentNullException.ThrowIfNull(options);
+        if (options.BindAddress is { } bind && !IPAddress.IsLoopback(bind))
+        {
+            throw new ArgumentException("A test listener may only bind a loopback address.", nameof(options));
+        }
+
+        ArgumentNullException.ThrowIfNull(runtime);
         _runtime = runtime;
         _o = options;
         _time = options.Time ?? TimeProvider.System;
@@ -104,9 +127,25 @@ public sealed class RemoteAccess : IAsyncDisposable
             var wantOn = settings.Enabled && gate.Allowed;
             var port = EffectivePort(settings);
             var running = _server is not null;
-            _settings = new RemoteSettings { Enabled = settings.Enabled, Port = settings.Port };
+            _settings = new RemoteSettings
+            {
+                Enabled = settings.Enabled, Port = settings.Port, Relay = settings.Relay, RelayUrl = settings.RelayUrl,
+            };
+            var wantRelay = wantOn && settings.Relay;
             _problem = settings.Enabled && !gate.Allowed ? gate.Reason ?? "Other devices are not available." : null;
-            if (running && (!wantOn || _server!.Port != port && _o.PortOverride is null))
+            var url = wantRelay ? RelayUrl(settings, _o.UseDefaultRelay) : null;
+            var noAddress = string.IsNullOrWhiteSpace(settings.RelayUrl) && !_o.UseDefaultRelay;
+            if (wantRelay && url is null && !noAddress)
+            {
+                _problem = "The relay address is not valid, so this PC can only be reached at home.";
+            }
+
+            if (_bridge is not null && (!wantRelay || url is null || url != _bridgeUrl))
+            {
+                await StopBridgeAsync().ConfigureAwait(false);
+            }
+
+            if (running && (!wantOn || _server!.Port != port && _o.PortOverride is null || _serverHasBridge != wantRelay))
             {
                 await StopServerAsync().ConfigureAwait(false);
                 running = false;
@@ -114,7 +153,21 @@ public sealed class RemoteAccess : IAsyncDisposable
 
             if (wantOn && !running)
             {
-                await StartServerAsync(port, ct).ConfigureAwait(false);
+                await StartServerAsync(port, wantRelay, ct).ConfigureAwait(false);
+            }
+
+            if (wantRelay && _bridge is null && _server?.BridgeEndPoint is { } target && url is not null && _certificate is not null)
+            {
+                _bridgeUrl = url;
+                _bridge = RelayBridge.Start(new RelayBridgeOptions
+                {
+                    Url = new Uri(url),
+                    Certificate = _certificate,
+                    LocalTarget = target,
+                    InitialDelay = _o.RelayInitialDelay ?? TimeSpan.FromSeconds(2),
+                    MaxDelay = _o.RelayMaxDelay ?? TimeSpan.FromMinutes(5),
+                });
+                _bridge.StateChanged += RaiseChanged;
             }
         }
         finally
@@ -125,7 +178,38 @@ public sealed class RemoteAccess : IAsyncDisposable
         RaiseChanged();
     }
 
-    private async Task StartServerAsync(int port, CancellationToken ct)
+    /// <summary>The relay address to use: the setting if it is valid, else the default. Null if neither is usable.</summary>
+    internal static string? RelayUrl(RemoteSettings settings, bool useDefault)
+    {
+        if (string.IsNullOrWhiteSpace(settings.RelayUrl) && !useDefault)
+        {
+            return null;
+        }
+
+        var text = string.IsNullOrWhiteSpace(settings.RelayUrl) ? RemoteApi.RelayDefaultUrl : settings.RelayUrl.Trim();
+        if (!Uri.TryCreate(text, UriKind.Absolute, out var uri) || uri.UserInfo.Length > 0)
+        {
+            return null;
+        }
+
+        // https only; plain http is for a relay on this very PC (tests).
+        var ok = uri.Scheme == Uri.UriSchemeHttps || uri.Scheme == Uri.UriSchemeHttp && uri.IsLoopback;
+        return ok ? uri.GetLeftPart(UriPartial.Authority) : null;
+    }
+
+    private async Task StopBridgeAsync()
+    {
+        var bridge = _bridge;
+        _bridge = null;
+        _bridgeUrl = null;
+        if (bridge is not null)
+        {
+            bridge.StateChanged -= RaiseChanged;
+            await bridge.DisposeAsync().ConfigureAwait(false);
+        }
+    }
+
+    private async Task StartServerAsync(int port, bool bridgeEndpoint, CancellationToken ct)
     {
         try
         {
@@ -144,7 +228,9 @@ public sealed class RemoteAccess : IAsyncDisposable
                 Port = port,
                 BindAddress = _o.BindAddress,
                 AllowSource = _o.AllowSource ?? RemoteNetwork.IsPrivateAddress,
+                EnableBridgeEndpoint = bridgeEndpoint,
             }, ct).ConfigureAwait(false);
+            _serverHasBridge = bridgeEndpoint;
         }
         catch (Exception ex) when (ex is IOException or InvalidOperationException or SocketException
             or System.Security.Cryptography.CryptographicException or UnauthorizedAccessException)
@@ -158,6 +244,7 @@ public sealed class RemoteAccess : IAsyncDisposable
 
     private async Task StopServerAsync()
     {
+        await StopBridgeAsync().ConfigureAwait(false);
         var server = _server;
         _server = null;
         _pairing?.Cancel();
@@ -228,6 +315,7 @@ public sealed class RemoteAccess : IAsyncDisposable
             {
                 DeviceId = d.Id, Name = d.Name, CreatedAt = d.CreatedAt, LastSeenAt = d.LastSeenAt,
             })],
+            Relay = RelayState(),
             Pairing = offer is null || _server is null ? null : new PairingOfferInfo
             {
                 Code = offer.Code,
@@ -241,6 +329,8 @@ public sealed class RemoteAccess : IAsyncDisposable
             },
         };
     }
+
+    private string RelayState() => _bridge?.State ?? RelayStates.Off;
 
     private List<string> AddressList() => _o.Addresses?.Invoke() ?? RemoteNetwork.LanAddresses();
 

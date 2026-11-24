@@ -17,6 +17,8 @@ public sealed partial class SettingsViewModel
     public ObservableCollection<DeviceRow> Devices { get; } = [];
 
     [ObservableProperty] private bool _remoteEnabled;
+    [ObservableProperty] private bool _remoteRelay = true;
+    [ObservableProperty] private string _relayStatusText = "";
     [ObservableProperty] private bool _hasRemoteProblem;
     [ObservableProperty] private string _remoteProblem = "";
     [ObservableProperty] private bool _hasDevices;
@@ -33,6 +35,12 @@ public sealed partial class SettingsViewModel
     partial void OnHasDevicesChanged(bool value) => OnPropertyChanged(nameof(NoDevices));
 
     partial void OnRemoteEnabledChanged(bool value)
+    {
+        if (_loading) return;
+        _ = SetRemoteEnabledAsync();
+    }
+
+    partial void OnRemoteRelayChanged(bool value)
     {
         if (_loading) return;
         _ = SetRemoteEnabledAsync();
@@ -66,6 +74,13 @@ public sealed partial class SettingsViewModel
         RemoteEnabled = status.Enabled;
         _loading = wasLoading;
 
+        RelayStatusText = !status.Enabled ? "" : status.Relay switch
+        {
+            RelayStates.Connected => _s.Get("Vm_RelayAway"),
+            RelayStates.Connecting => _s.Get("Vm_RelayConnecting"),
+            RelayStates.Unreachable => _s.Get("Vm_RelayUnreachable"),
+            _ => _s.Get("Vm_RelayHomeOnly"),
+        };
         RemoteProblem = status.Problem ?? "";
         HasRemoteProblem = status.Problem is { Length: > 0 };
         RemoteAddressText = status.Listening && status.Addresses.Count > 0

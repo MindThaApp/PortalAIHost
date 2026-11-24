@@ -8,6 +8,15 @@ public sealed class RemoteSettings
 
     /// <summary><see cref="RemoteApi.DefaultPort"/> to <see cref="RemoteApi.LastPort"/> (the range the firewall rule opens).</summary>
     public int Port { get; set; } = RemoteApi.DefaultPort;
+
+    /// <summary>
+    /// Also reach this PC away from home through the relay (remote.relay). On by default, but it only does anything
+    /// while <see cref="Enabled"/> is on. The relay only passes encrypted bytes along.
+    /// </summary>
+    public bool Relay { get; set; } = true;
+
+    /// <summary>Replaces <see cref="RemoteApi.RelayDefaultUrl"/> (testing). Null or empty uses the default.</summary>
+    public string? RelayUrl { get; set; }
 }
 
 /// <summary>Payload of remote.device_remove.</summary>
@@ -58,4 +67,21 @@ public sealed class RemoteStatus
 
     /// <summary>The open pairing code, if any.</summary>
     public PairingOfferInfo? Pairing { get; set; }
+
+    /// <summary>One of <see cref="RelayStates"/>.</summary>
+    public string Relay { get; set; } = RelayStates.Off;
+}
+
+/// <summary>Values of <see cref="RemoteStatus.Relay"/>.</summary>
+public static class RelayStates
+{
+    /// <summary>The relay is turned off, or other devices are off: home network only.</summary>
+    public const string Off = "off";
+    public const string Connecting = "connecting";
+
+    /// <summary>The host holds a verified connection to the relay: reachable away from home.</summary>
+    public const string Connected = "connected";
+
+    /// <summary>The relay could not be reached (it keeps trying).</summary>
+    public const string Unreachable = "unreachable";
 }

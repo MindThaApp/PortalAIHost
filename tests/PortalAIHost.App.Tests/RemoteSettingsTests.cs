@@ -28,6 +28,26 @@ public class RemoteSettingsTests
     }
 
     [Fact]
+    public async Task TheRelayStatusLineFollowsTheSwitches()
+    {
+        var (rig, vm) = await StartAsync();
+        using var _ = rig;
+        Assert.True(vm.RemoteRelay); // on by default
+        Assert.Equal("", vm.RelayStatusText); // nothing to say while other devices are off
+
+        vm.RemoteEnabled = true;
+        await vm.RefreshRemoteAsync();
+        Assert.Equal("Vm_RelayAway", vm.RelayStatusText);
+        Assert.True((await rig.Host.GetSettingsAsync()).Remote.Relay);
+
+        vm.RemoteRelay = false;
+        Assert.False((await rig.Host.GetSettingsAsync()).Remote.Relay);
+        await vm.RefreshRemoteAsync();
+        Assert.Equal("Vm_RelayHomeOnly", vm.RelayStatusText);
+        Assert.True((await rig.Host.GetSettingsAsync()).Remote.Enabled); // the other setting is kept
+    }
+
+    [Fact]
     public async Task TurningItOnSavesTheSettingAndKeepsItWhenOtherSettingsChange()
     {
         var (rig, vm) = await StartAsync();

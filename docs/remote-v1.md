@@ -1,6 +1,6 @@
 # Portal AI Host: LAN access protocol, version 1
 
-Status: draft 1, 2026-11-24. Audience: teams building a client that uses a Portal AI Host on another PC in the same
+Status: draft 2, 2026-11-24 (adds section 10, the relay). Audience: teams building a client that uses a Portal AI Host on another PC in the same
 home network (the Portal AI chat app on a laptop or phone). Read [api-v1.md](api-v1.md) first: after pairing, a device
 uses **the same endpoints, tokens, errors and streaming** as an app on the host PC. This document only adds what is
 new: finding the host, pairing, TLS pinning and request signing.
@@ -229,7 +229,7 @@ Differences from loopback:
   that check (or accepts a typed code without it) loses this protection and must not be shipped.
 - The device's private key must stay on the device. The host stores only the public key.
 - The time check needs reasonably correct clocks (within 2 minutes).
-- Not in v1: automatic discovery (mDNS), relay over the internet, certificate rotation.
+- Not in v1: automatic discovery (mDNS), certificate rotation. Reaching the host away from home is the optional relay of section 10.
 
 ## 8. Worked example
 
@@ -275,3 +275,103 @@ a request to a host.
 - Treat `token_invalid` after a host reset like loopback: ask again, do not loop.
 - Show the host name from pairing, and the owner's approval status, in your own words.
 - Keep the private key in the platform key store; never log codes, tokens, keys or signatures.
+
+## 10. Relay: reaching the host away from home
+
+When the owner leaves "Also reach this PC away from home" on (the default, setting `remote.relay`), the host keeps one
+outbound connection to a small relay on the internet. A device that is not on the home network opens a second connection
+to the same relay and the relay copies bytes between the two. **The relay is a blind pipe.** The device runs its normal
+TLS handshake to the host's pinned certificate **through** the pipe, so the relay only ever sees encrypted bytes.
+Pairing (section 3), request signing (section 4) and everything else in this document work unchanged inside that tunnel.
+Remote use is meant for text chat; the limits below are strict on purpose.
+
+### 10.1 What a device needs
+
+- The pinned certificate fingerprint `F` (32 bytes, SHA-256 of the certificate DER; the `f` field of the QR code).
+  Nothing else: **the room id is derived from `F`**.
+- `room = base64url_nopad( SHA-256( "portalai-relay-v1" || F ) )`, where `"portalai-relay-v1"` is the 17 ASCII bytes
+  and `F` the 32 raw bytes. The result is 43 characters.
+- The relay address. Default `https://portal-relay.aiportal.workers.dev` (the owner can override it in the host's
+  settings for testing; a device needs to know the same address, for example from a setting or a future QR field).
+
+A device tries the home network first (section 2) and falls back to the relay when the host's address cannot be reached.
+
+### 10.2 Device connection
+
+1. Open a WebSocket to `wss://<relay>/v1/device/<room>`.
+   - HTTP `503 {"error":"host_offline"}` before the upgrade: the host is not connected to the relay.
+   - HTTP `429 {"error":"too_many_streams"}`: 8 streams are already open for this host.
+   - HTTP `429 {"error":"too_many_connections"}`: this address opened too many connections in the last minute.
+2. The relay's first message is the text `{"t":"open"}`: the stream is bound to the host.
+3. From then on **binary messages are the raw bytes of one TCP stream** to the host's HTTPS port, with no extra framing:
+   run TLS (client side) over them, pin `F`, then use HTTP/1.1 exactly as in sections 3 to 6. Each binary message carries
+   at most 65536 bytes (split larger writes). A device must not send text messages.
+4. Either side closing ends the stream. Treat a close as the TCP connection closing. Close codes used by the relay:
+
+| Code | Meaning |
+|---|---|
+| 1000 | The host closed the stream (the PC hung up). |
+| 1003 | A text message was sent. |
+| 1009 | A frame was larger than 65536 bytes. |
+| 4404 | The host left the relay. |
+| 4408 | The stream was idle for 2 minutes (or the unproven host socket timed out or was evicted). |
+| 4410 | The host disconnected or was replaced; reconnect. |
+| 4429 | The room went over its byte budget; try again in a minute. |
+
+The host answers a TLS handshake only for its own certificate. If the pinned fingerprint does not match what arrives,
+abort as in section 5. The relay cannot tell a good device from a bad one; the host decides, as always, by the device
+signature on every request, so an unpaired device gets `401 device_unauthorized` and nothing else.
+
+Keep-alive: sending the text message `ping` is allowed (the one exception to "no text"); the relay answers `pong`
+without waking the room. A ping does **not** count as activity for the 2-minute idle limit; only data frames do.
+
+### 10.3 Host connection (for implementers of the host side)
+
+1. Open a WebSocket to `wss://<relay>/v1/host/<room>` for the host's own room.
+2. The relay sends `{"t":"challenge","v":1,"room":"<room>","nonce":"<base64url, 32 bytes>"}`.
+3. The host answers within 10 seconds with `{"t":"hello","cert":"<base64url DER>","sig":"<base64url, 64 bytes>"}`:
+   - `cert` is the host certificate (at most 2048 bytes);
+   - `sig` is ECDSA P-256 / SHA-256, in the fixed 64-byte `r || s` form (IEEE P1363, not DER), over the bytes
+     `"portalai-relay-v1-host\n" + room + "\n"` (UTF-8) followed by the 32 nonce bytes.
+4. The relay accepts only if `room` equals the room id derived from the certificate **and** the signature verifies
+   against the certificate's public key. So only the holder of the certificate's private key can open the room;
+   nobody can squat another host's room. Failure closes the socket with code 4401.
+5. `{"t":"ready","v":1,"limits":{...}}` follows. Only one host is connected per room: a newer verified host replaces the
+   older one (older socket closed with 4409, its device streams closed with 4410). A host that is closed with 4409 or
+   4401 waits the longest backoff before it tries again, so two copies do not fight over a room.
+6. Streams. When a device connects the relay sends the host the text `{"t":"open","s":<n>}` (`n` is an unsigned 32-bit
+   id). The host opens one local TCP connection for it. After that:
+   - **binary frames in both directions are tagged:** the first 4 bytes are `n` (big-endian), the rest is payload (at most
+     65536 bytes). The relay strips the tag when it forwards to the device and adds it in the other direction;
+   - `{"t":"close","s":<n>}` in either direction ends stream `n`. The relay sends it when the device leaves or times out;
+     the host sends it when its local connection ends. A `close` is not echoed back to its sender.
+7. Keep-alive: send the text `ping` about every 45 seconds; the relay answers `pong`. If nothing at all arrives for
+   about 2 minutes, drop the connection and reconnect.
+8. Reconnect with exponential backoff (2 s doubling to 5 minutes, with jitter); start over after a connection that
+   reached `ready`.
+
+In the Windows host the local connections go to an internal listener on `127.0.0.1` and a random port. It uses the same
+certificate and the same request handler as the LAN listener, but accepts loopback sources because every connection on
+it comes from the bridge. The LAN listener itself still refuses loopback. Nothing is exposed beyond this PC: the
+internal listener is not reachable from the network, and a program on this PC that finds it still cannot do anything
+without a paired device's signature.
+
+### 10.4 Limits (constants of the relay, `relay/src/protocol.ts`)
+
+| Limit | Value |
+|---|---|
+| Open device streams per host | 8 |
+| Bytes per host per minute (both directions together) | 20 MiB |
+| Largest frame payload | 64 KiB (host frames add the 4-byte tag) |
+| Idle device stream | 2 minutes |
+| Device streams per source address per room | 3 |
+| Time to answer the host challenge | 10 seconds |
+| Unproven host sockets per room | 4 (a newcomer evicts the oldest instead of being refused) |
+| Unproven host sockets per source address per room | 2 (oldest of that address is evicted) |
+| Connections (host or device) per source address per minute | 30 |
+
+The relay logs no payloads and no headers, and stores nothing; it keeps only counters in memory (including one per source
+address for the connection limit). Because everything
+inside the tunnel is TLS with the host's pinned certificate and every request is signed by the device, a compromised or
+malicious relay can stop the service, delay it or read its size and timing, but it cannot read or change messages, and it
+cannot act as a paired device.

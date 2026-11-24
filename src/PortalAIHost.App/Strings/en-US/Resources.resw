@@ -606,6 +606,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="SettingsDevicesHeader.Text" xml:space="preserve"><value>Paired devices</value></data>
   <data name="SettingsNoDevices.Text" xml:space="preserve"><value>No device is paired yet.</value></data>
   <data name="SettingsRemoveDevice.Content" xml:space="preserve"><value>Remove</value></data>
+  <data name="SettingsRemoteRelay.Header" xml:space="preserve"><value>Also reach this PC away from home</value></data>
+  <data name="SettingsRemoteRelay.OnContent" xml:space="preserve"><value>On</value></data>
+  <data name="SettingsRemoteRelay.OffContent" xml:space="preserve"><value>Off</value></data>
+  <data name="SettingsRemoteRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Also reach this PC away from home</value></data>
+  <data name="SettingsRemoteRelayHelp.Text" xml:space="preserve"><value>This PC connects out to a small relay, so a paired device can reach it from anywhere. The relay only passes along scrambled bytes it cannot read, and each device still has to be paired and sign every request.</value></data>
+  <data name="Vm_RelayAway" xml:space="preserve"><value>Reachable away from home</value></data>
+  <data name="Vm_RelayHomeOnly" xml:space="preserve"><value>Home network only</value></data>
+  <data name="Vm_RelayUnreachable" xml:space="preserve"><value>Can&apos;t reach the relay</value></data>
+  <data name="Vm_RelayConnecting" xml:space="preserve"><value>Connecting to the relay...</value></data>
   <data name="Vm_RemoteAddress" xml:space="preserve"><value>This PC can be reached at {0}, port {1}.</value></data>
   <data name="Vm_RemoteLastSeen" xml:space="preserve"><value>Last used {0}</value></data>
   <data name="Vm_RemoteNeverSeen" xml:space="preserve"><value>Not used yet</value></data>
