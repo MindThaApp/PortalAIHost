@@ -31,6 +31,8 @@ interface Attachment {
   since: number;
   last: number;
   stream?: number; // device
+  ip?: string; // source address while the socket lives (host pending slots, device per-IP cap)
+  replaced?: boolean; // a newer verified host took over; this socket's end must not touch the new host's streams
   closing?: boolean; // the relay (or the host) ended this stream, so the other side already knows
 }
 
@@ -55,30 +57,51 @@ export class Room extends DurableObject<Env> {
 
   async fetch(request: Request): Promise<Response> {
     const [, , role, roomId] = new URL(request.url).pathname.split("/");
-    if (role === "host") return this.acceptHost(roomId!);
-    if (role === "device") return this.acceptDevice(roomId!);
+    const ip = request.headers.get("CF-Connecting-IP") ?? "unknown";
+    if (role === "host") return this.acceptHost(roomId!, ip);
+    if (role === "device") return this.acceptDevice(roomId!, ip);
     return new Response(null, { status: 404 });
   }
 
   // ---- accepting sockets -------------------------------------------------------------------------------------------
 
-  private acceptHost(room: string): Response {
-    const pending = this.ctx.getWebSockets("host").filter((w) => !this.att(w).authed).length;
-    if (pending >= this.limits.MAX_PENDING_HOSTS) return this.refuse(429, "too_many_pending");
+  private acceptHost(room: string, ip: string): Response {
+    // The room id is public, so anyone can park unproven sockets here. A newcomer is therefore never refused: when the
+    // slots are full, the oldest unproven socket (of the same address first) is dropped to make room.
+    const pending = this.ctx
+      .getWebSockets("host")
+      .map((w) => ({ w, a: this.att(w) }))
+      .filter((x) => !x.a.authed)
+      .sort((x, y) => x.a.since - y.a.since);
+    const mine = pending.filter((x) => x.a.ip === ip);
+    let excess = Math.max(0, mine.length - (this.limits.MAX_PENDING_PER_IP - 1));
+    for (const x of mine) {
+      if (excess-- <= 0) break;
+      this.closeSocket(x.w, Close.Timeout, "evicted");
+      pending.splice(pending.indexOf(x), 1);
+    }
+
+    for (let over = pending.length - (this.limits.MAX_PENDING_HOSTS - 1); over > 0; over--) {
+      this.closeSocket(pending.shift()!.w, Close.Timeout, "evicted");
+    }
+
     const pair = new WebSocketPair();
     const server = pair[1];
     this.ctx.acceptWebSocket(server, ["host"]);
     const nonce = toBase64Url(crypto.getRandomValues(new Uint8Array(32)));
     const now = Date.now();
-    server.serializeAttachment({ role: "host", authed: false, room, nonce, since: now, last: now } satisfies Attachment);
+    server.serializeAttachment({ role: "host", authed: false, room, nonce, ip, since: now, last: now } satisfies Attachment);
     server.send(JSON.stringify({ t: "challenge", v: 1, room, nonce }));
     return this.accepted(pair[0]);
   }
 
-  private acceptDevice(room: string): Response {
+  private acceptDevice(room: string, ip: string): Response {
     if (!this.host()) return this.refuse(503, "host_offline");
     const devices = this.ctx.getWebSockets("device");
     if (devices.length >= this.limits.MAX_STREAMS_PER_ROOM) return this.refuse(429, "too_many_streams");
+    if (devices.filter((w) => this.att(w).ip === ip).length >= this.limits.MAX_STREAMS_PER_IP) {
+      return this.refuse(429, "too_many_streams_for_address");
+    }
 
     const pair = new WebSocketPair();
     const server = pair[1];
@@ -88,7 +111,7 @@ export class Room extends DurableObject<Env> {
     this.nextStream = (stream + 1) >>> 0;
     const now = Date.now();
     this.ctx.acceptWebSocket(server, ["device"]);
-    server.serializeAttachment({ role: "device", authed: true, room, since: now, last: now, stream } satisfies Attachment);
+    server.serializeAttachment({ role: "device", authed: true, room, ip, since: now, last: now, stream } satisfies Attachment);
     this.sendHost({ t: "open", s: stream });
     server.send(JSON.stringify({ t: "open" }));
     return this.accepted(pair[0]);
@@ -113,6 +136,7 @@ export class Room extends DurableObject<Env> {
     a.last = Date.now();
     ws.serializeAttachment(a);
     if (a.role === "host") {
+      if (a.replaced) return;
       if (!a.authed) return this.handleHello(ws, a, message);
       return this.fromHost(ws, message);
     }
@@ -165,7 +189,12 @@ export class Room extends DurableObject<Env> {
 
     // Proven. A newer verified host replaces the older one, and the streams that belonged to the older one end.
     for (const other of this.ctx.getWebSockets("host")) {
-      if (other !== ws && this.att(other).authed) this.closeSocket(other, Close.Replaced, "replaced");
+      if (other === ws) continue;
+      const o = this.att(other);
+      if (!o.authed) continue;
+      o.replaced = true;
+      other.serializeAttachment(o);
+      this.closeSocket(other, Close.Replaced, "replaced");
     }
 
     for (const d of this.ctx.getWebSockets("device")) this.closeSocket(d, Close.HostGone, "host_changed");
@@ -272,7 +301,7 @@ export class Room extends DurableObject<Env> {
     const a = this.att(ws);
     if (a.role === "device") {
       if (!a.closing) this.sendHost({ t: "close", s: a.stream });
-    } else if (a.authed) {
+    } else if (a.authed && !a.replaced) {
       for (const d of this.ctx.getWebSockets("device")) this.closeSocket(d, Close.HostGone, "host_gone");
     }
   }
@@ -288,7 +317,7 @@ export class Room extends DurableObject<Env> {
   }
 
   private host(): WebSocket | undefined {
-    return this.ctx.getWebSockets("host").find((w) => this.att(w).authed && w.readyState === WebSocket.READY_STATE_OPEN);
+    return this.ctx.getWebSockets("host").find((w) => this.att(w).authed && !this.att(w).replaced && w.readyState === WebSocket.READY_STATE_OPEN);
   }
 
   private device(stream: number): WebSocket | undefined {

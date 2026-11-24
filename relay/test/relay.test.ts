@@ -81,10 +81,24 @@ describe("host handshake", () => {
     expect((await b.waitClosed(4000)).code).toBe(4408); // HANDSHAKE_MS is 600 in the tests
   });
 
-  it("limits sockets that have not proven themselves", async () => {
+  it("drops the oldest unproven socket instead of refusing a newcomer", async () => {
     const id = await newIdentity();
-    for (let i = 0; i < LIMITS.MAX_PENDING_HOSTS; i++) await mustOpen("host", id.room);
-    expect(status(await open("host", id.room))).toBe(429);
+    const socks = [];
+    for (let i = 0; i < LIMITS.MAX_PENDING_HOSTS; i++) socks.push(await mustOpen("host", id.room));
+    const extra = await mustOpen("host", id.room);
+    expect((await socks[0]!.waitClosed()).code).toBe(4408);
+    expect(extra.closed).toBeNull();
+  });
+
+  it("keeps a real host out of reach of a flood of unproven sockets from one address", async () => {
+    const id = await newIdentity();
+    const attacker = freshIp();
+    const flood = [];
+    for (let i = 0; i < LIMITS.MAX_PENDING_HOSTS + 2; i++) flood.push(await mustOpen("host", id.room, attacker));
+    await flood[0]!.waitClosed();
+    const open2 = flood.filter((f) => f.closed === null);
+    expect(open2.length).toBeLessThanOrEqual(LIMITS.MAX_PENDING_PER_IP);
+    await connectHost(id); // the real host still gets in
   });
 });
 
@@ -164,6 +178,15 @@ describe("pipe", () => {
     expect((await d.sock.waitClosed(15000)).code).toBe(4429);
   });
 
+  it("limits the streams one address may hold in a room", async () => {
+    const id = await newIdentity();
+    const host = await connectHost(id);
+    const ip = freshIp();
+    for (let i = 0; i < LIMITS.MAX_STREAMS_PER_IP; i++) await mustOpen("device", id.room, ip);
+    expect(status(await open("device", id.room, ip))).toBe(429);
+    await connectDevice(id, host).catch(() => undefined); // other addresses are not affected
+  });
+
   it("closes a device stream that has gone idle", async () => {
     const id = await newIdentity();
     const host = await connectHost(id);
@@ -195,6 +218,18 @@ describe("one host per room", () => {
     const again = await connectDevice(id, second);
     again.sock.ws.send(bytes(5));
     expect(await second.nextBinary()).toEqual(tagged(again.stream, bytes(5)));
+  });
+
+  it("does not kill streams of the new host when the replaced host's socket finishes closing", async () => {
+    const id = await newIdentity();
+    const first = await connectHost(id);
+    const second = await connectHost(id);
+    expect((await first.waitClosed()).code).toBe(4409);
+    const d = await connectDevice(id, second);
+    await new Promise((r) => setTimeout(r, 300)); // let the old socket's close handler run
+    expect(d.sock.closed).toBeNull();
+    d.sock.ws.send(bytes(4));
+    expect(await second.nextBinary()).toEqual(tagged(d.stream, bytes(4)));
   });
 
   it("does not let an unproven socket replace the host", async () => {

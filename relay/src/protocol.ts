@@ -13,13 +13,17 @@ export const LIMITS = {
   /** Largest payload of one binary frame (the 4-byte stream tag on host frames is extra). */
   MAX_FRAME_BYTES: 64 * 1024,
   /** A device stream that carries no frame for this long is closed. */
-  IDLE_MS: 5 * 60_000,
+  IDLE_MS: 2 * 60_000,
   /** A host socket must prove itself within this time of connecting. */
   HANDSHAKE_MS: 10_000,
   /** How often the idle/handshake sweep runs while something can time out. */
   SWEEP_MS: 30_000,
   /** Host sockets that have connected but not yet proven themselves, per room. */
   MAX_PENDING_HOSTS: 4,
+  /** Unproven host sockets one address may hold; its oldest is dropped when it opens another. */
+  MAX_PENDING_PER_IP: 2,
+  /** Device streams one address may hold in a room. */
+  MAX_STREAMS_PER_IP: 3,
   /** WebSocket connections (host or device) one IP may open per minute. */
   CONNECTS_PER_IP_PER_MINUTE: 30,
   /** Largest certificate the host may send. */
