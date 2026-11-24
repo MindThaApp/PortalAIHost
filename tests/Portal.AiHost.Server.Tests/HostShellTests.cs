@@ -348,7 +348,7 @@ internal sealed class ShellHarness : IAsyncDisposable
     public HostPaths Paths => Options.Paths;
     public FakeEngineSupervisor Chat { get; }
 
-    public static async Task<ShellHarness> StartAsync(TestRoot root)
+    public static async Task<ShellHarness> StartAsync(TestRoot root, RemoteAccessTestOptions? remote = null)
     {
         var chat = new FakeEngineSupervisor(ModelKinds.Chat);
         var options = new HostShellOptions
@@ -362,6 +362,7 @@ internal sealed class ShellHarness : IAsyncDisposable
             KeyProtector = new TestKeyProtector(),
             CallerResolver = new SameUserResolver(),
             QuitGrace = TimeSpan.FromMilliseconds(200),
+            RemoteTest = remote,
         };
         var shell = await HostShell.StartAsync(options) ?? throw new InvalidOperationException("pipe already owned");
         return new ShellHarness(shell, options, chat);

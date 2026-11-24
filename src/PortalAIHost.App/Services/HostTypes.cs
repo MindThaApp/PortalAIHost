@@ -61,6 +61,9 @@ public interface IHostControl
     /// <summary>The host says the tray icon was clicked: show the small status pop-up.</summary>
     event Action<TrayPopupEvent>? TrayPopup;
 
+    /// <summary>Paired devices, the pairing code or the network listener changed on the host: read <see cref="GetRemoteAsync"/> again.</summary>
+    event Action? RemoteChanged;
+
     Task<HostSnapshot> GetStatusAsync(CancellationToken ct = default);
 
     /// <summary>Today's per-app counts and which apps are generating now (counts and times only).</summary>
@@ -136,6 +139,17 @@ public interface IHostControl
 
     /// <summary>Has the host stop the running "Try it" request so it stops using the processor.</summary>
     Task CancelTryItAsync();
+
+    /// <summary>"Other devices": whether it is on, the paired devices and the open pairing code.</summary>
+    Task<RemoteStatus> GetRemoteAsync(CancellationToken ct = default);
+
+    /// <summary>Opens a pairing code (valid 5 minutes). Needs "other devices" turned on.</summary>
+    Task<PairingOfferInfo> StartPairingAsync(CancellationToken ct = default);
+
+    Task CancelPairingAsync(CancellationToken ct = default);
+
+    /// <summary>Removes a paired device; its access stops at once.</summary>
+    Task RemoveDeviceAsync(string deviceId, CancellationToken ct = default);
 }
 
 /// <summary>One piece of a "Try it" reply: the model's thinking text or its answer.</summary>

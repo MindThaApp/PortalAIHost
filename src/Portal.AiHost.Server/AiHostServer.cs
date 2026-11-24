@@ -275,7 +275,7 @@ public sealed class AiHostServer : IAsyncDisposable
         }
     }
 
-    private static Dictionary<string, string> ReadQuery(HttpRequest request)
+    internal static Dictionary<string, string> ReadQuery(HttpRequest request)
     {
         var query = new Dictionary<string, string>(StringComparer.Ordinal);
         foreach (var (key, value) in request.Query)
@@ -286,7 +286,7 @@ public sealed class AiHostServer : IAsyncDisposable
         return query;
     }
 
-    private static Dictionary<string, string> ReadHeaders(HttpRequest request)
+    internal static Dictionary<string, string> ReadHeaders(HttpRequest request)
     {
         var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         foreach (var (key, value) in request.Headers)
@@ -297,10 +297,16 @@ public sealed class AiHostServer : IAsyncDisposable
         return headers;
     }
 
-    private static async Task WriteErrorAsync(HttpContext http, string code, string message)
+    internal static async Task WriteErrorAsync(HttpContext http, string code, string message, Dictionary<string, JsonElement>? details = null,
+        int? retryAfterMs = null)
     {
-        var envelope = ErrorCatalog.Create(code, message);
+        var envelope = ErrorCatalog.Create(code, message, details: details, retryAfterMs: retryAfterMs);
         http.Response.StatusCode = ErrorCatalog.Get(code).HttpStatus;
+        if (retryAfterMs is { } wait)
+        {
+            http.Response.Headers[HeaderNames.RetryAfter] = ((wait + 999) / 1000).ToString(CultureInfo.InvariantCulture);
+        }
+
         http.Response.ContentType = "application/json; charset=utf-8";
         try
         {

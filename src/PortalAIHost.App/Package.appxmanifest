@@ -14,8 +14,9 @@
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+  xmlns:desktop2="http://schemas.microsoft.com/appx/manifest/desktop/windows10/2"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
-  IgnorableNamespaces="uap desktop rescap">
+  IgnorableNamespaces="uap desktop desktop2 rescap">
 
   <Identity Name="PLACEHOLDER-PortalAIHost" Publisher="CN=PLACEHOLDER-Publisher" Version="1.0.2.0"
             ProcessorArchitecture="x64" />
@@ -67,6 +68,19 @@
       </Extensions>
     </Application>
   </Applications>
+
+  <Extensions>
+    <!--
+      "Other devices" (off by default): lets the host exe accept connections on its LAN port. Private networks only,
+      TCP, inbound; the host also refuses sources outside private and link-local ranges. The range is the one the
+      Settings page allows (48123 to 48133, docs/remote-v1.md). Nothing listens until the user turns the setting on.
+    -->
+    <desktop2:Extension Category="windows.firewallRules">
+      <desktop2:FirewallRules Executable="PortalAIHost.Service.exe">
+        <desktop2:Rule Direction="in" IPProtocol="TCP" Profile="private" LocalPortMin="48123" LocalPortMax="48133" />
+      </desktop2:FirewallRules>
+    </desktop2:Extension>
+  </Extensions>
 
   <Capabilities>
     <rescap:Capability Name="runFullTrust" />

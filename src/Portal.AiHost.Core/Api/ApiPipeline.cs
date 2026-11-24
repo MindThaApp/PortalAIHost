@@ -171,8 +171,21 @@ public sealed class ApiPipeline
                 : "The token is not known to this host.");
         }
 
-        return result.Principal;
+        // A token belongs to one device: a LAN device cannot use a token issued on this PC or to another device,
+        // and a loopback caller cannot use a token issued to a device.
+        var deviceId = DeviceIdOf(request);
+        if (result.Principal.DeviceId != deviceId)
+        {
+            throw new ApiException(ErrorCodes.TokenInvalid, "The token is not known to this host.");
+        }
+
+        return request.Caller?.Remote is null
+            ? result.Principal
+            : result.Principal with { Transport = Transport.Lan };
     }
+
+    /// <summary>"local" for a request from this PC, else the id of the paired device that signed it.</summary>
+    private static string DeviceIdOf(ApiRequest request) => request.Caller?.Remote?.Id ?? ClientPrincipal.LocalDevice;
 
     private (Route? Route, IReadOnlyDictionary<string, string> Values) Match(string method, string path)
     {
@@ -219,7 +232,8 @@ public sealed class ApiPipeline
     {
         var caller = RequireCaller(context);
         var body = context.ReadJson(AiHostJsonContext.Default.AuthRequestCreate);
-        var info = await _registry.CreateRequestAsync(body, caller, context.Aborted).ConfigureAwait(false);
+        var info = await _registry.CreateRequestAsync(body, caller, DeviceIdOf(context.Request), context.Aborted)
+            .ConfigureAwait(false);
         await context.WriteJsonAsync(202, new AuthRequestCreated
         {
             RequestId = info.RequestId,

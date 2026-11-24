@@ -6,6 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="xunit.v3.mtp-v2" />
+    <Compile Include="..\Portal.AiHost.Core.Tests\Remote\PairingClient.cs" Link="Remote\PairingClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Portal.AiHost.Core\Portal.AiHost.Core.csproj" />

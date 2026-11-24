@@ -6,13 +6,13 @@ using Portal.AiHost.Core.Abstractions;
 namespace Portal.AiHost.Server;
 
 /// <summary>Writes <see cref="ApiPipeline"/> output to a Kestrel response. SSE writes are flushed at once.</summary>
-internal sealed class KestrelResponseSink(HttpContext http) : IResponseSink
+internal sealed class KestrelResponseSink(HttpContext http, CancellationToken? clientAborted = null) : IResponseSink
 {
     private static readonly byte[] DataPrefix = "data: "u8.ToArray();
     private static readonly byte[] EventEnd = "\n\n"u8.ToArray();
     private static readonly byte[] LineEnd = "\n"u8.ToArray();
 
-    public CancellationToken ClientAborted => http.RequestAborted;
+    public CancellationToken ClientAborted => clientAborted ?? http.RequestAborted;
 
     public async ValueTask StartAsync(int statusCode, string contentType, IReadOnlyDictionary<string, string>? headers,
         CancellationToken ct)

@@ -87,6 +87,18 @@ public static class ControlTypes
     /// <summary>Unloads the engine of a kind now (stops the engine process; model files are never touched).</summary>
     public const string UnloadEngine = "engine.unload";
 
+    /// <summary>Answers <see cref="RemoteStatus"/>: the "Other devices" state, paired devices and the open pairing code.</summary>
+    public const string RemoteGet = "remote.get";
+
+    /// <summary>Opens a pairing code (valid 5 minutes) and answers <see cref="PairingOfferInfo"/>. Needs remote access turned on.</summary>
+    public const string RemotePairStart = "remote.pair_start";
+
+    /// <summary>Voids the open pairing code.</summary>
+    public const string RemotePairCancel = "remote.pair_cancel";
+
+    /// <summary>Removes a paired device and revokes its tokens at once. Payload <see cref="RemoveDeviceCommand"/>.</summary>
+    public const string RemoteRemoveDevice = "remote.device_remove";
+
     // Host -> UI answers.
     public const string Ok = "ok";
     public const string Error = "error";
@@ -105,6 +117,9 @@ public static class ControlTypes
 
     /// <summary>The tray icon was clicked: show the small pop-up. Payload <see cref="TrayPopupEvent"/>.</summary>
     public const string EventTrayPopup = "event.tray_popup";
+
+    /// <summary>Paired devices, the pairing code or the listener changed: ask <see cref="RemoteGet"/> again. No payload.</summary>
+    public const string EventRemoteChanged = "event.remote_changed";
 }
 
 /// <summary>Wire envelope. Payload is a JSON object whose type depends on Type.</summary>
@@ -149,6 +164,9 @@ public sealed class PendingApproval
     /// a missing value (older host) reads as false.
     /// </summary>
     public bool CallerPortalApp { get; init; }
+
+    /// <summary>Name of the paired device the request came from; null for this PC.</summary>
+    public string? DeviceName { get; init; }
     public DateTimeOffset ExpiresAt { get; init; }
 }
 
@@ -168,6 +186,9 @@ public sealed class ClientSummary
     public string AppId { get; set; } = "";
     public string AppName { get; set; } = "";
     public string DeviceId { get; set; } = "local";
+
+    /// <summary>Name of the paired device; null for this PC.</summary>
+    public string? DeviceName { get; set; }
     public DateTimeOffset CreatedAt { get; init; }
     public DateTimeOffset? LastUsedAt { get; init; }
     public bool Revoked { get; init; }
@@ -580,6 +601,9 @@ public sealed class HostSettings
     /// Unknown names are ignored, so a kind added later starts on.
     /// </summary>
     public List<string>? MutedNotifications { get; set; }
+
+    /// <summary>Other devices on the home network (remote.enabled, remote.port).</summary>
+    public RemoteSettings Remote { get; set; } = new();
 
     /// <summary>Per model kind: keep loaded and idle timeout.</summary>
     public Dictionary<string, KindSettings> Kinds { get; set; } = new();

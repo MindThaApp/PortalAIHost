@@ -215,7 +215,7 @@ public sealed class WinUiDialogService : IDialogService
         try
         {
             var panel = new StackPanel { Spacing = 10 };
-            panel.Children.Add(new TextBlock { Text = _s.Format("Vm_ApprovalBody", a.AppName), TextWrapping = TextWrapping.Wrap });
+            panel.Children.Add(new TextBlock { Text = _s.Format("Vm_ApprovalBody", ApprovalText.DisplayName(_s, a)), TextWrapping = TextWrapping.Wrap });
             if (!string.IsNullOrWhiteSpace(a.Reason))
                 panel.Children.Add(new TextBlock { Text = _s.Format("Vm_ApprovalReason", a.Reason), TextWrapping = TextWrapping.Wrap });
             if (ApprovalText.PublisherLine(_s, a) is { Length: > 0 } publisher)
@@ -237,14 +237,14 @@ public sealed class WinUiDialogService : IDialogService
             {
                 XamlRoot = Root,
                 RequestedTheme = ThemeOf(),
-                Title = _s.Format("Vm_ApprovalTitle", a.AppName),
+                Title = _s.Format("Vm_ApprovalTitle", ApprovalText.DisplayName(_s, a)),
                 Content = panel,
                 PrimaryButtonText = _s.Get("Vm_Allow"),
                 SecondaryButtonText = _s.Get("Vm_Deny"),
                 CloseButtonText = _s.Get("Vm_Later"),
                 DefaultButton = ContentDialogButton.Secondary,
             };
-            Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(dialog, _s.Format("Vm_ApprovalTitle", a.AppName));
+            Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(dialog, _s.Format("Vm_ApprovalTitle", ApprovalText.DisplayName(_s, a)));
             Current = dialog;
             var result = await dialog.ShowAsync();
             return result switch

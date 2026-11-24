@@ -127,6 +127,7 @@ internal sealed class ControlHandler(HostShell shell)
                     Clients = clients.Select(c => new ClientSummary
                     {
                         TokenId = c.TokenId, AppId = c.AppId, AppName = c.AppName, DeviceId = c.DeviceId,
+                        DeviceName = shell.Remote.Devices.Find(c.DeviceId)?.Name,
                         CreatedAt = c.CreatedAt, LastUsedAt = c.LastUsedAt, Revoked = c.Revoked,
                         Paused = ControlOf(runtime, c.AppId).Paused,
                         Priority = ControlOf(runtime, c.AppId).Priority.ToWire(),
@@ -229,7 +230,9 @@ internal sealed class ControlHandler(HostShell shell)
 
             case ControlTypes.SetSettings:
             {
-                var saved = SaveSettings(Payload(r, AiHostJsonContext.Default.HostSettings)!);
+                var next = Payload(r, AiHostJsonContext.Default.HostSettings)!;
+                var saved = SaveSettings(next);
+                await shell.Remote.ApplyAsync(next.Remote, ct).ConfigureAwait(false);
                 // Performance limits apply at once: the planner re-plans and a loaded model reloads if it must.
                 var applied = await runtime.ApplyPerformanceAsync(ct).ConfigureAwait(false);
                 saved.PerformanceReloaded = applied.Reloaded.Count > 0 || applied.Unloaded.Count > 0
@@ -316,6 +319,31 @@ internal sealed class ControlHandler(HostShell shell)
                 await shell.PushStatusAsync().ConfigureAwait(false);
                 return ControlPipe.Ok(id);
             }
+
+            case ControlTypes.RemoteGet:
+                return Ok(id, shell.Remote.Snapshot(), AiHostJsonContext.Default.RemoteStatus);
+
+            case ControlTypes.RemotePairStart:
+                try
+                {
+                    return Ok(id, shell.Remote.StartPairing(), AiHostJsonContext.Default.PairingOfferInfo);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return ControlPipe.Error(id, ErrorCodes.FeatureDisabled, ex.Message);
+                }
+
+            case ControlTypes.RemotePairCancel:
+                shell.Remote.CancelPairing();
+                return ControlPipe.Ok(id);
+
+            case ControlTypes.RemoteRemoveDevice:
+                if (!shell.Remote.RemoveDevice(Payload(r, AiHostJsonContext.Default.RemoveDeviceCommand)!.DeviceId))
+                {
+                    return ControlPipe.Error(id, ErrorCodes.NotFound, "Unknown device.");
+                }
+
+                return ControlPipe.Ok(id);
 
             case ControlTypes.Quit:
                 // Answer first, then quit, so the window sees the acknowledgement.
@@ -419,7 +447,10 @@ internal sealed class ControlHandler(HostShell shell)
         AppName = info.AppName,
         AppVersion = info.AppVersion,
         Reason = info.Reason,
-        CallerIdentity = info.Caller.PackageFamilyName ?? info.Caller.ExePath ?? "process " + info.Caller.ProcessId,
+        CallerIdentity = info.Caller.Remote is { } remote
+            ? "unverified: an app on the paired device " + remote.Name
+            : info.Caller.PackageFamilyName ?? info.Caller.ExePath ?? "process " + info.Caller.ProcessId,
+        DeviceName = info.Caller.Remote?.Name,
         CallerVerified = info.Caller.Verified,
         CallerPortalApp = info.Caller.Verified && info.Caller.PortalApp,
         ExpiresAt = info.ExpiresAt,

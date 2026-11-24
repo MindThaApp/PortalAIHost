@@ -25,7 +25,10 @@ public sealed record ClientPrincipal(string AppId, string DeviceId, Transport Tr
 /// </summary>
 public sealed record CallerIdentity(
     int ProcessId, string? PackageFamilyName, string? ExePath, bool Verified, bool SameUser, bool PortalApp = false,
-    string? PackagePublisher = null);
+    string? PackagePublisher = null, RemoteDevice? Remote = null);
+
+/// <summary>A paired device that sent a request over the LAN: its id and the name the user saw when pairing.</summary>
+public sealed record RemoteDevice(string Id, string Name);
 
 public sealed record AccessRequestInfo(
     string RequestId,
@@ -70,6 +73,16 @@ public interface IClientRegistry
 {
     /// <summary>Creates a pending request. Throws ApiException for limit errors (rate_limited, access_denied).</summary>
     Task<AccessRequestInfo> CreateRequestAsync(AuthRequestCreate request, CallerIdentity caller, CancellationToken ct);
+
+    /// <summary>
+    /// Creates a pending request for a paired device. A registry that has no device support only accepts the local
+    /// device, so a request from another device is never filed under "local".
+    /// </summary>
+    Task<AccessRequestInfo> CreateRequestAsync(AuthRequestCreate request, CallerIdentity caller, string deviceId,
+        CancellationToken ct) =>
+        deviceId == ClientPrincipal.LocalDevice
+            ? CreateRequestAsync(request, caller, ct)
+            : throw new NotSupportedException("This registry has no device support.");
 
     /// <summary>Long-polls until the status changes or the wait ends.</summary>
     Task<AccessRequestResult?> WaitForRequestAsync(string requestId, TimeSpan wait, CancellationToken ct);
