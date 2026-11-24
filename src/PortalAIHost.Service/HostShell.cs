@@ -73,6 +73,18 @@ public sealed class HostShellOptions
 
     /// <summary>Overrides the port list (tests).</summary>
     public IReadOnlyList<int>? Ports { get; init; }
+
+    /// <summary>Tests: how the LAN listener binds and which sources it serves (never the real network).</summary>
+    public RemoteAccessTestOptions? RemoteTest { get; init; }
+}
+
+/// <summary>Test hooks for the LAN listener.</summary>
+public sealed class RemoteAccessTestOptions
+{
+    public System.Net.IPAddress? BindAddress { get; init; }
+    public Func<System.Net.IPAddress?, bool>? AllowSource { get; init; }
+    public int? Port { get; init; }
+    public Func<List<string>>? Addresses { get; init; }
 }
 
 /// <summary>An opened store, or null with a plain-language reason.</summary>
@@ -129,6 +141,9 @@ public sealed class HostShell : IAsyncDisposable
     public AiHostRuntime Runtime { get; private set; } = null!;
 
     public AiHostServer Server { get; private set; } = null!;
+
+    /// <summary>"Other devices": paired devices, the pairing code and the LAN listener.</summary>
+    public RemoteAccess Remote { get; private set; } = null!;
 
     /// <summary>True from the start of a quit (pipe, tray or session end).</summary>
     public bool IsQuitting => Volatile.Read(ref _quitting) != 0;
@@ -337,6 +352,19 @@ public sealed class HostShell : IAsyncDisposable
             CallerResolver = _o.CallerResolver,
         }, ct).ConfigureAwait(false);
 
+        Remote = new RemoteAccess(Runtime, new RemoteAccessOptions
+        {
+            DataDirectory = root,
+            KeyProtector = _o.KeyProtector,
+            RevokeDevice = id => _registry.RevokeDevice(id),
+            BindAddress = _o.RemoteTest?.BindAddress,
+            AllowSource = _o.RemoteTest?.AllowSource,
+            PortOverride = _o.RemoteTest?.Port,
+            Addresses = _o.RemoteTest?.Addresses,
+        });
+        Remote.Changed += () => _ = PushRemoteChangedAsync();
+        await Remote.ApplyAsync(settings.Remote, ct).ConfigureAwait(false);
+
         var keepLoaded = settings.Kinds.Where(k => k.Value.KeepLoaded).Select(k => k.Key).ToList();
         _ = Runtime.AutoLoadAsync(keepLoaded, CancellationToken.None);
         _ = Task.Run(() => NotificationLoopAsync(_notifyStop.Token));
@@ -472,6 +500,13 @@ public sealed class HostShell : IAsyncDisposable
             }
         }).ConfigureAwait(false);
         await GuardAsync(() => Runtime?.StopAsync(grace) ?? Task.CompletedTask).ConfigureAwait(false);
+        await GuardAsync(async () =>
+        {
+            if (Remote is { } remote)
+            {
+                await remote.DisposeAsync().ConfigureAwait(false);
+            }
+        }).ConfigureAwait(false);
         await GuardAsync(() => Server?.StopAsync() ?? Task.CompletedTask).ConfigureAwait(false);
         await GuardAsync(async () =>
         {
@@ -921,6 +956,17 @@ public sealed class HostShell : IAsyncDisposable
         }
     }
 
+    private async Task PushRemoteChangedAsync()
+    {
+        try
+        {
+            await _pipe.BroadcastAsync(ControlTypes.EventRemoteChanged, null).ConfigureAwait(false);
+        }
+        catch (ObjectDisposedException)
+        {
+        }
+    }
+
     private async Task PushApprovalAsync(AccessRequestInfo info)
     {
         try
@@ -935,7 +981,8 @@ public sealed class HostShell : IAsyncDisposable
 
         // A notification replaces the window pop-up (a click opens the approvals page). When it cannot be shown,
         // is turned off, or the window is already open, the window opens as before.
-        var outcome = _notify.OnApproval(ControlHandler.ToPending(info).AppName);
+        var pending = ControlHandler.ToPending(info);
+        var outcome = _notify.OnApproval(pending.DeviceName is null ? pending.AppName : $"{pending.AppName} on {pending.DeviceName}");
         if (outcome is not (NotifyOutcome.Shown or NotifyOutcome.Deferred))
         {
             RequestShow("approvals");

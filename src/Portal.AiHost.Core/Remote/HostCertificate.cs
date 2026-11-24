@@ -24,13 +24,27 @@ public static class HostCertificate
         var keyPath = Path.Combine(directory, KeyFileName);
         if (File.Exists(certPath) && File.Exists(keyPath))
         {
+            byte[]? stored = null;
             try
             {
-                return Open(File.ReadAllBytes(certPath), protector.Unprotect(File.ReadAllBytes(keyPath)));
+                stored = protector.Unprotect(File.ReadAllBytes(keyPath));
             }
-            catch (Exception ex) when (ex is CryptographicException or ArgumentException)
+            catch (HostKeyDamagedException)
             {
-                // Damaged or from another user: a new identity replaces it (devices must pair again).
+                // Another user's key or damaged data: a new identity replaces it (devices must pair again). Any
+                // other failure is temporary and is not treated as damage.
+            }
+
+            if (stored is not null)
+            {
+                try
+                {
+                    return Open(File.ReadAllBytes(certPath), stored);
+                }
+                catch (Exception ex) when (ex is CryptographicException or ArgumentException)
+                {
+                    // The stored files do not belong together or cannot be read: replaced as above.
+                }
             }
         }
 
@@ -63,7 +77,20 @@ public static class HostCertificate
             using var key = ECDsa.Create();
             key.ImportPkcs8PrivateKey(pkcs8, out _);
             using var publicOnly = X509CertificateLoader.LoadCertificate(der);
-            return publicOnly.CopyWithPrivateKey(key);
+            using var withKey = publicOnly.CopyWithPrivateKey(key);
+
+            // Windows TLS (SChannel) cannot use a key that exists only in memory ("platform does not support
+            // ephemeral keys"). Loading it again from a PFX gives a key SChannel accepts; Windows removes that key
+            // when the certificate object is disposed.
+            var pfx = withKey.Export(X509ContentType.Pkcs12);
+            try
+            {
+                return X509CertificateLoader.LoadPkcs12(pfx, null, X509KeyStorageFlags.DefaultKeySet);
+            }
+            finally
+            {
+                CryptographicOperations.ZeroMemory(pfx);
+            }
         }
         finally
         {

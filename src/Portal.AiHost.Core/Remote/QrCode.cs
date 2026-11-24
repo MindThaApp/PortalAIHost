@@ -118,7 +118,7 @@ public sealed class QrCode
         if (version >= 2)
         {
             var align = version / 7 + 2;
-            result -= (align - 1) * (align - 1) * 25 + (align - 2) * 20;
+            result -= (25 * align - 10) * align - 55;
             if (version >= 7)
             {
                 result -= 6 * 3 * 2;

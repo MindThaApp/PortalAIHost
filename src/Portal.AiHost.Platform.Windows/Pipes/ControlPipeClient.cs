@@ -36,6 +36,9 @@ public sealed class ControlPipeClient : IAsyncDisposable
     /// <summary>Progress of a models-folder move or a file check.</summary>
     public event EventHandler<StoreProgressEvent>? StoreProgress;
 
+    /// <summary>Paired devices, the pairing code or the network listener changed; ask <see cref="GetRemoteAsync"/> again.</summary>
+    public event EventHandler? RemoteChanged;
+
     /// <summary>The connection to the host ended.</summary>
     public event EventHandler? Disconnected;
 
@@ -84,6 +87,18 @@ public sealed class ControlPipeClient : IAsyncDisposable
 
     public Task RevokeClientAsync(string tokenId, CancellationToken ct = default) =>
         SendAsync(ControlTypes.RevokeClient, new ClientRevoke { TokenId = tokenId }, AiHostJsonContext.Default.ClientRevoke, ct);
+
+    public Task<RemoteStatus> GetRemoteAsync(CancellationToken ct = default) =>
+        RequestAsync(ControlTypes.RemoteGet, AiHostJsonContext.Default.RemoteStatus, ct);
+
+    public Task<PairingOfferInfo> StartPairingAsync(CancellationToken ct = default) =>
+        RequestAsync(ControlTypes.RemotePairStart, AiHostJsonContext.Default.PairingOfferInfo, ct);
+
+    public async Task CancelPairingAsync(CancellationToken ct = default) =>
+        await ExchangeAsync(ControlTypes.RemotePairCancel, null, ct).ConfigureAwait(false);
+
+    public Task RemoveDeviceAsync(string deviceId, CancellationToken ct = default) =>
+        SendAsync(ControlTypes.RemoteRemoveDevice, new RemoveDeviceCommand { DeviceId = deviceId }, AiHostJsonContext.Default.RemoveDeviceCommand, ct);
 
     public Task<ModelListing> ListModelsAsync(CancellationToken ct = default) =>
         RequestAsync(ControlTypes.ListModels, AiHostJsonContext.Default.ModelListing, ct);
@@ -271,6 +286,12 @@ public sealed class ControlPipeClient : IAsyncDisposable
     private void Dispatch(ControlEnvelope e)
     {
         EventReceived?.Invoke(this, e);
+        if (e.Type == ControlTypes.EventRemoteChanged)
+        {
+            RemoteChanged?.Invoke(this, EventArgs.Empty);
+            return;
+        }
+
         if (e.Payload is not { } p)
         {
             return;
