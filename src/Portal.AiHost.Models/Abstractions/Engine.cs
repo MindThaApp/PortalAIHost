@@ -127,6 +127,16 @@ public interface IEngineSupervisor : IAsyncDisposable
     /// </summary>
     bool SetPriority(System.Diagnostics.ProcessPriorityClass priority) => false;
 
+    /// <summary>
+    /// Caps the engine's share of the processor (hard cap, 20 to 100 percent of the PC; 100 removes the cap), now and
+    /// for every later restart. Returns false when there is no process to cap or the system refused; the wanted value
+    /// is still remembered for the next start.
+    /// </summary>
+    bool SetCpuCeiling(int percent) => false;
+
+    /// <summary>The processor ceiling last requested, or null when none was.</summary>
+    int? RequestedCpuCeiling => null;
+
     /// <summary>The priority last requested, or null when none was.</summary>
     System.Diagnostics.ProcessPriorityClass? RequestedPriority => null;
 }

@@ -17,8 +17,13 @@ public sealed record PerformanceLimits(
     bool GpuAvailable,
     long RamBytes,
     int LogicalCores,
-    long GpuVramBytes)
+    long GpuVramBytes,
+    int CpuCeilingPercent = PerformanceModel.MaxCpuCeilingPercent,
+    IReadOnlyList<string>? EaseOff = null)
 {
+    /// <summary>The ease-off flags that are on (never null).</summary>
+    public IReadOnlyList<string> EaseOffFlags => EaseOff ?? [];
+
     /// <summary>True when the engine should run at BELOW_NORMAL priority.</summary>
     public bool LowPriority => Priority == PerformancePriorities.Low;
 }
@@ -38,6 +43,32 @@ public static class PerformanceModel
     public const long MinGpuForChoiceBytes = 4 * Gb;
 
     public const long GpuReserveBytes = Gb / 2;
+
+    public const int MinCpuCeilingPercent = 20;
+    public const int MaxCpuCeilingPercent = 100;
+
+    /// <summary>The ceiling while the host is easing off: half the processor, but never above the user's own ceiling.</summary>
+    public const int EasedOffCeilingPercent = 50;
+
+    public static int ClampCeiling(int percent) => Math.Clamp(percent, MinCpuCeilingPercent, MaxCpuCeilingPercent);
+
+    /// <summary>The ceiling to apply now: the user's ceiling, or at most <see cref="EasedOffCeilingPercent"/> while easing off.</summary>
+    public static int EffectiveCeiling(int ceilingPercent, bool easedOff)
+    {
+        var c = ClampCeiling(ceilingPercent);
+        return easedOff ? Math.Min(c, EasedOffCeilingPercent) : c;
+    }
+
+    /// <summary>
+    /// The job object CPU rate for a ceiling: hundredths of a percent of the whole PC (1 to 10000), or null for
+    /// 100 percent, which needs no cap. The Windows rate is a share of all logical processors, which is what the
+    /// setting means ("maximum processor use").
+    /// </summary>
+    public static int? CpuRateFor(int effectivePercent)
+    {
+        var p = ClampCeiling(effectivePercent);
+        return p >= MaxCpuCeilingPercent ? null : p * 100;
+    }
 
     /// <summary>
     /// The job object cap for a memory limit: the limit plus a margin of 1 GB or 10 %, whichever is larger, because
@@ -149,7 +180,7 @@ public static class PerformanceModel
             : s.Priority == PerformancePriorities.Low ? PerformancePriorities.Low
             : presetValues.Priority;
         return new PerformanceLimits(preset, memory, keepFree, compute, gpuLimit, threads, priority, gpuAvailable, ram,
-            logical, vram);
+            logical, vram, ClampCeiling(s.CpuCeilingPercent), EaseOffReasons.Normalize(s.EaseOff));
     }
 
     /// <summary>Planner inputs for these limits. The planner stays the one place that decides placement.</summary>

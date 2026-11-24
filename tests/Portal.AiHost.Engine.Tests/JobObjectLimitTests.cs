@@ -24,6 +24,26 @@ public class JobObjectLimitTests
     }
 
     [Fact]
+    public void CpuRateCanBeSetChangedAndRemovedWithoutLosingTheMemoryCap()
+    {
+        if (!OperatingSystem.IsWindows())
+        {
+            return;
+        }
+
+        using var job = new JobObject();
+        Assert.True(job.SetMemoryLimit(8L << 30));
+        Assert.Null(job.CpuRate);
+        Assert.True(job.SetCpuRate(5000));
+        Assert.Equal(5000, job.CpuRate);
+        Assert.True(job.SetCpuRate(2000));
+        Assert.Equal(2000, job.CpuRate);
+        Assert.True(job.SetCpuRate(null));
+        Assert.Null(job.CpuRate);
+        Assert.Equal(8L << 30, job.MemoryLimitBytes);
+    }
+
+    [Fact]
     public void AProcessCanJoinAJobThatHasALimit()
     {
         if (!OperatingSystem.IsWindows())

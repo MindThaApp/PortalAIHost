@@ -62,6 +62,13 @@ public sealed partial class SettingsViewModel
     [ObservableProperty] private string _coresLabel = "";
     [ObservableProperty] private int _priorityIndex;
     [ObservableProperty] private string _priorityHelp = "";
+    [ObservableProperty] private double _ceilingValue = 100;
+    [ObservableProperty] private string _ceilingLabel = "";
+    [ObservableProperty] private bool _easeOffFullscreen = true;
+    [ObservableProperty] private bool _easeOffBattery = true;
+    [ObservableProperty] private bool _easeOffAppBusy = true;
+    // gpu_busy has no reliable reading yet, so the page does not offer it; the saved flag is kept as it is.
+    private bool _easeOffGpuBusy;
     [ObservableProperty] private string _fitText = "";
     [ObservableProperty] private bool _hasFit;
     [ObservableProperty] private string _performanceMessage = "";
@@ -121,6 +128,11 @@ public sealed partial class SettingsViewModel
         PresetIndex = Math.Max(0, Array.IndexOf(PresetNames, info.Preset));
         RunOnIndex = Math.Max(0, Array.IndexOf(ComputeNames, info.Compute));
         PriorityIndex = info.Priority == PerformancePriorities.Normal ? 1 : 0;
+        CeilingValue = Math.Clamp(info.CpuCeilingPercent, 20, 100);
+        EaseOffFullscreen = info.EaseOff.Contains(EaseOffReasons.Fullscreen);
+        EaseOffBattery = info.EaseOff.Contains(EaseOffReasons.Battery);
+        EaseOffAppBusy = info.EaseOff.Contains(EaseOffReasons.AppBusy);
+        _easeOffGpuBusy = info.EaseOff.Contains(EaseOffReasons.GpuBusy);
         RunOnEnabled = r.GpuAvailable;
         GpuNote = r.GpuAvailable ? "" : view.GpuUnavailableReason ?? _s.Get("Vm_Perf_NoGpu");
         PerformanceAvailable = true;
@@ -142,6 +154,7 @@ public sealed partial class SettingsViewModel
         CoresLabel = _s.Format("Vm_Perf_Cores", (int)Math.Round(CoresValue), _perf?.LogicalCores ?? (int)CoresMax + 1);
         RunOnHelp = _s.Get("Vm_Perf_RunHelp_" + ComputeNames[Math.Clamp(RunOnIndex, 0, 2)]);
         PriorityHelp = _s.Get(PriorityIndex == 1 ? "Vm_Perf_PrioHelp_Normal" : "Vm_Perf_PrioHelp_Low");
+        CeilingLabel = CeilingValue >= 100 ? _s.Get("Vm_Perf_CeilingNone") : _s.Format("Vm_Perf_Percent", (int)Math.Round(CeilingValue));
         GpuMemoryVisible = (_perf?.Info.Ranges.GpuAvailable ?? false) && RunOnIndex != 2;
     }
 
@@ -197,6 +210,12 @@ public sealed partial class SettingsViewModel
     partial void OnGpuMemoryGbChanged(double value) => PerformanceEdited();
     partial void OnCoresValueChanged(double value) => PerformanceEdited();
     partial void OnPriorityIndexChanged(int value) => PerformanceEdited();
+
+    // The ceiling and the ease-off rules are not part of any preset, so they do not switch it to Custom.
+    partial void OnCeilingValueChanged(double value) => PerformanceEdited(toCustom: false);
+    partial void OnEaseOffFullscreenChanged(bool value) => PerformanceEdited(toCustom: false);
+    partial void OnEaseOffBatteryChanged(bool value) => PerformanceEdited(toCustom: false);
+    partial void OnEaseOffAppBusyChanged(bool value) => PerformanceEdited(toCustom: false);
     partial void OnRunOnIndexChanged(int value) => PerformanceEdited();
 
     partial void OnKeepFreeGbChanged(double value)
@@ -243,6 +262,18 @@ public sealed partial class SettingsViewModel
         s.GpuMemoryLimitBytes = r.GpuMemoryLimitBytes is { } g ? BytesFor(GpuMemoryGb, g) : null;
         s.CpuThreads = (int)Math.Round(CoresValue);
         s.Priority = PriorityIndex == 1 ? PerformancePriorities.Normal : PerformancePriorities.Low;
+        s.CpuCeilingPercent = (int)Math.Clamp(Math.Round(CeilingValue / 5) * 5, 20, 100);
+        s.EaseOff = EaseOffFlagsOnScreen();
+    }
+
+    private List<string> EaseOffFlagsOnScreen()
+    {
+        var on = new List<string>();
+        if (EaseOffFullscreen) on.Add(EaseOffReasons.Fullscreen);
+        if (_easeOffGpuBusy) on.Add(EaseOffReasons.GpuBusy);
+        if (EaseOffBattery) on.Add(EaseOffReasons.Battery);
+        if (EaseOffAppBusy) on.Add(EaseOffReasons.AppBusy);
+        return EaseOffReasons.Normalize(on);
     }
 
     private static long BytesFor(double gb, NumberRange range)
@@ -315,6 +346,8 @@ public sealed partial class SettingsViewModel
         defaults.CpuThreads = null;
         defaults.Priority = PerformancePriorities.Low;
         defaults.MaxMemoryPercent = 80;
+        defaults.CpuCeilingPercent = 100;
+        defaults.EaseOff = [.. EaseOffReasons.Defaults];
         try
         {
             var saved = await _shell.Host.SetSettingsAsync(defaults).ConfigureAwait(false);

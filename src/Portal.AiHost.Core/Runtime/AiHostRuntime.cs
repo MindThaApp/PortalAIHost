@@ -73,6 +73,9 @@ public sealed class AiHostRuntimeOptions
 
     /// <summary>Reads engine process memory and processor time for status usage. Null: no usage in status.</summary>
     public IProcessUsageProbe? UsageProbe { get; init; }
+
+    /// <summary>Screen and power checks for the ease-off rules. Null: only the battery state of <see cref="Hardware"/> is used.</summary>
+    public IEaseOffSensors? EaseOffSensors { get; init; }
 }
 
 /// <summary>
@@ -118,6 +121,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
             };
         }
 
+        StartEaseOffTimer();
         MapEndpoints();
     }
 
@@ -323,6 +327,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
             await StopAsync(TimeSpan.Zero).ConfigureAwait(false);
         }
 
+        _easeOffTimer?.Dispose();
         foreach (var sup in _o.Supervisors.Values)
         {
             await sup.DisposeAsync().ConfigureAwait(false);
@@ -466,6 +471,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
             [
                 EndpointNames.ChatCompletions, EndpointNames.Embeddings, EndpointNames.Models,
                 EndpointNames.Tokenize, EndpointNames.Warmup, EndpointNames.Performance,
+                EndpointNames.EaseOff,
             ],
         };
     }
@@ -538,6 +544,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
             vram[0] += plan.GpuBytes;
         }
 
+        ram += _leases.ReservedBytes; // memory the apps' own models hold (POST /host/ease-off reserved_bytes)
         return ram == 0 && vram.Count == 0 ? CommittedMemory.None : new CommittedMemory(ram, vram);
     }
 
@@ -693,6 +700,8 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         p.Map("GET", Routes.Models, ctx => Tracked(ctx, ListModelsAsync));
         p.Map("GET", Routes.Performance, ctx => Tracked(ctx, c =>
             PerformanceEndpointAsync(c)));
+        p.Map("POST", Routes.EaseOff, ctx => Tracked(ctx, EaseOffSetAsync));
+        p.Map("DELETE", Routes.EaseOff, ctx => Tracked(ctx, EaseOffClearAsync));
         p.Map("POST", Routes.Warmup, ctx => Tracked(ctx, WarmupAsync));
         p.Map("POST", Routes.Tokenize, ctx => Tracked(ctx, TokenizeAsync));
         p.Map("POST", Routes.ChatCompletions, ctx => Tracked(ctx, ChatAsync));

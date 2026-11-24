@@ -57,6 +57,7 @@ internal static class Program
                 CallerResolver = new WindowsCallerIdentityResolver(),
                 Hardware = new WindowsHardwareProbe(),
                 UsageProbe = new ProcessUsageProbe(),
+                EaseOffSensors = new EaseOffSensors(),
                 OpenStoreReporting = settings => OpenStore(paths, settings), // Only after the single-instance lock is held.
                 OpenPreviousStores = OpenPreviousStores,
                 Catalogue = catalogue,

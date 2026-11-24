@@ -135,4 +135,41 @@ public class PerformanceSettingsTests
         Assert.Equal("balanced", saved.Preset);
         Assert.Null(saved.MemoryLimitBytes);
     }
+
+    [Fact]
+    public async Task Ceiling_and_ease_off_rows_show_the_defaults_and_are_saved_without_leaving_the_preset()
+    {
+        var (rig, vm) = await StartAsync();
+        using var _ = rig;
+        Assert.Equal(100, vm.CeilingValue);
+        Assert.Equal("Vm_Perf_CeilingNone", vm.CeilingLabel);
+        Assert.True(vm.EaseOffFullscreen);
+        Assert.True(vm.EaseOffBattery);
+        Assert.True(vm.EaseOffAppBusy);
+
+        vm.CeilingValue = 60;
+        Assert.Contains("Vm_Perf_Percent", vm.CeilingLabel);
+        Assert.Equal(SettingsViewModel.BalancedIndex, vm.PresetIndex); // not part of any preset
+        vm.EaseOffBattery = false;
+        await WaitForSavesAsync(rig, 1);
+        var saved = rig.Host.SavedSettings[^1];
+        Assert.Equal(60, saved.CpuCeilingPercent);
+        Assert.Equal(["fullscreen", "app_busy"], saved.EaseOff);
+    }
+
+    [Fact]
+    public async Task Reset_puts_the_ceiling_and_ease_off_rules_back()
+    {
+        var (rig, vm) = await StartAsync();
+        using var _ = rig;
+        vm.CeilingValue = 40;
+        vm.EaseOffFullscreen = false;
+        await WaitForSavesAsync(rig, 1);
+        await vm.ResetPerformanceCommand.ExecuteAsync(null);
+        var saved = rig.Host.SavedSettings[^1];
+        Assert.Equal(100, saved.CpuCeilingPercent);
+        Assert.Equal(["fullscreen", "battery", "app_busy"], saved.EaseOff);
+        Assert.Equal(100, vm.CeilingValue);
+        Assert.True(vm.EaseOffFullscreen);
+    }
 }

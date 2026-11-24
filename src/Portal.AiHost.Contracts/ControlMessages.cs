@@ -438,6 +438,12 @@ public sealed class HostSettings
     /// <summary>low (below normal) or normal.</summary>
     public string Priority { get; set; } = PerformancePriorities.Low;
 
+    /// <summary>Most of the processor the AI may use, 20 to 100 (100 is no limit).</summary>
+    public int CpuCeilingPercent { get; set; } = 100;
+
+    /// <summary>When the host eases off: any of fullscreen, gpu_busy, battery, app_busy.</summary>
+    public List<string> EaseOff { get; set; } = [.. EaseOffReasons.Defaults];
+
     public bool PreventSleepWhileDownloading { get; set; } = true;
 
     /// <summary>Send scrubbed crash reports. On unless the user turns it off; the host follows the window's choice.</summary>
@@ -462,6 +468,33 @@ public static class PerformancePriorities
 {
     public const string Low = "low";
     public const string Normal = "normal";
+}
+
+/// <summary>Reasons the host eases off (performance-and-tuning section 2).</summary>
+public static class EaseOffReasons
+{
+    public const string Fullscreen = "fullscreen";
+    public const string GpuBusy = "gpu_busy";
+    public const string Battery = "battery";
+    public const string AppBusy = "app_busy";
+
+    /// <summary>The flags that are on by default.</summary>
+    public static readonly string[] Defaults = [Fullscreen, Battery, AppBusy];
+
+    /// <summary>Every known flag, in the order they are shown.</summary>
+    public static readonly string[] All = [Fullscreen, GpuBusy, Battery, AppBusy];
+
+    /// <summary>Keeps only known flags, once each, in the shown order. Null (never saved) gives the defaults.</summary>
+    public static List<string> Normalize(IEnumerable<string>? flags)
+    {
+        if (flags is null)
+        {
+            return [.. Defaults];
+        }
+
+        var wanted = new HashSet<string>(flags.Select(f => f?.Trim().ToLowerInvariant() ?? ""), StringComparer.Ordinal);
+        return [.. All.Where(wanted.Contains)];
+    }
 }
 
 /// <summary>Values fit in <see cref="PerformanceInfo.Fit"/> (performance-and-tuning section 3).</summary>

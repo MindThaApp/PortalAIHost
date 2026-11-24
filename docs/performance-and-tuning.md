@@ -226,7 +226,7 @@ Each opens the host window on that page. If the host isn't installed, open the S
   `cpu_threads` goes to llama-server `--threads`; `low` priority is BELOW_NORMAL; the memory limit is also a job object
   cap on the engine process. Changes apply live (reload or unload, never a delete).
 - `GET /host/performance` and `"performance"` in `/host/capabilities` `endpoints`. `cpu_ceiling_percent` is fixed at
-  100, `ease_off` is empty and `eased_off_now` is `null` until 1.0.3.
+  100, `ease_off` is empty and `eased_off_now` is `null` until 1.0.3 (see below).
 - `X-Portal-Context-Tokens`: clamps the reply length against an estimate of the prompt (the engine cannot change its
   context per request); see `docs/api-v1.md` section 4.
 - Protocol links `portal-ai-host:settings/performance`, `:models` and `:apps`.
@@ -235,13 +235,32 @@ Each opens the host window on that page. If the host isn't installed, open the S
 - Already in place before this branch: `usage` in `GET /host/status` (section 5.2) and the `Portal.AiHost.Models` split
   (planner and probe).
 
+**Built for 1.0.3 (branch `ease-off`; UI checks pending):**
+- Settings model: `cpu_ceiling_percent` (20 to 100, default 100) and `ease_off` (flags, default `fullscreen`,
+  `battery`, `app_busy`) in `HostSettings`; unknown flags are dropped, the ceiling is clamped.
+- Processor ceiling: a hard-cap CPU rate on the engine's job object (hundredths of a percent of the whole PC; none at
+  100). It is remembered by the supervisor and re-applied at every engine start, so reloads keep it.
+- Ease-off: `POST` and `DELETE /host/ease-off` (one lease per app, `ttl_ms` 1 to 120 s, `reserved_bytes` counted as
+  memory held by other apps). The host looks at the leases and at the screen and power state every 3 s (and at each
+  request), with one cheap call per rule that is on: `SHQueryUserNotificationState` for `fullscreen` (full-screen
+  program, Direct3D full screen or presentation mode), `GetSystemPowerStatus` for `battery`. While easing off, the
+  engine runs at IDLE priority under at most 50 % of the processor (never above the user's own ceiling); it goes back
+  when the reason ends. `eased_off_now` reports the reason (order: `app_busy`, `fullscreen`, `gpu_busy`, `battery`).
+- Decisions where this draft was open: easing off is for the whole engine process rather than per request class
+  (the engine cannot change threads or priority per request, and `interactive` requests are slowed too while eased
+  off); the thread count is not lowered, the processor cap does that job without a restart. `gpu_busy` has no
+  reliable cheap reading, so it is a stored flag that never fires yet, and the page does not offer it.
+- Settings > Performance page: a "Maximum processor use" slider (20 to 100 in steps of 5) and "Ease off when" check
+  boxes for the three working rules. They are not part of any preset, so changing them keeps the preset.
+
 **Planned timeline:**
 - **Host 1.0.2:**
   - the Settings > Performance page (section 2, 1.0.2 rows);
   - `GET /host/performance`, `usage`, `X-Portal-Context-Tokens`, and the protocol links;
   - job object caps and priority;
   - the `Portal.AiHost.Models` split (planner and probe) for built-in mode.
-- **Host 1.0.3:** the processor ceiling, the ease-off rules, and the `eased_off_now` reason.
+- **Host 1.0.3:** the processor ceiling, the ease-off rules, and the `eased_off_now` reason (built, see above;
+  `gpu_busy` detection still to do).
 - **Pro 1.1:** the advanced tuning in section 2.
 - **Apps:** can build against this draft now. Code that checks for `"performance"` in `endpoints` falls back cleanly
   on older hosts.

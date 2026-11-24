@@ -90,13 +90,13 @@ public sealed partial class AiHostRuntime
         _capDropReason = null; // new limits: the cap is tried again
         _planner = PerformanceModel.ToPlanner(limits, _o.Planner);
 
-        var wantedPriority = limits.LowPriority
-            ? System.Diagnostics.ProcessPriorityClass.BelowNormal
-            : System.Diagnostics.ProcessPriorityClass.Normal;
-        foreach (var sup in _o.Supervisors.Values)
+        // Priority and processor ceiling follow the new limits at once (and the ease-off rules, which may now differ).
+        lock (_easeLock)
         {
-            sup.SetPriority(wantedPriority);
+            _tuningApplied = false;
         }
+
+        ReevaluateEaseOff();
 
         var placementChanged = old is null
             || old.MemoryLimitBytes != limits.MemoryLimitBytes
@@ -211,6 +211,9 @@ public sealed partial class AiHostRuntime
                 GpuMemoryLimitBytes = limits.GpuMemoryLimitBytes,
                 CpuThreads = limits.CpuThreads,
                 Priority = limits.Priority,
+                CpuCeilingPercent = limits.CpuCeilingPercent,
+                EaseOff = [.. limits.EaseOffFlags],
+                EasedOffNow = candidate is null ? ReevaluateEaseOff() : _easedReason,
                 Fit = fit,
                 MemoryCapActive = _capDropReason is null,
                 MemoryCapReason = _capDropReason,

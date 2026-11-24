@@ -270,11 +270,11 @@ the host re-plans memory; the revision number tells you when.
     "default_deadline_ms": { "interactive": 120000, "batch": 1800000 },
     "max_deadline_ms": 3600000
   },
-  "endpoints": ["chat.completions", "embeddings", "models", "tokenize", "warmup", "performance"]
+  "endpoints": ["chat.completions", "embeddings", "models", "tokenize", "warmup", "performance", "ease-off"]
 }
 ```
-`endpoints` lists `"performance"` on hosts that have `GET /host/performance` (1.0.2 and later). Check for it before
-calling; older hosts do not list it.
+`endpoints` lists `"performance"` on hosts that have `GET /host/performance` (1.0.2 and later) and `"ease-off"` on
+hosts that have `POST /host/ease-off` (1.0.3 and later). Check for them before calling; older hosts do not list them.
 
 **How to use the fields:**
 - `context_tokens` is the usable context **per request** right now. It grows on machines with more memory (up to
@@ -301,7 +301,7 @@ The limits the host runs under. Read-only: apps show these and link to the host'
   "cpu_threads": 10,
   "priority": "low",
   "cpu_ceiling_percent": 100,
-  "ease_off": [],
+  "ease_off": ["fullscreen", "battery", "app_busy"],
   "eased_off_now": null,
   "fit": "fits_partial",
   "ranges": {
@@ -324,10 +324,33 @@ The limits the host runs under. Read-only: apps show these and link to the host'
   `needs_smaller_model` or `too_big`. It is left out when no chat model is active.
 - `memory_cap_active` is `false`, with a `memory_cap_reason`, when an engine could not start under the memory cap and
   was started once without it (the cap is `memory_limit_bytes` plus 1 GB or 10 %, whichever is larger).
-- `cpu_ceiling_percent` is always `100`, `ease_off` is always empty and `eased_off_now` is always `null` until the
-  processor ceiling and ease-off rules ship (host 1.0.3). The keys are there so apps can already read them.
+- `cpu_ceiling_percent` (20 to 100, host 1.0.3; always `100` before) is the most of the PC's processor the engine may
+  use, enforced as a hard cap on the engine process. `100` means no cap.
+- `ease_off` lists the rules that are on (`fullscreen`, `gpu_busy`, `battery`, `app_busy`; empty before 1.0.3).
+  `eased_off_now` is `null`, or the rule that is easing the host off right now (`app_busy`, `fullscreen`, `gpu_busy`
+  or `battery`, in that order when several apply), so an app can say "Slower while a game is running". While the host
+  eases off, the engine runs at the lowest priority and at most half of the processor (never above the user's own
+  ceiling), then returns to its saved priority and ceiling when the reason ends. `gpu_busy` is accepted as a setting but
+  is not detected yet in 1.0.3, so it never fires by itself.
 - Changes apply live: the host re-plans, and if the loaded model no longer fits it reloads with the new placement or
   unloads. Watch `X-Portal-Capabilities-Revision`. Nothing is deleted; model files are never touched.
+
+### `POST /host/ease-off` and `DELETE /host/ease-off` (host 1.0.3)
+An app doing live, time-critical work (for example live dictation) asks the host to ease off batch work meanwhile.
+Needs a token. Check for `"ease-off"` in `endpoints` first.
+```json
+{ "reason": "live_audio", "ttl_ms": 30000, "reserved_bytes": 1073741824 }
+```
+- `ttl_ms` is required (1000 to 120000, clamped). The request ends on its own when the time passes, so **renew it**
+  (send it again) while the work goes on, for example every `ttl_ms / 2`. `DELETE /host/ease-off` ends it at once.
+- `reason` is a short label of letters, digits, `_` and `-` (longer or other characters are dropped). It is never
+  shown with any content.
+- `reserved_bytes` (optional) is memory the app's own models hold; the host plans around it while the request lasts.
+- Each app has one request. A repeat from the same app replaces its earlier one, and `DELETE` ends only the
+  caller's own request (and is not an error when there is none). Both answer `204`. At most 64 apps may hold a
+  request; a 65th gets `400 invalid_request`.
+- The request only eases off when the `app_busy` rule is on in the host's settings; it is still stored when it is off.
+- While it is active `GET /host/performance` reports `eased_off_now: "app_busy"`.
 
 ### `GET /v1/models`
 OpenAI shape, with extra fields.
@@ -545,7 +568,8 @@ only). Messages are JSON envelopes `{ "id", "type", "payload" }`; answers are `o
 
 - `settings.get` / `settings.set` carry `HostSettings` (`start_with_windows, backend, models_folder,
   max_memory_percent, prevent_sleep_while_downloading, bandwidth_cap_bytes_per_second, kinds`, the performance keys
-  `preset, memory_limit_bytes, keep_free_bytes, compute, gpu_memory_limit_bytes, cpu_threads, priority`, and the
+  `preset, memory_limit_bytes, keep_free_bytes, compute, gpu_memory_limit_bytes, cpu_threads, priority,
+  cpu_ceiling_percent, ease_off`, and the
   host-owned `previous_store_folders`, which `settings.set` ignores).
 - **Performance keys:** a key left out keeps its default (`null` bytes and threads mean "the default for this PC").
   An older `max_memory_percent` becomes `memory_limit_bytes` the first time the new host reads the file; until then it

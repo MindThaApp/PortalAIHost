@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using Portal.AiHost.Contracts;
+using Portal.AiHost.Contracts.Control;
 using Portal.AiHost.Core.Abstractions;
 using Portal.AiHost.Core.Auth;
 using Portal.AiHost.Core.Runtime;
@@ -81,7 +82,7 @@ public sealed class TestHost : IAsyncDisposable
     public string DiscoveryPath => DiscoveryFileWriter.PathFor(_root.Path);
 
     public static async Task<TestHost> StartAsync(FakeEngineOptions? chat = null, int maxRequestBytes = ApiLimits.MaxRequestBytes,
-        bool withModels = true, int parallelSlots = 1)
+        bool withModels = true, int parallelSlots = 1, HostSettings? settings = null, IEaseOffSensors? sensors = null)
     {
         var host = new TestHost();
         host.Chat = new FakeEngineSupervisor(ModelKinds.Chat, chat);
@@ -100,7 +101,14 @@ public sealed class TestHost : IAsyncDisposable
             InstanceId = "6f1c2a9e4b7d4c0f9a51d3e8b2c47a10",
             ProgressInterval = TimeSpan.FromMilliseconds(200),
             Pipeline = new() { MaxRequestBytes = maxRequestBytes },
+            Settings = settings is null ? null : () => settings,
+            EaseOffSensors = sensors,
         });
+        if (settings is not null)
+        {
+            await host.Runtime.ApplyPerformanceAsync(default);
+        }
+
         if (withModels)
         {
             await host.Runtime.SetActiveAsync(ModelKinds.Chat, new ActiveModel(ModelKinds.Chat, "qwen3-30b-a3b-q4km",
