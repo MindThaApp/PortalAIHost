@@ -1,6 +1,6 @@
 # Portal AI Host: client mode ("Use another PC's AI"), design v1
 
-Status: draft 1, 2026-11-24. No code yet. Builds on [api-v1.md](api-v1.md) (what apps see) and
+Status: draft 2, 2026-11-24 (owner decisions in section 7 applied). No code yet. Builds on [api-v1.md](api-v1.md) (what apps see) and
 [remote-v1.md](remote-v1.md) (the host-to-host transport; section numbers below refer to it).
 
 ## Summary in plain words
@@ -15,10 +15,17 @@ Status: draft 1, 2026-11-24. No code yet. Builds on [api-v1.md](api-v1.md) (what
 - At home the laptop talks to the home PC over the local network. Away from home it uses the relay, if the home PC
   allows it. Either way the connection is checked against the home PC's certificate, and every request is signed with a
   key that never leaves the laptop.
-- Switching mode never deletes anything. Models on the laptop stay on disk; they are just not used while client mode is
-  on. Leaving client mode unpairs nothing unless the user chooses "Forget this PC".
-- If the home PC cannot be reached, apps get a `503 unavailable` answer and use their own fallback (AI Portal's
-  built-in AI). A new code, `remote_unreachable`, says why.
+- Switching mode never deletes anything. Models on the laptop stay on disk. Leaving client mode unpairs nothing unless
+  the user chooses "Forget this PC".
+- If the home PC cannot be reached, the laptop offers a choice in Settings (and asks once, calmly, the first time):
+  "Use this laptop's model" or "None". Until the user picks, it is "None": apps get `503 remote_unreachable` (a new
+  code that says why) and use their own fallback (AI Portal's built-in AI). With the laptop model on, it loads only
+  when needed and requests go back to the home PC as soon as it is reachable again.
+- By default the home PC decides which model runs. The home PC owner can give a paired laptop **"Model control"**
+  (off by default, revocable): then the laptop can see the PC's models, load and unload them, pick a model per laptop
+  app, and run two at once (for example one on the graphics card, one in system memory). The PC owner's own actions
+  always win, and the PC shows which device loaded what.
+- Relay use is automatic by default (home network first, relay when away); a setting makes it manual.
 
 ## 1. Roles and mode switch
 
@@ -48,10 +55,25 @@ discovery file, the app token store and the Apps page.
 
 | Item | On entering client mode | On leaving |
 |---|---|---|
-| Loaded model / engine process | **Unloaded** (frees memory). Requests in flight finish first; requests queued behind them get a retryable `503 engine_restarting`. | Loaded again on first request, as at start. |
-| Model files, downloads, models folder | **Untouched.** Not deleted, moved or rewritten. Downloads in progress are paused, not cancelled. | Resumable. |
-| Local models as fallback | **No** in v1: if the home PC is unreachable the host answers 503 and the app uses its own fallback. A local fallback would load a large model on a laptop without the owner asking (open question 1). | n/a |
+| Loaded model / engine process | **Unloaded** (frees memory). The engine path stays available for the laptop fallback below. Requests in flight finish first; requests queued behind them get a retryable `503 engine_restarting`. | Loaded again on first request, as at start. |
+| Model files, downloads, models folder | **Untouched.** Not deleted, moved or rewritten, by this or any mode switch. Downloads in progress are paused, not cancelled. | Resumable. |
+| Local model as fallback | Setting **"If the home PC is unreachable"** (Settings card, section 1.4): `None` (default) or `Use this laptop's model`. See below. | n/a |
 | App tokens, priorities, pauses | Kept; they belong to the local apps, not to the mode. | Kept. |
+
+**Unreachable-PC choice (owner decision 1).**
+
+- Stored as `client_fallback: "none" | "local"` in the settings store; default `none`, so nothing is loaded on a
+  laptop without the user's say-so.
+- The first time the remote becomes unreachable while the value is still unset, the host shows **one** calm prompt
+  (a tray notification of kind `problems` that opens the Settings card). It is never repeated; the choice stays one
+  click away in Settings.
+- `none`: apps get `503 remote_unreachable` (4.5) and use their own built-in AI.
+- `local`: client mode does **not** permanently unload or remove the local engine path. When a request arrives and the
+  remote is unreachable, the laptop's active model loads on demand (normal load path, memory checks and
+  `insufficient_memory` answers) and the request runs locally. The model unloads by the host's normal idle rule. A
+  request that starts on the PC finishes on the PC, and one that starts locally finishes locally (in-flight requests
+  never move). As soon as the link reports reachable again, **new** requests go back to the PC. The Home chip reads
+  "Using this laptop's model" while that is the case.
 
 ### 1.4 What the UI shows
 
@@ -61,9 +83,15 @@ empty states may carry text.
 - **Home page, client mode:** a status card with the PC name, a state chip ("Connected - home network", "Connected -
   via relay", "Not reachable"), the round-trip time and the number of running requests. Buttons: `Reconnect`,
   `Change PC`, `Run AI here` (leave client mode). The local-model sections (loaded model, memory use, warm-up) are
-  hidden; an empty-state sentence explains that the AI runs on the other PC.
-- **Models page:** shows the remote PC's models (read-only list, "on <PC name>"); local download controls stay
-  available but are labelled "for when this PC runs the AI". Nothing offers to delete.
+  hidden unless the laptop model is serving as fallback (the chip then reads "Using this laptop's model"); an
+  empty-state sentence explains that the AI runs on the other PC.
+- **Settings, "How this PC uses AI" card (client mode rows):** `If the home PC is unreachable` (choice: "None" /
+  "Use this laptop's model", default None); `Connection away from home` (choice: "Automatic" / "Manual"; with Manual,
+  a `Use relay` toggle turns the relay on for the current session and resets when the app closes); and, when the home
+  PC has granted Model control, a `Models on <PC name>` section (4.7).
+- **Models page:** shows the remote PC's models ("on <PC name>"): read-only without Model control, with load, unload
+  and placement buttons when granted (4.7). Local download controls stay available but are labelled "for when this PC
+  runs the AI". Nothing ever offers to delete a remote model.
 - **Apps page:** unchanged (local apps, local approvals).
 - **Tray:** the icon gets a small link badge; the popup shows the state chip and the same three buttons. Unreachable
   gets a warning badge, not a toast on every retry.
@@ -78,9 +106,10 @@ All under the host's existing state directory (the one that holds the settings a
 |---|---|---|
 | `client\remote.json` | mode hint, PC name, LAN address and port, relay URL, pinned fingerprint, `device_id`, paired-at | Plain JSON via `AtomicFile` (no secrets). |
 | `client\device.key` | the device's P-256 private key (PKCS#8) | **DPAPI**, user scope, in the style of `DpapiHostKeyProtector` / `DpapiTokenStore`. Never logged, never exported. |
+| `client\apps.json` | per-laptop-app model mapping (4.7): app id to model id | Plain JSON via `AtomicFile` (no secrets). |
 | `client\token.dat` | the host's own access token for the remote PC (3.3) | DPAPI, same as above. |
 
-The authoritative mode flag lives in the existing settings store (`mode: "server" | "client"`).
+The authoritative mode flag lives in the existing settings store (`mode: "server" | "client"`), together with `client_fallback` (1.3) and `relay_mode: "auto" | "manual"` (3.1). `Forget this PC` removes only the own `client\` files above and nothing else.
 
 ## 2. Pairing from the laptop
 
@@ -134,6 +163,12 @@ the response stream*. It hides LAN vs relay.
 
 ### 3.1 Route choice
 
+Relay use follows the setting `relay_mode` (owner decision 3). **Auto** (default): the routes below are used in
+order, home network first and the relay when the LAN fails, whenever the link carried `r`. **Manual**: only the LAN
+is used until the user turns `Use relay` on in Settings (or the status card) for the current session; it resets when
+the app closes. A pairing made by typing address + code without a link has no relay in either setting until a link
+with `r` has been used once (owner decision 5).
+
 1. **LAN first:** HTTPS to `https://<h>:<p>` with a custom certificate callback that accepts exactly the pinned
    fingerprint (SHA-256 over the DER) and nothing else; HTTP/1.1 only; TLS 1.2 or 1.3 (section 5). Connect timeout
    1.5 s (a wrong network must not stall apps).
@@ -167,7 +202,7 @@ host asks once more (new request), never in a loop.
 
 Per-app identity is lost over this hop: the home PC sees one app, not "AI Portal". Fair queueing and the owner's
 per-app pause on the home PC therefore work per laptop. The laptop host applies its own per-app pause, priority and
-queue limits locally before forwarding, so the laptop owner's controls still work (open question 2).
+queue limits locally before forwarding, so the laptop owner's controls still work (owner decision 2).
 
 ### 3.4 Connection reuse
 
@@ -208,9 +243,10 @@ response is written through the same `IResponseSink`, so SSE and error shapes ar
 | `GET /host/performance`, `GET /host/health` | **Forwarded** (the remote machine's numbers, labelled so in the UI). |
 | `POST /host/ease-off`, `DELETE /host/ease-off`, `POST /host/warmup` | **Forwarded** as the same calls; if the remote refuses a device, its answer passes through. They cannot unload or change the remote's models. |
 | `POST /host/tokenize` | **Forwarded.** |
-| `GET /v1/models` | **Forwarded**: the remote's models, ids as the remote reports them. Local models are not listed in client mode. |
-| `POST /v1/chat/completions`, `POST /v1/embeddings` | **Forwarded**, see 4.3 and 4.4. |
-| Admin control pipe (`models.*`, `settings.*`, `downloads.*`) | **Local only**; no pipe message is ever forwarded. The Models page reads remote models through a read-only `client.models` message backed by the cached capabilities. |
+| `GET /v1/models` | **Forwarded**: the remote's models, ids as the remote reports them. Local models are not listed while the PC is the backend. |
+| `POST /v1/chat/completions`, `POST /v1/embeddings` | **Forwarded**, see 4.3 and 4.4. With Model control the laptop sets `model` from the app's mapping (4.7). With `client_fallback: local` and the PC unreachable they run on the laptop engine (1.3). |
+| Admin control pipe (`models.*`, `settings.*`, `downloads.*`) | **Local only**; no pipe message is ever forwarded. The Models page reads remote models through `client.models` (cached capabilities, or the signed `GET /host/models` when Model control is granted). Remote model actions are separate `client.remote_*` messages (4.7) that the laptop host turns into its own signed device calls. |
+| Remote model management (`/host/models*`, `/host/placement`, 4.7) | **Only with the Model control grant**, and only from the laptop host's own UI. Never reachable by apps. |
 
 Unknown `/host/*` and `/v1/*` routes: `404 not_found` locally, not forwarded (an allow-list, not a proxy).
 
@@ -250,7 +286,7 @@ laptop's own engine is not restarting):
 
 | HTTP | `code` | `type` | Retry? | Meaning |
 |---|---|---|---|---|
-| 503 | `remote_unreachable` | `unavailable` | yes | The PC that runs the AI cannot be reached now. `details.reason`: `offline` (nothing answered on LAN or relay), `relay_host_offline`, `relay_busy` (429s, close 4429), `clock` (`stale_timestamp`), `refused` (the pairing is no longer valid, see 5.2), `cert_changed` (5.3). `retry_after_ms` follows the backoff. |
+| 503 | `remote_unreachable` | `unavailable` | yes | The PC that runs the AI cannot be reached now. `details.reason`: `offline` (nothing answered on LAN or relay), `relay_host_offline`, `relay_busy` (429s, close 4429), `clock` (`stale_timestamp`), `refused` (the pairing is no longer valid, see 5.2), `cert_changed` (5.3). `retry_after_ms` follows the backoff. Sent to apps when `client_fallback` is `none` (default), or when the local fallback could not load (then the engine's own error, such as `insufficient_memory`, is passed on). |
 
 This is additive under api-v1 rules (new code, same `type`; clients ignore unknown codes and fall back, which is the
 right outcome for AI Portal). Apps that handle only the old codes treat any `503 unavailable` as "fall back".
@@ -264,6 +300,7 @@ Mapping of remote answers on the way back:
 | `401 device_unauthorized`, reason `stale_timestamp` | `503 remote_unreachable`, `reason: "clock"`. |
 | `401 token_invalid` / `token_revoked` (the host's token) | The host requests a new token once (3.3); meanwhile `503 remote_unreachable`, `reason: "refused"`. |
 | `429 rate_limited` (device limit 600 per minute) | Passed through as `429 rate_limited` with `Retry-After`. |
+| `403 model_control_required` or `409 model_conflict` (4.7) | Not sent to apps; shown in the laptop's Models page as a plain message. If a mapped model is missing, apps get the normal `model_not_found` / `no_model`. |
 | TLS fingerprint mismatch | `503 remote_unreachable`, `reason: "cert_changed"`; no request is sent. |
 | No connection on LAN or relay | `503 remote_unreachable`, `reason: "offline"` or the relay reason. |
 
@@ -278,11 +315,66 @@ Mapping of remote answers on the way back:
   reshape request bodies (large embedding batches over the relay are the app's problem to keep small; documented in
   api-v1 when this ships).
 
-### 4.7 Models
+### 4.7 Models and Model control
 
-Remote models are what apps see in `/v1/models` and in capabilities. The laptop's own installed models appear in the
-Models page under "On this PC" and are not offered to apps while client mode is on. Which model is active on the home
-PC stays the home owner's decision; the laptop cannot change it (open question 5).
+**Default (no grant).** Remote models are what apps see in `/v1/models` and in capabilities. Which model is active on
+the home PC is the home owner's decision; the laptop uses whatever the PC has loaded. The laptop's own installed
+models appear in the Models page under "On this PC" and are not offered to apps while the PC is the backend (they are
+used only as the fallback of 1.3).
+
+**Model control (owner decision 4).** The home PC owner can grant a paired device **Model control**.
+
+- **Grant.** A per-device flag `model_control` in the host's device store, **off by default**, shown as a switch on
+  the device's row in "Other devices" (label `Model control`; tooltip "Lets this device load and unload models and
+  choose which model each of its apps uses"). Turning it off takes effect at once: the next call gets `403
+  model_control_required`. Removing the device removes the grant, and re-pairing does not restore it. The laptop
+  learns its grant from a `model_control` entry in the capabilities answer it gets as a device, and from the `403`.
+- **What becomes reachable.** Only for a device with the grant, and signed like every other device request (3.2,
+  remote-v1 section 6: same timestamp, nonce and body hash, same 600 per minute limit). The device-visible model API
+  reuses the shapes of the existing admin pipe messages (api-v1 section 8, "Models" and `engine.load` /
+  `engine.unload`; `ControlMessages.cs` `ListModels`, `ActivateModel` with `ActivateModelCommand.CatalogueId`) and the
+  performance keys of `GET /host/performance` / `settings.set` (`compute`, `gpu_memory_limit_bytes`,
+  `memory_limit_bytes`, `cpu_threads`; api-v1 section 7):
+
+| Device call | Reuses | Behaviour |
+|---|---|---|
+| `GET /host/models` | `models.list` | Installed models only (no catalogue or download data): `id, display_name, kind, size_bytes, fits_this_pc, state`, `placement`, `loaded_by`. |
+| `POST /host/models/load` `{ model_id, placement? }` | `models.activate` + `engine.load` | Loads an installed model, optionally with a placement (below) and in a second slot. Answers when the load is done, or `409 model_conflict`, `503 insufficient_memory`, `404 not_found`. |
+| `POST /host/models/unload` `{ model_id }` | `engine.unload` | Unloads only a model **this device loaded**. Never touches files. |
+| `GET /host/placement`, `POST /host/placement` `{ model_id, compute, gpu_memory_limit_bytes?, memory_limit_bytes?, cpu_threads? }` | the performance keys above | The same VRAM and RAM controls the PC has locally, scoped to models this device loaded. The PC's global preset and ease-off rules still apply on top. |
+
+  No endpoint for download, remove, verify, import, settings, models folder, app tokens or the control pipe is ever
+  reachable by a device, with or without the grant. `models.remove`, `downloads.*` and every file operation stay local
+  to the PC.
+- **Per-app model mapping.** Lives on the laptop (`client\apps.json`, 1.5), edited in the laptop's Apps page (a
+  "Model" dropdown per app, default "PC's choice"). The laptop host writes the mapped model id into `model` on every
+  forwarded `chat/completions` / `embeddings` request (the host's own change; the app is unaware). Without the grant
+  the mapping is hidden and `model` is left as the app sent it. A mapped model that is not loaded on the PC is loaded
+  **only** if the grant exists and the conflict rules below allow it; otherwise the PC's normal `model_not_found` /
+  `no_model` answer passes through.
+- **Two models at once.** With the grant the laptop may keep up to two models loaded on the PC, for example one on the
+  graphics card (`compute: gpu`) and one in system memory (`compute: cpu`), within the PC's memory limit and `fit`
+  checks. **This needs host work:** today the host has one active model per kind (api-v1 `models.<kind>`), so a second
+  concurrent slot per kind is new engine and planner work (6.4 step 6). Until it ships, a second load replaces the
+  first under the conflict rules.
+- **Conflict rules.**
+  1. The PC owner's local action always wins. An `engine.load`, `models.activate` or `settings.set` on the PC takes
+     effect at once and may unload a device-loaded model; the device then sees `409 model_conflict` with
+     `details.reason: "owner_changed"` and its list refreshes.
+  2. A device load that would evict a model **in use by the PC's own apps** (loaded, and not loaded by a device) is
+     refused with `409 model_conflict`, `details.reason: "in_use_by_host"`, unless the PC owner turned on **"Devices
+     may replace models"** (Settings, Other devices; PC-wide, off by default). The PC's own apps then simply reload
+     on their next request.
+  3. With two granted devices, the first loader keeps its model; a second device may not evict it (`409
+     model_conflict`, `reason: "in_use_by_device"`).
+  4. A load that does not fit the PC's memory limit fails with `503 insufficient_memory`; nothing is evicted silently.
+- **What the PC shows.** In the Models page and the Other devices row, each loaded model reads "Loaded by <device
+  name>" (or "by this PC") with its placement (graphics card / system memory) and a `Take back` button that unloads a
+  device's model. A tray notification of kind `approvals` ("<device> loaded <model>") appears once per load.
+- **Laptop UI.** With the grant, the Models page shows a `Models on <PC name>` section: installed models with `Load` /
+  `Unload` buttons and a placement control (Auto, Graphics card, System memory; same labels as on the PC), plus the
+  per-app dropdown in the Apps page. Without the grant the section is an empty state ("Ask the owner of <PC name> to
+  turn on Model control for this laptop").
 
 ## 5. Security
 
@@ -296,9 +388,16 @@ PC stays the home owner's decision; the laptop cannot change it (open question 5
   client mode adds no new local attack surface beyond "the owner chose to share the home PC's AI with approved local
   apps".
 
+### 5.1a Model control and the grant
+
+`model_control` is checked on the home PC for every call in 4.7, from the device store, never from anything the
+device sends. A device without it gets `403 model_control_required` on every one of those routes. Device-loaded
+models are tracked by device id, so a device can only unload its own. Nothing a device can call deletes, moves or
+rewrites a model file.
+
 ### 5.2 Revocation (server side)
 
-Removing the device in the home host revokes it at once (remote-v1 section 1): the next request gets `401
+Removing the device in the home host revokes it at once (remote-v1 section 1; this also drops its Model control grant, and models it loaded stay loaded until idle or until the PC takes them back): the next request gets `401
 device_unauthorized` / `unknown_device`, and the host token is revoked. The laptop shows "That PC removed this
 laptop. Pair again to continue" in the status card, switches the chip to "Not paired", keeps the mode, and sends no
 more requests (apps get `remote_unreachable` / `refused`). It deletes **nothing** by itself; the user presses `Change
@@ -347,10 +446,13 @@ in-progress download. Review of the implementation must read every write and del
 | `RemoteHostLink` | `src/Portal.AiHost.Core/Remote/Client/RemoteHostLink.cs` | Route choice, signing (`RemoteSigning.Sign`), host token, health, backoff, state events. One method: `SendAsync(HttpRequestMessage, ct)`. |
 | `IInferenceBackend` seam | `src/Portal.AiHost.Core/Api/` | Lets `ApiPipeline` pick local or remote handlers. |
 | `RemoteBackend` | `src/Portal.AiHost.Server/RemoteBackend.cs` | Forwarding handlers, header rewriting, error mapping, SSE passthrough into `IResponseSink` (4.2 to 4.5). |
-| `ClientModeController` | `src/Portal.AiHost.Server/ClientModeController.cs` | Switches the handler set, unloads/loads the engine, stops/starts `LanServer` and `RelayBridge`, bumps the capabilities revision. |
-| Control pipe messages `client.pair`, `client.status`, `client.setmode`, `client.forget`, `client.models` | pipe contracts in Core, `PipeHostControl` in the app | UI to host. |
-| UI | `src/PortalAIHost.App/Pages/SettingsPage.xaml` (mode card), `HomePage.xaml`, `TrayPopupWindow.xaml`, a new pairing dialog, strings in `Strings/` | Section 1.4. |
-| Server-side additions | the "Pair a device" dialog and `RemoteAccess` | "Copy link" and visible address + code (2.1). |
+| `ClientModeController` | `src/Portal.AiHost.Server/ClientModeController.cs` | Switches the handler set, unloads the engine (path kept for the laptop fallback, 1.3), stops/starts `LanServer` and `RelayBridge`, bumps the capabilities revision. Never touches model files. |
+| `FallbackRouter` | `src/Portal.AiHost.Server/` | Chooses PC or local engine per new request from link state and `client_fallback`; in-flight requests are never moved (1.3). |
+| `ModelControlGrant`, `DeviceModelEndpoints` | device store field in `src/Portal.AiHost.Core/Remote/`; routes in `src/Portal.AiHost.Server/` | Server side of 4.7: per-device flag, allow-listed routes, conflict rules, "loaded by" tracking. |
+| `RemoteModelClient`, per-app mapping store | `src/Portal.AiHost.Core/Remote/Client/` | Laptop side of 4.7: signed calls, `client\apps.json`, `model` rewrite in `RemoteBackend`. |
+| Control pipe messages `client.pair`, `client.status`, `client.setmode`, `client.forget`, `client.models`, `client.remote_load`, `client.remote_unload`, `client.remote_placement`, `client.appmodel` | pipe contracts in Core, `PipeHostControl` in the app | UI to host. |
+| UI | `src/PortalAIHost.App/Pages/SettingsPage.xaml` (mode card incl. fallback and relay mode), `ModelsPage.xaml`, `AppsPage.xaml` (model dropdown), `HomePage.xaml`, `TrayPopupWindow.xaml`, a new pairing dialog, strings in `Strings/` | Section 1.4. |
+| Server-side additions | the "Pair a device" dialog and `RemoteAccess` | "Copy link" and visible address + code (2.1); the `Model control` switch, "Devices may replace models" and "Loaded by" display (4.7). |
 
 ### 6.2 Reused as is
 
@@ -375,8 +477,17 @@ known `unavailable` code.
   mapping table, 429 passthrough.
 - **Link:** LAN failure then relay success, fingerprint change (no bytes sent), revoked device, stale timestamp,
   backoff timing with an injected `TimeProvider`, health events.
-- **Safety:** a mode switch leaves the models folder and downloads unchanged; `Forget` removes only the three own
-  files; no token or key appears in captured logs.
+- **Fallback:** default `none` loads nothing; `local` loads on demand only when the remote is unreachable, in-flight
+  requests finish where they started, new requests return to the PC when it is reachable, idle unload, the prompt is
+  shown once.
+- **Relay mode:** Auto uses LAN then relay; Manual never touches the relay until the toggle; typed code without `r`
+  never uses the relay.
+- **Model control:** no grant means every 4.7 route is `403`; grant on and off; routes outside the allow-list stay
+  refused even with the grant; signature required; owner wins; `in_use_by_host` refused unless "Devices may replace
+  models"; `in_use_by_device`; `insufficient_memory`; a device unloads only its own models; per-app `model` rewrite;
+  no model file is created, changed or deleted by any call (file tree compared before and after).
+- **Safety:** a mode switch leaves the models folder and downloads unchanged; `Forget` removes only the own
+  `client\` files; no token or key appears in captured logs.
 - Real relay, real network and the real UI need a manual run with the owner's go-ahead for any input window.
 
 ### 6.4 Implementation steps (in order, one focused worker each)
@@ -391,15 +502,31 @@ known `unavailable` code.
    messages. Tests: the forwarding suite against the fake remote.
 4. **Relay connector.** `WebSocketStream`, `RelayConnector`, route fallback, relay error mapping and the budget rules
    (4.6). Tests: fake relay.
-5. **UI.** Settings card, pairing dialog, Home/Models/tray states, first-run path, strings, accessibility names, UI
-   rule check; then the owner's live test (laptop + home PC, including the relay).
+5. **Fallback and relay setting.** `client_fallback` (None default, Use this laptop's model) with `FallbackRouter`, the
+   one-time prompt, load on demand and switch back; `relay_mode` Auto / Manual. Tests: the Fallback and Relay mode
+   lists in 6.3. (Needs steps 3 and 4.)
+6. **Model control, server side.** `model_control` flag in the device store, "Devices may replace models" setting, the
+   4.7 routes (list, load, unload, placement), conflict rules, "loaded by" tracking, the PC UI (switch, "Loaded by",
+   `Take back`). Includes the second concurrent model slot in the engine planner; if that proves large, ship
+   single-slot first and make the second slot its own step. Tests: the Model control list in 6.3 against the fake
+   remote. Needs an independent review (it can change what is loaded on the PC: read every load, unload and eviction
+   path).
+7. **Model control, laptop side.** `RemoteModelClient`, `client.remote_*` and `client.appmodel` messages, per-app
+   mapping store, `model` rewrite in `RemoteBackend`, the `Models on <PC name>` UI, the Apps page dropdown, the empty
+   state without the grant. Tests: mapping and rewrite, grant revoked mid-use.
+8. **UI.** Settings card, pairing dialog, Home/Models/tray states, first-run path, strings, accessibility names, UI
+   rule check; then the owner's live test (laptop + home PC, including the relay, fallback and Model control).
 
-## 7. Open questions for the owner
+## 7. Owner decisions (2026-11-24)
 
-| # | Question | Recommended default |
+| # | Decision | Where applied |
 |---|---|---|
-| 1 | Should the laptop use its **own local model** when the home PC is unreachable? | **No** in v1: apps get `503 remote_unreachable` and AI Portal uses its built-in AI. Later, an optional "Fall back to a model on this PC" switch, off by default. |
-| 2 | Should the home PC owner see which **app** on the laptop made a request (so per-app pause works there)? | **No** in v1: the home PC sees one "Portal AI Host (client mode)" app; pause and priority are controlled on the laptop. Revisit with a signed app-label header if wanted. |
-| 3 | May client mode use the **relay** when away from home? | **Yes**, whenever the pairing link carried `r` (the home owner left the relay on); the status card always shows "via relay". |
-| 4 | Pair by **address + code** without a link? | **Yes**, LAN only (no relay) until a link has been used. |
-| 5 | May the laptop **change which model is active** on the home PC? | **No**: that stays the home owner's decision. |
+| 1 | **Home PC unreachable:** the laptop offers `None` or `Use this laptop's model` in Settings, plus one calm prompt the first time. Default `None` until the user picks. With the laptop model on, the local model loads on demand while the PC is unreachable, unloads by the normal idle rule, and new requests return to the PC when it is reachable again (in-flight requests finish where they started). Model files are never deleted by mode switches. | 1.3, 1.4, 4.5, 6.1, 6.4 step 5 |
+| 2 | The home PC sees the laptop as **one app** (unchanged). | 3.3 |
+| 3 | **Relay:** `Auto` (default: home network first, relay when away, if the link carried `r`) or `Manual` (relay only when the user turns it on for the session). | 1.4, 3.1, 6.4 step 5 |
+| 4 | **Model control:** the PC decides by default. The PC owner can grant a paired device `Model control` (per device, off by default, revocable): the laptop can list, load and unload the PC's models, map a model per laptop app, and use two at once with the PC's placement controls. The PC owner's local action wins; evicting a model in use by the PC's own apps needs "Devices may replace models" or is refused. The PC shows which device loaded what. | 1.4, 1.5, 4.2, 4.5, 4.7, 5.1a, 6.1, 6.3, 6.4 steps 6 and 7 |
+| 5 | **Address + code without a link:** allowed, LAN only until a link with `r` has been used. | 2.2, 3.1 |
+
+Points to confirm before step 6: (a) the second concurrent model slot is new engine work, not only remote plumbing
+(4.7); (b) a device that loses its grant leaves its models loaded until idle or taken back; (c) "Devices may replace
+models" is PC-wide, not per device.
