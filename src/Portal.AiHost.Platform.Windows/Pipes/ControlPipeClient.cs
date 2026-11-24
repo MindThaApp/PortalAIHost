@@ -33,6 +33,9 @@ public sealed class ControlPipeClient : IAsyncDisposable
 
     public event EventHandler<ControlStatus>? StatusChanged;
 
+    /// <summary>Progress of a models-folder move or a file check.</summary>
+    public event EventHandler<StoreProgressEvent>? StoreProgress;
+
     /// <summary>The connection to the host ended.</summary>
     public event EventHandler? Disconnected;
 
@@ -93,6 +96,17 @@ public sealed class ControlPipeClient : IAsyncDisposable
 
     public Task CancelDownloadAsync(string catalogueId, CancellationToken ct = default) =>
         SendAsync(ControlTypes.CancelDownload, new DownloadCommand { CatalogueId = catalogueId }, AiHostJsonContext.Default.DownloadCommand, ct);
+
+    public Task VerifyModelAsync(string catalogueId, CancellationToken ct = default) =>
+        SendAsync(ControlTypes.VerifyModel, new VerifyModelCommand { CatalogueId = catalogueId }, AiHostJsonContext.Default.VerifyModelCommand, ct);
+
+    public Task<StoreFolderInfo> GetStoreFolderAsync(CancellationToken ct = default) =>
+        RequestAsync(ControlTypes.OpenStoreFolder, AiHostJsonContext.Default.StoreFolderInfo, ct);
+
+    public Task MoveStoreAsync(string parentFolder, CancellationToken ct = default) =>
+        SendAsync(ControlTypes.MoveStore, new MoveStoreCommand { ParentFolder = parentFolder }, AiHostJsonContext.Default.MoveStoreCommand, ct);
+
+    public Task CancelStoreOperationAsync(CancellationToken ct = default) => ExchangeAsync(ControlTypes.CancelStoreOperation, null, ct);
 
     public Task ActivateModelAsync(string catalogueId, CancellationToken ct = default) =>
         SendAsync(ControlTypes.ActivateModel, new ActivateModelCommand { CatalogueId = catalogueId },
@@ -215,6 +229,9 @@ public sealed class ControlPipeClient : IAsyncDisposable
                     break;
                 case ControlTypes.EventDownloadProgress when p.Deserialize(AiHostJsonContext.Default.DownloadProgressEvent) is { } d:
                     DownloadProgress?.Invoke(this, d);
+                    break;
+                case ControlTypes.EventStoreProgress when p.Deserialize(AiHostJsonContext.Default.StoreProgressEvent) is { } sp:
+                    StoreProgress?.Invoke(this, sp);
                     break;
                 case ControlTypes.EventStatusChanged when p.Deserialize(AiHostJsonContext.Default.ControlStatus) is { } st:
                     StatusChanged?.Invoke(this, st);
