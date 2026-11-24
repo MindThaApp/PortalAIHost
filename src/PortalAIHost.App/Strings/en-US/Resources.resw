@@ -425,6 +425,21 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="ModelsOpenFolder.Content" xml:space="preserve"><value>Open folder</value></data>
   <data name="ModelsMoveHint.Text" xml:space="preserve"><value>To move your models to another drive, pick a new folder in Settings under Models folder.</value></data>
   <data name="ModelsMoveCancel.Content" xml:space="preserve"><value>Cancel move</value></data>
+  <data name="ModelsFreeUp.Content" xml:space="preserve"><value>Free up space</value></data>
+  <data name="ModelsCleanupTitle.Text" xml:space="preserve"><value>Free up space</value></data>
+  <data name="ModelsCleanupPartialHeader.Text" xml:space="preserve"><value>Unfinished downloads nothing is resuming</value></data>
+  <data name="ModelsCleanupOldHeader.Text" xml:space="preserve"><value>Old copies left after moving your models</value></data>
+  <data name="ModelsCleanupDamagedHeader.Text" xml:space="preserve"><value>Models a check found damaged</value></data>
+  <data name="ModelsCleanupClose.Content" xml:space="preserve"><value>Close</value></data>
+  <data name="ModelsCleanupHint.Text" xml:space="preserve"><value>Only files this app created are listed. Models you use, and files you added yourself, are never removed.</value></data>
+  <data name="Vm_CleanupButton" xml:space="preserve"><value>Free up {0}</value></data>
+  <data name="Vm_CleanupNothing" xml:space="preserve"><value>There is nothing to free up. Unfinished downloads you can still resume are kept for a week.</value></data>
+  <data name="Vm_CleanupRunning" xml:space="preserve"><value>Freeing up space...</value></data>
+  <data name="Vm_CleanupConfirmTitle" xml:space="preserve"><value>Remove these files?</value></data>
+  <data name="Vm_CleanupConfirmBody" xml:space="preserve"><value>This permanently removes:&#10;{0}&#10;Your other models are not touched.</value></data>
+  <data name="Vm_CleanupDone" xml:space="preserve"><value>Freed up {0}.</value></data>
+  <data name="Vm_CleanupDoneSkipped" xml:space="preserve"><value>Freed up {0}. Some items were left where they are:&#10;{1}</value></data>
+  <data name="Vm_CleanupFailed" xml:space="preserve"><value>Space was not freed up: {0}</value></data>
   <data name="ModelsRemoveFailedBar.Title" xml:space="preserve"><value>Could not remove the model</value></data>
   <data name="SettingsMoveButton.Content" xml:space="preserve"><value>Move my models there</value></data>
   <data name="SettingsMoveCancel.Content" xml:space="preserve"><value>Cancel move</value></data>
