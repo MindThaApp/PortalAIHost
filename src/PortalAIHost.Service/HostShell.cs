@@ -85,6 +85,8 @@ public sealed class RemoteAccessTestOptions
     public Func<System.Net.IPAddress?, bool>? AllowSource { get; init; }
     public int? Port { get; init; }
     public Func<List<string>>? Addresses { get; init; }
+    public TimeSpan? RelayInitialDelay { get; init; }
+    public TimeSpan? RelayMaxDelay { get; init; }
 }
 
 /// <summary>An opened store, or null with a plain-language reason.</summary>
@@ -357,10 +359,14 @@ public sealed class HostShell : IAsyncDisposable
             DataDirectory = root,
             KeyProtector = _o.KeyProtector,
             RevokeDevice = id => _registry.RevokeDevice(id),
-            BindAddress = _o.RemoteTest?.BindAddress,
+            // Under a test data root the listener never leaves this PC (a listener on the network raises a firewall prompt).
+            BindAddress = _o.RemoteTest?.BindAddress ?? (_o.Paths.TestMode ? System.Net.IPAddress.Loopback : null),
             AllowSource = _o.RemoteTest?.AllowSource,
             PortOverride = _o.RemoteTest?.Port,
             Addresses = _o.RemoteTest?.Addresses,
+            UseDefaultRelay = !_o.Paths.TestMode,
+            RelayInitialDelay = _o.RemoteTest?.RelayInitialDelay,
+            RelayMaxDelay = _o.RemoteTest?.RelayMaxDelay,
         });
         Remote.Changed += () => _ = PushRemoteChangedAsync();
         await Remote.ApplyAsync(settings.Remote, ct).ConfigureAwait(false);

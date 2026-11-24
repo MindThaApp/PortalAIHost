@@ -3,6 +3,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Connections;
+using Microsoft.AspNetCore.Connections.Features;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
@@ -32,6 +33,12 @@ public sealed class LanServerOptions
     public Func<IPAddress?, bool> AllowSource { get; init; } = RemoteNetwork.IsPrivateAddress;
 
     public int MaxRequestBytes { get; init; } = ApiLimits.MaxRequestBytes;
+
+    /// <summary>
+    /// Also listen on an internal loopback-only endpoint (random port) for the relay bridge. Connections that arrive
+    /// there are accepted although they come from this PC; the device still has to pair and sign every request.
+    /// </summary>
+    public bool EnableBridgeEndpoint { get; init; }
 }
 
 /// <summary>
@@ -66,6 +73,13 @@ public sealed class LanServer : IAsyncDisposable
 
     public int Port { get; private set; }
 
+    /// <summary>The internal loopback endpoint of the relay bridge; null unless <see cref="LanServerOptions.EnableBridgeEndpoint"/>.</summary>
+    public IPEndPoint? BridgeEndPoint { get; private set; }
+
+    private ListenOptions? _bridgeListen;
+
+    private const string BridgeItem = "portal.bridge";
+
     public static async Task<LanServer> StartAsync(AiHostRuntime runtime, PairingService pairing,
         DeviceRequestVerifier verifier, DeviceSessions sessions, LanServerOptions options, CancellationToken ct = default)
     {
@@ -80,6 +94,13 @@ public sealed class LanServer : IAsyncDisposable
             await app.StartAsync(ct).ConfigureAwait(false);
             server._app = app;
             server.Port = options.Port != 0 ? options.Port : BoundPort(app);
+            if (server._bridgeListen is { } bridge)
+            {
+                server.BridgeEndPoint = bridge.IPEndPoint is { Port: > 0 } ep
+                    ? ep
+                    : throw new InvalidOperationException("The bridge endpoint has no bound port.");
+            }
+
             return server;
         }
         catch
@@ -146,6 +167,23 @@ public sealed class LanServer : IAsyncDisposable
             {
                 k.ListenAnyIP(_options.Port, Configure);
             }
+
+            if (_options.EnableBridgeEndpoint)
+            {
+                // Loopback only, so nothing on the network can reach it; the TLS identity and the device signatures
+                // are the same as on the LAN endpoint. Marked here so the source check below knows the origin.
+                k.Listen(IPAddress.Loopback, 0, listen =>
+                {
+                    _bridgeListen = listen;
+                    listen.Protocols = HttpProtocols.Http1;
+                    listen.Use(next => context =>
+                    {
+                        context.Items[BridgeItem] = true;
+                        return next(context);
+                    });
+                    listen.UseHttps(_options.Certificate);
+                });
+            }
         });
         var app = builder.Build();
         app.Run(HandleAsync);
@@ -155,7 +193,8 @@ public sealed class LanServer : IAsyncDisposable
     private async Task HandleAsync(HttpContext http)
     {
         var request = http.Request;
-        if (!_options.AllowSource(http.Connection.RemoteIpAddress))
+        var viaBridge = http.Features.Get<IConnectionItemsFeature>()?.Items.ContainsKey(BridgeItem) == true;
+        if (!viaBridge && !_options.AllowSource(http.Connection.RemoteIpAddress))
         {
             http.Abort();
             return;

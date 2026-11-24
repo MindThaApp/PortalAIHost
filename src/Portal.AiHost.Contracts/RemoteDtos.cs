@@ -19,6 +19,9 @@ public static class RemoteApi
     public const int MaxClockSkewSeconds = 120;
     public const int MaxDeviceNameLength = 64;
     public const string SigningVersion = "PORTALAI1";
+
+    /// <summary>Where the host connects out to by default (docs/remote-v1.md, section Relay).</summary>
+    public const string RelayDefaultUrl = "https://portal-relay.aiportal.workers.dev";
 }
 
 /// <summary>Signed-request headers of a paired device.</summary>
