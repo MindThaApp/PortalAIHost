@@ -133,6 +133,9 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
             : new PerformanceView();
     }
 
+    public Task<HealthReport> GetHealthAsync(CancellationToken ct = default) =>
+        RequestAsync(ControlTypes.GetHealth, AiHostJsonContext.Default.HealthReport, ct);
+
     public async Task<SettingsSaved> SetSettingsAsync(HostSettings settings, CancellationToken ct = default)
     {
         var answer = await CallAsync(ControlTypes.SetSettings, JsonSerializer.SerializeToElement(settings, AiHostJsonContext.Default.HostSettings), ct)

@@ -18,6 +18,70 @@
                 Message="{x:Bind ViewModel.StoreProblem, Mode=OneWay}"
                 IsOpen="{x:Bind ViewModel.HasStoreProblem, Mode=OneWay}" />
 
+            <!-- Health: one line when all is well, the checks and one-click fixes behind the expander. -->
+            <Expander
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Stretch"
+                Visibility="{x:Bind ViewModel.Health.HasReport, Mode=OneWay}">
+                <Expander.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="12" Padding="0,8">
+                        <FontIcon Glyph="&#xE73E;" FontSize="20" Foreground="{ThemeResource SystemFillColorSuccessBrush}"
+                                  Visibility="{x:Bind ViewModel.Health.AllGood, Mode=OneWay}" />
+                        <FontIcon Glyph="&#xE7BA;" FontSize="20" Foreground="{ThemeResource SystemFillColorCautionBrush}"
+                                  Visibility="{x:Bind ViewModel.Health.HasWarn, Mode=OneWay}" />
+                        <FontIcon Glyph="&#xEA39;" FontSize="20" Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                                  Visibility="{x:Bind ViewModel.Health.HasFail, Mode=OneWay}" />
+                        <TextBlock Text="{x:Bind ViewModel.Health.Summary, Mode=OneWay}" Style="{StaticResource BodyStrongTextBlockStyle}"
+                                   VerticalAlignment="Center" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Expander.Header>
+                <StackPanel Spacing="12">
+                    <ItemsControl ItemsSource="{x:Bind ViewModel.Health.Rows}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:HealthRow">
+                                <Grid ColumnSpacing="12" Margin="0,6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid Width="20" VerticalAlignment="Top" Margin="0,2,0,0">
+                                        <FontIcon x:Uid="HealthIconOk" Glyph="&#xE73E;" FontSize="16" Foreground="{ThemeResource SystemFillColorSuccessBrush}"
+                                                  Visibility="{x:Bind IsOk}" />
+                                        <FontIcon x:Uid="HealthIconWarn" Glyph="&#xE7BA;" FontSize="16" Foreground="{ThemeResource SystemFillColorCautionBrush}"
+                                                  Visibility="{x:Bind IsWarn}" />
+                                        <FontIcon x:Uid="HealthIconFail" Glyph="&#xEA39;" FontSize="16" Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                                                  Visibility="{x:Bind IsFail}" />
+                                    </Grid>
+                                    <StackPanel Grid.Column="1" Spacing="2">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <TextBlock Text="{x:Bind Title}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                                            <TextBlock x:Uid="HealthWordOk" Style="{StaticResource CaptionTextBlockStyle}" VerticalAlignment="Center"
+                                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" Visibility="{x:Bind IsOk}" />
+                                            <TextBlock x:Uid="HealthWordWarn" Style="{StaticResource CaptionTextBlockStyle}" VerticalAlignment="Center"
+                                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" Visibility="{x:Bind IsWarn}" />
+                                            <TextBlock x:Uid="HealthWordFail" Style="{StaticResource CaptionTextBlockStyle}" VerticalAlignment="Center"
+                                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" Visibility="{x:Bind IsFail}" />
+                                        </StackPanel>
+                                        <TextBlock Text="{x:Bind Detail}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                    </StackPanel>
+                                    <Button Grid.Column="2" Content="{x:Bind FixLabel}" Command="{x:Bind FixCommand}"
+                                            Visibility="{x:Bind HasFix}" VerticalAlignment="Top" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <InfoBar x:Uid="HealthFixErrorBar" Severity="Error" Message="{x:Bind ViewModel.Health.Error, Mode=OneWay}"
+                             IsOpen="{x:Bind ViewModel.Health.HasError, Mode=TwoWay}" />
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <Button x:Uid="HealthCheckAgainButton" Command="{x:Bind ViewModel.Health.CheckAgainCommand}"
+                                IsEnabled="{x:Bind ViewModel.Health.CanCheck, Mode=OneWay}" />
+                        <ProgressRing IsActive="{x:Bind ViewModel.Health.Busy, Mode=OneWay}" Width="20" Height="20"
+                                      Visibility="{x:Bind ViewModel.Health.Busy, Mode=OneWay}" />
+                    </StackPanel>
+                </StackPanel>
+            </Expander>
+
             <!-- The host is not running. -->
             <Border Style="{StaticResource CardBorder}" Visibility="{x:Bind ViewModel.NoHost, Mode=OneWay}">
                 <StackPanel Spacing="8">
