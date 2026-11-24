@@ -340,8 +340,8 @@ public class RoundTripTests
         RoundTrip("""{ "catalogue_id": "m", "switch_to_id": "n" }""", Ctx.RemoveModelCommand);
         RoundTrip("""{ "catalogue_id": "m" }""", Ctx.RemoveModelCommand);
         RoundTrip("""{ "catalogue_id": "m" }""", Ctx.VerifyModelCommand);
-        RoundTrip("""{ "parent_folder": "D:\Models" }""", Ctx.MoveStoreCommand);
-        RoundTrip("""{ "path": "D:\Models\Portal AI Host Models" }""", Ctx.StoreFolderInfo);
+        RoundTrip("""{ "parent_folder": "D:/Models" }""", Ctx.MoveStoreCommand);
+        RoundTrip("""{ "path": "D:/Models/Portal AI Host Models" }""", Ctx.StoreFolderInfo);
         RoundTrip("""
             { "operation": "move", "state": "done", "fraction": 1, "bytes_done": 10, "bytes_total": 10,
               "message": "Your models were moved.", "left_behind": [ "D:\old\a.gguf" ] }
