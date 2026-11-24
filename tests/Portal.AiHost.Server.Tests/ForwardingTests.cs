@@ -532,6 +532,35 @@ public sealed class ClientModeSwitchTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task Host_status_shows_the_mode_and_the_route_in_client_mode_and_nothing_secret()
+    {
+        _laptop.Runtime.ClientStatus = _mode.StatusRemote;
+        async Task<System.Text.Json.JsonElement> StatusAsync()
+        {
+            using var request = _laptop.Authed(HttpMethod.Get, Routes.Status, _token);
+            using var response = await _laptop.Http.SendAsync(request);
+            return System.Text.Json.JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement.Clone();
+        }
+
+        var server = await StatusAsync();
+        Assert.False(server.TryGetProperty("mode", out _));
+        Assert.False(server.TryGetProperty("remote", out _));
+
+        await _mode.SetModeAsync(HostModes.Client);
+        await ChatAsync(); // One answered request: the link is connected.
+        var client = await StatusAsync();
+
+        Assert.True(client.TryGetProperty("mode", out var modeValue), client.GetRawText());
+        Assert.Equal("client", modeValue.GetString());
+        var remote = client.GetProperty("remote");
+        Assert.Equal("Desk PC", remote.GetProperty("name").GetString());
+        Assert.Equal("lan", remote.GetProperty("route").GetString());
+        var text = client.GetRawText();
+        Assert.DoesNotContain("192.168.1.20", text);
+        Assert.DoesNotContain("host-token", text);
+    }
+
+    [Fact]
     public async Task Switching_back_restores_the_listener_and_the_local_engine()
     {
         await _mode.SetModeAsync(HostModes.Client);

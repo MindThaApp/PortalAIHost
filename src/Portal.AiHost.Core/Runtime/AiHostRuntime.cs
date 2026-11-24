@@ -875,7 +875,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
     {
         ApiVersion = s.ApiVersion, HostVersion = s.HostVersion, InstanceId = s.InstanceId, State = s.State,
         Client = client, Models = s.Models, Queue = s.Queue, Hardware = s.Hardware,
-        UpgradeAvailable = s.UpgradeAvailable, Sharing = s.Sharing, Usage = s.Usage,
+        UpgradeAvailable = s.UpgradeAvailable, Sharing = s.Sharing, Usage = s.Usage, Mode = s.Mode, Remote = s.Remote,
     };
 
     private Task ListModelsAsync(ApiContext ctx)
