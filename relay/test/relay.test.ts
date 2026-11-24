@@ -200,7 +200,7 @@ describe("pipe", () => {
     d.sock.ws.send(bytes(1));
     const got = await host.nextBinary();
     expect(got.length).toBe(5); // the first frame the host sees is the 1-byte one
-    for (let i = 0; i < LIMITS.MESSAGES_PER_MINUTE; i++) d.sock.ws.send(new Uint8Array(0));
+    for (let i = 0; i < 3000; i++) d.sock.ws.send(new Uint8Array(0)); // MESSAGES_PER_MINUTE is 3000 in the tests
     expect((await d.sock.waitClosed(20000)).code).toBe(4429);
   });
 

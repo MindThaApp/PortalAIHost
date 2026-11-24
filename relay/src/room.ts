@@ -45,14 +45,14 @@ interface Attachment {
 export class Room extends DurableObject<Env> {
   private readonly limits: EffectiveLimits;
   private nextStream: number;
-  // Slot 0: bytes, slot 1: frames. Saved on each window roll and every 256 KiB / 256 frames, so hibernation forgets
+  // Slot 0: bytes, slot 1: frames. Saved on each window roll and every 1 MiB / 2048 frames, so hibernation forgets
   // at most that much.
   private readonly window: PersistedWindow;
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
     this.limits = limitsFor(env);
-    this.window = new PersistedWindow(ctx.storage.kv, "w", 2, [256 * 1024, 256]);
+    this.window = new PersistedWindow(ctx.storage.kv, "w", 2, [1024 * 1024, 2048]);
     this.nextStream = crypto.getRandomValues(new Uint32Array(1))[0]!;
     // Keep-alive pings are answered without waking the room.
     ctx.setWebSocketAutoResponse(new WebSocketRequestResponsePair("ping", "pong"));

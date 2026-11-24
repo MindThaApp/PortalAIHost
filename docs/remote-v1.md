@@ -362,7 +362,7 @@ without a paired device's signature.
 |---|---|
 | Open device streams per host | 8 |
 | Bytes per host per minute (both directions together) | 20 MiB; every frame counts at least 64 bytes, and empty frames are counted but not forwarded |
-| Binary frames per host per minute (both directions together) | 12000 |
+| Binary frames per host per minute (both directions together) | 60000 |
 | Largest frame payload | 64 KiB (host frames add the 4-byte tag) |
 | Idle device stream | 2 minutes |
 | Device streams per source address per room | 3 |
@@ -372,7 +372,7 @@ without a paired device's signature.
 | Connections (host or device) per source address per minute | 30 |
 
 The relay logs no payloads and no headers, and stores nothing; it keeps only rate counters (including one per source
-address for the connection limit). The counters are saved in the relay's own small storage so they survive a restart or hibernation; after one, up to 256 KiB or 256 frames (rooms) or 4 connections (addresses) of recent spend can be forgotten. Because everything
+address for the connection limit). The counters are saved in the relay's own small storage so they survive a restart or hibernation; after one, up to 1 MiB or 2048 frames (rooms) or 4 connections (addresses) of recent spend can be forgotten. Because everything
 inside the tunnel is TLS with the host's pinned certificate and every request is signed by the device, a compromised or
 malicious relay can stop the service, delay it or read its size and timing, but it cannot read or change messages, and it
 cannot act as a paired device.

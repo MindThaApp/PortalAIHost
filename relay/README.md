@@ -14,7 +14,7 @@ All limits are constants in `src/protocol.ts` (`LIMITS`). Remote use is text cha
 |---|---|
 | Device streams per room | 8 |
 | Bytes per room per minute (both directions) | 20 MB (each frame counts at least 64 bytes) |
-| Binary frames per room per minute | 12000 |
+| Binary frames per room per minute | 60000 |
 | Largest frame payload | 64 KiB |
 | Idle device stream | 5 minutes |
 | Host handshake | 10 seconds |
