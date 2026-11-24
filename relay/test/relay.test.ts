@@ -8,6 +8,20 @@ import { connectDevice, connectHost, freshIp, mustOpen, newIdentity, open, sign,
 const bytes = (...n: number[]) => new Uint8Array(n);
 const status = (o: Awaited<ReturnType<typeof open>>) => ("status" in o ? o.status : 101);
 
+describe("persisted window", () => {
+  it("restores counters after the owner is recreated (hibernation) and rolls when expired", async () => {
+    const { PersistedWindow } = await import("../src/window");
+    const store = new Map<string, unknown>();
+    const kv = { get: (k: string) => store.get(k), put: (k: string, v: unknown) => void store.set(k, structuredClone(v)) } as unknown as SyncKvStorage;
+    const a = new PersistedWindow(kv, "w", 1, [4]);
+    for (let i = 0; i < 8; i++) a.add(0, 1);
+    const b = new PersistedWindow(kv, "w", 1, [4]); // a fresh instance after eviction
+    expect(b.add(0, 1)).toBeGreaterThanOrEqual(9 - 3); // at most 3 unsaved hits forgotten
+    const expired = new PersistedWindow(kv, "w", 1, [4], -1); // window length -1: always expired
+    expect(expired.add(0, 1)).toBe(1);
+  });
+});
+
 describe("room id and host proof", () => {
   it("matches a certificate and signature made by the host's own code", async () => {
     const der = fromBase64Url(fixture.cert, 2048)!;
@@ -172,10 +186,22 @@ describe("pipe", () => {
     const host = await connectHost(id);
     const d = await connectDevice(id, host);
     const frame = new Uint8Array(LIMITS.MAX_FRAME_BYTES);
-    const frames = LIMITS.BYTES_PER_MINUTE / LIMITS.MAX_FRAME_BYTES; // exactly the budget
+    const frames = LIMITS.BYTES_PER_MINUTE / LIMITS.MAX_FRAME_BYTES; // the budget (each frame also pays the minimum overhead)
     for (let i = 0; i < frames; i++) d.sock.ws.send(frame);
     d.sock.ws.send(bytes(1)); // one byte too many
     expect((await d.sock.waitClosed(15000)).code).toBe(4429);
+  });
+
+  it("does not forward empty frames and still charges them toward the frame budget", async () => {
+    const id = await newIdentity();
+    const host = await connectHost(id);
+    const d = await connectDevice(id, host);
+    d.sock.ws.send(new Uint8Array(0));
+    d.sock.ws.send(bytes(1));
+    const got = await host.nextBinary();
+    expect(got.length).toBe(5); // the first frame the host sees is the 1-byte one
+    for (let i = 0; i < 3000; i++) d.sock.ws.send(new Uint8Array(0)); // MESSAGES_PER_MINUTE is 3000 in the tests
+    expect((await d.sock.waitClosed(20000)).code).toBe(4429);
   });
 
   it("limits the streams one address may hold in a room", async () => {

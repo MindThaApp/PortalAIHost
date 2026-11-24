@@ -42,6 +42,19 @@ internal sealed class FakeRelay : IAsyncDisposable
     /// <summary>The next host that connects is refused with this close code (host proof failed).</summary>
     public int? RefuseHostWith { get; set; }
 
+    private string? _challengeOverride;
+    private string? _afterReady;
+    private int _stopReading;
+
+    /// <summary>The next host connection is sent this text instead of the real challenge (malformed-relay tests).</summary>
+    public void SendInsteadOfChallenge(string text) => Volatile.Write(ref _challengeOverride, text);
+
+    /// <summary>The next proven host gets this text right after "ready".</summary>
+    public void SendAfterReady(string text) => Volatile.Write(ref _afterReady, text);
+
+    /// <summary>The next proven host is never read from again (a relay that stalls: the bridge's sends back up).</summary>
+    public void StopReadingNextHost() => Volatile.Write(ref _stopReading, 1);
+
     /// <summary>Host sockets that have connected (proven or not).</summary>
     public int HostConnections => Volatile.Read(ref _hostConnections);
 
@@ -102,8 +115,15 @@ internal sealed class FakeRelay : IAsyncDisposable
         Interlocked.Increment(ref _hostConnections);
         using var ws = await ctx.WebSockets.AcceptWebSocketAsync();
         var nonce = RandomNumberGenerator.GetBytes(32);
-        await SendTextAsync(ws, JsonSerializer.Serialize(new { t = "challenge", v = 1, room, nonce = RemoteCodec.Encode(nonce) }));
         var buffer = new byte[4 + 70000];
+        if (Interlocked.Exchange(ref _challengeOverride, null) is { } bad)
+        {
+            await SendTextAsync(ws, bad);
+            try { await ReceiveAsync(ws, buffer); } catch (Exception ex) when (ex is WebSocketException or OperationCanceledException or IOException) { }
+            return;
+        }
+
+        await SendTextAsync(ws, JsonSerializer.Serialize(new { t = "challenge", v = 1, room, nonce = RemoteCodec.Encode(nonce) }));
         var hello = await ReceiveAsync(ws, buffer);
         if (RefuseHostWith is { } code || !Proves(hello.Text, room, nonce))
         {
@@ -121,8 +141,16 @@ internal sealed class FakeRelay : IAsyncDisposable
         Room = room;
         await SendTextAsync(ws, """{"t":"ready","v":1}""");
         _hostReady.TrySetResult();
+        if (Interlocked.Exchange(ref _afterReady, null) is { } extra) await SendTextAsync(ws, extra);
         try
         {
+            if (Interlocked.Exchange(ref _stopReading, 0) == 1)
+            {
+                // Hold the socket open without reading until the bridge drops it.
+                while (ws.State == WebSocketState.Open) await Task.Delay(50);
+                return;
+            }
+
             while (true)
             {
                 var m = await ReceiveAsync(ws, buffer);

@@ -10,6 +10,10 @@ export const LIMITS = {
   MAX_STREAMS_PER_ROOM: 8,
   /** Bytes forwarded per room per minute, both directions together. */
   BYTES_PER_MINUTE: 20 * 1024 * 1024,
+  /** Every forwarded or dropped binary frame counts at least this many bytes, so empty and tiny frames are not free. */
+  FRAME_OVERHEAD_BYTES: 64,
+  /** Binary frames per room per minute, both directions together. */
+  MESSAGES_PER_MINUTE: 60_000,
   /** Largest payload of one binary frame (the 4-byte stream tag on host frames is extra). */
   MAX_FRAME_BYTES: 64 * 1024,
   /** A device stream that carries no frame for this long is closed. */
@@ -37,6 +41,7 @@ export interface Env {
   IDLE_MS?: string;
   SWEEP_MS?: string;
   HANDSHAKE_MS?: string;
+  MESSAGES_PER_MINUTE?: string;
 }
 
 export type EffectiveLimits = { -readonly [K in keyof typeof LIMITS]: number };
@@ -47,6 +52,7 @@ export function limitsFor(env: Env): EffectiveLimits {
   l.IDLE_MS = num(env.IDLE_MS) ?? l.IDLE_MS;
   l.SWEEP_MS = num(env.SWEEP_MS) ?? l.SWEEP_MS;
   l.HANDSHAKE_MS = num(env.HANDSHAKE_MS) ?? l.HANDSHAKE_MS;
+  l.MESSAGES_PER_MINUTE = num(env.MESSAGES_PER_MINUTE) ?? l.MESSAGES_PER_MINUTE;
   return l;
 }
 

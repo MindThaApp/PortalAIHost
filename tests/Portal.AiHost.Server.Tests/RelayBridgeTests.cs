@@ -77,15 +77,16 @@ public sealed class RelayBridgeTests : IAsyncLifetime
         return relay;
     }
 
-    private RelayBridge NewBridge(Uri url, TimeSpan? initial = null, TimeSpan? max = null)
+    private RelayBridge NewBridge(Uri url, TimeSpan? initial = null, TimeSpan? max = null, TimeSpan? sendTimeout = null, IPEndPoint? local = null)
     {
         var bridge = RelayBridge.Start(new RelayBridgeOptions
         {
             Url = url,
             Certificate = _cert,
-            LocalTarget = (IPEndPoint)_echo.LocalEndpoint,
+            LocalTarget = local ?? (IPEndPoint)_echo.LocalEndpoint,
             InitialDelay = initial ?? TimeSpan.FromMilliseconds(50),
             MaxDelay = max ?? TimeSpan.FromMilliseconds(400),
+            SendTimeout = sendTimeout ?? TimeSpan.FromSeconds(30),
         });
         _disposables.Add(bridge);
         return bridge;
@@ -258,6 +259,86 @@ public sealed class RelayBridgeTests : IAsyncLifetime
         await Task.Delay(1500);
         Assert.InRange(relay.HostConnections, 1, 3); // a refusal waits for the longest delay
         Assert.False(relay.HasHost);
+    }
+
+    [Theory]
+    [InlineData("{}")]
+    [InlineData("[]")]
+    [InlineData("{\"t\":5,\"room\":[],\"nonce\":{}}")]
+    public async Task AMalformedChallengeEndsOnlyThatLinkAndTheBridgeKeepsTrying(string bad)
+    {
+        var relay = await NewRelayAsync();
+        relay.SendInsteadOfChallenge(bad);
+        var bridge = NewBridge(relay.Url);
+        await relay.WaitHostAsync(); // the next dial gets a normal challenge
+        await WaitUntilAsync(() => bridge.State == RelayStates.Connected, "connected after the bad challenge");
+        await bridge.DisposeAsync();
+    }
+
+    [Theory]
+    [InlineData("[]")]
+    [InlineData("5")]
+    public async Task AControlMessageThatIsNotAnObjectReconnectsAndDisposesCleanly(string bad)
+    {
+        var relay = await NewRelayAsync();
+        relay.SendAfterReady(bad);
+        var bridge = NewBridge(relay.Url);
+        await WaitUntilAsync(() => relay.HostConnections >= 2, "second connection after the bad message");
+        await WaitUntilAsync(() => bridge.State == RelayStates.Connected, "connected again");
+        await bridge.DisposeAsync(); // must not throw
+    }
+
+    [Theory]
+    [InlineData("{}")]
+    [InlineData("{\"t\":[],\"s\":\"x\"}")]
+    [InlineData("{\"t\":\"open\",\"s\":-1}")]
+    public async Task AnObjectWithoutUsableFieldsIsIgnoredAndTheLinkStaysUp(string odd)
+    {
+        var relay = await NewRelayAsync();
+        relay.SendAfterReady(odd);
+        var bridge = NewBridge(relay.Url);
+        await relay.WaitHostAsync();
+        await Task.Delay(500);
+        Assert.Equal(1, relay.HostConnections);
+        Assert.Equal(RelayStates.Connected, bridge.State);
+        await bridge.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task ARelayThatStopsReadingDropsTheLinkAtTheSendDeadline()
+    {
+        // The local side streams data endlessly and the relay never reads, so the bridge's sends must back up: no
+        // device traffic is involved, so nothing else can end the stream first.
+        var spew = new TcpListener(IPAddress.Loopback, 0);
+        spew.Start();
+        using var stop = new CancellationTokenSource();
+        var accept = Task.Run(async () =>
+        {
+            try
+            {
+                using var c = await spew.AcceptTcpClientAsync(stop.Token);
+                var chunk = new byte[16 * 1024];
+                await using var net = c.GetStream();
+                while (true) await net.WriteAsync(chunk, stop.Token);
+            }
+            catch (Exception ex) when (ex is IOException or SocketException or ObjectDisposedException or OperationCanceledException) { }
+        });
+        try
+        {
+            var relay = await NewRelayAsync();
+            relay.StopReadingNextHost();
+            var bridge = NewBridge(relay.Url, sendTimeout: TimeSpan.FromMilliseconds(500), local: (IPEndPoint)spew.LocalEndpoint);
+            await relay.WaitHostAsync();
+            await using var device = await DeviceAsync(relay, relay.Room!); // makes the relay open a stream
+            await WaitUntilAsync(() => relay.HostConnections >= 2, "the bridge re-dialled after its send stalled", seconds: 60);
+            await bridge.DisposeAsync();
+        }
+        finally
+        {
+            await stop.CancelAsync();
+            spew.Stop();
+            await Task.WhenAny(accept, Task.Delay(5000));
+        }
     }
 
     [Fact]

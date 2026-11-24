@@ -35,6 +35,9 @@ public sealed class RelayBridgeOptions
     /// <summary>A text "ping" is sent this often; a link that stays silent for 2.5 times as long is dropped.</summary>
     public TimeSpan KeepAlive { get; init; } = TimeSpan.FromSeconds(45);
 
+    /// <summary>Longest a single send (including waiting for its turn) may take; past it the link is dropped and re-dialled.</summary>
+    public TimeSpan SendTimeout { get; init; } = TimeSpan.FromSeconds(30);
+
     /// <summary>Streams open at once (the relay allows 8 per room; this is a safety stop).</summary>
     public int MaxStreams { get; init; } = 16;
 }
@@ -121,6 +124,11 @@ public sealed class RelayBridge : IAsyncDisposable
                 or InvalidDataException or JsonException or OperationCanceledException or TimeoutException or ObjectDisposedException)
             {
                 // The relay is not reachable or the link broke: retried below.
+            }
+            catch (Exception ex) when (!ct.IsCancellationRequested && ex is not OutOfMemoryException)
+            {
+                // Anything else a misbehaving relay can provoke (unexpected message shapes): a protocol error ends this
+                // link only; the loop backs off and dials again.
             }
 
             if (connected && TimeSpan.FromMilliseconds(Environment.TickCount64 - upSince) >= _o.StableAfter)
@@ -239,12 +247,12 @@ public sealed class RelayBridge : IAsyncDisposable
         var first = await ReceiveMessageAsync(ws, buffer, ct).ConfigureAwait(false);
         using var challenge = JsonDocument.Parse(first.Text ?? throw new InvalidDataException("No challenge."));
         var root = challenge.RootElement;
-        if (root.GetProperty("t").GetString() != "challenge" || root.GetProperty("room").GetString() != RoomId)
+        if (StringProperty(root, "t") != "challenge" || StringProperty(root, "room") != RoomId)
         {
             throw new InvalidDataException("Unexpected challenge.");
         }
 
-        if (!RemoteCodec.TryDecode(root.GetProperty("nonce").GetString(), 64, out var nonce))
+        if (!RemoteCodec.TryDecode(StringProperty(root, "nonce"), 64, out var nonce))
         {
             throw new InvalidDataException("Bad nonce.");
         }
@@ -265,11 +273,17 @@ public sealed class RelayBridge : IAsyncDisposable
 
         var answer = await ReceiveMessageAsync(ws, buffer, ct).ConfigureAwait(false);
         using var ready = JsonDocument.Parse(answer.Text ?? throw new InvalidDataException("No answer."));
-        if (ready.RootElement.GetProperty("t").GetString() != "ready")
+        if (StringProperty(ready.RootElement, "t") != "ready")
         {
             throw new InvalidDataException("The relay did not accept this host.");
         }
     }
+
+    /// <summary>The string value of a property, or null when the element is not an object or the property is missing or not a string.</summary>
+    private static string? StringProperty(JsonElement element, string name) =>
+        element.ValueKind == JsonValueKind.Object && element.TryGetProperty(name, out var p) && p.ValueKind == JsonValueKind.String
+            ? p.GetString()
+            : null;
 
     private readonly record struct Message(string? Text, int Length);
 
@@ -331,12 +345,17 @@ public sealed class RelayBridge : IAsyncDisposable
         if (text == "pong") return;
         using var doc = JsonDocument.Parse(text);
         var root = doc.RootElement;
-        if (!root.TryGetProperty("t", out var t) || !root.TryGetProperty("s", out var sProp) || !sProp.TryGetUInt32(out var id))
+        if (root.ValueKind != JsonValueKind.Object)
+        {
+            throw new InvalidDataException("The relay sent a control message that is not an object.");
+        }
+
+        if (!root.TryGetProperty("s", out var sProp) || sProp.ValueKind != JsonValueKind.Number || !sProp.TryGetUInt32(out var id))
         {
             return;
         }
 
-        switch (t.GetString())
+        switch (StringProperty(root, "t"))
         {
             case "open":
                 if (_streams.ContainsKey(id)) return;
@@ -444,20 +463,44 @@ public sealed class RelayBridge : IAsyncDisposable
                 return;
             }
 
+            // Not awaited: a send stuck behind stream traffic must not stop the next silence check. A stuck send is
+            // ended by its own deadline in SendAsync, which drops the link.
+            _ = PingAsync(ws, ping, ct);
+        }
+    }
+
+    private async Task PingAsync(ClientWebSocket ws, byte[] ping, CancellationToken ct)
+    {
+        try
+        {
             await SendAsync(ws, ping, WebSocketMessageType.Text, ct).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (IsExpected(ex) || ex is TimeoutException)
+        {
+            // The link is ending; the receive loop notices.
         }
     }
 
     private async Task SendAsync(ClientWebSocket ws, ReadOnlyMemory<byte> data, WebSocketMessageType type, CancellationToken ct)
     {
-        await _sendGate.WaitAsync(ct).ConfigureAwait(false);
+        using var deadline = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        deadline.CancelAfter(_o.SendTimeout);
         try
         {
-            await ws.SendAsync(data, type, endOfMessage: true, ct).ConfigureAwait(false);
+            await _sendGate.WaitAsync(deadline.Token).ConfigureAwait(false);
+            try
+            {
+                await ws.SendAsync(data, type, endOfMessage: true, deadline.Token).ConfigureAwait(false);
+            }
+            finally
+            {
+                _sendGate.Release();
+            }
         }
-        finally
+        catch (OperationCanceledException) when (!ct.IsCancellationRequested)
         {
-            _sendGate.Release();
+            ws.Abort(); // the relay stopped reading: end this link so the loop re-dials
+            throw new TimeoutException("A send to the relay timed out.");
         }
     }
 
@@ -465,7 +508,7 @@ public sealed class RelayBridge : IAsyncDisposable
     {
         if (Interlocked.Exchange(ref _disposed, 1) == 1) return;
         await _stop.CancelAsync().ConfigureAwait(false);
-        try { await _loop.ConfigureAwait(false); } catch (OperationCanceledException) { }
+        try { await _loop.ConfigureAwait(false); } catch (Exception) { } // never let the bridge's end stop the caller's own cleanup
         foreach (var s in _streams.Values) s.Dispose();
         _streams.Clear();
         _stop.Dispose();
