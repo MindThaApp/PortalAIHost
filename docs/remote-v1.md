@@ -314,7 +314,7 @@ A device tries the home network first (section 2) and falls back to the relay wh
 | 1003 | A text message was sent. |
 | 1009 | A frame was larger than 65536 bytes. |
 | 4404 | The host left the relay. |
-| 4408 | The stream was idle for 5 minutes. |
+| 4408 | The stream was idle for 2 minutes (or the unproven host socket timed out or was evicted). |
 | 4410 | The host disconnected or was replaced; reconnect. |
 | 4429 | The room went over its byte budget; try again in a minute. |
 
@@ -323,7 +323,7 @@ abort as in section 5. The relay cannot tell a good device from a bad one; the h
 signature on every request, so an unpaired device gets `401 device_unauthorized` and nothing else.
 
 Keep-alive: sending the text message `ping` is allowed (the one exception to "no text"); the relay answers `pong`
-without waking the room. A ping does **not** count as activity for the 5-minute idle limit; only data frames do.
+without waking the room. A ping does **not** count as activity for the 2-minute idle limit; only data frames do.
 
 ### 10.3 Host connection (for implementers of the host side)
 
@@ -363,9 +363,11 @@ without a paired device's signature.
 | Open device streams per host | 8 |
 | Bytes per host per minute (both directions together) | 20 MiB |
 | Largest frame payload | 64 KiB (host frames add the 4-byte tag) |
-| Idle device stream | 5 minutes |
+| Idle device stream | 2 minutes |
+| Device streams per source address per room | 3 |
 | Time to answer the host challenge | 10 seconds |
-| Unproven host sockets per room | 4 |
+| Unproven host sockets per room | 4 (a newcomer evicts the oldest instead of being refused) |
+| Unproven host sockets per source address per room | 2 (oldest of that address is evicted) |
 | Connections (host or device) per source address per minute | 30 |
 
 The relay logs no payloads and no headers, and stores nothing; it keeps only counters in memory (including one per source
