@@ -77,13 +77,13 @@ public sealed class RelayBridgeTests : IAsyncLifetime
         return relay;
     }
 
-    private RelayBridge NewBridge(Uri url, TimeSpan? initial = null, TimeSpan? max = null, TimeSpan? sendTimeout = null)
+    private RelayBridge NewBridge(Uri url, TimeSpan? initial = null, TimeSpan? max = null, TimeSpan? sendTimeout = null, IPEndPoint? local = null)
     {
         var bridge = RelayBridge.Start(new RelayBridgeOptions
         {
             Url = url,
             Certificate = _cert,
-            LocalTarget = (IPEndPoint)_echo.LocalEndpoint,
+            LocalTarget = local ?? (IPEndPoint)_echo.LocalEndpoint,
             InitialDelay = initial ?? TimeSpan.FromMilliseconds(50),
             MaxDelay = max ?? TimeSpan.FromMilliseconds(400),
             SendTimeout = sendTimeout ?? TimeSpan.FromSeconds(30),
@@ -307,20 +307,38 @@ public sealed class RelayBridgeTests : IAsyncLifetime
     [Fact]
     public async Task ARelayThatStopsReadingDropsTheLinkAtTheSendDeadline()
     {
-        var relay = await NewRelayAsync();
-        relay.StopReadingNextHost();
-        var bridge = NewBridge(relay.Url, sendTimeout: TimeSpan.FromMilliseconds(500));
-        await relay.WaitHostAsync();
-        await using var device = await DeviceAsync(relay, relay.Room!);
-        var data = new byte[64 * 1024];
-        var pump = Task.Run(async () =>
+        // The local side streams data endlessly and the relay never reads, so the bridge's sends must back up: no
+        // device traffic is involved, so nothing else can end the stream first.
+        var spew = new TcpListener(IPAddress.Loopback, 0);
+        spew.Start();
+        using var stop = new CancellationTokenSource();
+        var accept = Task.Run(async () =>
         {
-            try { for (var i = 0; i < 4000; i++) await device.WriteAsync(data); }
-            catch (Exception ex) when (ex is IOException or WebSocketException or ObjectDisposedException or OperationCanceledException) { }
+            try
+            {
+                using var c = await spew.AcceptTcpClientAsync(stop.Token);
+                var chunk = new byte[16 * 1024];
+                await using var net = c.GetStream();
+                while (true) await net.WriteAsync(chunk, stop.Token);
+            }
+            catch (Exception ex) when (ex is IOException or SocketException or ObjectDisposedException or OperationCanceledException) { }
         });
-        await WaitUntilAsync(() => relay.HostConnections >= 2, "the bridge re-dialled after its send stalled", seconds: 30);
-        await bridge.DisposeAsync();
-        await Task.WhenAny(pump, Task.Delay(5000));
+        try
+        {
+            var relay = await NewRelayAsync();
+            relay.StopReadingNextHost();
+            var bridge = NewBridge(relay.Url, sendTimeout: TimeSpan.FromMilliseconds(500), local: (IPEndPoint)spew.LocalEndpoint);
+            await relay.WaitHostAsync();
+            await using var device = await DeviceAsync(relay, relay.Room!); // makes the relay open a stream
+            await WaitUntilAsync(() => relay.HostConnections >= 2, "the bridge re-dialled after its send stalled", seconds: 60);
+            await bridge.DisposeAsync();
+        }
+        finally
+        {
+            await stop.CancelAsync();
+            spew.Stop();
+            await Task.WhenAny(accept, Task.Delay(5000));
+        }
     }
 
     [Fact]
