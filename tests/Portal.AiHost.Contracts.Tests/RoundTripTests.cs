@@ -344,7 +344,7 @@ public class RoundTripTests
         RoundTrip("""{ "path": "D:/Models/Portal AI Host Models" }""", Ctx.StoreFolderInfo);
         RoundTrip("""
             { "operation": "move", "state": "done", "fraction": 1, "bytes_done": 10, "bytes_total": 10,
-              "message": "Your models were moved.", "left_behind": [ "D:\old\a.gguf" ] }
+              "message": "Your models were moved.", "left_behind": [ "D:/old/a.gguf" ] }
             """, Ctx.StoreProgressEvent);
         RoundTrip("""{ "operation": "verify", "state": "damaged", "catalogue_id": "m", "fraction": 1, "message": "x does not match the model list." }""",
             Ctx.StoreProgressEvent);
