@@ -392,4 +392,52 @@ public sealed partial class ModelManagementTests
             }
         }
     }
+
+    [Fact(Timeout = 30000)]
+    public async Task Chat_and_embeddings_requests_over_http_fail_cleanly_during_a_move_and_never_load_an_engine()
+    {
+        await using var host = await TestHost.StartAsync();
+        var token = await host.GetTokenAsync();
+        host.Runtime.MaintenanceMessage = "Your models are being moved. Try again in a minute.";
+
+        foreach (var (route, body) in new[]
+        {
+            (Routes.ChatCompletions, """{ "messages": [ { "role": "user", "content": "Hi" } ] }"""),
+            (Routes.Embeddings, """{ "input": "hello" }"""),
+        })
+        {
+            using var response = await host.Http.SendAsync(host.Authed(HttpMethod.Post, route, token, body));
+            Assert.Equal(System.Net.HttpStatusCode.ServiceUnavailable, response.StatusCode);
+            var error = System.Text.Json.JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement.GetProperty("error");
+            Assert.Equal(ErrorCodes.EngineRestarting, error.GetProperty("code").GetString());
+            Assert.Contains("being moved", error.GetProperty("message").GetString());
+        }
+
+        Assert.Equal(EngineState.Stopped, host.Chat.State);
+        Assert.Equal(EngineState.Stopped, host.Embed.State);
+    }
+
+    [Fact(Timeout = 30000)]
+    public async Task Choosing_a_model_during_a_move_or_a_check_is_refused()
+    {
+        using var root = new TestRoot();
+        var store = ModelStore.OpenOrCreate(Path.Combine(root.Path, "models"));
+        var a = RandomNumberGenerator.GetBytes(96_000_000); // big enough that the check is still running
+        var ea = Entry("model-a", a);
+        var eb = Entry("model-b", RandomNumberGenerator.GetBytes(1000));
+        await InstallAsync(store, ea, a);
+        await using var shell = await StartHostAsync(root, store, [ea, eb]);
+
+        // A check is running: hold it with a slow hash by cancelling only after the assertion.
+        var running = await shell.Models.StartVerifyAsync("model-a", CancellationToken.None);
+        var during = await Record.ExceptionAsync(() => shell.ActivateAsync("model-a", CancellationToken.None));
+        shell.Models.CancelOperation();
+        await running;
+        Assert.IsType<ControlPipeException>(during);
+        Assert.Equal(ErrorCodes.InvalidRequest, ((ControlPipeException)during).Code);
+        Assert.Null(shell.Runtime.GetActive(ModelKinds.Chat));
+
+        await shell.ActivateAsync("model-a", CancellationToken.None); // idle again: allowed
+        Assert.Equal("model-a", shell.Runtime.GetActive(ModelKinds.Chat)?.ModelId);
+    }
 }
