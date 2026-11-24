@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using Portal.AiHost.Contracts;
 using Portal.AiHost.Core.Settings;
 
 [assembly: InternalsVisibleTo("Portal.AiHost.Server.Tests")]
@@ -30,7 +31,7 @@ public sealed record ClientRemote(
 /// <summary>
 /// The client's own state folder <c>client\</c> under the host state directory: <c>remote.json</c> (plain, no secrets),
 /// <c>device.key</c> and <c>token.dat</c> (both protected by <see cref="ISecretProtector"/>). Every write is atomic
-/// (<see cref="AtomicFile"/>); the only deletes are of these three files, and of a half-finished pairing.
+/// (<see cref="AtomicFile"/>); the only deletes are of these three files (and the token of an earlier pairing when a new one is saved), and of a half-finished pairing.
 /// </summary>
 public sealed class ClientStateStore
 {
@@ -79,6 +80,13 @@ public sealed class ClientStateStore
         var protectedKey = _protector.Protect(devicePrivateKeyPkcs8.ToArray());
         lock (_gate)
         {
+            // A token from a previously paired PC must never be sent to the new one. Removed first, so a failure
+            // here leaves the old pairing untouched; a lost token is only asked for again.
+            if (File.Exists(TokenPath))
+            {
+                File.Delete(TokenPath);
+            }
+
             var previousKey = File.Exists(KeyPath) ? File.ReadAllBytes(KeyPath) : null;
             AtomicFile.WriteAllBytes(KeyPath, protectedKey);
             try
@@ -241,7 +249,9 @@ public sealed class ClientStateStore
         string Str(string name) => root.GetProperty(name).GetString() ?? throw new FormatException(name);
         return new ClientRemote(
             Str("pc_name"), Str("address"), root.GetProperty("port").GetInt32(),
-            root.TryGetProperty("relay_url", out var relay) ? relay.GetString() : null,
+            root.TryGetProperty("relay_url", out var relay) && relay.ValueKind == JsonValueKind.String
+                ? PairingLink.ValidateRelayUrl(relay.GetString()) // An unsafe saved address counts as "no relay".
+                : null,
             Str("fingerprint"), Str("device_id"), root.GetProperty("paired_at").GetDateTimeOffset());
     }
 }

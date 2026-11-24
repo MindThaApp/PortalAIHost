@@ -25,6 +25,7 @@ public static class ErrorCodes
     public const string InsufficientMemory = "insufficient_memory";
     public const string HostStopping = "host_stopping";
     public const string AuthUnavailable = "auth_unavailable";
+    public const string RemoteUnreachable = "remote_unreachable";
     public const string DeviceUnauthorized = "device_unauthorized";
     public const string PairingFailed = "pairing_failed";
     public const string DeadlineExceeded = "deadline_exceeded";
@@ -75,6 +76,7 @@ public static class ErrorCatalog
         [ErrorCodes.InsufficientMemory] = new(503, ErrorTypes.Unavailable, false),
         [ErrorCodes.HostStopping] = new(503, ErrorTypes.Unavailable, false),
         [ErrorCodes.AuthUnavailable] = new(503, ErrorTypes.Unavailable, true),
+        [ErrorCodes.RemoteUnreachable] = new(503, ErrorTypes.Unavailable, true),
         [ErrorCodes.DeadlineExceeded] = new(504, ErrorTypes.Timeout, false),
         [ErrorCodes.EngineError] = new(500, ErrorTypes.Server, true),
         [ErrorCodes.InternalError] = new(500, ErrorTypes.Server, true),

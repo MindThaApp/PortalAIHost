@@ -193,7 +193,7 @@ It is signed once when the request is opened; long streams are not re-signed (se
 ### 3.3 The host's own token
 
 Remote-v1 section 6 requires an approved token per app on a device. In client mode the laptop **host** is the only
-program talking to the home PC, so it acts as one app: `app_id = "portal-ai-host-client"`, `app_name = "Portal AI Host
+program talking to the home PC, so it acts as one app: `app_id = "com.mindthaapp.portalaihost.client"` (the host only accepts lowercase reverse-DNS ids), `app_name = "Portal AI Host
 (client mode)"`, requested once after pairing through `POST /host/auth/requests` and polling (both signed). The home
 PC owner sees "Portal AI Host (client mode) on <laptop>" and approves; the pairing dialog shows this as the last step
 ("Waiting for approval on <PC name>", tooltip "Approve it in Portal AI Host on that PC", 2-minute timeout, cancel

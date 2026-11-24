@@ -249,6 +249,7 @@ public sealed partial class AiHostClient
             or ErrorCodes.TokenRevoked or ErrorCodes.TokenInvalid or ErrorCodes.AuthRequired or ErrorCodes.AccessDenied
             or ErrorCodes.DeadlineExceeded or ErrorCodes.QueueFull or ErrorCodes.ModelLoading
             or ErrorCodes.EngineRestarting or ErrorCodes.EngineError or ErrorCodes.InternalError or ErrorCodes.RateLimited
+            or ErrorCodes.RemoteUnreachable
         || (ex.HttpStatus >= 500 && !ErrorCatalog.TryGet(ex.Code, out _));
 
     private string RaiseFallback(AiHostException ex)
@@ -258,6 +259,7 @@ public sealed partial class AiHostClient
             ClientErrorCodes.HostUnavailable or ErrorCodes.HostStopping => "Home host offline — using this PC's model",
             ClientErrorCodes.NoAccess or ErrorCodes.AuthRequired => "Portal AI Host access is not set up — using this PC's model",
             ErrorCodes.TokenRevoked or ErrorCodes.TokenInvalid => "Access to Portal AI Host was removed — using this PC's model",
+            ErrorCodes.RemoteUnreachable => "Home PC not reachable — using this PC's model",
             ErrorCodes.AccessDenied => "Portal AI Host access was denied — using this PC's model",
             ErrorCodes.NoModel or ErrorCodes.InsufficientMemory => "Home host has no usable model — using this PC's model",
             _ => "Home host did not answer in time — using this PC's model",
