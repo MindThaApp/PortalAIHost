@@ -116,6 +116,9 @@ public interface IHostControl
     /// </summary>
     Task<PerformanceView> GetPerformanceAsync(HostSettings? candidate = null, CancellationToken ct = default);
 
+    /// <summary>The health checks: whether the host works, and a fix for what does not. Read-only.</summary>
+    Task<HealthReport> GetHealthAsync(CancellationToken ct = default);
+
     /// <summary>Streams the reply of a short chat request in pieces. Thinking text and answer text come as separate pieces.</summary>
     IAsyncEnumerable<TryItPiece> TryItAsync(string prompt, CancellationToken ct = default);
 

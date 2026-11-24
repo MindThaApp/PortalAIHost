@@ -26,6 +26,7 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
         _ui = ui;
         _s = strings;
         Live = new LiveViewModel(shell.Host, ui, strings);
+        Health = new HealthViewModel(shell.Host, ui, strings);
         _shell.SnapshotChanged += OnSnapshot;
         _shell.ClientsChanged += OnClientsChanged;
         _shell.Host.DownloadProgress += OnProgress;
@@ -38,6 +39,9 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
 
     /// <summary>Live activity, meters, Unload and Load, and the Today list.</summary>
     public LiveViewModel Live { get; }
+
+    /// <summary>The "All good" / "N things need attention" card.</summary>
+    public HealthViewModel Health { get; }
 
     // Which block is on screen.
     [ObservableProperty] private bool _noHost;
@@ -87,6 +91,7 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
     {
         var version = Interlocked.Increment(ref _loadVersion);
         if (!_shell.Snapshot.Connected) return;
+        _ = Health.RefreshAsync(force: true);
         ModelCatalogView? view = null;
         int? apps = null;
         var failed = false;
@@ -220,6 +225,7 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
     {
         var hadModel = ShowInstalled;
         Update();
+        if (_shell.Snapshot.Connected) _ = Health.RefreshAsync(); // at most every few seconds
         // A model appeared or went away: read the lists again so the card has the right apps count.
         // Also covers the page opening before the host answered: the first connected snapshot loads them.
         if (hadModel != ShowInstalled || (!_loaded && _shell.Snapshot.Connected)) _ = LoadAsync();

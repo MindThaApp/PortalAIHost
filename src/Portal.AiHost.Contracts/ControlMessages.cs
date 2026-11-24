@@ -48,6 +48,9 @@ public static class ControlTypes
     /// <see cref="HostSettings"/> payload previews those values without saving them.
     /// </summary>
     public const string GetPerformance = "performance.get";
+
+    /// <summary>Answers <see cref="HealthReport"/>: the health checks. Read-only.</summary>
+    public const string GetHealth = "health.get";
     public const string SetSettings = "settings.set";
     public const string TryItChat = "tryit.chat";
     public const string TryItCancel = "tryit.cancel";

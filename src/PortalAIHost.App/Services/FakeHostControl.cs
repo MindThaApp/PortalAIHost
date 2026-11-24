@@ -280,6 +280,43 @@ public sealed class FakeHostControl : IHostControl, IDisposable
         return RemoveModelAsync(catalogueId, null, ct);
     }
 
+    /// <summary>Health checks the fake answers with. Null: a sample built from the scenario (one warning when loaded).</summary>
+    public HealthReport? HealthOverride { get; set; }
+
+    public int HealthCalls { get; private set; }
+
+    /// <summary>
+    /// A sample report. Running with a model: everything fine except a graphics card that cannot be used, so the
+    /// card shows one warning. Without a model: the model check asks for one.
+    /// </summary>
+    public Task<HealthReport> GetHealthAsync(CancellationToken ct = default)
+    {
+        Require();
+        HealthCalls++;
+        if (HealthOverride is { } fixedReport) return Task.FromResult(fixedReport);
+        var hasModel = _activeId is not null;
+        var checks = new List<HealthCheck>
+        {
+            new() { Id = HealthIds.Service, Status = HealthStatuses.Ok, Title = "Host service", Detail = "Portal AI Host is running and apps can connect." },
+            new() { Id = HealthIds.Engine, Status = HealthStatuses.Ok, Title = "AI engine", Detail = "The AI engine files are in place." },
+            new() { Id = HealthIds.Graphics, Status = HealthStatuses.Warn, Title = "Graphics card", Detail = "No supported graphics card was found, so models run on the processor. That works, but replies are slower." },
+            hasModel
+                ? new HealthCheck { Id = HealthIds.Model, Status = HealthStatuses.Ok, Title = "Chat model", Detail = "The model is ready and loads when an app asks for it.", FixAction = HealthFixes.LoadModel }
+                : new HealthCheck { Id = HealthIds.Model, Status = HealthStatuses.Warn, Title = "Chat model", Detail = "No chat model is chosen yet, so apps cannot ask questions.", FixAction = HealthFixes.OpenModels },
+            new() { Id = HealthIds.Disk, Status = Scenario == FakeScenario.LowDisk ? HealthStatuses.Warn : HealthStatuses.Ok, Title = "Disk space", Detail = Scenario == FakeScenario.LowDisk ? "The drive with your models has 1.1 GB free, which is too little to download another model." : "212.4 GB free on the models drive." },
+            new() { Id = HealthIds.Memory, Status = HealthStatuses.Ok, Title = "Memory", Detail = "The chat model fits in the memory you allow." },
+            new() { Id = HealthIds.EaseOff, Status = HealthStatuses.Ok, Title = "Easing off", Detail = "The AI is running at full speed for your settings." },
+            new() { Id = HealthIds.MemoryCap, Status = HealthStatuses.Ok, Title = "Memory cap", Detail = "The memory limit is being kept." },
+        };
+        var notOk = checks.Count(c => c.Status != HealthStatuses.Ok);
+        return Task.FromResult(new HealthReport
+        {
+            Status = notOk == 0 ? HealthStatuses.Ok : HealthStatuses.Warn,
+            NeedsAttention = notOk,
+            Checks = checks,
+        });
+    }
+
     public Task VerifyModelAsync(string catalogueId, CancellationToken ct = default)
     {
         Verifies.Add(catalogueId);

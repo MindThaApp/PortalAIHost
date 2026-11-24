@@ -11,6 +11,7 @@ public sealed partial class HomePage : Page
     public HomePage()
     {
         ViewModel = new HomeViewModel(AppServices.Shell, AppServices.Ui, AppServices.Strings);
+        ViewModel.Health.Navigate = tag => Go(tag, typeof(SettingsPage));
         InitializeComponent();
     }
 

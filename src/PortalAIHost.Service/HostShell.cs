@@ -28,6 +28,9 @@ public sealed class HostShellOptions
     /// <summary>Engines per kind; the composition root passes the real supervisors, tests pass fakes.</summary>
     public required IReadOnlyDictionary<string, IEngineSupervisor> Supervisors { get; init; }
 
+    /// <summary>Reports which engine program files are present, for the health checks. Null: not checked.</summary>
+    public Func<IReadOnlyList<EngineFileStatus>>? EngineFiles { get; init; }
+
     public required IHostKeyProtector KeyProtector { get; init; }
 
     public ICallerIdentityResolver? CallerResolver { get; init; }
@@ -279,6 +282,12 @@ public sealed class HostShell : IAsyncDisposable
             IdlePolicy = IdlePolicyFor,
             UsageProbe = _o.UsageProbe,
             EaseOffSensors = _o.EaseOffSensors,
+            Health = new HealthSources
+            {
+                EngineFiles = _o.EngineFiles,
+                StoreFreeBytes = () => _store?.Location.FreeBytes,
+                DamagedReason = id => _notes?.DamagedReason(id),
+            },
         }, ct).ConfigureAwait(false);
 
         await Runtime.ApplyPerformanceAsync(ct).ConfigureAwait(false);

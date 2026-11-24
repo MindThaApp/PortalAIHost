@@ -270,11 +270,12 @@ the host re-plans memory; the revision number tells you when.
     "default_deadline_ms": { "interactive": 120000, "batch": 1800000 },
     "max_deadline_ms": 3600000
   },
-  "endpoints": ["chat.completions", "embeddings", "models", "tokenize", "warmup", "performance", "ease-off"]
+  "endpoints": ["chat.completions", "embeddings", "models", "tokenize", "warmup", "performance", "ease-off", "health"]
 }
 ```
 `endpoints` lists `"performance"` on hosts that have `GET /host/performance` (1.0.2 and later) and `"ease-off"` on
-hosts that have `POST /host/ease-off` (1.0.3 and later). Check for them before calling; older hosts do not list them.
+hosts that have `POST /host/ease-off` (1.0.3 and later), and `"health"` on hosts that have `GET /host/health`
+(1.0.3 and later). Check for them before calling; older hosts do not list them.
 
 **How to use the fields:**
 - `context_tokens` is the usable context **per request** right now. It grows on machines with more memory (up to
@@ -334,6 +335,36 @@ The limits the host runs under. Read-only: apps show these and link to the host'
   is not detected yet in 1.0.3, so it never fires by itself.
 - Changes apply live: the host re-plans, and if the loaded model no longer fits it reloads with the new placement or
   unloads. Watch `X-Portal-Capabilities-Revision`. Nothing is deleted; model files are never touched.
+
+### `GET /host/health` (host 1.0.3)
+Whether the host is working, in plain words, with a fix name where the host's own window has one. Needs a token.
+Check for `"health"` in `endpoints` first. Read-only: it changes nothing and starts no engine.
+```json
+{
+  "status": "warn",
+  "needs_attention": 1,
+  "checks": [
+    { "id": "service", "status": "ok", "title": "Host service", "detail": "Portal AI Host is running and apps can connect." },
+    { "id": "graphics", "status": "warn", "title": "Graphics card",
+      "detail": "No supported graphics card was found, so models run on the processor. That works, but replies are slower." },
+    { "id": "model", "status": "fail", "title": "Chat model", "detail": "...", "fix_action": "check_files", "fix_target": "chat-14b" }
+  ]
+}
+```
+- `status` is the worst check: `ok`, `warn` or `fail`. `needs_attention` counts the checks that are not `ok`.
+- Each check has `id`, `status`, `title` and `detail` (one or two sentences meant for the user), and sometimes
+  `fix_action` and `fix_target`. Clients ignore ids and fix names they do not know.
+- Checks, in order: `service` (the API is listening), `engine_files` (the engine program files are there; fails
+  without the processor build, warns without the graphics build), `graphics` (warns, never fails, when the model runs on
+  the processor only), `model` (the active chat model: fails when a file check marked it damaged, when its files are
+  gone, or when its engine failed to start), `disk` (the models drive: warns under 2 GB free, fails under 256 MB),
+  `memory` (fails when the chat model does not fit the memory limit; the same fit words as `/host/performance`),
+  `ease_off` (warns while the host is easing off, with the reason) and `memory_cap` (warns when an engine had to
+  start without the memory cap).
+- `fix_action` is one of `load_model`, `restart_engine`, `check_files` (`fix_target` is the model id),
+  `open_performance` (`fix_target` is the `portal-ai-host:settings/performance` link) or `open_models`. Each names an
+  operation the host's window already has; none deletes or overwrites a file. Apps do not run fixes over HTTP: they
+  can show the `detail` and open the host's window with the link.
 
 ### `POST /host/ease-off` and `DELETE /host/ease-off` (host 1.0.3)
 An app doing live, time-critical work (for example live dictation) asks the host to ease off batch work meanwhile.
@@ -578,6 +609,7 @@ only). Messages are JSON envelopes `{ "id", "type", "payload" }`; answers are `o
 - `settings.set` answers `SettingsSaved` `{ models_folder_changed, applies_at_restart, note, folder_refused,
   performance_reloaded }`. The performance limits apply at once; `performance_reloaded` (`{ reloaded: [kind],
   unloaded: [kind] }`) is set when a model was reloaded with a new placement or stopped because it no longer fits.
+- `health.get` answers the `GET /host/health` body (`HealthReport`). Read-only.
 - `performance.get` (optional `HostSettings` payload) answers `{ info, ram_bytes, logical_cores, gpu_name,
   gpu_vram_bytes, gpu_unavailable_reason, fit_model, smaller_model, memory_stops, presets }`: `info` is the
   `GET /host/performance` body (for the payload's settings when one is sent, which are previewed and not saved),
