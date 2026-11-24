@@ -297,10 +297,16 @@ public sealed class AiHostServer : IAsyncDisposable
         return headers;
     }
 
-    internal static async Task WriteErrorAsync(HttpContext http, string code, string message, Dictionary<string, JsonElement>? details = null)
+    internal static async Task WriteErrorAsync(HttpContext http, string code, string message, Dictionary<string, JsonElement>? details = null,
+        int? retryAfterMs = null)
     {
-        var envelope = ErrorCatalog.Create(code, message, details: details);
+        var envelope = ErrorCatalog.Create(code, message, details: details, retryAfterMs: retryAfterMs);
         http.Response.StatusCode = ErrorCatalog.Get(code).HttpStatus;
+        if (retryAfterMs is { } wait)
+        {
+            http.Response.Headers[HeaderNames.RetryAfter] = ((wait + 999) / 1000).ToString(CultureInfo.InvariantCulture);
+        }
+
         http.Response.ContentType = "application/json; charset=utf-8";
         try
         {

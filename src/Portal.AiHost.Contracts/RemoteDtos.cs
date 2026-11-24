@@ -50,6 +50,9 @@ public static class DeviceAuthReasons
     public const string BadSignature = "bad_signature";
     public const string StaleTimestamp = "stale_timestamp";
     public const string Replayed = "replayed";
+
+    /// <summary>Too many requests from this device (or too many remembered request ids); answered with 429.</summary>
+    public const string RateLimited = "rate_limited";
 }
 
 /// <summary>POST /pair/start body.</summary>

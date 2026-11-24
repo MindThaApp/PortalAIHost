@@ -182,6 +182,11 @@ The host refuses a request with `401 device_unauthorized` and `error.details.rea
 | `bad_signature` | The signature does not match method, target, time, nonce and body. |
 | `replayed` | The same nonce was already used by this device in the last few minutes. |
 
+A device that sends more than **600 signed requests a minute**, or has 4000 request ids still remembered, gets
+`429 rate_limited` (`details.reason` `rate_limited`, with `Retry-After`). Back off and retry; a request is only counted
+when its signature is valid, so other people on the network cannot use up a device's allowance, and one device cannot
+affect another.
+
 A request the host cannot verify never reaches the API, and a nonce is only remembered for a valid signature. Streaming
 responses (`text/event-stream`) are protected by TLS, so a client must pin the certificate (section 5).
 
@@ -224,7 +229,7 @@ Differences from loopback:
   that check (or accepts a typed code without it) loses this protection and must not be shipped.
 - The device's private key must stay on the device. The host stores only the public key.
 - The time check needs reasonably correct clocks (within 2 minutes).
-- Not in v1: automatic discovery (mDNS), relay over the internet, certificate rotation, per-device limits.
+- Not in v1: automatic discovery (mDNS), relay over the internet, certificate rotation.
 
 ## 8. Worked example
 

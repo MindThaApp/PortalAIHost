@@ -210,6 +210,13 @@ public sealed class LanServer : IAsyncDisposable
         // The request target as it was sent (not decoded), because that is what the device signed.
         var target = http.Features.Get<IHttpRequestFeature>()?.RawTarget ?? path + request.QueryString.Value;
         var auth = _verifier.Verify(request.Method, target, headers, body);
+        if (auth.Device is null && auth.FailureReason == DeviceAuthReasons.RateLimited)
+        {
+            await AiHostServer.WriteErrorAsync(http, ErrorCodes.RateLimited, "This device is sending too many requests.",
+                Reason(auth.FailureReason), auth.RetryAfterMs).ConfigureAwait(false);
+            return;
+        }
+
         if (auth.Device is not { } device)
         {
             await AiHostServer.WriteErrorAsync(http, ErrorCodes.DeviceUnauthorized,
