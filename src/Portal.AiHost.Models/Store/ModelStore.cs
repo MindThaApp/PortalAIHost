@@ -1056,7 +1056,7 @@ public sealed partial class ModelStore : IModelStoreWriter, IModelStoreMover, IM
             {
                 throw new StoreCleanupIncompleteException(
                     "The move did not finish and could only be partly cleaned up. What is left is listed under earlier folders at '"
-                    + target.Root + "' and can be removed there. Your models are where they were.", target.Root, original);
+                    + target.Root + "' and can be removed there. Your models are where they were. " + original.Message, target.Root, original);
             }
 
             throw;
