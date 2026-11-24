@@ -355,6 +355,13 @@ public sealed class PerformanceInfo
     /// <summary>fits_fully, fits_partial, cpu_only, needs_smaller_model or too_big; omitted when no chat model is active.</summary>
     public string? Fit { get; set; }
 
+    /// <summary>False when an engine could not start under the memory cap and was started once without it.</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+    public bool MemoryCapActive { get; set; } = true;
+
+    /// <summary>Why the cap is not active, or omitted.</summary>
+    public string? MemoryCapReason { get; set; }
+
     public PerformanceRanges Ranges { get; set; } = new();
     public string SettingsLink { get; set; } = "portal-ai-host:settings/performance";
 }

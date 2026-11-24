@@ -39,6 +39,12 @@ public static class PerformanceModel
 
     public const long GpuReserveBytes = Gb / 2;
 
+    /// <summary>
+    /// The job object cap for a memory limit: the limit plus a margin of 1 GB or 10 %, whichever is larger, because
+    /// the engine needs some memory besides what the planner counts.
+    /// </summary>
+    public static long CapFor(long memoryLimitBytes) => memoryLimitBytes + Math.Max(Gb, memoryLimitBytes / 10);
+
     public static long DefaultKeepFree(long ram) => ram >= 32 * Gb ? 8 * Gb : 4 * Gb;
 
     public static NumberRange KeepFreeRange(long ram) =>

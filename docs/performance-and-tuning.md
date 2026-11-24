@@ -66,6 +66,13 @@ seen as used RAM.
 - The host enforces `memory_limit_bytes` and (from 1.0.3) `cpu_ceiling_percent` on the engine process through a
   Windows job object, as well as planning against them.
 - `priority: low` runs the engine at BELOW_NORMAL priority.
+- **Cap margin (1.0.2):** the job object cap is `memory_limit_bytes` plus a margin of 1 GB or 10 %, whichever is
+  larger, because the engine needs some memory the planner does not count. The planner still plans against
+  `memory_limit_bytes` itself.
+- **Cap fallback (1.0.2):** the cap has not been tried against every engine build. If an engine fails to start while a
+  cap is set, the host starts it once more without the cap. It writes a line to the host's trace output (no prompt or
+  reply text) and `GET /host/performance` reports `"memory_cap_active": false` with a `memory_cap_reason`, until the
+  limits are applied again. Only start failures are retried; a crash after a successful start is not.
 
 **Tuning for Pro 1.1 (host only, not offered in apps):** context length, the number of graphics-card layers, batch
 size, memory locking, and several models loaded at once.

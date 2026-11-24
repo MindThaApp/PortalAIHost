@@ -270,6 +270,7 @@ public sealed class HostShell : IAsyncDisposable
             Planner = new() { MaxMemoryPercent = settings.MaxMemoryPercent, Backend = settings.Backend },
             Settings = () => _settings.Current,
             Catalogue = _o.Catalogue,
+            Log = line => System.Diagnostics.Trace.WriteLine("Portal AI Host: " + line),
             HostVersion = _o.HostVersion,
             SafeMode = _marker.SafeMode,
             IdlePolicy = IdlePolicyFor,

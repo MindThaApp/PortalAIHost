@@ -54,7 +54,7 @@ public class PerformanceContractTests
               "preset": "balanced", "memory_limit_bytes": 54975581388, "keep_free_bytes": 8589934592,
               "compute": "auto", "compute_effective": "gpu", "gpu_memory_limit_bytes": 8053063680,
               "cpu_threads": 10, "priority": "low", "cpu_ceiling_percent": 100, "ease_off": [],
-              "eased_off_now": null, "fit": "fits_partial",
+              "eased_off_now": null, "fit": "fits_partial", "memory_cap_active": true,
               "ranges": {
                 "memory_limit_bytes": { "min": 2147483648, "max": 60129542144, "step": 1073741824 },
                 "keep_free_bytes": { "min": 2147483648, "max": 34359738368, "step": 1073741824 },

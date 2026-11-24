@@ -49,7 +49,7 @@ public sealed class PerformanceTests
         public AiHostRuntime Runtime { get; private set; } = null!;
         public CatalogueEntry Model { get; private set; } = null!;
 
-        public static async Task<Rig> StartAsync(string modelId, IHardwareProbe? probe = null)
+        public static async Task<Rig> StartAsync(string modelId, IHardwareProbe? probe = null, Action<string>? log = null)
         {
             var rig = new Rig();
             var catalogue = Catalogue();
@@ -62,6 +62,7 @@ public sealed class PerformanceTests
                 Hardware = probe ?? new Probe(),
                 Settings = () => rig.Settings,
                 Catalogue = catalogue,
+                Log = log,
             });
             await rig.Runtime.SetActiveAsync(ModelKinds.Chat,
                 new ActiveModel(ModelKinds.Chat, rig.Model.Id, rig.Model.DisplayName, ["a.gguf"], rig.Model), default);
@@ -85,7 +86,32 @@ public sealed class PerformanceTests
         await rig.Runtime.ApplyPerformanceAsync(default);
         await rig.Runtime.EnsureLoadedAsync(ModelKinds.Chat, default);
         Assert.Equal(7, rig.Chat.Current!.Threads);
-        Assert.Equal(30 * GiB, rig.Chat.Current.MemoryLimitBytes);
+        Assert.Equal(33 * GiB, rig.Chat.Current.MemoryLimitBytes); // 30 GB plus the 10 % margin
+        Assert.True((await rig.Runtime.BuildPerformanceViewAsync(null, false, default)).Info.MemoryCapActive);
+    }
+
+    [Fact]
+    public async Task Cap_margin_is_one_gb_or_ten_percent()
+    {
+        Assert.Equal(6 * GiB, Core.Planning.PerformanceModel.CapFor(5 * GiB));
+        Assert.Equal(22 * GiB, Core.Planning.PerformanceModel.CapFor(20 * GiB));
+        await Task.CompletedTask;
+    }
+
+    [Fact]
+    public async Task A_start_that_fails_under_the_cap_is_retried_once_without_it_and_reported()
+    {
+        var logs = new List<string>();
+        await using var rig = await Rig.StartAsync("qwen3-8b-q4km", log: logs.Add);
+        rig.Chat.Options.FailLoadUnderMemoryCap = true;
+        await rig.Runtime.EnsureLoadedAsync(ModelKinds.Chat, default);
+        Assert.Equal(EngineState.Ready, rig.Chat.State);
+        Assert.Null(rig.Chat.Current!.MemoryLimitBytes);
+        Assert.Contains(logs, l => l.Contains("without the cap"));
+        Assert.DoesNotContain(logs, l => l.Contains("Echo") || l.Contains("hello"));
+        var info = (await rig.Runtime.BuildPerformanceViewAsync(null, false, default)).Info;
+        Assert.False(info.MemoryCapActive);
+        Assert.False(string.IsNullOrEmpty(info.MemoryCapReason));
     }
 
     [Fact]

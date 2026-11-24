@@ -34,6 +34,30 @@ public sealed partial class AiHostRuntime
     public PerformanceLimits? CurrentLimits => _limits;
 
     private HardwareProfile? _hardwareProfile;
+    private volatile string? _capDropReason;
+
+    /// <summary>
+    /// Starts an engine under the memory cap. If that start fails while a cap was set, the same start is tried once
+    /// more without the cap, in case the cap is what stopped the engine from allocating. The retry is logged (no
+    /// content) and shown by GET /host/performance as memory_cap_active false with a reason, until the limits change.
+    /// </summary>
+    private async Task StartWithCapFallbackAsync(IEngineSupervisor sup, EngineLaunchSpec spec, string kind)
+    {
+        try
+        {
+            await sup.StartAsync(spec, _lifetime.Token).ConfigureAwait(false);
+            if (spec.MemoryLimitBytes is not null)
+            {
+                _capDropReason = null;
+            }
+        }
+        catch (EngineException ex) when (spec.MemoryLimitBytes is not null && ex.ErrorCode != ErrorCodes.InsufficientMemory)
+        {
+            _capDropReason = "The engine did not start under the memory cap, so it was started without the cap.";
+            _o.Log?.Invoke($"engine '{kind}' failed to start under the memory cap ({ex.ErrorCode}); retrying once without the cap");
+            await sup.StartAsync(spec with { MemoryLimitBytes = null }, _lifetime.Token).ConfigureAwait(false);
+        }
+    }
 
     private async Task<HardwareProfile> ProbeHardwareAsync(CancellationToken ct)
     {
@@ -63,6 +87,7 @@ public sealed partial class AiHostRuntime
         var old = _limits;
         var limits = PerformanceModel.Resolve(settingsProvider(), hw);
         _limits = limits;
+        _capDropReason = null; // new limits: the cap is tried again
         _planner = PerformanceModel.ToPlanner(limits, _o.Planner);
 
         var wantedPriority = limits.LowPriority
@@ -187,6 +212,8 @@ public sealed partial class AiHostRuntime
                 CpuThreads = limits.CpuThreads,
                 Priority = limits.Priority,
                 Fit = fit,
+                MemoryCapActive = _capDropReason is null,
+                MemoryCapReason = _capDropReason,
                 Ranges = new PerformanceRanges
                 {
                     MemoryLimitBytes = PerformanceModel.MemoryRange(limits.RamBytes, limits.KeepFreeBytes),

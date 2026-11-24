@@ -46,6 +46,9 @@ public sealed class AiHostRuntimeOptions
     /// <summary>Catalogue entries, for the fit preview and the memory slider labels.</summary>
     public IReadOnlyList<CatalogueEntry>? Catalogue { get; init; }
 
+    /// <summary>Host log line sink (never any prompt or reply text).</summary>
+    public Action<string>? Log { get; init; }
+
     public string HostVersion { get; init; } = "1.0.0";
 
     public string InstanceId { get; init; } = Guid.NewGuid().ToString("N");
@@ -598,7 +601,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         try
         {
             ks.Progress = 0;
-            await sup.StartAsync(new EngineLaunchSpec
+            await StartWithCapFallbackAsync(sup, new EngineLaunchSpec
             {
                 Kind = kind,
                 ModelId = model.ModelId,
@@ -608,8 +611,8 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
                 SupportsTools = model.SupportsTools,
                 SupportsReasoning = model.SupportsReasoning,
                 Threads = _limits?.CpuThreads,
-                MemoryLimitBytes = _limits?.MemoryLimitBytes,
-            }, _lifetime.Token).ConfigureAwait(false);
+                MemoryLimitBytes = _limits is { } lim ? PerformanceModel.CapFor(lim.MemoryLimitBytes) : null,
+            }, kind).ConfigureAwait(false);
             ks.LastPlan = plan;
             ks.LoadedSince = _o.Time.GetUtcNow();
             if (kind == ModelKinds.Chat)

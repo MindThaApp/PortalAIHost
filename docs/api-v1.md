@@ -322,6 +322,8 @@ The limits the host runs under. Read-only: apps show these and link to the host'
   card (4 GB of graphics memory or more); `ranges.gpu_available` says whether `gpu` can be chosen.
 - `fit` is for the active chat model under these limits: `fits_fully`, `fits_partial`, `cpu_only`,
   `needs_smaller_model` or `too_big`. It is left out when no chat model is active.
+- `memory_cap_active` is `false`, with a `memory_cap_reason`, when an engine could not start under the memory cap and
+  was started once without it (the cap is `memory_limit_bytes` plus 1 GB or 10 %, whichever is larger).
 - `cpu_ceiling_percent` is always `100`, `ease_off` is always empty and `eased_off_now` is always `null` until the
   processor ceiling and ease-off rules ship (host 1.0.3). The keys are there so apps can already read them.
 - Changes apply live: the host re-plans, and if the loaded model no longer fits it reloads with the new placement or
