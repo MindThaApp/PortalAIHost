@@ -145,6 +145,14 @@ id that served the request) and `X-Portal-Capabilities-Revision`. When the revis
 - Running requests are never interrupted. **Batch clients should send pieces that finish in 2 minutes or less**
   (for example, chunked minutes followed by a merge step).
 - Each app may have up to 8 queued requests. Beyond that, the host answers `429 queue_full`.
+- **Per-app controls (set by the user on the host's Apps page).**
+  - *Priority* is `high`, `normal` (default) or `low`. Within the interactive or batch class, a higher-priority app
+    goes first, then apps take turns, then arrival order. A request that has waited 60 seconds moves up one level
+    (and another level every further 60 seconds, up to `high`), so a `low` app is never starved.
+  - *Pause*: while the user has paused your app, a new chat, embeddings or warm-up request is refused with
+    `403 app_paused`. Requests already queued are not started until the user resumes; running requests finish.
+    Their deadlines still apply. Pausing is not revoking: your token stays valid, so keep it.
+  - Read your own state from `client.paused` and `client.priority` in `GET /host/status`.
 
 ## 5. Errors
 
@@ -203,7 +211,8 @@ final event `data: {"error":{...}}` and closes the stream **without** `data: [DO
   "host_version": "1.0.0",
   "instance_id": "6f1c2a9e4b7d4c0f9a51d3e8b2c47a10",
   "state": "ready",
-  "client": { "app_id": "com.mindthaapp.voiceportal", "token_id": "tk_51c0e2", "approved_at": "2026-11-20T21:05:02Z" },
+  "client": { "app_id": "com.mindthaapp.voiceportal", "token_id": "tk_51c0e2", "approved_at": "2026-11-20T21:05:02Z",
+             "paused": false, "priority": "normal" },
   "models": {
     "chat": {
       "id": "qwen3-30b-a3b-q4km", "display_name": "Qwen3 30B A3B",
@@ -226,6 +235,8 @@ final event `data: {"error":{...}}` and closes the stream **without** `data: [DO
 ```
 - `state` is one of `ready` (loaded and idle), `busy` (generating), `loading`, `idle` (installed but not loaded; the
   next request loads it), `no_model`, `downloading` (no usable model yet) or `error`.
+- `client.paused` is `true` while the user has paused your app (new generation requests get `403 app_paused`).
+  `client.priority` is `high`, `normal` or `low`.
 - `models.<kind>.state` is one of `unloaded`, `loading`, `loaded`, `failed` or `not_installed`. The keys under
   `models` are model kinds. Expect more kinds later (for example `transcription`) and ignore unknown ones.
 - `usage` is the live use of the engine process (read-only): `ram_used_bytes` (working set) and `vram_used_bytes` 
@@ -586,6 +597,12 @@ only). Messages are JSON envelopes `{ "id", "type", "payload" }`; answers are `o
 
 **Live activity and the tray pop-up**
 
+- `clients.list` answers `{ clients: [...] }`; each client has `token_id, app_id, app_name, device_id, created_at,
+  last_used_at?, revoked, paused, priority` (`priority` is `high`, `normal` or `low`).
+- `apps.set_control` `{ app_id, paused?, priority? }`: pauses or resumes an approved app and/or sets its queue
+  priority. A missing field keeps its value. Pausing keeps the approval and the token. Errors: `not_found` (no
+  approved app with that id), `invalid_request` (priority is not `high`, `normal` or `low`). The setting is saved
+  in `clients.json` (`app_controls`) with the approved apps and survives restarts. Removing access does not clear it.
 - `activity.get` answers `{ apps: [...] }`: today's per-app counts, newest first. Each app has `app_id, app_name,
   requests, last_seen, tokens, running` (`running` = requests generating right now). Counts and times only, never
   content; kept in memory and reset at local midnight.

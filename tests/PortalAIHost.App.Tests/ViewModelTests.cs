@@ -418,6 +418,43 @@ public class AppsTests
     }
 
     [Fact]
+    public async Task Rows_show_the_paused_app_and_the_priority_from_the_host()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        var vm = new AppsViewModel(rig.Shell, rig.Ui, rig.Strings, rig.Dialogs);
+        await vm.LoadAsync();
+        var voice = vm.Clients.Single(c => c.AppId == "voice-portal");
+        var pdf = vm.Clients.Single(c => c.AppId == "pdf-portal");
+        Assert.False(voice.IsPaused);
+        Assert.Equal(0, voice.PriorityIndex); // High
+        Assert.True(pdf.IsPaused);
+        Assert.Equal(1, pdf.PriorityIndex); // Normal
+        Assert.StartsWith("Vm_AppResume", pdf.PauseLabel);
+        Assert.StartsWith("Vm_AppPause", voice.PauseLabel);
+    }
+
+    [Fact]
+    public async Task Pause_and_priority_changes_reach_the_host_once()
+    {
+        using var rig = new Rig(FakeScenario.Loaded);
+        var vm = new AppsViewModel(rig.Shell, rig.Ui, rig.Strings, rig.Dialogs);
+        await vm.LoadAsync();
+        var voice = vm.Clients.Single(c => c.AppId == "voice-portal");
+        await voice.TogglePauseCommand.ExecuteAsync(null);
+        voice.PriorityIndex = 2;
+        await Task.Delay(50);
+        var host = (FakeHostControl)rig.Host;
+        Assert.Contains(host.ControlCalls, c => c is ("voice-portal", true, null));
+        Assert.Contains(host.ControlCalls, c => c is ("voice-portal", null, "low"));
+        Assert.Equal(2, host.ControlCalls.Count);
+        await vm.LoadAsync();
+        var again = vm.Clients.Single(c => c.AppId == "voice-portal");
+        Assert.True(again.IsPaused);
+        Assert.Equal(2, again.PriorityIndex);
+        Assert.Equal(2, host.ControlCalls.Count); // loading never sends
+    }
+
+    [Fact]
     public async Task Pending_requests_can_be_allowed_from_the_list()
     {
         using var rig = new Rig(FakeScenario.ApprovalPending);
