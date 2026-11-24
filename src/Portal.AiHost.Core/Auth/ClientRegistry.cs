@@ -912,7 +912,8 @@ public sealed partial class ClientRegistry : IClientRegistry, IAppControls, ICal
 
     /// <summary>Identity of a calling program: package family name, else exe path, else process id.</summary>
     internal static string CallerKey(CallerIdentity caller) =>
-        caller.PackageFamilyName is { Length: > 0 } pfn ? "pfn:" + pfn.ToUpperInvariant()
+        caller.Remote is { } remote ? "dev:" + remote.Id
+        : caller.PackageFamilyName is { Length: > 0 } pfn ? "pfn:" + pfn.ToUpperInvariant()
         : caller.ExePath is { Length: > 0 } exe ? "exe:" + exe.ToUpperInvariant()
         : "pid:" + caller.ProcessId.ToString(CultureInfo.InvariantCulture);
 

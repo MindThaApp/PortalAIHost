@@ -74,6 +74,7 @@ public static class ApprovalPrompts
     public static ApprovalPrompt For(AccessRequestInfo info, string? deviceName = null)
     {
         ArgumentNullException.ThrowIfNull(info);
+        deviceName ??= info.Caller.Remote?.Name;
         var device = string.IsNullOrWhiteSpace(deviceName) ? LocalDeviceName : TextRules.Sanitize(deviceName);
         var app = TextRules.Sanitize(info.AppName);
         return new ApprovalPrompt(
@@ -91,6 +92,11 @@ public static class ApprovalPrompts
     public static string CallerLine(CallerIdentity caller)
     {
         ArgumentNullException.ThrowIfNull(caller);
+        if (caller.Remote is { } remote)
+        {
+            return "unverified: an app on the paired device " + TextRules.Sanitize(remote.Name);
+        }
+
         if (caller.Verified && !string.IsNullOrEmpty(caller.PackageFamilyName))
         {
             return "verified: " + caller.PackageFamilyName;
