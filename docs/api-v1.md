@@ -113,6 +113,20 @@ Every endpoint except `/host/ping` and `/host/auth/requests*` needs `Authorizati
 | `X-Portal-Deadline-Ms` | 1000–3600000 | 120000 interactive, 1800000 batch | Total time budget: queue + model load + generation. |
 | `X-Portal-Load` | `wait`, `fail` | `wait` | If the model is not loaded: wait for it (within the deadline), or fail fast with `503 model_loading` while loading starts. |
 | `X-Portal-Client-Request-Id` | up to 64 chars `[A-Za-z0-9._-]` | — | Echoed back, for your logs. |
+| `X-Portal-Context-Tokens` | 512 up to `context_tokens` | — | Ask for a smaller working context for this request. Clamped, never an error (see below). |
+
+**`X-Portal-Context-Tokens` (chat requests, host 1.0.2):**
+- **What it does:** the engine's context size is fixed when the model loads, so the host cannot shrink it for one
+  request. Instead the host clamps the asked value to 512 up to `context_tokens` (the context each request gets), then
+  caps the reply length so that the prompt plus the reply stays inside that context. The cap goes on `max_tokens`
+  (or `max_completion_tokens` when you sent that). It never raises a value you sent and never leaves less than 16
+  tokens for the reply.
+- **Prompt size:** the host estimates it as characters divided by three, plus four tokens per message, which errs on
+  the high side. It does not count tokens exactly and does not reject a long prompt; a prompt longer than the asked
+  context just gets the 16 token minimum reply.
+- **Answer:** the effective value is sent back in a response header of the same name.
+- **Ignored values:** a value that is not a whole number is ignored, as if the header were missing. A request without
+  the header is not changed at all.
 
 **Response headers:** `X-Portal-Request-Id`, `X-Portal-Queue-Ms` (time spent waiting), `X-Portal-Model` (the model
 id that served the request) and `X-Portal-Capabilities-Revision`. When the revision changes, re-fetch
@@ -256,9 +270,11 @@ the host re-plans memory; the revision number tells you when.
     "default_deadline_ms": { "interactive": 120000, "batch": 1800000 },
     "max_deadline_ms": 3600000
   },
-  "endpoints": ["chat.completions", "embeddings", "models", "tokenize", "warmup"]
+  "endpoints": ["chat.completions", "embeddings", "models", "tokenize", "warmup", "performance"]
 }
 ```
+`endpoints` lists `"performance"` on hosts that have `GET /host/performance` (1.0.2 and later). Check for it before
+calling; older hosts do not list it.
 
 **How to use the fields:**
 - `context_tokens` is the usable context **per request** right now. It grows on machines with more memory (up to
@@ -271,6 +287,45 @@ the host re-plans memory; the revision number tells you when.
   - `features.tools`: the model and host support OpenAI tool calling (section 7).
   - `features.reasoning`: the model can produce separate reasoning text.
 - **`speed_estimate`** is a planning hint, not a promise.
+
+### `GET /host/performance` (host 1.0.2)
+The limits the host runs under. Read-only: apps show these and link to the host's Settings, they never change them.
+```json
+{
+  "preset": "balanced",
+  "memory_limit_bytes": 54975581388,
+  "keep_free_bytes": 8589934592,
+  "compute": "auto",
+  "compute_effective": "gpu",
+  "gpu_memory_limit_bytes": 8053063680,
+  "cpu_threads": 10,
+  "priority": "low",
+  "cpu_ceiling_percent": 100,
+  "ease_off": [],
+  "eased_off_now": null,
+  "fit": "fits_partial",
+  "ranges": {
+    "memory_limit_bytes": { "min": 2147483648, "max": 60129542144, "step": 1073741824 },
+    "keep_free_bytes": { "min": 2147483648, "max": 34359738368, "step": 1073741824 },
+    "gpu_memory_limit_bytes": { "min": 1073741824, "max": 8053063680, "step": 536870912 },
+    "cpu_threads": { "min": 1, "max": 11 },
+    "gpu_available": true
+  },
+  "settings_link": "portal-ai-host:settings/performance"
+}
+```
+- `preset`: `quiet`, `balanced`, `fast` or `custom`. `compute`: `auto`, `gpu` or `cpu`; `compute_effective` is
+  where the model really runs (`gpu` or `cpu`). `priority`: `low` (the engine runs below normal priority) or `normal`.
+- `memory_limit_bytes` is also a hard cap on the engine process (a Windows job object), as well as the figure the
+  host plans against. `keep_free_bytes` is memory the host leaves free for other programs.
+- `gpu_memory_limit_bytes` and `ranges.gpu_memory_limit_bytes` are left out when the PC has no supported graphics
+  card (4 GB of graphics memory or more); `ranges.gpu_available` says whether `gpu` can be chosen.
+- `fit` is for the active chat model under these limits: `fits_fully`, `fits_partial`, `cpu_only`,
+  `needs_smaller_model` or `too_big`. It is left out when no chat model is active.
+- `cpu_ceiling_percent` is always `100`, `ease_off` is always empty and `eased_off_now` is always `null` until the
+  processor ceiling and ease-off rules ship (host 1.0.3). The keys are there so apps can already read them.
+- Changes apply live: the host re-plans, and if the loaded model no longer fits it reloads with the new placement or
+  unloads. Watch `X-Portal-Capabilities-Revision`. Nothing is deleted; model files are never touched.
 
 ### `GET /v1/models`
 OpenAI shape, with extra fields.
@@ -487,9 +542,21 @@ only). Messages are JSON envelopes `{ "id", "type", "payload" }`; answers are `o
 **Settings**
 
 - `settings.get` / `settings.set` carry `HostSettings` (`start_with_windows, backend, models_folder,
-  max_memory_percent, prevent_sleep_while_downloading, bandwidth_cap_bytes_per_second, kinds`, and the host-owned
-  `previous_store_folders`, which `settings.set` ignores).
-- `settings.set` answers `SettingsSaved` `{ models_folder_changed, applies_at_restart, note, folder_refused }`.
+  max_memory_percent, prevent_sleep_while_downloading, bandwidth_cap_bytes_per_second, kinds`, the performance keys
+  `preset, memory_limit_bytes, keep_free_bytes, compute, gpu_memory_limit_bytes, cpu_threads, priority`, and the
+  host-owned `previous_store_folders`, which `settings.set` ignores).
+- **Performance keys:** a key left out keeps its default (`null` bytes and threads mean "the default for this PC").
+  An older `max_memory_percent` becomes `memory_limit_bytes` the first time the new host reads the file; until then it
+  still applies. `backend` is the older name of `compute`: when `compute` is `auto`, `backend` still counts, and the
+  window writes both.
+- `settings.set` answers `SettingsSaved` `{ models_folder_changed, applies_at_restart, note, folder_refused,
+  performance_reloaded }`. The performance limits apply at once; `performance_reloaded` (`{ reloaded: [kind],
+  unloaded: [kind] }`) is set when a model was reloaded with a new placement or stopped because it no longer fits.
+- `performance.get` (optional `HostSettings` payload) answers `{ info, ram_bytes, logical_cores, gpu_name,
+  gpu_vram_bytes, gpu_unavailable_reason, fit_model, smaller_model, memory_stops, presets }`: `info` is the
+  `GET /host/performance` body (for the payload's settings when one is sent, which are previewed and not saved),
+  `memory_stops` has one entry per 1 GB step of the memory slider with the best model that fits there, and `presets`
+  has the values of Quiet, Balanced and Fast on this PC.
   `folder_refused` is set when the new models folder was refused (missing, FAT32, or inside the current models
   folder); the other settings were still saved and the models folder stayed as it was.
 

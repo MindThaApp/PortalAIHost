@@ -211,6 +211,24 @@ Each opens the host window on that page. If the host isn't installed, open the S
 
 ## 7. Timeline
 
+**Built for 1.0.2 (branch `performance`; UI checks pending):**
+- Settings model (section 2, 1.0.2 rows): the seven keys in `HostSettings`, with the defaults, ranges and presets;
+  an older `max_memory_percent` maps to `memory_limit_bytes` on first read.
+- Enforcement: the planner plans against the memory limit, "always leave free" and the graphics memory limit;
+  `compute` `cpu` forces zero graphics layers and `gpu` falls back to the processor without a card of 4 GB or more;
+  `cpu_threads` goes to llama-server `--threads`; `low` priority is BELOW_NORMAL; the memory limit is also a job object
+  cap on the engine process. Changes apply live (reload or unload, never a delete).
+- `GET /host/performance` and `"performance"` in `/host/capabilities` `endpoints`. `cpu_ceiling_percent` is fixed at
+  100, `ease_off` is empty and `eased_off_now` is `null` until 1.0.3.
+- `X-Portal-Context-Tokens`: clamps the reply length against an estimate of the prompt (the engine cannot change its
+  context per request); see `docs/api-v1.md` section 4.
+- Protocol links `portal-ai-host:settings/performance`, `:models` and `:apps`.
+- Settings > Performance page: preset, maximum memory (with what fits at each size), always leave free, run on,
+  graphics memory, processor cores, priority, the fit line and reset to default.
+- Already in place before this branch: `usage` in `GET /host/status` (section 5.2) and the `Portal.AiHost.Models` split
+  (planner and probe).
+
+**Planned timeline:**
 - **Host 1.0.2:**
   - the Settings > Performance page (section 2, 1.0.2 rows);
   - `GET /host/performance`, `usage`, `X-Portal-Context-Tokens`, and the protocol links;
