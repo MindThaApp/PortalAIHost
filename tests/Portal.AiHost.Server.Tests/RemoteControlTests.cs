@@ -37,6 +37,26 @@ public sealed class RemoteControlTests
     }
 
     [Fact]
+    public async Task UnderATestDataRootTheListenerNeverLeavesLoopback()
+    {
+        // No test options at all: the host must still bind loopback only (a listener on the network raises a firewall prompt).
+        using var root = new TestRoot();
+        await using var harness = await ShellHarness.StartAsync(root);
+        await using var client = await ControlPipeClient.ConnectAsync(harness.Paths.PipeName);
+        var settings = await client.GetSettingsAsync();
+        settings.Remote.Enabled = true;
+        await client.SetSettingsAsync(settings);
+
+        var port = (await client.GetRemoteAsync()).Port;
+        Assert.True(port > 0);
+        var listeners = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().GetActiveTcpListeners();
+        var mine = listeners.Where(l => l.Port == port).ToList();
+        Assert.NotEmpty(mine);
+        Assert.All(mine, l => Assert.True(IPAddress.IsLoopback(l.Address), "listening on " + l.Address));
+        Assert.Equal(RelayStates.Off, (await client.GetRemoteAsync()).Relay); // and nothing reaches the internet
+    }
+
+    [Fact]
     public async Task TurningItOnOpensTheListenerAndAPairingCode()
     {
         using var root = new TestRoot();

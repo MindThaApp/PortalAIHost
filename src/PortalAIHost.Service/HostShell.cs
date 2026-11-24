@@ -362,7 +362,7 @@ public sealed class HostShell : IAsyncDisposable
             // Under a test data root the listener never leaves this PC (a listener on the network raises a firewall prompt).
             BindAddress = _o.RemoteTest?.BindAddress ?? (_o.Paths.TestMode ? System.Net.IPAddress.Loopback : null),
             AllowSource = _o.RemoteTest?.AllowSource,
-            PortOverride = _o.RemoteTest?.Port,
+            PortOverride = _o.RemoteTest?.Port ?? (_o.Paths.TestMode ? 0 : null),
             Addresses = _o.RemoteTest?.Addresses,
             UseDefaultRelay = !_o.Paths.TestMode,
             RelayInitialDelay = _o.RemoteTest?.RelayInitialDelay,
