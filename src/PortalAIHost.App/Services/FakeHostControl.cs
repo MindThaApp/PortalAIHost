@@ -98,6 +98,12 @@ public sealed class FakeHostControl : IHostControl, IDisposable
     /// <summary>True: a move stays "running" until cancelled (so tests can cancel it).</summary>
     public bool HoldMove { get; set; }
 
+    /// <summary>Marks a model as installed without a download (tests).</summary>
+    public void MarkInstalled(string id)
+    {
+        lock (_gate) Install(id);
+    }
+
     public List<string> Moves { get; } = new();
     public List<(string Id, string? SwitchTo)> Removals { get; } = new();
     public List<string> Verifies { get; } = new();
@@ -193,7 +199,10 @@ public sealed class FakeHostControl : IHostControl, IDisposable
             var upgrade = Scenario is FakeScenario.Loaded or FakeScenario.SafeMode ? "qwen3-30b" : null;
             if (!CatalogueAvailable)
                 return Task.FromResult(new ModelCatalogView(_models.Where(m => m.Installed).Select(Copy).ToList(), existing, _settings.ModelsFolder ?? "", FreeBytes, upgrade) { CatalogueAvailable = false });
-            return Task.FromResult(new ModelCatalogView(_models.Select(Copy).ToList(), existing, _settings.ModelsFolder ?? "", FreeBytes, upgrade));
+            return Task.FromResult(new ModelCatalogView(_models.Select(Copy).ToList(), existing, _settings.ModelsFolder ?? "", FreeBytes, upgrade)
+            {
+                ModelsBytes = _models.Where(m => m.Installed).Sum(m => m.SizeBytes),
+            });
         }
     }
 

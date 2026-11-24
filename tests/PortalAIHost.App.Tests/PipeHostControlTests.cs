@@ -250,12 +250,12 @@ public class IntegrationViewModelTests
     }
 
     [Fact]
-    public async Task The_active_model_cannot_be_removed()
+    public async Task The_active_model_can_be_removed_the_host_unloads_it_first()
     {
         using var rig = new Rig(FakeScenario.Loaded);
         var vm = new ModelsViewModel(rig.Shell, rig.Ui, rig.Strings, rig.Dialogs);
         await vm.LoadAsync();
-        Assert.False(vm.Models.First(m => m.Active).CanRemove);
+        Assert.True(vm.Models.First(m => m.Active).CanRemove);
     }
 
     [Fact]

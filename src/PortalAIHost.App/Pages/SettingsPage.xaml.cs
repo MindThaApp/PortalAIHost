@@ -42,4 +42,6 @@ public sealed partial class SettingsPage : Page
     }
 
     protected override async void OnNavigatedTo(NavigationEventArgs e) => await ViewModel.LoadAsync();
+
+    protected override void OnNavigatedFrom(NavigationEventArgs e) => ViewModel.Dispose();
 }

@@ -289,7 +289,7 @@ public class ModelsTests
         var row = vm.Models.First(m => m.Id == "chat-14b");
         Assert.True(row.SizeBytes > 0);
         Assert.Equal("Vm_RemoveFrees:" + Fmt.Bytes(row.SizeBytes), row.FreesText);
-        Assert.Contains("Vm_RemoveBody:", row.RemoveBody);
+        Assert.Contains("Vm_RemoveActiveBody:", row.RemoveBody); // the model in use: it is unloaded first
         Assert.EndsWith(row.FreesText, row.RemoveBody);
     }
 
