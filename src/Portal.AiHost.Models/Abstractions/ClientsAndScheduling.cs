@@ -1,4 +1,5 @@
 using Portal.AiHost.Contracts;
+using Portal.AiHost.Contracts.Control;
 
 namespace Portal.AiHost.Core.Abstractions;
 
@@ -92,6 +93,50 @@ public interface IClientRegistry
 
     /// <summary>Revokes by token id (user in the host, or the client itself via DELETE /host/auth/token).</summary>
     Task RevokeAsync(string tokenId, CancellationToken ct);
+}
+
+/// <summary>How the queue ranks an app against other apps. Low, Normal, High.</summary>
+public enum AppPriority
+{
+    Low = 0,
+    Normal = 1,
+    High = 2,
+}
+
+public static class AppPriorityWire
+{
+    public static string ToWire(this AppPriority p) => p switch
+    {
+        AppPriority.High => AppPriorities.High,
+        AppPriority.Low => AppPriorities.Low,
+        _ => AppPriorities.Normal,
+    };
+
+    public static AppPriority? Parse(string? value) => value switch
+    {
+        AppPriorities.High => AppPriority.High,
+        AppPriorities.Normal => AppPriority.Normal,
+        AppPriorities.Low => AppPriority.Low,
+        _ => null,
+    };
+}
+
+/// <summary>The user's per-app controls. Pausing is not revoking: the approval stays.</summary>
+public sealed record AppControl(bool Paused, AppPriority Priority)
+{
+    public static AppControl Default { get; } = new(false, AppPriority.Normal);
+}
+
+/// <summary>Per-app pause and priority, kept with the approved apps and read by the scheduler.</summary>
+public interface IAppControls
+{
+    AppControl Get(string appId);
+
+    /// <summary>Changes the fields given (null keeps the current value) and saves. Raises <see cref="Changed"/>.</summary>
+    Task SetAsync(string appId, bool? paused, AppPriority? priority, CancellationToken ct);
+
+    /// <summary>Raised after a change, outside any lock. The scheduler re-checks its queue.</summary>
+    event EventHandler? Changed;
 }
 
 /// <summary>Throw to produce a specific API error. The pipeline turns it into the error envelope.</summary>

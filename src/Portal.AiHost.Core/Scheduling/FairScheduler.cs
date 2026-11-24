@@ -17,6 +17,12 @@ public sealed class FairSchedulerOptions
     public int QueueFullRetryAfterMs { get; init; } = 2000;
 
     public int DefaultSlots { get; init; } = 1;
+
+    /// <summary>The user's per-app pause and priority. Null: every app active, normal priority.</summary>
+    public IAppControls? AppControls { get; init; }
+
+    /// <summary>A waiting request moves up one app-priority level for every period it has waited (no starvation).</summary>
+    public TimeSpan AppPriorityPromotionAge { get; init; } = TimeSpan.FromSeconds(60);
 }
 
 /// <summary>
@@ -28,6 +34,9 @@ public sealed class FairSchedulerOptions
 /// <item>8 queued per app and 64 per host, then 429 queue_full. Deadlines end a queued request with
 /// 504 deadline_exceeded (phase queued); cancellation removes it from the queue.</item>
 /// </list>
+/// Per-app controls: a paused app's new requests fail with 403 app_paused and its queued ones are not
+/// started (running ones finish). Within a class, a High app goes before Normal before Low; a waiting request
+/// gains one level for every AppPriorityPromotionAge it has waited. Ties keep round-robin and arrival order.
 /// No pre-emption. All decisions run under one lock; timers come from the TimeProvider, so tests drive
 /// time with a fake clock.
 /// </summary>
@@ -45,6 +54,44 @@ public sealed class FairScheduler : IScheduler, IDisposable
     {
         _options = options ?? new FairSchedulerOptions();
         _time = time ?? TimeProvider.System;
+        if (_options.AppControls is { } controls)
+        {
+            controls.Changed += OnControlsChanged;
+        }
+    }
+
+    private void OnControlsChanged(object? sender, EventArgs e)
+    {
+        var notes = new Notes();
+        lock (_gate)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            foreach (var queue in _kinds.Values)
+            {
+                DispatchLocked(queue, notes);
+            }
+        }
+
+        Run(notes);
+    }
+
+    private AppControl ControlFor(string appId) => _options.AppControls?.Get(appId) ?? AppControl.Default;
+
+    /// <summary>Base app priority plus one level per promotion age waited, capped at High.</summary>
+    private int EffectiveRank(Entry e, DateTimeOffset now)
+    {
+        var rank = (int)ControlFor(e.Request.AppId).Priority;
+        var age = _options.AppPriorityPromotionAge;
+        if (age > TimeSpan.Zero)
+        {
+            rank += (int)((now - e.EnqueuedAt) / age);
+        }
+
+        return Math.Min(rank, (int)AppPriority.High);
     }
 
     public Task<ISchedulerLease> AcquireAsync(SchedulingRequest request, IProgress<QueueEvent>? progress,
@@ -62,6 +109,12 @@ public sealed class FairScheduler : IScheduler, IDisposable
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
             var now = _time.GetUtcNow();
+            if (ControlFor(request.AppId).Paused)
+            {
+                throw new ApiException(ErrorCodes.AppPaused,
+                    "The user has paused this app in Portal AI Host. Ask them to resume it.");
+            }
+
             if (request.Deadline <= now)
             {
                 throw DeadlineExceeded();
@@ -151,6 +204,11 @@ public sealed class FairScheduler : IScheduler, IDisposable
     /// <summary>Fails every queued request with host_stopping. Running leases stay valid until disposed.</summary>
     public void Dispose()
     {
+        if (_options.AppControls is { } controls)
+        {
+            controls.Changed -= OnControlsChanged;
+        }
+
         var notes = new Notes();
         lock (_gate)
         {
@@ -196,12 +254,14 @@ public sealed class FairScheduler : IScheduler, IDisposable
             var free = queue.Slots - queue.Running;
 
             // Interactive class: interactive entries plus batch entries old enough to be promoted.
-            var next = queue.NextRoundRobin(e => e.IsInteractiveClass(now, _options.BatchPromotionAge));
+            var next = queue.NextRoundRobin(
+                e => !ControlFor(e.Request.AppId).Paused && e.IsInteractiveClass(now, _options.BatchPromotionAge),
+                e => EffectiveRank(e, now));
 
             // Batch class: may not take the last free slot when there are 2 or more slots.
             if (next is null && (queue.Slots < 2 || free >= 2))
             {
-                next = queue.NextRoundRobin(static _ => true);
+                next = queue.NextRoundRobin(e => !ControlFor(e.Request.AppId).Paused, e => EffectiveRank(e, now));
             }
 
             if (next is null)
@@ -402,31 +462,46 @@ public sealed class FairScheduler : IScheduler, IDisposable
         }
 
         /// <summary>
-        /// The first app in turn order that has an eligible entry gives its oldest eligible entry, and that app
-        /// moves to the back of the turn order.
+        /// Each app offers its oldest eligible entry. The offer with the highest rank wins; equal ranks go to the
+        /// app first in turn order, and the winning app moves to the back of the turn order.
         /// </summary>
-        public Entry? NextRoundRobin(Func<Entry, bool> eligible)
+        public Entry? NextRoundRobin(Func<Entry, bool> eligible, Func<Entry, int> rank)
         {
+            LinkedListNode<string>? bestNode = null;
+            Entry? best = null;
+            var bestRank = int.MinValue;
             for (var node = _turns.First; node is not null; node = node.Next)
             {
-                Entry? best = null;
+                Entry? oldest = null;
                 foreach (var e in _byApp[node.Value])
                 {
-                    if (eligible(e) && (best is null || e.Sequence < best.Sequence))
+                    if (eligible(e) && (oldest is null || e.Sequence < oldest.Sequence))
                     {
-                        best = e;
+                        oldest = e;
                     }
                 }
 
-                if (best is not null)
+                if (oldest is null)
                 {
-                    _turns.Remove(node);
-                    _turns.AddLast(node);
-                    return best;
+                    continue;
+                }
+
+                var r = rank(oldest);
+                if (r > bestRank)
+                {
+                    best = oldest;
+                    bestNode = node;
+                    bestRank = r;
                 }
             }
 
-            return null;
+            if (bestNode is not null)
+            {
+                _turns.Remove(bestNode);
+                _turns.AddLast(bestNode);
+            }
+
+            return best;
         }
 
         /// <summary>1-based place among waiting entries of this kind, by arrival.</summary>

@@ -43,6 +43,7 @@ namespace Portal.AiHost.Contracts;
 [JsonSerializable(typeof(ApprovalDecision))]
 [JsonSerializable(typeof(ClientList))]
 [JsonSerializable(typeof(ClientRevoke))]
+[JsonSerializable(typeof(AppControlCommand))]
 [JsonSerializable(typeof(ModelListing))]
 [JsonSerializable(typeof(DownloadCommand))]
 [JsonSerializable(typeof(RemoveModelCommand))]

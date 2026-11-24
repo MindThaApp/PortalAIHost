@@ -46,17 +46,30 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="vm:ClientRowViewModel">
                         <Border Style="{StaticResource CardBorder}" Margin="0,0,0,10">
-                            <Grid ColumnSpacing="16">
+                            <Grid ColumnSpacing="16" RowSpacing="12">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
                                 <StackPanel Spacing="4">
-                                    <TextBlock Text="{x:Bind Name}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock Text="{x:Bind Name}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                                        <TextBlock Text="{x:Bind PausedBadge}" Visibility="{x:Bind IsPaused, Mode=OneWay}" Foreground="{ThemeResource SystemFillColorCautionBrush}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                                    </StackPanel>
                                     <TextBlock Text="{x:Bind AddedText}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                                     <TextBlock Text="{x:Bind LastUsedText}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                    <TextBlock Text="{x:Bind TodayText}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                    <TextBlock Text="{x:Bind PausedHint}" Visibility="{x:Bind IsPaused, Mode=OneWay}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                                 </StackPanel>
                                 <Button Grid.Column="1" x:Uid="AppRevoke" AutomationProperties.Name="{x:Bind AutoRevoke}" Command="{x:Bind RevokeCommand}" VerticalAlignment="Center" />
+                                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Spacing="12">
+                                    <ComboBox x:Uid="AppPriority" MinWidth="140" ItemsSource="{x:Bind PriorityOptions}" SelectedIndex="{x:Bind PriorityIndex, Mode=TwoWay}" AutomationProperties.Name="{x:Bind PriorityAutomation}" />
+                                    <Button Content="{x:Bind PauseLabel, Mode=OneWay}" AutomationProperties.Name="{x:Bind PauseAutomation, Mode=OneWay}" Command="{x:Bind TogglePauseCommand}" VerticalAlignment="Bottom" />
+                                </StackPanel>
                             </Grid>
                         </Border>
                     </DataTemplate>

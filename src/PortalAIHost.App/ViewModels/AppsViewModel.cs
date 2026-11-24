@@ -12,21 +12,86 @@ public sealed partial class ClientRowViewModel : ObservableObject
     private readonly AppsViewModel _owner;
     private readonly IStrings _s;
 
-    public ClientRowViewModel(AppsViewModel owner, IStrings s, ClientSummary c)
+    private bool _applying;
+
+    public ClientRowViewModel(AppsViewModel owner, IStrings s, ClientSummary c, AppActivity? today = null)
     {
         _owner = owner;
         _s = s;
         TokenId = c.TokenId;
+        AppId = c.AppId;
         Name = c.AppName;
         AddedText = s.Format("Vm_Added", c.CreatedAt.LocalDateTime.ToString("d"));
         LastUsedText = c.LastUsedAt is { } t ? s.Format("Vm_LastUsed", t.LocalDateTime.ToString("g")) : s.Get("Vm_NeverUsed");
+        TodayText = today is null || today.Requests == 0 ? s.Get("Vm_AppTodayNone")
+            : s.Format(today.Requests == 1 ? "Vm_AppToday1" : "Vm_AppToday", today.Requests);
+        PriorityOptions = [s.Get("Vm_PriorityHigh"), s.Get("Vm_PriorityNormal"), s.Get("Vm_PriorityLow")];
+        _applying = true;
+        _isPaused = c.Paused;
+        _priorityIndex = ConfirmedPriorityIndex = IndexOf(c.Priority);
+        _applying = false;
     }
 
+    public static int IndexOf(string? priority) => priority switch
+    {
+        AppPriorities.High => 0,
+        AppPriorities.Low => 2,
+        _ => 1,
+    };
+
+    public static string WireOf(int index) => index switch
+    {
+        0 => AppPriorities.High,
+        2 => AppPriorities.Low,
+        _ => AppPriorities.Normal,
+    };
+
     public string TokenId { get; }
+    public string AppId { get; }
     public string Name { get; }
     public string AddedText { get; }
     public string LastUsedText { get; }
+    public string TodayText { get; }
     public string AutoRevoke => _s.Format("Vm_AutoRevoke", Name);
+    public IReadOnlyList<string> PriorityOptions { get; }
+
+    /// <summary>The priority the host last accepted.</summary>
+    internal int ConfirmedPriorityIndex { get; set; }
+    public string PriorityAutomation => _s.Format("Vm_AutoPriority", Name);
+    public string PausedBadge => _s.Get("Vm_AppPausedBadge");
+    public string PausedHint => _s.Format("Vm_AppPausedHint", Name);
+    public string PauseLabel => _s.Get(IsPaused ? "Vm_AppResume" : "Vm_AppPause");
+    public string PauseAutomation => _s.Format(IsPaused ? "Vm_AutoResume" : "Vm_AutoPause", Name);
+
+    [ObservableProperty] private bool _isPaused;
+    [ObservableProperty] private int _priorityIndex = 1;
+
+    partial void OnIsPausedChanged(bool value)
+    {
+        OnPropertyChanged(nameof(PauseLabel));
+        OnPropertyChanged(nameof(PauseAutomation));
+    }
+
+    partial void OnPriorityIndexChanged(int value)
+    {
+        if (!_applying) _ = _owner.SetControlAsync(this, null, WireOf(value));
+    }
+
+    /// <summary>Puts a value back after the host refused it, without sending it again.</summary>
+    internal void Restore(bool paused, int priorityIndex)
+    {
+        _applying = true;
+        IsPaused = paused;
+        PriorityIndex = priorityIndex;
+        _applying = false;
+    }
+
+    [RelayCommand] private Task TogglePauseAsync()
+    {
+        var next = !IsPaused;
+        IsPaused = next;
+        return _owner.SetControlAsync(this, next, null);
+    }
 
     [RelayCommand] private Task RevokeAsync() => _owner.RevokeAsync(this);
 }
@@ -133,12 +198,15 @@ public sealed partial class AppsViewModel : ObservableObject, IDisposable
         {
             var clients = await _shell.Host.ListClientsAsync().ConfigureAwait(false);
             var pending = await _shell.Host.ListApprovalsAsync().ConfigureAwait(false);
+            IReadOnlyList<AppActivity> activity = [];
+            try { activity = await _shell.Host.GetActivityAsync().ConfigureAwait(false); }
+            catch (Exception ex) when (ex is HostUnavailableException or HostRequestException) { }
             _ui.Post(() =>
             {
                 ErrorLine = "";
                 Clients.Clear();
                 // An app waiting out its undo time stays hidden; the host has not been asked yet.
-                foreach (var c in clients.Where(c => !c.Revoked && c.TokenId != _pendingRevoke?.TokenId)) Clients.Add(new ClientRowViewModel(this, _s, c));
+                foreach (var c in clients.Where(c => !c.Revoked && c.TokenId != _pendingRevoke?.TokenId)) Clients.Add(new ClientRowViewModel(this, _s, c, activity.FirstOrDefault(a => a.AppId == c.AppId)));
                 Pending.Clear();
                 foreach (var p in pending) Pending.Add(new PendingRowViewModel(this, _s, p));
                 NoClients = Clients.Count == 0;
@@ -241,6 +309,25 @@ public sealed partial class AppsViewModel : ObservableObject, IDisposable
                 NoClients = false;
             });
             return;
+        }
+    }
+
+    /// <summary>Sends a pause/resume or priority change. The row already shows it; a refusal puts the old value back.</summary>
+    public async Task SetControlAsync(ClientRowViewModel row, bool? paused, string? priority)
+    {
+        try
+        {
+            await _shell.Host.SetAppControlAsync(row.AppId, paused, priority).ConfigureAwait(false);
+            if (priority is not null) row.ConfirmedPriorityIndex = ClientRowViewModel.IndexOf(priority);
+        }
+        catch (Exception ex) when (ex is HostUnavailableException or HostRequestException)
+        {
+            _ui.Post(() =>
+            {
+                ErrorLine = ex is HostRequestException ? ex.Message : _s.Get("Vm_NoHostTitle");
+                row.Restore(paused is { } p ? !p : row.IsPaused,
+                    priority is not null ? row.ConfirmedPriorityIndex : row.PriorityIndex);
+            });
         }
     }
 

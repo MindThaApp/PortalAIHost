@@ -87,6 +87,12 @@ public sealed class StatusClient
     public string AppId { get; set; } = "";
     public string TokenId { get; set; } = "";
     public DateTimeOffset ApprovedAt { get; init; }
+
+    /// <summary>True while the user has paused this app: new generation requests get 403 app_paused.</summary>
+    public bool Paused { get; init; }
+
+    /// <summary>"high", "normal" or "low": how the queue ranks this app.</summary>
+    public string Priority { get; init; } = "normal";
 }
 
 public sealed class ModelStatus

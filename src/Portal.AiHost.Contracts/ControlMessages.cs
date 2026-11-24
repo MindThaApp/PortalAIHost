@@ -18,6 +18,9 @@ public static class ControlTypes
     public const string Deny = "approvals.deny";
     public const string ListClients = "clients.list";
     public const string RevokeClient = "clients.revoke";
+
+    /// <summary>Pauses, resumes or ranks one approved app. Payload <see cref="AppControlCommand"/>. Approval is kept.</summary>
+    public const string SetAppControl = "apps.set_control";
     public const string ListModels = "models.list";
     public const string StartDownload = "downloads.start";
     public const string PauseDownload = "downloads.pause";
@@ -146,6 +149,30 @@ public sealed class ClientSummary
     public DateTimeOffset CreatedAt { get; init; }
     public DateTimeOffset? LastUsedAt { get; init; }
     public bool Revoked { get; init; }
+
+    /// <summary>True while the user has paused this app. Its new requests get app_paused.</summary>
+    public bool Paused { get; init; }
+
+    /// <summary>"high", "normal" or "low" (<see cref="AppPriorities"/>).</summary>
+    public string Priority { get; init; } = AppPriorities.Normal;
+}
+
+/// <summary>Values of the per-app priority.</summary>
+public static class AppPriorities
+{
+    public const string High = "high";
+    public const string Normal = "normal";
+    public const string Low = "low";
+
+    public static bool IsValid(string? value) => value is High or Normal or Low;
+}
+
+/// <summary>Payload of apps.set_control. A null field keeps its current value.</summary>
+public sealed class AppControlCommand
+{
+    public string AppId { get; set; } = "";
+    public bool? Paused { get; set; }
+    public string? Priority { get; set; }
 }
 
 public sealed class ClientList

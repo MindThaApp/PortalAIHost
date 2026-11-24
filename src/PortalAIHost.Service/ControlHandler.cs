@@ -86,8 +86,27 @@ internal sealed class ControlHandler(HostShell shell)
                     {
                         TokenId = c.TokenId, AppId = c.AppId, AppName = c.AppName, DeviceId = c.DeviceId,
                         CreatedAt = c.CreatedAt, LastUsedAt = c.LastUsedAt, Revoked = c.Revoked,
+                        Paused = ControlOf(runtime, c.AppId).Paused,
+                        Priority = ControlOf(runtime, c.AppId).Priority.ToWire(),
                     }).ToList(),
                 }, AiHostJsonContext.Default.ClientList);
+
+            case ControlTypes.SetAppControl:
+            {
+                var cmd = Payload(r, AiHostJsonContext.Default.AppControlCommand)!;
+                if (runtime.AppControls is not { } controls)
+                {
+                    return ControlPipe.Error(id, ErrorCodes.NotFound, "App controls are not available.");
+                }
+
+                if (cmd.Priority is not null && AppPriorityWire.Parse(cmd.Priority) is null)
+                {
+                    return ControlPipe.Error(id, ErrorCodes.InvalidRequest, "priority must be high, normal or low.");
+                }
+
+                await controls.SetAsync(cmd.AppId, cmd.Paused, AppPriorityWire.Parse(cmd.Priority), ct).ConfigureAwait(false);
+                return ControlPipe.Ok(id);
+            }
 
             case ControlTypes.RevokeClient:
                 await runtime.Registry.RevokeAsync(Payload(r, AiHostJsonContext.Default.ClientRevoke)!.TokenId, ct)
@@ -338,4 +357,7 @@ internal sealed class ControlHandler(HostShell shell)
 
         return p.Deserialize(info) ?? throw new ControlPipeException(ErrorCodes.InvalidRequest, "This message needs a payload.");
     }
+
+    private static AppControl ControlOf(Portal.AiHost.Core.Runtime.AiHostRuntime runtime, string appId) =>
+        runtime.AppControls?.Get(appId) ?? AppControl.Default;
 }

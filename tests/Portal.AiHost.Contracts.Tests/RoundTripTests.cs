@@ -62,7 +62,7 @@ public class RoundTripTests
         {
           "api_version": "1", "host_version": "1.0.0", "instance_id": "6f1c2a9e4b7d4c0f9a51d3e8b2c47a10",
           "state": "ready",
-          "client": { "app_id": "com.mindthaapp.voiceportal", "token_id": "tk_51c0e2", "approved_at": "2026-11-20T21:05:02+00:00" },
+          "client": { "app_id": "com.mindthaapp.voiceportal", "token_id": "tk_51c0e2", "approved_at": "2026-11-20T21:05:02+00:00", "paused": false, "priority": "normal" },
           "models": {
             "chat": { "id": "qwen3-30b-a3b-q4km", "display_name": "Qwen3 30B A3B", "state": "loaded",
                       "loaded_since": "2026-11-20T21:06:40+00:00", "load_progress": 1, "keep_loaded": false, "idle_unload_seconds": 600 },
@@ -312,9 +312,10 @@ public class RoundTripTests
         RoundTrip("""{ "request_id": "ar_1" }""", Ctx.ApprovalDecision);
         RoundTrip("""
             { "clients": [ { "token_id": "tk_1", "app_id": "a", "app_name": "A", "device_id": "local",
-              "created_at": "2026-11-20T21:14:11+00:00", "revoked": false } ] }
+              "created_at": "2026-11-20T21:14:11+00:00", "revoked": false, "paused": false, "priority": "normal" } ] }
             """, Ctx.ClientList);
         RoundTrip("""{ "token_id": "tk_1" }""", Ctx.ClientRevoke);
+        RoundTrip("""{ "app_id": "a.b", "paused": true, "priority": "low" }""", Ctx.AppControlCommand);
         RoundTrip("""
             { "models": [ { "id": "m", "display_name": "M", "kind": "chat", "engine": "llama-server", "size_bytes": 10,
               "quality": 4.5, "recommended": true, "installed": false, "active": false, "fits_this_pc": true,
@@ -384,7 +385,7 @@ public class RoundTripTests
         string[] documented =
         [
             "invalid_request", "unsupported_parameter", "context_length_exceeded", "auth_required", "token_invalid",
-            "token_revoked", "access_denied", "forbidden_origin", "not_found", "feature_disabled", "request_too_large",
+            "token_revoked", "access_denied", "app_paused", "forbidden_origin", "not_found", "feature_disabled", "request_too_large",
             "queue_full", "rate_limited", "no_model", "model_loading", "engine_restarting", "insufficient_memory",
             "host_stopping", "auth_unavailable", "deadline_exceeded", "engine_error", "internal_error",
         ];

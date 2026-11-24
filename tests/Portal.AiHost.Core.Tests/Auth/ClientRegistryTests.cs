@@ -406,4 +406,37 @@ public sealed class ClientRegistryTests : IDisposable
         Assert.Equal(info.RequestId, control.RequestId);
         Assert.True(control.CallerVerified);
     }
+
+    [Fact]
+    public async Task AppControlsDefaultToActiveNormalAndSurviveARestart()
+    {
+        string tokenId;
+        using (var registry = NewRegistry())
+        {
+            (_, tokenId) = await IssueAsync(registry);
+            Assert.Equal(AppControl.Default, registry.Get("com.mindthaapp.voiceportal"));
+            var raised = 0;
+            registry.Changed += (_, _) => raised++;
+            await registry.SetAsync("com.mindthaapp.voiceportal", true, AppPriority.Low, _ct);
+            await registry.SetAsync("com.mindthaapp.voiceportal", null, AppPriority.High, _ct);
+            Assert.Equal(2, raised);
+            Assert.Equal(new AppControl(true, AppPriority.High), registry.Get("com.mindthaapp.voiceportal"));
+        }
+
+        using var reopened = NewRegistry();
+        Assert.Equal(new AppControl(true, AppPriority.High), reopened.Get("com.mindthaapp.voiceportal"));
+        Assert.Equal(AppControl.Default, reopened.Get("com.other.app"));
+
+        // Pausing is not revoking: the token is still active.
+        var list = await reopened.ListAsync(_ct);
+        Assert.False(list.Single(c => c.TokenId == tokenId).Revoked);
+    }
+
+    [Fact]
+    public async Task SettingControlsForAnUnknownAppFails()
+    {
+        using var registry = NewRegistry();
+        var ex = await Assert.ThrowsAsync<ApiException>(() => registry.SetAsync("com.unknown.app", true, null, _ct));
+        Assert.Equal(ErrorCodes.NotFound, ex.Code);
+    }
 }

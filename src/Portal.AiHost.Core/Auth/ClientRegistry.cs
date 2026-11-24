@@ -48,7 +48,7 @@ public sealed class ClientRegistryOptions
 /// </list>
 /// All state changes run under one lock; persistence is atomic and happens before a token leaves the host.
 /// </summary>
-public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundRequests, IDisposable
+public sealed partial class ClientRegistry : IClientRegistry, IAppControls, ICallerBoundRequests, IDisposable
 {
     public const string FileName = "clients.json";
     public const int SchemaVersion = 1;
@@ -386,6 +386,68 @@ public sealed partial class ClientRegistry : IClientRegistry, ICallerBoundReques
             Audit(AuthAuditKind.ReAllowed, _time.GetUtcNow(), appId, null, null, null);
         }
 
+        return Task.CompletedTask;
+    }
+
+    public event EventHandler? Changed;
+
+    public AppControl Get(string appId)
+    {
+        lock (_gate)
+        {
+            var stored = _data.AppControls.FirstOrDefault(a => a.AppId == appId);
+            return stored is null
+                ? AppControl.Default
+                : new AppControl(stored.Paused, Enum.IsDefined((AppPriority)stored.Priority)
+                    ? (AppPriority)stored.Priority : AppPriority.Normal);
+        }
+    }
+
+    public Task SetAsync(string appId, bool? paused, AppPriority? priority, CancellationToken ct)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(appId);
+        lock (_gate)
+        {
+            EnsureReadyLocked();
+            if (!_data.Clients.Any(c => c.AppId == appId))
+            {
+                throw new ApiException(ErrorCodes.NotFound, "Unknown app id.");
+            }
+
+            var existing = _data.AppControls.FirstOrDefault(a => a.AppId == appId);
+            var previous = existing is null ? null : new StoredAppControl
+            {
+                AppId = existing.AppId, Paused = existing.Paused, Priority = existing.Priority,
+            };
+            var target = existing ?? new StoredAppControl { AppId = appId };
+            if (existing is null)
+            {
+                _data.AppControls.Add(target);
+            }
+
+            if (paused is { } p) target.Paused = p;
+            if (priority is { } pr) target.Priority = (int)pr;
+            try
+            {
+                SaveLocked();
+            }
+            catch
+            {
+                if (previous is null)
+                {
+                    _data.AppControls.Remove(target);
+                }
+                else
+                {
+                    target.Paused = previous.Paused;
+                    target.Priority = previous.Priority;
+                }
+
+                throw;
+            }
+        }
+
+        Changed?.Invoke(this, EventArgs.Empty);
         return Task.CompletedTask;
     }
 

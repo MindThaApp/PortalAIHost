@@ -12,6 +12,7 @@ public static class ErrorCodes
     public const string TokenInvalid = "token_invalid";
     public const string TokenRevoked = "token_revoked";
     public const string AccessDenied = "access_denied";
+    public const string AppPaused = "app_paused";
     public const string ForbiddenOrigin = "forbidden_origin";
     public const string NotFound = "not_found";
     public const string FeatureDisabled = "feature_disabled";
@@ -57,6 +58,7 @@ public static class ErrorCatalog
         [ErrorCodes.TokenInvalid] = new(401, ErrorTypes.Authentication, false),
         [ErrorCodes.TokenRevoked] = new(401, ErrorTypes.Authentication, false),
         [ErrorCodes.AccessDenied] = new(403, ErrorTypes.Permission, false),
+        [ErrorCodes.AppPaused] = new(403, ErrorTypes.Permission, false),
         [ErrorCodes.ForbiddenOrigin] = new(403, ErrorTypes.Permission, false),
         [ErrorCodes.NotFound] = new(404, ErrorTypes.NotFound, false),
         [ErrorCodes.FeatureDisabled] = new(404, ErrorTypes.NotFound, false),
