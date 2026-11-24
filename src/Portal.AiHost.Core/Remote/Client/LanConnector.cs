@@ -5,7 +5,30 @@ using System.Text;
 namespace Portal.AiHost.Core.Remote.Client;
 
 /// <summary>A server reply: status code and the (small) body text.</summary>
-public readonly record struct RemoteReply(int Status, string Body);
+public readonly record struct RemoteReply(int Status, string Body, IReadOnlyList<KeyValuePair<string, string>>? Headers = null);
+
+/// <summary>
+/// A reply whose body is still being read: status and headers are known, the body arrives as a stream (server-sent
+/// events are relayed chunk by chunk). Disposing it closes the connection to the PC, which stops the PC's work.
+/// </summary>
+public sealed class RemoteStreamReply(int status, IReadOnlyList<KeyValuePair<string, string>> headers, Stream body, IDisposable? owner = null)
+    : IDisposable
+{
+    public int Status { get; } = status;
+
+    public IReadOnlyList<KeyValuePair<string, string>> Headers { get; } = headers;
+
+    public Stream Body { get; } = body;
+
+    public string? Header(string name) =>
+        Headers.FirstOrDefault(h => string.Equals(h.Key, name, StringComparison.OrdinalIgnoreCase)).Value;
+
+    public void Dispose()
+    {
+        Body.Dispose();
+        owner?.Dispose();
+    }
+}
 
 /// <summary>A request to send: method, target exactly as signed (path and query), extra headers and an optional body.</summary>
 public sealed record RemoteRequest(
@@ -19,6 +42,12 @@ public interface IRemoteChannel : IDisposable
 
     /// <summary>Sends any request on this channel's (kept-alive) connection and reads the whole small reply.</summary>
     Task<RemoteReply> SendAsync(RemoteRequest request, CancellationToken ct);
+
+    /// <summary>
+    /// Sends a request and returns as soon as the response headers arrive; the body is read by the caller. No overall
+    /// timeout applies once the headers are in. Cancelling the token (or disposing the reply) closes the request.
+    /// </summary>
+    Task<RemoteStreamReply> OpenAsync(RemoteRequest request, CancellationToken ct);
 }
 
 /// <summary>Opens channels to the PC. Only the LAN connector exists in this step; the relay connector comes later.</summary>
@@ -56,12 +85,14 @@ public sealed class LanConnector(TimeSpan? connectTimeout = null) : IRemoteConne
         return new Channel(new HttpClient(handler, disposeHandler: true)
         {
             BaseAddress = new Uri($"https://{host}:{port}"),
-            Timeout = TimeSpan.FromSeconds(20),
+            Timeout = System.Threading.Timeout.InfiniteTimeSpan, // short calls are bounded inside the channel; streams by the caller's deadline
         });
     }
 
     private sealed class Channel(HttpClient http) : IRemoteChannel
     {
+        private static readonly TimeSpan ShortCallTimeout = TimeSpan.FromSeconds(20);
+
         public async Task<RemoteReply> PostJsonAsync(string path, string json, CancellationToken ct)
         {
             using var request = new HttpRequestMessage(HttpMethod.Post, path)
@@ -70,14 +101,16 @@ public sealed class LanConnector(TimeSpan? connectTimeout = null) : IRemoteConne
                 VersionPolicy = HttpVersionPolicy.RequestVersionExact,
                 Content = new StringContent(json, Encoding.UTF8, MediaTypeHeaderValue.Parse("application/json")),
             };
-            using var response = await http.SendAsync(request, ct).ConfigureAwait(false);
-            var body = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
+            using var limit = CancellationTokenSource.CreateLinkedTokenSource(ct);
+            limit.CancelAfter(ShortCallTimeout);
+            using var response = await http.SendAsync(request, limit.Token).ConfigureAwait(false);
+            var body = await response.Content.ReadAsStringAsync(limit.Token).ConfigureAwait(false);
             return new RemoteReply((int)response.StatusCode, body);
         }
 
-        public async Task<RemoteReply> SendAsync(RemoteRequest request, CancellationToken ct)
+        private static HttpRequestMessage Build(RemoteRequest request)
         {
-            using var message = new HttpRequestMessage(new HttpMethod(request.Method), request.Target)
+            var message = new HttpRequestMessage(new HttpMethod(request.Method), request.Target)
             {
                 Version = new Version(1, 1),
                 VersionPolicy = HttpVersionPolicy.RequestVersionExact,
@@ -93,11 +126,60 @@ public sealed class LanConnector(TimeSpan? connectTimeout = null) : IRemoteConne
                 message.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(request.ContentType);
             }
 
-            using var response = await http.SendAsync(message, ct).ConfigureAwait(false);
-            var text = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
-            return new RemoteReply((int)response.StatusCode, text);
+            return message;
+        }
+
+        private static List<KeyValuePair<string, string>> HeadersOf(HttpResponseMessage response)
+        {
+            var list = new List<KeyValuePair<string, string>>();
+            foreach (var h in response.Headers.Concat(response.Content.Headers))
+            {
+                list.Add(new(h.Key, string.Join(", ", h.Value)));
+            }
+
+            return list;
+        }
+
+        public async Task<RemoteReply> SendAsync(RemoteRequest request, CancellationToken ct)
+        {
+            using var message = Build(request);
+            using var limit = CancellationTokenSource.CreateLinkedTokenSource(ct);
+            limit.CancelAfter(ShortCallTimeout);
+            using var response = await http.SendAsync(message, limit.Token).ConfigureAwait(false);
+            var text = await response.Content.ReadAsStringAsync(limit.Token).ConfigureAwait(false);
+            return new RemoteReply((int)response.StatusCode, text, HeadersOf(response));
+        }
+
+        public async Task<RemoteStreamReply> OpenAsync(RemoteRequest request, CancellationToken ct)
+        {
+            var message = Build(request);
+            HttpResponseMessage? response = null;
+            try
+            {
+                response = await http.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, ct).ConfigureAwait(false);
+                var stream = await response.Content.ReadAsStreamAsync(ct).ConfigureAwait(false);
+                return new RemoteStreamReply((int)response.StatusCode, HeadersOf(response), stream,
+                    new Disposables(response, message));
+            }
+            catch
+            {
+                response?.Dispose();
+                message.Dispose();
+                throw;
+            }
         }
 
         public void Dispose() => http.Dispose();
+
+        private sealed class Disposables(params IDisposable[] items) : IDisposable
+        {
+            public void Dispose()
+            {
+                foreach (var item in items)
+                {
+                    item.Dispose();
+                }
+            }
+        }
     }
 }

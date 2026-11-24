@@ -74,6 +74,7 @@ public sealed class RemoteAccess : IAsyncDisposable
     private RemoteSettings _settings = new();
     private string? _problem;
     private bool _disposed;
+    private bool _suspended;
 
     public RemoteAccess(AiHostRuntime runtime, RemoteAccessOptions options)
     {
@@ -111,6 +112,19 @@ public sealed class RemoteAccess : IAsyncDisposable
     private int EffectivePort(RemoteSettings settings) =>
         _o.PortOverride ?? (settings.Port is >= RemoteApi.DefaultPort and <= RemoteApi.LastPort ? settings.Port : RemoteApi.DefaultPort);
 
+    /// <summary>True while client mode keeps the listener and the relay bridge off whatever the settings say.</summary>
+    public bool Suspended => _suspended;
+
+    /// <summary>
+    /// Client mode: while suspended nothing listens on the network and no relay connects (a laptop is never a hop to
+    /// the home PC). The settings and the paired-device list are kept; clearing the flag restores what they say.
+    /// </summary>
+    public async Task SuspendAsync(bool suspended, CancellationToken ct = default)
+    {
+        _suspended = suspended;
+        await ApplyAsync(_settings, ct).ConfigureAwait(false);
+    }
+
     /// <summary>Starts, restarts or stops the listener to match the settings. Never throws for a bind failure; see <see cref="Problem"/>.</summary>
     public async Task ApplyAsync(RemoteSettings settings, CancellationToken ct = default)
     {
@@ -124,7 +138,7 @@ public sealed class RemoteAccess : IAsyncDisposable
             }
 
             var gate = RemoteAccessGate.Check(settings);
-            var wantOn = settings.Enabled && gate.Allowed;
+            var wantOn = settings.Enabled && gate.Allowed && !_suspended;
             var port = EffectivePort(settings);
             var running = _server is not null;
             _settings = new RemoteSettings

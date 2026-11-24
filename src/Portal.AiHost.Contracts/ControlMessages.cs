@@ -99,6 +99,12 @@ public static class ControlTypes
     /// <summary>Removes a paired device and revokes its tokens at once. Payload <see cref="RemoveDeviceCommand"/>.</summary>
     public const string RemoteRemoveDevice = "remote.device_remove";
 
+    /// <summary>Answers <see cref="ClientModeStatus"/>: the host mode and, in client mode, the state of the link to the PC.</summary>
+    public const string ClientStatus = "client.status";
+
+    /// <summary>Switches between <c>server</c> and <c>client</c> mode. Payload <see cref="SetModeCommand"/>; answers <see cref="ClientModeStatus"/>.</summary>
+    public const string ClientSetMode = "client.setmode";
+
     // Host -> UI answers.
     public const string Ok = "ok";
     public const string Error = "error";
@@ -546,6 +552,12 @@ public sealed class EngineStateEvent
 
 public sealed class HostSettings
 {
+    /// <summary>
+    /// <c>server</c> (default) or <c>client</c> (docs/client-mode-v1.md section 1.1). Owned by the host: it changes only
+    /// through client.setmode, and the value sent with settings.set is ignored.
+    /// </summary>
+    public string Mode { get; set; } = HostModes.Server;
+
     public bool StartWithWindows { get; init; }
 
     /// <summary>auto, gpu or cpu.</summary>

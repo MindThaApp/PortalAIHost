@@ -57,6 +57,7 @@ internal static class Program
                 EngineFiles = () => [.. new[] { RuntimeProbe.Cpu, RuntimeProbe.Vulkan }.Select(f =>
                     new EngineFileStatus(f, File.Exists(Path.Combine(AppContext.BaseDirectory, "engine", f, RuntimeProbe.ExeName))))],
                 KeyProtector = new DpapiHostKeyProtector(),
+                SecretProtector = new DpapiSecretProtector(),
                 CallerResolver = new WindowsCallerIdentityResolver(),
                 Hardware = new WindowsHardwareProbe(),
                 UsageProbe = new ProcessUsageProbe(),

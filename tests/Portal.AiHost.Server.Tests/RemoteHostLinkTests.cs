@@ -142,6 +142,12 @@ internal sealed class CountingConnector(IRemoteConnector inner) : IRemoteConnect
             return inner.SendAsync(request, ct);
         }
 
+        public Task<RemoteStreamReply> OpenAsync(RemoteRequest request, CancellationToken ct)
+        {
+            Interlocked.Increment(ref owner.Requests);
+            return inner.OpenAsync(request, ct);
+        }
+
         public void Dispose() => inner.Dispose();
     }
 }
@@ -191,6 +197,9 @@ public sealed class RemoteHostLinkScriptedTests : IDisposable
                     ? Task.FromResult(new RemoteReply(200, "{}"))
                     : Task.FromException<RemoteReply>(new HttpRequestException("down"));
             }
+
+            public Task<RemoteStreamReply> OpenAsync(RemoteRequest request, CancellationToken ct) =>
+                throw new NotSupportedException();
 
             public void Dispose()
             {

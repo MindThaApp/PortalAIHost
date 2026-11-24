@@ -34,6 +34,12 @@ public sealed class HostShellOptions
 
     public required IHostKeyProtector KeyProtector { get; init; }
 
+    /// <summary>Protects the client-mode device key and token (docs/client-mode-v1.md section 3). Null: client mode is not available.</summary>
+    public Portal.AiHost.Core.Remote.Client.ISecretProtector? SecretProtector { get; init; }
+
+    /// <summary>How the link to the paired PC connects. Null: the LAN connector (tests pass a scripted one).</summary>
+    public Portal.AiHost.Core.Remote.Client.IRemoteConnector? ClientConnector { get; init; }
+
     public ICallerIdentityResolver? CallerResolver { get; init; }
 
     public IHardwareProbe? Hardware { get; init; }
@@ -146,6 +152,9 @@ public sealed class HostShell : IAsyncDisposable
 
     /// <summary>"Other devices": paired devices, the pairing code and the LAN listener.</summary>
     public RemoteAccess Remote { get; private set; } = null!;
+
+    /// <summary>Server or client mode (use the paired PC's AI).</summary>
+    public ClientModeController ClientMode { get; private set; } = null!;
 
     /// <summary>True from the start of a quit (pipe, tray or session end).</summary>
     public bool IsQuitting => Volatile.Read(ref _quitting) != 0;
@@ -369,7 +378,23 @@ public sealed class HostShell : IAsyncDisposable
             RelayMaxDelay = _o.RemoteTest?.RelayMaxDelay,
         });
         Remote.Changed += () => _ = PushRemoteChangedAsync();
+        // Client mode never listens: the suspension is in place before the first Apply, so nothing opens even briefly.
+        if (settings.Mode == HostModes.Client)
+        {
+            await Remote.SuspendAsync(true, ct).ConfigureAwait(false);
+        }
+
         await Remote.ApplyAsync(settings.Remote, ct).ConfigureAwait(false);
+        ClientMode = new ClientModeController(Runtime, Remote, new ClientModeOptions
+        {
+            CreateLink = () => _o.SecretProtector is null
+                ? null
+                : new Portal.AiHost.Core.Remote.Client.RemoteHostLink(new Portal.AiHost.Core.Remote.Client.ClientStateStore(root, _o.SecretProtector),
+                    _o.ClientConnector ?? new Portal.AiHost.Core.Remote.Client.LanConnector(Portal.AiHost.Core.Remote.Client.LanConnector.LinkConnectTimeout)),
+            PersistMode = SaveMode,
+        });
+        ClientMode.Changed += () => _ = PushRemoteChangedAsync();
+        await ClientMode.RestoreAsync(settings.Mode, ct).ConfigureAwait(false);
 
         var keepLoaded = settings.Kinds.Where(k => k.Value.KeepLoaded).Select(k => k.Key).ToList();
         _ = Runtime.AutoLoadAsync(keepLoaded, CancellationToken.None);
@@ -495,6 +520,19 @@ public sealed class HostShell : IAsyncDisposable
     /// Every step on its own guard, so one failure never skips the discovery delete or the clean-exit marker.
     /// Works on a half-started host too (null parts are skipped).
     /// </summary>
+    /// <summary>Saves the mode (atomically, through the settings store).</summary>
+    private void SaveMode(string mode)
+    {
+        var current = _settings.Current;
+        if (current.Mode == mode)
+        {
+            return;
+        }
+
+        current.Mode = mode;
+        _settings.Save(current);
+    }
+
     private async Task StopPartsAsync(TimeSpan grace)
     {
         // Downloads stop first and keep their partial files, so the next start can resume them.
@@ -506,6 +544,13 @@ public sealed class HostShell : IAsyncDisposable
             }
         }).ConfigureAwait(false);
         await GuardAsync(() => Runtime?.StopAsync(grace) ?? Task.CompletedTask).ConfigureAwait(false);
+        await GuardAsync(async () =>
+        {
+            if (ClientMode is { } clientMode)
+            {
+                await clientMode.DisposeAsync().ConfigureAwait(false);
+            }
+        }).ConfigureAwait(false);
         await GuardAsync(async () =>
         {
             if (Remote is { } remote)
