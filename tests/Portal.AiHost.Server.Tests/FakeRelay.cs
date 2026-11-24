@@ -9,6 +9,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Portal.AiHost.Core.Remote;
@@ -53,8 +54,13 @@ internal sealed class FakeRelay : IAsyncDisposable
 
     public static async Task<FakeRelay> StartAsync(int port = 0)
     {
-        var builder = WebApplication.CreateSlimBuilder();
-        builder.Logging.ClearProviders();
+        // An empty builder reads no environment or files: a Kestrel endpoint named in the environment (another test
+        // sets one) must never add a listener, and this one is bound to loopback only.
+        var builder = WebApplication.CreateEmptyBuilder(new WebApplicationOptions { Args = [] });
+        builder.Configuration.Sources.Clear();
+        builder.Configuration.AddInMemoryCollection();
+        builder.Services.AddLogging();
+        builder.WebHost.UseKestrelCore();
         builder.WebHost.ConfigureKestrel(k => k.Listen(IPAddress.Loopback, port));
         var app = builder.Build();
         FakeRelay? relay = null;
