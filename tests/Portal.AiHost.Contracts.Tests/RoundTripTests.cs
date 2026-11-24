@@ -346,7 +346,7 @@ public class RoundTripTests
             { "operation": "move", "state": "done", "fraction": 1, "bytes_done": 10, "bytes_total": 10,
               "message": "Your models were moved.", "left_behind": [ "D:/old/a.gguf" ] }
             """, Ctx.StoreProgressEvent);
-        RoundTrip("""{ "operation": "verify", "state": "damaged", "catalogue_id": "m", "fraction": 1, "message": "x does not match the model list." }""",
+        RoundTrip("""{ "operation": "verify", "state": "damaged", "catalogue_id": "m", "fraction": 1, "bytes_done": 0, "bytes_total": 0, "message": "x does not match the model list." }""",
             Ctx.StoreProgressEvent);
         RoundTrip("""
             { "models": [ { "id": "m", "display_name": "M", "kind": "chat", "engine": "llama-server", "size_bytes": 10,
