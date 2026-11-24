@@ -410,8 +410,13 @@ only). Messages are JSON envelopes `{ "id", "type", "payload" }`; answers are `o
 **Models**
 
 - `models.list` answers `{ models: [...], models_folder, free_bytes, upgrade_model_id, catalogue_available }`.
-  Each model has `id, display_name, kind, engine, size_bytes, quality, recommended, installed, active,
-  fits_this_pc, reason`, plus:
+  `models_bytes` is the disk space the models in the current folder use. Each model has `id, display_name, kind,
+  engine, size_bytes, quality, recommended, installed, active, fits_this_pc, reason`, plus:
+  - `last_used_at`: when an engine last loaded the model (absent when never);
+  - `damaged`, `damaged_reason`: a file check found a file that does not match the model list (nothing was deleted);
+  - `advice_summary`, `good_for`, `caveats`: the model list's advice, each only when present;
+  - `memory_needed_bytes`: memory the planner says the model needs on this PC (0 when unknown);
+  - `licence_name`, `licence_url`: the model's licence (SPDX name and an https link);
   - `existing_copy`: the model is a file the user added in place (used where it is, never deleted);
   - `download_state`: `downloading`, `paused`, `failed`, or absent when there is no unfinished download;
   - `bytes_done`: bytes already on disk for an unfinished download;
@@ -425,13 +430,40 @@ only). Messages are JSON envelopes `{ "id", "type", "payload" }`; answers are `o
   enough free space; the message says how much is needed). Later failures arrive as `event.download_progress`
   with `state` `failed` (or `paused` when the drive is full) and a `message`; no failure is silent.
 - `downloads.pause` keeps the partial files; `downloads.cancel` removes only the unfinished files the host made.
-- `models.remove` `{ catalogue_id, store_folder? }`: removes a model through the store rules: only files the
-  host downloaded and recorded (checked by marker, path, size and file ID) are deleted; a file the user added is
-  only forgotten. Refused (`invalid_request`) while the model is active, still loaded by an engine (for example
-  while the old engine stops after a switch), or downloading. With `store_folder`, it removes from that earlier
-  models folder with the same rules; the folder itself is never deleted.
+- `models.remove` `{ catalogue_id, store_folder?, switch_to_id? }`: removes a model through the store rules: only
+  files the host downloaded and recorded (checked by marker, path, size and file ID) are deleted; a file the user
+  added is only forgotten. The model in use can be removed too: the host first switches to `switch_to_id` (another
+  installed model of the same kind) or, when none is given, leaves that kind with no model; it stops the engine and
+  waits (up to 30 seconds) until the engine let go of the files, then removes. `invalid_request` when the switch
+  target is not an installed model of that kind, when the model is downloading, when an engine does not let go in
+  time, or when the store refuses (nothing that failed a check is deleted). A model that is not in use but is still
+  loaded (an old engine still stopping) is refused with "try again in a few seconds". With `store_folder`, it
+  removes from that earlier models folder with the same rules; the folder itself is never deleted.
+- `models.verify` `{ catalogue_id }`: re-hashes an installed model against the model list's SHA-256 values.
+  Read-only. The answer comes when the check has started; progress and the result arrive as `event.store_progress`
+  with `operation` `verify`. A mismatch (or a missing file) ends with `state` `damaged` and a `message`; the model is
+  marked damaged (`damaged` in `models.list`) and nothing is deleted or changed. The window offers "Download again",
+  which the user confirms; it is `models.remove` followed by `downloads.start`. `invalid_request` for a file the user
+  added (no checksum), a model that is not fully downloaded, a model not in the model list, or while another move or
+  check runs.
+- `store.open_folder` answers `{ path }`: the models folder. The host changes nothing; the window opens the path in
+  Explorer itself. `not_found` when the folder does not exist, `feature_disabled` without a models folder.
+- `store.move` `{ parent_folder }`: moves the models to `parent_folder\Portal AI Host Models`. Copy, verify (re-hash
+  the copy), switch, and only then delete the old copies, one file at a time and only files the old `store.json`
+  lists whose new copy verified. The host stops its engines first (they load again on the next request). Refused up
+  front (`invalid_request`): not enough free space (the message says how much is needed, the models' size plus 2 %
+  plus 2 GB), a folder that is missing, FAT32, inside the current models folder or already holding a store, a
+  download running, or another move or check running. The answer comes when the move has started; progress arrives
+  as `event.store_progress` with `operation` `move`. On success the models folder setting is the new folder.
+- `store.cancel`: cancels a running move or check. A cancelled move undoes the copy and leaves the old folder as
+  it was (`state` `cancelled`). Once the host has switched, the move can no longer be cancelled.
+- `event.store_progress` `{ operation, state, catalogue_id?, fraction, bytes_done, bytes_total, message?,
+  left_behind? }`: `operation` is `move` or `verify`; `state` is `running`, `removing_old` (move: switched, removing the
+  old copies), `done`, `failed`, `cancelled` or `damaged` (verify). `left_behind` lists old files a finished move
+  did not delete because they did not pass the checks.
 - `event.download_progress` `{ catalogue_id, state, bytes_done, bytes_total, eta_seconds, message }`, `state` one
-  of `queued, downloading, paused, verifying, done, failed, cancelled, removed`.
+  of `queued, downloading, paused, verifying, done, failed, cancelled, removing, removed, remove_failed`
+  (`removing` and `remove_failed` let the window show "Removing" at once and roll back with the reason in `message`).
 
 **Status**
 

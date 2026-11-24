@@ -335,6 +335,36 @@ public class RoundTripTests
     }
 
     [Fact]
+    public void ModelManagementMessages()
+    {
+        RoundTrip("""{ "catalogue_id": "m", "switch_to_id": "n" }""", Ctx.RemoveModelCommand);
+        RoundTrip("""{ "catalogue_id": "m" }""", Ctx.RemoveModelCommand);
+        RoundTrip("""{ "catalogue_id": "m" }""", Ctx.VerifyModelCommand);
+        RoundTrip("""{ "parent_folder": "D:\Models" }""", Ctx.MoveStoreCommand);
+        RoundTrip("""{ "path": "D:\Models\Portal AI Host Models" }""", Ctx.StoreFolderInfo);
+        RoundTrip("""
+            { "operation": "move", "state": "done", "fraction": 1, "bytes_done": 10, "bytes_total": 10,
+              "message": "Your models were moved.", "left_behind": [ "D:\old\a.gguf" ] }
+            """, Ctx.StoreProgressEvent);
+        RoundTrip("""{ "operation": "verify", "state": "damaged", "catalogue_id": "m", "fraction": 1, "message": "x does not match the model list." }""",
+            Ctx.StoreProgressEvent);
+        RoundTrip("""
+            { "models": [ { "id": "m", "display_name": "M", "kind": "chat", "engine": "llama-server", "size_bytes": 10,
+              "quality": 4.5, "recommended": false, "installed": true, "active": false, "fits_this_pc": true,
+              "existing_copy": false, "bytes_done": 0, "last_used_at": "2026-11-20T10:00:00+00:00", "damaged": true,
+              "damaged_reason": "m.gguf does not match the model list.", "advice_summary": "Good all-rounder.",
+              "good_for": [ "everyday chat" ], "caveats": [ "slow without a graphics card" ], "memory_needed_bytes": 5000,
+              "licence_name": "apache-2.0", "licence_url": "https://example.invalid/licence" } ],
+              "models_folder": "D:/Models", "free_bytes": 1000, "models_bytes": 10, "catalogue_available": true }
+            """, Ctx.ModelListing);
+        Assert.Equal("store.open_folder", ControlTypes.OpenStoreFolder);
+        Assert.Equal("store.move", ControlTypes.MoveStore);
+        Assert.Equal("store.cancel", ControlTypes.CancelStoreOperation);
+        Assert.Equal("models.verify", ControlTypes.VerifyModel);
+        Assert.Equal("event.store_progress", ControlTypes.EventStoreProgress);
+    }
+
+    [Fact]
     public void MissingFieldsKeepTheirDefaults()
     {
         var s = JsonSerializer.Deserialize("""{ "start_with_windows": true }""", Ctx.HostSettings)!;

@@ -184,6 +184,7 @@ public sealed class CatalogueModelSummary
     public DateTimeOffset? LastUsedAt { get; init; }
 
     /// <summary>True after a check found a file that does not match the model list. Nothing was deleted.</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public bool Damaged { get; init; }
 
     /// <summary>Why the check marked it damaged, or null.</summary>
@@ -199,6 +200,7 @@ public sealed class CatalogueModelSummary
     public List<string>? Caveats { get; init; }
 
     /// <summary>Memory (RAM plus graphics memory) the model needs on this PC according to the planner, or 0 when unknown.</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public long MemoryNeededBytes { get; init; }
 
     public string? LicenceName { get; init; }
@@ -216,6 +218,7 @@ public sealed class ModelListing
     public long FreeBytes { get; init; }
 
     /// <summary>Disk space the installed and partial models use in the current models folder.</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public long ModelsBytes { get; init; }
 
     /// <summary>Catalogue id of the recommended upgrade over the active chat model, or null.</summary>
