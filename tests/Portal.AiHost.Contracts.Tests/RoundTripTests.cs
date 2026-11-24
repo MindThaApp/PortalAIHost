@@ -329,7 +329,7 @@ public class RoundTripTests
         RoundTrip("""{ "catalogue_id": "m", "state": "downloading", "bytes_done": 5, "bytes_total": 10, "eta_seconds": 3.5 }""", Ctx.DownloadProgressEvent);
         RoundTrip("""{ "kind": "chat", "state": "ready", "progress": 1 }""", Ctx.EngineStateEvent);
         RoundTrip("""
-            { "mode": "server", "start_with_windows": true, "backend": "auto", "max_memory_percent": 80, "preset": "balanced", "compute": "auto", "priority": "low", "cpu_ceiling_percent": 100, "ease_off": ["fullscreen", "battery", "app_busy"], "prevent_sleep_while_downloading": true, "send_crash_reports": true,
+            { "mode": "server", "fallback_prompt_shown": false, "relay_mode": "auto", "start_with_windows": true, "backend": "auto", "max_memory_percent": 80, "preset": "balanced", "compute": "auto", "priority": "low", "cpu_ceiling_percent": 100, "ease_off": ["fullscreen", "battery", "app_busy"], "prevent_sleep_while_downloading": true, "send_crash_reports": true,
               "remote": { "enabled": false, "port": 48123, "relay": true },
               "kinds": { "chat": { "keep_loaded": false, "idle_unload_seconds": 600 } } }
             """, Ctx.HostSettings);
