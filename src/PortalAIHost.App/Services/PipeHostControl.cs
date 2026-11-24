@@ -25,6 +25,7 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
     public event Action<EngineStateEvent>? EngineStateChanged;
     public event Action<TrayPopupEvent>? TrayPopup;
     public event Action<StoreProgressEvent>? StoreProgress;
+    public event Action? RemoteChanged;
 
     /// <summary>True while a connection is open.</summary>
     public bool IsConnected => Volatile.Read(ref _channel) is not null;
@@ -255,6 +256,19 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
         }
     }
 
+    public Task<RemoteStatus> GetRemoteAsync(CancellationToken ct = default) =>
+        RequestAsync(ControlTypes.RemoteGet, AiHostJsonContext.Default.RemoteStatus, ct);
+
+    public Task<PairingOfferInfo> StartPairingAsync(CancellationToken ct = default) =>
+        RequestAsync(ControlTypes.RemotePairStart, AiHostJsonContext.Default.PairingOfferInfo, ct);
+
+    public async Task CancelPairingAsync(CancellationToken ct = default) =>
+        await CallAsync(ControlTypes.RemotePairCancel, null, ct).ConfigureAwait(false);
+
+    public Task RemoveDeviceAsync(string deviceId, CancellationToken ct = default) =>
+        SendAsync(ControlTypes.RemoteRemoveDevice, new RemoveDeviceCommand { DeviceId = deviceId },
+            AiHostJsonContext.Default.RemoveDeviceCommand, ct);
+
     private Task Download(string type, string id, CancellationToken ct) =>
         SendAsync(type, new DownloadCommand { CatalogueId = id }, AiHostJsonContext.Default.DownloadCommand, ct);
 
@@ -357,6 +371,12 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
 
     private void OnEvent(ControlEnvelope e)
     {
+        if (e.Type == ControlTypes.EventRemoteChanged)
+        {
+            RemoteChanged?.Invoke();
+            return;
+        }
+
         if (e.Payload is not { ValueKind: JsonValueKind.Object } p)
         {
             return;

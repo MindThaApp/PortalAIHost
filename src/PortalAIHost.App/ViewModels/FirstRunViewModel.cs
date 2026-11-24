@@ -268,6 +268,7 @@ public sealed partial class FirstRunViewModel : ObservableObject, IDisposable
                 SendCrashReports = _shell.State.SendCrashReports,
                 BandwidthCapBytesPerSecond = _settings.BandwidthCapBytesPerSecond,
                 MutedNotifications = _settings.MutedNotifications,
+                Remote = _settings.Remote,
                 Kinds = _settings.Kinds,
             };
             await _shell.Host.SetSettingsAsync(next).ConfigureAwait(false);

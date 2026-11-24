@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Navigation;
+using Portal.AiHost.Core.Remote;
 using PortalAIHost.App.Services;
 using PortalAIHost.App.ViewModels;
 
@@ -18,12 +19,66 @@ public sealed partial class SettingsPage : Page
         {
             if (e.PropertyName == nameof(SettingsViewModel.MessageKind)) ShowSeverity();
             if (e.PropertyName == nameof(SettingsViewModel.PerformanceMessageKind)) ShowPerformanceSeverity();
+            if (e.PropertyName == nameof(SettingsViewModel.PairingQrText)) ShowQr();
         };
         ShowPerformanceSeverity();
         ShowSeverity();
     }
 
     public SettingsViewModel ViewModel { get; }
+
+    private void OnRemoveDevice(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { Tag: string id }) ViewModel.RemoveDeviceCommand.Execute(id);
+    }
+
+    /// <summary>Draws the pairing QR code: black modules on white with the 4-module quiet zone, 6 pixels per module.</summary>
+    private void ShowQr()
+    {
+        var text = ViewModel.PairingQrText;
+        if (text.Length == 0)
+        {
+            PairingQr.Source = null;
+            return;
+        }
+
+        try
+        {
+            var qr = QrCode.Encode(text);
+            const int scale = 6, quiet = 4;
+            var side = (qr.Size + 2 * quiet) * scale;
+            var pixels = new byte[side * side * 4];
+            Array.Fill(pixels, (byte)0xFF);
+            for (var y = 0; y < qr.Size; y++)
+            {
+                for (var x = 0; x < qr.Size; x++)
+                {
+                    if (!qr[x, y]) continue;
+                    for (var dy = 0; dy < scale; dy++)
+                    {
+                        for (var dx = 0; dx < scale; dx++)
+                        {
+                            var i = (((y + quiet) * scale + dy) * side + (x + quiet) * scale + dx) * 4;
+                            pixels[i] = pixels[i + 1] = pixels[i + 2] = 0; // blue, green, red; alpha stays opaque
+                        }
+                    }
+                }
+            }
+
+            var bitmap = new Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap(side, side);
+            using (var stream = System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeBufferExtensions.AsStream(bitmap.PixelBuffer))
+            {
+                stream.Write(pixels, 0, pixels.Length);
+            }
+
+            bitmap.Invalidate();
+            PairingQr.Source = bitmap;
+        }
+        catch (ArgumentException)
+        {
+            PairingQr.Source = null; // too long for the code: the digits above still work
+        }
+    }
 
     private void ShowPerformanceSeverity() => PerformanceResultBar.Severity = ViewModel.PerformanceMessageKind switch
     {

@@ -38,6 +38,7 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
         _s = strings;
         _dialogs = dialogs;
         shell.Host.StoreProgress += OnStoreProgress;
+        shell.Host.RemoteChanged += OnRemoteChanged;
         IdleChoices = new[] { _s.Get("Vm_Idle_Keep"), _s.Get("Vm_Idle_5"), _s.Get("Vm_Idle_10") };
         ThemeChoices = Names("Vm_Theme_", "System", "Light", "Dark");
         MaterialChoices = Names("Vm_Material_", "Mica", "Acrylic", "Solid");
@@ -49,7 +50,11 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
         InitPerformance();
     }
 
-    public void Dispose() => _shell.Host.StoreProgress -= OnStoreProgress;
+    public void Dispose()
+    {
+        _shell.Host.StoreProgress -= OnStoreProgress;
+        _shell.Host.RemoteChanged -= OnRemoteChanged;
+    }
 
     /// <summary>After a new models folder is saved: offers to move the models already downloaded into it.</summary>
     [ObservableProperty] private bool _moveOfferVisible;
@@ -285,10 +290,12 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
                 NotifyProblems = IsOn(s, NotificationKinds.Problems);
                 ModelsFolder = s.ModelsFolder ?? "";
                 FolderPlaceholder = Fmt.PrivatePath(shownFolder);
+                RemoteEnabled = s.Remote.Enabled;
                 Available = true;
                 Message = "";
                 _loading = false;
             });
+            await RefreshRemoteAsync().ConfigureAwait(false);
         }
         catch (HostUnavailableException)
         {
@@ -377,6 +384,7 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
             SendCrashReports = _shell.State.SendCrashReports,
             BandwidthCapBytesPerSecond = _current.BandwidthCapBytesPerSecond,
             MutedNotifications = MutedKinds(),
+            Remote = new RemoteSettings { Enabled = RemoteEnabled, Port = _current.Remote.Port },
             Kinds = kinds,
         };
         WritePerformance(next);

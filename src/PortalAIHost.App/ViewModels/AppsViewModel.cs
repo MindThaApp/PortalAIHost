@@ -20,7 +20,7 @@ public sealed partial class ClientRowViewModel : ObservableObject
         _s = s;
         TokenId = c.TokenId;
         AppId = c.AppId;
-        Name = c.AppName;
+        Name = c.DeviceName is { Length: > 0 } device ? s.Format("Vm_AppOnDevice", c.AppName, device) : c.AppName;
         AddedText = s.Format("Vm_Added", c.CreatedAt.LocalDateTime.ToString("d"));
         LastUsedText = c.LastUsedAt is { } t ? s.Format("Vm_LastUsed", t.LocalDateTime.ToString("g")) : s.Get("Vm_NeverUsed");
         TodayText = today is null || today.Requests == 0 ? s.Get("Vm_AppTodayNone")
@@ -107,7 +107,7 @@ public sealed partial class PendingRowViewModel : ObservableObject
         _owner = owner;
         _s = s;
         RequestId = a.RequestId;
-        Name = a.AppName;
+        Name = ApprovalText.DisplayName(s, a);
         IdentityText = ApprovalText.Identity(s, a);
     }
 
@@ -130,6 +130,10 @@ public static class ApprovalText
 {
     /// <summary>True only when the host tied the caller to a Portal package (never from the app's own name).</summary>
     public static bool IsPortalApp(PendingApproval a) => a.CallerVerified && a.CallerPortalApp;
+
+    /// <summary>"AI Portal on Kitchen tablet" for a request from a paired device, else just the app name.</summary>
+    public static string DisplayName(IStrings s, PendingApproval a) =>
+        a.DeviceName is { Length: > 0 } device ? s.Format("Vm_AppOnDevice", a.AppName, device) : a.AppName;
 
     public static string Identity(IStrings s, PendingApproval a) =>
         IsPortalApp(a) ? s.Format("Vm_VerifiedPortal", a.CallerIdentity)

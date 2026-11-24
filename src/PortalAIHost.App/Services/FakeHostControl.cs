@@ -584,6 +584,84 @@ public sealed class FakeHostControl : IHostControl, IDisposable
 
     public Task CancelTryItAsync() => Task.CompletedTask;
 
+    public event Action? RemoteChanged;
+
+    /// <summary>The paired devices the fake reports (tests add some).</summary>
+    public List<PairedDeviceSummary> Devices { get; } = new();
+
+    /// <summary>The code the fake shows while a pairing is open.</summary>
+    public PairingOfferInfo? Pairing { get; private set; }
+
+    public int PairingStarts { get; private set; }
+
+    public Task<RemoteStatus> GetRemoteAsync(CancellationToken ct = default)
+    {
+        Require();
+        lock (_gate)
+        {
+            return Task.FromResult(new RemoteStatus
+            {
+                Enabled = _settings.Remote.Enabled,
+                Listening = _settings.Remote.Enabled,
+                Port = _settings.Remote.Port,
+                HostName = "Desk PC",
+                Addresses = ["192.168.1.20"],
+                Fingerprint = "fake-fingerprint",
+                Devices = [.. Devices],
+                Pairing = _settings.Remote.Enabled ? Pairing : null,
+            });
+        }
+    }
+
+    public Task<PairingOfferInfo> StartPairingAsync(CancellationToken ct = default)
+    {
+        Require();
+        lock (_gate)
+        {
+            if (!_settings.Remote.Enabled) throw new HostRequestException("feature_disabled", "Turn on other devices first.");
+            PairingStarts++;
+            Pairing = new PairingOfferInfo
+            {
+                Code = "123456",
+                ExpiresAt = DateTimeOffset.UtcNow.AddMinutes(5),
+                HostName = "Desk PC",
+                Address = "192.168.1.20",
+                Port = _settings.Remote.Port,
+                Fingerprint = "fake-fingerprint",
+                QrText = "portalai://pair?h=192.168.1.20&p=48123&f=fake-fingerprint&c=123456&n=Desk%20PC",
+            };
+            return Task.FromResult(Pairing);
+        }
+    }
+
+    public Task CancelPairingAsync(CancellationToken ct = default)
+    {
+        Require();
+        lock (_gate) Pairing = null;
+        RemoteChanged?.Invoke();
+        return Task.CompletedTask;
+    }
+
+    public Task RemoveDeviceAsync(string deviceId, CancellationToken ct = default)
+    {
+        Require();
+        lock (_gate) Devices.RemoveAll(d => d.DeviceId == deviceId);
+        RemoteChanged?.Invoke();
+        return Task.CompletedTask;
+    }
+
+    /// <summary>Pretends a device finished pairing: it appears in the list and the code is used up.</summary>
+    public void CompletePairing(string name)
+    {
+        lock (_gate)
+        {
+            Devices.Add(new PairedDeviceSummary { DeviceId = "dev_" + (Devices.Count + 1), Name = name, CreatedAt = DateTimeOffset.UtcNow });
+            Pairing = null;
+        }
+
+        RemoteChanged?.Invoke();
+    }
+
     /// <summary>What the fake reports as live use while the model is loaded.</summary>
     public HostUsage Usage { get; set; } = new()
     {
