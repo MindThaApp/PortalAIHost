@@ -196,6 +196,7 @@ public sealed partial class MainWindow : Window, IAppearanceApplier
     {
         while (Root.XamlRoot is null) await Task.Delay(20);
         AppServices.Dialogs.Root = Root.XamlRoot;
+        AppServices.FilePicker.WindowHandle = WinRT.Interop.WindowNative.GetWindowHandle(this);
         _shell.ApprovalPresenter = AppServices.Dialogs.ShowApprovalAsync;
         Nav.SelectedItem = Nav.MenuItems[0];
         AppServices.NavigateTo = SelectPage;

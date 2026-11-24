@@ -359,6 +359,29 @@ public sealed class FakeHostControl : IHostControl, IDisposable
         return Task.CompletedTask;
     }
 
+    /// <summary>Paths passed to "Add your own model".</summary>
+    public List<string> Imports { get; } = new();
+
+    /// <summary>When set, the next import is refused up front with this message.</summary>
+    public string? RefuseImport { get; set; }
+
+    /// <summary>Keeps an import running (no done event) so a test can cancel it.</summary>
+    public bool HoldImport { get; set; }
+
+    public Task ImportModelAsync(string path, CancellationToken ct = default)
+    {
+        if (RefuseImport is { } why) throw new HostRequestException(ErrorCodes.InvalidRequest, why);
+        Imports.Add(path);
+        StoreProgress?.Invoke(new StoreProgressEvent { Operation = StoreOperations.Import, State = StoreStates.Running, Fraction = 0.5, BytesDone = 50, BytesTotal = 100 });
+        if (!HoldImport)
+        {
+            var id = "user-" + Path.GetFileNameWithoutExtension(path).ToLowerInvariant();
+            _models.Add(new CatalogueModelSummary { Id = id, DisplayName = Path.GetFileNameWithoutExtension(path), SizeBytes = 100, Installed = true, UserAdded = true, FitsThisPc = true });
+            StoreProgress?.Invoke(new StoreProgressEvent { Operation = StoreOperations.Import, State = StoreStates.Done, CatalogueId = id, Fraction = 1, Message = "Added " + Path.GetFileNameWithoutExtension(path) + "." });
+        }
+        return Task.CompletedTask;
+    }
+
     public Task<string> GetStoreFolderAsync(CancellationToken ct = default) => Task.FromResult(_settings.ModelsFolder ?? "");
 
     public Task MoveStoreAsync(string parentFolder, CancellationToken ct = default)
@@ -408,6 +431,12 @@ public sealed class FakeHostControl : IHostControl, IDisposable
     public Task CancelStoreOperationAsync(CancellationToken ct = default)
     {
         CancelStoreCalls++;
+        if (HoldImport)
+        {
+            HoldImport = false;
+            StoreProgress?.Invoke(new StoreProgressEvent { Operation = StoreOperations.Import, State = StoreStates.Cancelled });
+            return Task.CompletedTask;
+        }
         if (HoldMove)
         {
             HoldMove = false;
@@ -664,7 +693,7 @@ public sealed class FakeHostControl : IHostControl, IDisposable
     {
         Id = m.Id, DisplayName = m.DisplayName, Kind = m.Kind, Engine = m.Engine, SizeBytes = m.SizeBytes,
         Quality = m.Quality, Recommended = m.Recommended, Installed = m.Installed, Active = m.Id == _activeId,
-        FitsThisPc = m.FitsThisPc, Reason = m.Reason,
+        FitsThisPc = m.FitsThisPc, Reason = m.Reason, UserAdded = m.UserAdded,
         Damaged = m.Installed && DamagedIds.Contains(m.Id),
         LastUsedAt = m.Installed ? DateTimeOffset.UtcNow.AddDays(-2) : null,
         MemoryNeededBytes = m.SizeBytes + 1_000_000_000,

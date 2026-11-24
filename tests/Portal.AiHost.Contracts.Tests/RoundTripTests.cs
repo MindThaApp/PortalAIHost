@@ -341,6 +341,7 @@ public class RoundTripTests
         RoundTrip("""{ "catalogue_id": "m", "switch_to_id": "n" }""", Ctx.RemoveModelCommand);
         RoundTrip("""{ "catalogue_id": "m" }""", Ctx.RemoveModelCommand);
         RoundTrip("""{ "catalogue_id": "m" }""", Ctx.VerifyModelCommand);
+        RoundTrip("""{ "path": "C:/Models/my.gguf" }""", Ctx.ImportModelCommand);
         RoundTrip("""{ "parent_folder": "D:/Models" }""", Ctx.MoveStoreCommand);
         RoundTrip("""{ "path": "D:/Models/Portal AI Host Models" }""", Ctx.StoreFolderInfo);
         RoundTrip("""

@@ -36,6 +36,13 @@ public static class ControlTypes
     /// <summary>Re-hashes an installed model against the model list. Payload <see cref="VerifyModelCommand"/>; progress arrives as <see cref="EventStoreProgress"/>. Nothing is deleted.</summary>
     public const string VerifyModel = "models.verify";
 
+    /// <summary>
+    /// "Add your own model": copies a GGUF file the user picked into the host's models folder. Payload
+    /// <see cref="ImportModelCommand"/>; answers once the copy has started, progress and the result arrive as
+    /// <see cref="EventStoreProgress"/> (operation "import"). The original file is only read. Cancel with <see cref="CancelStoreOperation"/>.
+    /// </summary>
+    public const string ImportModel = "models.import";
+
     /// <summary>Answers <see cref="StoreFolderInfo"/>: the models folder the window may open in Explorer. The host changes nothing.</summary>
     public const string OpenStoreFolder = "store.open_folder";
 
@@ -216,6 +223,10 @@ public sealed class CatalogueModelSummary
     /// <summary>True when the host found this model already on the PC (a file added in place) instead of downloading it.</summary>
     public bool ExistingCopy { get; init; }
 
+    /// <summary>True for a model file the user added ("Add your own model"). The host holds its own copy; the memory fit is not estimated.</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public bool UserAdded { get; init; }
+
     /// <summary>Download state when not finished: "downloading", "paused", "failed", or null when there is no partial download.</summary>
     public string? DownloadState { get; init; }
 
@@ -314,6 +325,12 @@ public sealed class VerifyModelCommand
     public string CatalogueId { get; set; } = "";
 }
 
+/// <summary>Payload of models.import: the full path of a .gguf file on this PC.</summary>
+public sealed class ImportModelCommand
+{
+    public string Path { get; set; } = "";
+}
+
 /// <summary>Payload of store.move: the folder that will hold the host's own "Portal AI Host Models" subfolder.</summary>
 public sealed class MoveStoreCommand
 {
@@ -391,6 +408,9 @@ public static class StoreOperations
     public const string Move = "move";
     public const string Verify = "verify";
     public const string Cleanup = "cleanup";
+
+    /// <summary>"Add your own model": copying a GGUF file into the store. The finished event carries the new model id in CatalogueId.</summary>
+    public const string Import = "import";
 }
 
 /// <summary>State names of <see cref="StoreProgressEvent"/>.</summary>

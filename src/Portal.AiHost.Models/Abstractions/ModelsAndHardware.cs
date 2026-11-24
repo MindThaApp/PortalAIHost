@@ -29,7 +29,8 @@ public sealed record StoredModel(
     string Kind,
     string Engine,
     ModelOrigin Origin,
-    IReadOnlyList<StoredFile> Files)
+    IReadOnlyList<StoredFile> Files,
+    bool UserAdded = false)
 {
     public long TotalBytes => Files.Sum(f => f.SizeBytes);
     public bool IsComplete => Files.Count > 0 && Files.All(f => f.State != StoredFileState.Partial);

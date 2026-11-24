@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using Portal.AiHost.Core.Abstractions;
 
@@ -108,6 +109,13 @@ internal sealed class ManifestModel
 
     /// <summary>Store-relative folder the host created for this model (catalogue models only).</summary>
     public string? Folder { get; init; }
+
+    /// <summary>
+    /// True for a model file the user brought in ("Add your own model"): the host holds its own copy in the store.
+    /// Additive field: older versions ignore it and treat the model as any stored model.
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public bool UserAdded { get; set; }
 
     public List<ManifestFile> Files { get; init; } = new();
 }
@@ -985,7 +993,7 @@ public sealed partial class ModelStore : IModelStoreWriter, IModelStoreMover, IM
             {
                 var copy = new ManifestModel
                 {
-                    Id = m.Id, DisplayName = m.DisplayName, Kind = m.Kind, Engine = m.Engine, Origin = m.Origin, Folder = m.Folder,
+                    Id = m.Id, DisplayName = m.DisplayName, Kind = m.Kind, Engine = m.Engine, Origin = m.Origin, Folder = m.Folder, UserAdded = m.UserAdded,
                 };
                 newManifest.Models.Add(copy);
                 if (m.Origin == ModelOrigin.External)
@@ -1361,7 +1369,7 @@ public sealed partial class ModelStore : IModelStoreWriter, IModelStoreMover, IM
     private static bool Exists(string p) => File.Exists(p) || Directory.Exists(p);
 
     private StoredModel ToStored(ManifestModel m) =>
-        new(m.Id, m.DisplayName, m.Kind, m.Engine, m.Origin, m.Files.Select(f => ToStoredFile(f, m.Origin)).ToList());
+        new(m.Id, m.DisplayName, m.Kind, m.Engine, m.Origin, m.Files.Select(f => ToStoredFile(f, m.Origin)).ToList(), m.UserAdded);
 
     private StoredFile ToStoredFile(ManifestFile f, ModelOrigin origin)
     {

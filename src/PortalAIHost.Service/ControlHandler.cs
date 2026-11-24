@@ -190,6 +190,12 @@ internal sealed class ControlHandler(HostShell shell)
                     .ConfigureAwait(false);
                 return ControlPipe.Ok(id);
 
+            case ControlTypes.ImportModel:
+                // Answers once the copy has started; progress and the result arrive as event.store_progress.
+                _ = await shell.Models.StartImportAsync(Payload(r, AiHostJsonContext.Default.ImportModelCommand)!.Path, ct)
+                    .ConfigureAwait(false);
+                return ControlPipe.Ok(id);
+
             case ControlTypes.OpenStoreFolder:
                 return Ok(id, new StoreFolderInfo { Path = shell.Models.StoreFolder() }, AiHostJsonContext.Default.StoreFolderInfo);
 

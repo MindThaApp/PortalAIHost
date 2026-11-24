@@ -101,7 +101,7 @@ internal sealed partial class ModelCenter : IAsyncDisposable
             if (_op is not null)
             {
                 throw new ControlPipeException(ErrorCodes.InvalidRequest,
-                    _opName == StoreOperations.Move ? "Your models are being moved. Wait until that finishes." : _opName == StoreOperations.Cleanup ? "Space is being freed up. Wait until that finishes." : "A model is being checked. Wait until that finishes.");
+                    BusyMessage());
             }
         }
     }
@@ -170,7 +170,7 @@ internal sealed partial class ModelCenter : IAsyncDisposable
                 Id = e.Id, DisplayName = e.DisplayName, Kind = e.Kind, Engine = e.Engine, SizeBytes = e.TotalBytes,
                 Quality = e.Quality, Installed = installed, Active = _activeId(e.Kind) == e.Id,
                 Recommended = c.Best, FitsThisPc = c.Candidate?.Plan.Fits ?? true, Reason = c.Candidate?.Reason,
-                ExistingCopy = s is { Origin: ModelOrigin.External },
+                ExistingCopy = s is { Origin: ModelOrigin.External }, UserAdded = s is { UserAdded: true },
                 DownloadState = installed ? null : DownloadStateFor(e.Id, s),
                 BytesDone = installed || s is null ? 0 : s.Files.Sum(f => f.SizeBytes),
                 LastUsedAt = Hooks.Notes?.LastUsed(e.Id),
@@ -192,7 +192,7 @@ internal sealed partial class ModelCenter : IAsyncDisposable
             {
                 Id = s.Id, DisplayName = s.DisplayName, Kind = s.Kind, Engine = s.Engine, SizeBytes = s.TotalBytes,
                 Installed = s.IsComplete, Active = _activeId(s.Kind) == s.Id, FitsThisPc = true,
-                ExistingCopy = s.Origin == ModelOrigin.External,
+                ExistingCopy = s.Origin == ModelOrigin.External, UserAdded = s.UserAdded,
                 DownloadState = s.IsComplete ? null : DownloadStateFor(s.Id, s),
                 BytesDone = s.IsComplete ? 0 : s.Files.Sum(f => f.SizeBytes),
                 LastUsedAt = Hooks.Notes?.LastUsed(s.Id),
@@ -701,6 +701,12 @@ internal sealed partial class ModelCenter : IAsyncDisposable
         }
     }
 
+    private string BusyMessage() =>
+        _opName == StoreOperations.Move ? "Your models are being moved. Wait until that finishes."
+        : _opName == StoreOperations.Cleanup ? "Space is being freed up. Wait until that finishes."
+        : _opName == StoreOperations.Import ? "A model is being added. Wait until that finishes."
+        : "A model is being checked. Wait until that finishes.";
+
     private CancellationTokenSource BeginOperation(string name)
     {
         lock (_opSync)
@@ -708,7 +714,7 @@ internal sealed partial class ModelCenter : IAsyncDisposable
             if (_op is not null)
             {
                 throw new ControlPipeException(ErrorCodes.InvalidRequest,
-                    _opName == StoreOperations.Move ? "Your models are being moved. Wait until that finishes." : _opName == StoreOperations.Cleanup ? "Space is being freed up. Wait until that finishes." : "A model is being checked. Wait until that finishes.");
+                    BusyMessage());
             }
 
             _opName = name;
@@ -1025,7 +1031,7 @@ internal sealed partial class ModelCenter : IAsyncDisposable
             throw new ControlPipeException(ErrorCodes.InvalidRequest, "That model is not completely downloaded.");
         }
 
-        if (model.Origin == ModelOrigin.External)
+        if (model.Origin == ModelOrigin.External || model.UserAdded)
         {
             throw new ControlPipeException(ErrorCodes.InvalidRequest, "A file you added yourself has no checksum in the model list, so it cannot be checked.");
         }

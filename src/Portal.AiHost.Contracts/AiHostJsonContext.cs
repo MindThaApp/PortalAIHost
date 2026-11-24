@@ -51,6 +51,7 @@ namespace Portal.AiHost.Contracts;
 [JsonSerializable(typeof(PerformanceReloadInfo))]
 [JsonSerializable(typeof(ActivateModelCommand))]
 [JsonSerializable(typeof(VerifyModelCommand))]
+[JsonSerializable(typeof(ImportModelCommand))]
 [JsonSerializable(typeof(MoveStoreCommand))]
 [JsonSerializable(typeof(StoreFolderInfo))]
 [JsonSerializable(typeof(CleanupScan))]
