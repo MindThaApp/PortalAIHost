@@ -26,7 +26,9 @@ public sealed unsafe partial class TrayIcon : IDisposable
     private const uint WmContextMenu = 0x007B;
     private const nint PbtApmResumeAutomatic = 0x12;
     private const nint PbtApmResumeSuspend = 0x7;
-    private const uint NimAdd = 0, NimDelete = 2;
+    private const uint NimAdd = 0, NimModify = 1, NimDelete = 2;
+    private const uint NifInfo = 0x10, NiifInfo = 1, NiifRespectQuietTime = 0x80;
+    private const uint NinBalloonUserClick = 0x0405;
     private const uint NifMessage = 1, NifIcon = 2, NifTip = 4;
     private const uint MfString = 0, MfSeparator = 0x800;
     private const uint TpmReturnCmd = 0x100, TpmRightButton = 0x2;
@@ -56,6 +58,9 @@ public sealed unsafe partial class TrayIcon : IDisposable
     }
 
     public event EventHandler? OpenRequested;
+
+    /// <summary>The user clicked a notification from <see cref="ShowBalloon"/>; the value is the tag it was shown with.</summary>
+    public event EventHandler<string>? BalloonClicked;
 
     /// <summary>Left click on the icon: the small status pop-up. The point is the cursor in screen pixels.</summary>
     public event EventHandler<(int X, int Y)>? PopupRequested;
@@ -160,6 +165,36 @@ public sealed unsafe partial class TrayIcon : IDisposable
     public static bool RegisterForRestartAfterUpdate() =>
         RegisterApplicationRestart(null, RestartNoCrash | RestartNoHang | RestartNoReboot) == 0;
 
+    private string? _balloonTag;
+
+    /// <summary>
+    /// Shows a Windows notification from the tray icon. Windows decides how it looks and keeps it quiet during
+    /// Focus Assist (the quiet-time flag). Returns false when there is no icon to show it from. A click raises
+    /// <see cref="BalloonClicked"/> with <paramref name="tag"/>.
+    /// </summary>
+    public bool ShowBalloon(string title, string text, string tag)
+    {
+        if (_hwnd == 0 || !_showIcon)
+        {
+            return false;
+        }
+
+        _balloonTag = tag;
+        var data = new NotifyIconDataW
+        {
+            CbSize = (uint)sizeof(NotifyIconDataW),
+            HWnd = _hwnd,
+            UId = 1,
+            UFlags = NifInfo,
+            DwInfoFlags = NiifInfo | NiifRespectQuietTime,
+        };
+        var body = text.Length > 255 ? text[..255] : text;
+        var head = title.Length > 63 ? title[..63] : title;
+        body.AsSpan().CopyTo(new Span<char>(data.SzInfo, 256));
+        head.AsSpan().CopyTo(new Span<char>(data.SzInfoTitle, 64));
+        return Shell_NotifyIconW(NimModify, &data);
+    }
+
     private void Notify(uint message, uint flags)
     {
         var data = new NotifyIconDataW
@@ -215,6 +250,16 @@ public sealed unsafe partial class TrayIcon : IDisposable
         {
             case WmTrayCallback:
                 var mouse = (uint)(lParam & 0xFFFF);
+                if (mouse == NinBalloonUserClick)
+                {
+                    if (_balloonTag is { } tag)
+                    {
+                        BalloonClicked?.Invoke(this, tag);
+                    }
+
+                    return 0;
+                }
+
                 if (mouse == WmLButtonDblClk)
                 {
                     OpenRequested?.Invoke(this, EventArgs.Empty);

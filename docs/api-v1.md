@@ -634,6 +634,10 @@ only). Messages are JSON envelopes `{ "id", "type", "payload" }`; answers are `o
   `preset, memory_limit_bytes, keep_free_bytes, compute, gpu_memory_limit_bytes, cpu_threads, priority,
   cpu_ceiling_percent, ease_off`, and the
   host-owned `previous_store_folders`, which `settings.set` ignores).
+- **Notifications:** `muted_notifications` (list of `downloads`, `approvals`, `problems`; omitted or empty means all on)
+  names the notification kinds the user turned off. Unknown names are ignored, so a kind added later starts on.
+  No pipe message was added: the host raises notifications itself from the tray icon (see architecture.md,
+  "Notifications"), and a click opens the window page through the existing show path.
 - **Performance keys:** a key left out keeps its default (`null` bytes and threads mean "the default for this PC").
   An older `max_memory_percent` becomes `memory_limit_bytes` the first time the new host reads the file; until then it
   still applies. `backend` is the older name of `compute`: when `compute` is `auto`, `backend` still counts, and the

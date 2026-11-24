@@ -130,6 +130,14 @@ internal static class Program
                 }
             };
             tray.QuitRequested += (_, _) => shell.RequestQuit();
+            if (!paths.TestMode)
+            {
+                // Notifications come from the tray icon: no extra identity, activator or manifest entry, and safe in NativeAOT.
+                var notifyTray = tray;
+                shell.ToastSink = r => notifyTray.ShowBalloon(r.Title, r.Body, r.Page);
+                tray.BalloonClicked += (_, page) => shell.RequestShow(page);
+            }
+
             tray.Resumed += (_, _) => _ = shell.OnResumeAsync();
             tray.SessionEnding += (_, _) => shell.StopForSessionEnd(SessionEndBudget);
         }

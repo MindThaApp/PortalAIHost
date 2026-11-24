@@ -555,8 +555,29 @@ public sealed class HostSettings
     public bool SendCrashReports { get; set; } = true;
     public long? BandwidthCapBytesPerSecond { get; init; }
 
+    /// <summary>
+    /// Notification kinds the user turned off (<see cref="NotificationKinds"/>). Null or empty: every kind is on.
+    /// Unknown names are ignored, so a kind added later starts on.
+    /// </summary>
+    public List<string>? MutedNotifications { get; set; }
+
     /// <summary>Per model kind: keep loaded and idle timeout.</summary>
     public Dictionary<string, KindSettings> Kinds { get; set; } = new();
+}
+
+/// <summary>Kinds of Windows notification the host can raise while its window is closed (<see cref="HostSettings.MutedNotifications"/>).</summary>
+public static class NotificationKinds
+{
+    /// <summary>A model download finished or failed.</summary>
+    public const string Downloads = "downloads";
+
+    /// <summary>A new app is asking to use the host.</summary>
+    public const string Approvals = "approvals";
+
+    /// <summary>The engine stopped and could not restart, or the health check turned to fail.</summary>
+    public const string Problems = "problems";
+
+    public static readonly string[] All = [Downloads, Approvals, Problems];
 }
 
 /// <summary>Values of <see cref="HostSettings.Preset"/>.</summary>

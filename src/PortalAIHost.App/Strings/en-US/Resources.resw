@@ -282,6 +282,22 @@ Esc: close What's new or a dialog</value></data>
   <data name="SettingsGeneralHeader.Text" xml:space="preserve"><value>General</value></data>
   <data name="SettingsResetGeneral.Content" xml:space="preserve"><value>Reset to default</value></data>
   <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Reset general settings to default</value></data>
+  <data name="SettingsNotificationsHeader.Text" xml:space="preserve"><value>Notifications</value></data>
+  <data name="SettingsResetNotifications.Content" xml:space="preserve"><value>Reset to default</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Reset to default, notification settings</value></data>
+  <data name="SettingsNotificationsHelp.Text" xml:space="preserve"><value>Short messages from Windows when something needs you and this window is closed. They stay quiet while a full-screen program is in front, and never repeat more than once every few minutes.</value></data>
+  <data name="SettingsNotifyDownloads.Header" xml:space="preserve"><value>A model download finishes or fails</value></data>
+  <data name="SettingsNotifyDownloads.OnContent" xml:space="preserve"><value>On</value></data>
+  <data name="SettingsNotifyDownloads.OffContent" xml:space="preserve"><value>Off</value></data>
+  <data name="SettingsNotifyDownloads.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Notify when a model download finishes or fails</value></data>
+  <data name="SettingsNotifyApprovals.Header" xml:space="preserve"><value>An app asks for approval</value></data>
+  <data name="SettingsNotifyApprovals.OnContent" xml:space="preserve"><value>On</value></data>
+  <data name="SettingsNotifyApprovals.OffContent" xml:space="preserve"><value>Off</value></data>
+  <data name="SettingsNotifyApprovals.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Notify when an app asks for approval</value></data>
+  <data name="SettingsNotifyProblems.Header" xml:space="preserve"><value>The AI engine stops or a check fails</value></data>
+  <data name="SettingsNotifyProblems.OnContent" xml:space="preserve"><value>On</value></data>
+  <data name="SettingsNotifyProblems.OffContent" xml:space="preserve"><value>Off</value></data>
+  <data name="SettingsNotifyProblems.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Notify when the AI engine stops or a check fails</value></data>
   <data name="SettingsPrivacyHeader.Text" xml:space="preserve"><value>Privacy</value></data>
   <data name="SettingsResetPrivacy.Content" xml:space="preserve"><value>Reset to default</value></data>
   <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Reset to default, privacy settings</value></data>
