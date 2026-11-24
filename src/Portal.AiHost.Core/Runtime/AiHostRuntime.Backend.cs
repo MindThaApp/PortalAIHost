@@ -10,6 +10,9 @@ public sealed partial class AiHostRuntime
     /// <summary>The backend behind the model routes: this machine's engine unless client mode swapped it.</summary>
     public IInferenceBackend Backend => _backend ?? _local;
 
+    /// <summary>This machine's own engine as a backend, for the laptop-model fallback in client mode.</summary>
+    public IInferenceBackend LocalInferenceBackend => _local;
+
     /// <summary>True while a client-mode backend (not the local engine) answers the model routes.</summary>
     public bool UsesRemoteBackend => _backend is not null;
 

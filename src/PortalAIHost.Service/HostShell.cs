@@ -393,6 +393,10 @@ public sealed class HostShell : IAsyncDisposable
                     _o.ClientConnector ?? new Portal.AiHost.Core.Remote.Client.LanConnector(Portal.AiHost.Core.Remote.Client.LanConnector.LinkConnectTimeout),
                     relayFactory: (url, fingerprint) => new Portal.AiHost.Core.Remote.Client.RelayConnector(url, fingerprint)),
             PersistMode = SaveMode,
+            InitialFallback = settings.ClientFallback,
+            InitialRelayMode = settings.RelayMode,
+            InitialPromptShown = settings.FallbackPromptShown,
+            PersistPrefs = SaveClientPrefs,
         });
         Runtime.ClientStatus = () => ClientMode.StatusRemote();
         ClientMode.Changed += () => _ = PushRemoteChangedAsync();
@@ -532,6 +536,21 @@ public sealed class HostShell : IAsyncDisposable
         }
 
         current.Mode = mode;
+        _settings.Save(current);
+    }
+
+    /// <summary>Saves the client-mode choices (fallback, relay mode, prompt flag) atomically, through the settings store.</summary>
+    private void SaveClientPrefs(string? fallback, string relayMode, bool promptShown)
+    {
+        var current = _settings.Current;
+        if (current.ClientFallback == fallback && current.RelayMode == relayMode && current.FallbackPromptShown == promptShown)
+        {
+            return;
+        }
+
+        current.ClientFallback = fallback;
+        current.RelayMode = relayMode;
+        current.FallbackPromptShown = promptShown;
         _settings.Save(current);
     }
 

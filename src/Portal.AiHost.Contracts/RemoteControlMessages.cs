@@ -99,6 +99,44 @@ public sealed class SetModeCommand
     public string Mode { get; set; } = HostModes.Server;
 }
 
+/// <summary>Values of the <c>client_fallback</c> setting (docs/client-mode-v1.md section 1.3). Unset (null) reads as <c>none</c>.</summary>
+public static class ClientFallbackModes
+{
+    /// <summary>Apps get <c>503 remote_unreachable</c> and use their own built-in AI (default).</summary>
+    public const string None = "none";
+
+    /// <summary>The laptop's own model answers while the home PC cannot be reached.</summary>
+    public const string Local = "local";
+}
+
+/// <summary>Values of the <c>relay_mode</c> setting (docs/client-mode-v1.md section 3.1).</summary>
+public static class RelayModes
+{
+    /// <summary>The relay is used whenever the home network fails and the pairing has one (default).</summary>
+    public const string Auto = "auto";
+
+    /// <summary>The relay is used only after the user turned it on for the current session.</summary>
+    public const string Manual = "manual";
+}
+
+/// <summary>Payload of client.setfallback: <see cref="ClientFallbackModes.None"/> or <see cref="ClientFallbackModes.Local"/>.</summary>
+public sealed class SetFallbackCommand
+{
+    public string Fallback { get; set; } = ClientFallbackModes.None;
+}
+
+/// <summary>Payload of client.setrelaymode: <see cref="RelayModes.Auto"/> or <see cref="RelayModes.Manual"/>.</summary>
+public sealed class SetRelayModeCommand
+{
+    public string RelayMode { get; set; } = RelayModes.Auto;
+}
+
+/// <summary>Payload of client.userelay: turns the relay on or off for the current session (matters in Manual mode).</summary>
+public sealed class UseRelayCommand
+{
+    public bool Enabled { get; set; }
+}
+
 /// <summary>Answer of client.status and client.setmode. Never holds the PC's address, key or token.</summary>
 public sealed class ClientModeStatus
 {
@@ -120,6 +158,24 @@ public sealed class ClientModeStatus
     public string? Reason { get; set; }
 
     public int? RttMs { get; set; }
+
+    /// <summary>The <c>client_fallback</c> setting: <c>none</c> or <c>local</c>.</summary>
+    public string ClientFallback { get; set; } = ClientFallbackModes.None;
+
+    /// <summary>True until the user has chosen a fallback (the setting is still unset).</summary>
+    public bool FallbackUnset { get; set; } = true;
+
+    /// <summary>The one-time "home PC unreachable" prompt is waiting to be shown; client.promptshown clears it.</summary>
+    public bool FallbackPromptPending { get; set; }
+
+    /// <summary>The laptop's own model is serving new requests right now ("Using this laptop's model").</summary>
+    public bool UsingLaptopModel { get; set; }
+
+    /// <summary>The <c>relay_mode</c> setting: <c>auto</c> or <c>manual</c>.</summary>
+    public string RelayMode { get; set; } = RelayModes.Auto;
+
+    /// <summary>The relay is switched on for this session (only meaningful in Manual mode; resets when the host quits).</summary>
+    public bool UseRelay { get; set; }
 
     /// <summary>Set by client.setmode when the switch was refused: <c>not_paired</c> or <c>failed</c>.</summary>
     public string? Refused { get; set; }

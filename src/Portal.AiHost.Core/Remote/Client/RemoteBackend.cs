@@ -122,7 +122,7 @@ public sealed class RemoteBackend(RemoteHostLink link, RemoteBackendOptions? opt
         RemoteStreamReply reply;
         try
         {
-            var opening = link.OpenStreamAsync(request, ct);
+            var opening = OpenWithBatchRetryAsync(request, endpoint, context, ct);
             if (early)
             {
                 // If the PC is slow to answer, the app's stream opens anyway and gets a "queued" comment every few
@@ -195,6 +195,32 @@ public sealed class RemoteBackend(RemoteHostLink link, RemoteBackendOptions? opt
             await context.StartRawAsync(reply.Status, ContentTypeOf(reply), context.ResponseHeaders).ConfigureAwait(false);
             await CopyBodyAsync(context, reply, ct).ConfigureAwait(false);
             await context.CompleteAsync().ConfigureAwait(false);
+        }
+    }
+
+    /// <summary>
+    /// Opens the request on the PC. A batch request that the relay refused for its budget (nothing was sent) waits the
+    /// 60 seconds the relay asks for and tries once more, when its deadline leaves room; interactive requests fail at
+    /// once (docs/client-mode-v1.md section 4.6). The request is built again so the PC gets the deadline that is left.
+    /// </summary>
+    private async Task<RemoteStreamReply> OpenWithBatchRetryAsync(RemoteRequest request,
+        (string Method, string Target) endpoint, ApiContext context, CancellationToken ct)
+    {
+        try
+        {
+            return await link.OpenStreamAsync(request, ct).ConfigureAwait(false);
+        }
+        catch (RemoteUnreachableException ex) when (ex.Reason == RemoteLinkReasons.RelayBusy
+            && context.Options.Priority == RequestPriority.Batch)
+        {
+            var wait = TimeSpan.FromMilliseconds(ex.RetryAfterMs ?? RelayException.BudgetRetryMs);
+            if (context.Options.Deadline - _time.GetUtcNow() <= wait + _o.DeadlineMargin)
+            {
+                throw;
+            }
+
+            await Task.Delay(wait, _time, ct).ConfigureAwait(false);
+            return await link.OpenStreamAsync(BuildRequest(endpoint, context), ct).ConfigureAwait(false);
         }
     }
 

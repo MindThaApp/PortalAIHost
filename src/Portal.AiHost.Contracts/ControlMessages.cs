@@ -105,6 +105,18 @@ public static class ControlTypes
     /// <summary>Switches between <c>server</c> and <c>client</c> mode. Payload <see cref="SetModeCommand"/>; answers <see cref="ClientModeStatus"/>.</summary>
     public const string ClientSetMode = "client.setmode";
 
+    /// <summary>Sets <c>client_fallback</c>. Payload <see cref="SetFallbackCommand"/>; answers <see cref="ClientModeStatus"/>.</summary>
+    public const string ClientSetFallback = "client.setfallback";
+
+    /// <summary>Sets <c>relay_mode</c>. Payload <see cref="SetRelayModeCommand"/>; answers <see cref="ClientModeStatus"/>.</summary>
+    public const string ClientSetRelayMode = "client.setrelaymode";
+
+    /// <summary>Turns the relay on or off for this session. Payload <see cref="UseRelayCommand"/>; answers <see cref="ClientModeStatus"/>.</summary>
+    public const string ClientUseRelay = "client.userelay";
+
+    /// <summary>The one-time unreachable prompt was shown: it is not raised again. No payload; answers <see cref="ClientModeStatus"/>.</summary>
+    public const string ClientPromptShown = "client.promptshown";
+
     // Host -> UI answers.
     public const string Ok = "ok";
     public const string Error = "error";
@@ -557,6 +569,18 @@ public sealed class HostSettings
     /// through client.setmode, and the value sent with settings.set is ignored.
     /// </summary>
     public string Mode { get; set; } = HostModes.Server;
+
+    /// <summary>
+    /// <c>none</c> or <c>local</c>; null until the user picks (reads as <c>none</c>). Owned by the host: it changes only
+    /// through client.setfallback, and the value sent with settings.set is ignored.
+    /// </summary>
+    public string? ClientFallback { get; set; }
+
+    /// <summary>The one-time unreachable prompt was shown, or a fallback was chosen. Host-owned.</summary>
+    public bool FallbackPromptShown { get; set; }
+
+    /// <summary><c>auto</c> (default) or <c>manual</c>. Owned by the host: it changes only through client.setrelaymode.</summary>
+    public string RelayMode { get; set; } = RelayModes.Auto;
 
     public bool StartWithWindows { get; init; }
 

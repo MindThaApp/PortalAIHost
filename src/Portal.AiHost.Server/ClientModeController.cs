@@ -19,6 +19,21 @@ public sealed class ClientModeOptions
 
     public RemoteBackendOptions? Backend { get; init; }
 
+    /// <summary>The saved <c>client_fallback</c> (null = never chosen, reads as none).</summary>
+    public string? InitialFallback { get; init; }
+
+    /// <summary>The saved <c>relay_mode</c> (<c>auto</c> or <c>manual</c>).</summary>
+    public string InitialRelayMode { get; init; } = RelayModes.Auto;
+
+    /// <summary>The one-time prompt was already shown (or a fallback was chosen) in an earlier run.</summary>
+    public bool InitialPromptShown { get; init; }
+
+    /// <summary>Saves the fallback, the relay mode and the prompt flag in the settings store (atomically). Called after a change.</summary>
+    public Action<string?, string, bool>? PersistPrefs { get; init; }
+
+    /// <summary>Clock for the forwarding backend (fake in tests).</summary>
+    public TimeProvider? Time { get; init; }
+
     /// <summary>The engine kinds stopped when client mode starts.</summary>
     public IReadOnlyList<string> Kinds { get; init; } = [ModelKinds.Chat, ModelKinds.Embedding];
 }
@@ -38,13 +53,86 @@ public sealed class ClientModeController : IAsyncDisposable
     private readonly SemaphoreSlim _gate = new(1, 1);
     private RemoteHostLink? _link;
     private string _mode = HostModes.Server;
+    private FallbackRouter? _router;
+    private volatile string? _fallback;
+    private volatile string _relayMode = RelayModes.Auto;
+    private volatile bool _promptShown;
+    private volatile bool _promptPending;
+    private volatile bool _useRelay;
 
     public ClientModeController(AiHostRuntime runtime, RemoteAccess remote, ClientModeOptions options)
     {
         _runtime = runtime ?? throw new ArgumentNullException(nameof(runtime));
         _remote = remote ?? throw new ArgumentNullException(nameof(remote));
         _o = options ?? throw new ArgumentNullException(nameof(options));
+        _fallback = _o.InitialFallback is ClientFallbackModes.None or ClientFallbackModes.Local ? _o.InitialFallback : null;
+        _relayMode = _o.InitialRelayMode == RelayModes.Manual ? RelayModes.Manual : RelayModes.Auto;
+        _promptShown = _o.InitialPromptShown || _fallback is not null;
     }
+
+    /// <summary>The router answering the model routes in client mode (null in server mode).</summary>
+    public FallbackRouter? Router => _router;
+
+    /// <summary>The effective <c>client_fallback</c>: <c>none</c> until the user picks.</summary>
+    public string Fallback => _fallback ?? ClientFallbackModes.None;
+
+    public string RelayMode => _relayMode;
+
+    /// <summary>The one-time prompt is waiting for the UI.</summary>
+    public bool FallbackPromptPending => _promptPending;
+
+    /// <summary>Chooses what apps get while the home PC is unreachable. Choosing also ends the one-time prompt.</summary>
+    public void SetFallback(string fallback)
+    {
+        if (fallback is not (ClientFallbackModes.None or ClientFallbackModes.Local))
+        {
+            throw new ArgumentException("fallback must be none or local.", nameof(fallback));
+        }
+
+        _fallback = fallback;
+        _promptShown = true;
+        _promptPending = false;
+        Persist();
+        _runtime.BumpRevision();
+        Changed?.Invoke();
+    }
+
+    /// <summary>Auto uses the relay whenever the home network fails; Manual only while <see cref="SetUseRelay"/> is on.</summary>
+    public void SetRelayMode(string mode)
+    {
+        if (mode is not (RelayModes.Auto or RelayModes.Manual))
+        {
+            throw new ArgumentException("relay mode must be auto or manual.", nameof(mode));
+        }
+
+        _relayMode = mode;
+        Persist();
+        Changed?.Invoke();
+    }
+
+    /// <summary>Turns the relay on or off for this session. Not saved: it resets when the host quits.</summary>
+    public void SetUseRelay(bool enabled)
+    {
+        _useRelay = enabled;
+        Changed?.Invoke();
+        if (enabled && _link is { } link)
+        {
+            _ = link.ReconnectAsync(); // Try again now that the relay is allowed.
+        }
+    }
+
+    /// <summary>The UI showed the one-time prompt: it is not raised again.</summary>
+    public void MarkPromptShown()
+    {
+        _promptShown = true;
+        _promptPending = false;
+        Persist();
+        Changed?.Invoke();
+    }
+
+    private void Persist() => _o.PersistPrefs?.Invoke(_fallback, _relayMode, _promptShown);
+
+    private bool RelayAllowed() => _relayMode == RelayModes.Auto || _useRelay;
 
     public string Mode => _mode;
 
@@ -55,7 +143,17 @@ public sealed class ClientModeController : IAsyncDisposable
     public ClientModeStatus Snapshot()
     {
         var link = _link;
-        var status = new ClientModeStatus { Mode = _mode, Paired = link?.Remote is not null };
+        var status = new ClientModeStatus
+        {
+            Mode = _mode,
+            Paired = link?.Remote is not null,
+            ClientFallback = Fallback,
+            FallbackUnset = _fallback is null,
+            FallbackPromptPending = _promptPending,
+            UsingLaptopModel = _mode == HostModes.Client && _router?.UsingLocal == true,
+            RelayMode = _relayMode,
+            UseRelay = _useRelay,
+        };
         if (_mode == HostModes.Client && link is not null)
         {
             var s = link.Status;
@@ -153,7 +251,11 @@ public sealed class ClientModeController : IAsyncDisposable
             link.StateChanged += OnLinkChanged;
             link.Start();
             _link = link;
-            _runtime.SetBackend(new RemoteBackend(link, _o.Backend));
+            link.RelayPolicy = RelayAllowed;
+            var router = new FallbackRouter(link, _runtime.LocalInferenceBackend, () => _fallback, _o.Backend, _o.Time);
+            router.UsingLocalChanged += OnUsingLocalChanged;
+            _router = router;
+            _runtime.SetBackend(router);
             _mode = HostModes.Client;
 
             // 3. Requests the local engine is answering finish first; then the engines stop. Model files stay.
@@ -189,6 +291,7 @@ public sealed class ClientModeController : IAsyncDisposable
     private async Task RollBackAsync(RemoteHostLink link)
     {
         link.StateChanged -= OnLinkChanged;
+        DropRouter();
         _runtime.SetBackend(null);
         _mode = HostModes.Server;
         _link = null;
@@ -199,6 +302,7 @@ public sealed class ClientModeController : IAsyncDisposable
     private async Task LeaveAsync(CancellationToken ct)
     {
         var link = _link;
+        DropRouter();
         _runtime.SetBackend(null);
         _mode = HostModes.Server;
         _link = null;
@@ -213,8 +317,32 @@ public sealed class ClientModeController : IAsyncDisposable
         _o.PersistMode?.Invoke(HostModes.Server);
     }
 
+    private void DropRouter()
+    {
+        if (_router is { } router)
+        {
+            router.UsingLocalChanged -= OnUsingLocalChanged;
+        }
+
+        _router = null;
+    }
+
+    private void OnUsingLocalChanged()
+    {
+        _runtime.BumpRevision();
+        Changed?.Invoke();
+    }
+
     private void OnLinkChanged(object? sender, RemoteLinkStatus status)
     {
+        _router?.LinkChanged();
+        // The first time the PC cannot be reached while no fallback was ever chosen: one calm prompt, never repeated.
+        if (status.State is RemoteLinkState.Unreachable or RemoteLinkState.Revoked or RemoteLinkState.FingerprintChanged
+            && _fallback is null && !_promptShown && !_promptPending)
+        {
+            _promptPending = true;
+        }
+
         _runtime.BumpRevision();
         Changed?.Invoke();
     }
