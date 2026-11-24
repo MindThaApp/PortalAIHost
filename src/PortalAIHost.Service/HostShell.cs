@@ -6,6 +6,7 @@ using Portal.AiHost.Core.Abstractions;
 using Portal.AiHost.Core.Auth;
 using Portal.AiHost.Core.Catalogue;
 using Portal.AiHost.Core.Download;
+using Portal.AiHost.Core.Notifications;
 using Portal.AiHost.Core.Store;
 using Portal.AiHost.Core.Planning;
 using Portal.AiHost.Core.Runtime;
@@ -104,7 +105,26 @@ public sealed class HostShell : IAsyncDisposable
     private int _quitting;
     private volatile bool _sessionEnding;
 
-    private HostShell(HostShellOptions options) => _o = options;
+    private readonly NotificationCenter _notifyCenter;
+    private readonly NotificationEvents _notify;
+    private readonly CancellationTokenSource _notifyStop = new();
+
+    private HostShell(HostShellOptions options)
+    {
+        _o = options;
+        _notifyCenter = new NotificationCenter(
+            new DelegateNotifier(r => ToastSink?.Invoke(r) ?? false),
+            () => _settings?.Current ?? new HostSettings(),
+            () => _o.EaseOffSensors?.IsFullscreen() == true,
+            windowOpen: () => _pipe is { ConnectionCount: > 0 });
+        _notify = new NotificationEvents(_notifyCenter);
+    }
+
+    /// <summary>
+    /// Shows a Windows notification (the tray icon). Null in test mode and when there is no icon, so nothing is shown;
+    /// the approval window then opens as before.
+    /// </summary>
+    public Func<ToastRequest, bool>? ToastSink { get; set; }
 
     public AiHostRuntime Runtime { get; private set; } = null!;
 
@@ -305,7 +325,7 @@ public sealed class HostShell : IAsyncDisposable
                 // Retried at the next start; the folder stays listed under earlier folders.
             }
         });
-        Runtime.EngineStateChanged += (_, change) => _ = PushEngineStateAsync(change);
+        Runtime.EngineStateChanged += (_, change) => { _ = PushEngineStateAsync(change); _notify.OnEngineState(change); };
         _registry.RequestPending += (_, info) => _ = PushApprovalAsync(info);
 
         await LoadActiveModelsAsync(ct).ConfigureAwait(false);
@@ -319,6 +339,7 @@ public sealed class HostShell : IAsyncDisposable
 
         var keepLoaded = settings.Kinds.Where(k => k.Value.KeepLoaded).Select(k => k.Key).ToList();
         _ = Runtime.AutoLoadAsync(keepLoaded, CancellationToken.None);
+        _ = Task.Run(() => NotificationLoopAsync(_notifyStop.Token));
     }
 
     /// <summary>
@@ -424,6 +445,7 @@ public sealed class HostShell : IAsyncDisposable
         }
 
         _quit.TrySetResult();
+        Guard(() => _notifyStop.Cancel());
         try
         {
             await StopPartsAsync(_sessionEnding ? _o.SessionEndGrace : _o.QuitGrace).ConfigureAwait(false);
@@ -849,6 +871,7 @@ public sealed class HostShell : IAsyncDisposable
 
     private async Task PushDownloadAsync(DownloadProgressEvent e)
     {
+        _notify.OnDownload(e, Models?.Find(e.CatalogueId)?.DisplayName);
         try
         {
             await _pipe.BroadcastAsync(ControlTypes.EventDownloadProgress,
@@ -863,6 +886,41 @@ public sealed class HostShell : IAsyncDisposable
         _pipe.BroadcastAsync(ControlTypes.EventStatusChanged,
             JsonSerializer.SerializeToElement(BuildControlStatus(), AiHostJsonContext.Default.ControlStatus));
 
+    /// <summary>
+    /// Every 15 seconds: shows approval notifications that waited for a full-screen program to end, and every 10
+    /// minutes (the first after one minute) reads the health checks so a change to fail can be announced. Only
+    /// reads; a failed check is ignored.
+    /// </summary>
+    private async Task NotificationLoopAsync(CancellationToken ct)
+    {
+        var tick = 0;
+        try
+        {
+            using var timer = new PeriodicTimer(TimeSpan.FromSeconds(15));
+            while (await timer.WaitForNextTickAsync(ct).ConfigureAwait(false))
+            {
+                _notifyCenter.Pump();
+                tick++;
+                if (tick % 40 != 4 || !NotificationCenter.IsEnabled(_settings.Current, NotificationKinds.Problems))
+                {
+                    continue;
+                }
+
+                try
+                {
+                    _notify.OnHealth(await Runtime.BuildHealthAsync(apiListening: Server is not null, ct).ConfigureAwait(false));
+                }
+                catch (Exception ex) when (ex is not (OperationCanceledException or OutOfMemoryException))
+                {
+                    // The next round tries again.
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
+        }
+    }
+
     private async Task PushApprovalAsync(AccessRequestInfo info)
     {
         try
@@ -875,7 +933,13 @@ public sealed class HostShell : IAsyncDisposable
         {
         }
 
-        RequestShow("approvals");
+        // A notification replaces the window pop-up (a click opens the approvals page). When it cannot be shown,
+        // is turned off, or the window is already open, the window opens as before.
+        var outcome = _notify.OnApproval(ControlHandler.ToPending(info).AppName);
+        if (outcome is not (NotifyOutcome.Shown or NotifyOutcome.Deferred))
+        {
+            RequestShow("approvals");
+        }
     }
 
     public async ValueTask DisposeAsync() => await QuitAsync().ConfigureAwait(false);
