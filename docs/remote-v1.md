@@ -291,7 +291,7 @@ Remote use is meant for text chat; the limits below are strict on purpose.
   Nothing else: **the room id is derived from `F`**.
 - `room = base64url_nopad( SHA-256( "portalai-relay-v1" || F ) )`, where `"portalai-relay-v1"` is the 17 ASCII bytes
   and `F` the 32 raw bytes. The result is 43 characters.
-- The relay address. Default `https://portal-relay.aiportal.workers.dev` (the owner can override it in the host's
+- The relay address. Default `https://portal-relay.portalai.workers.dev` (the owner can override it in the host's
   settings for testing; a device needs to know the same address, for example from a setting or a future QR field).
 
 A device tries the home network first (section 2) and falls back to the relay when the host's address cannot be reached.

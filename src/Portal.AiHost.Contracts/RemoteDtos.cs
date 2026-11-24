@@ -21,7 +21,7 @@ public static class RemoteApi
     public const string SigningVersion = "PORTALAI1";
 
     /// <summary>Where the host connects out to by default (docs/remote-v1.md, section Relay).</summary>
-    public const string RelayDefaultUrl = "https://portal-relay.aiportal.workers.dev";
+    public const string RelayDefaultUrl = "https://portal-relay.portalai.workers.dev";
 }
 
 /// <summary>Signed-request headers of a paired device.</summary>

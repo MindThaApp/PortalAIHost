@@ -41,8 +41,8 @@ npm run typecheck
    The first deploy creates the Worker `portal-relay` and applies the Durable Object migration (SQLite-backed
    classes `Room` and `Limiter`, which the free plan allows).
 4. Note the URL that wrangler prints (`https://portal-relay.<subdomain>.workers.dev`). The host's default relay
-   address is `https://portal-relay.aiportal.workers.dev`, so the account's workers.dev subdomain must be
-   `aiportal`, or the constant `RelayDefaults.Url` in the host must be changed to match.
+   address is `https://portal-relay.portalai.workers.dev`, so the account's workers.dev subdomain must be
+   `portalai`, or the constant `RemoteDtos.RelayDefaultUrl` in the host must be changed to match.
 5. Check it: `curl https://<relay>/v1/health` answers `ok`.
 
 Free plan note: a hibernating Durable Object costs nothing while idle; each WebSocket message counts as 1/20 of a
