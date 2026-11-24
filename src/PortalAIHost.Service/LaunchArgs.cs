@@ -11,9 +11,10 @@ public enum LaunchMode
 }
 
 /// <summary>
-/// Reads the host's command line. Only two protocol links are understood: <c>portal-ai-host:start</c> and
-/// <c>portal-ai-host:open</c>. Anything else (other protocol paths, query strings, extra text) is treated as a
-/// plain start; nothing from the command line is ever run or opened.
+/// Reads the host's command line. Only these protocol links are understood: <c>portal-ai-host:start</c>,
+/// <c>portal-ai-host:open</c> and the page links <c>portal-ai-host:settings/performance</c>,
+/// <c>portal-ai-host:models</c> and <c>portal-ai-host:apps</c>. Anything else (other protocol paths, query strings,
+/// extra text) is treated as a plain start; nothing from the command line is ever run or opened.
 /// </summary>
 internal static class LaunchArgs
 {
@@ -32,12 +33,36 @@ internal static class LaunchArgs
             return a[Scheme.Length..].TrimStart('/').ToLowerInvariant() switch
             {
                 "open" => LaunchMode.Open,
+                _ when PageFor([raw]) is not null => LaunchMode.Open,
                 _ => LaunchMode.Start,
             };
         }
 
         // No protocol link: a plain start. A second start of an already running host still shows its window.
         return args.Count == 0 ? LaunchMode.Open : LaunchMode.Start;
+    }
+
+    /// <summary>The window page a protocol link asks for ("settings/performance", "models", "apps"), or null.</summary>
+    public static string? PageFor(IReadOnlyList<string> args)
+    {
+        foreach (var raw in args)
+        {
+            var a = raw.Trim().Trim('"').TrimEnd('/');
+            if (!a.StartsWith(Scheme, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            return a[Scheme.Length..].TrimStart('/').ToLowerInvariant() switch
+            {
+                "settings/performance" => "settings/performance",
+                "models" => "models",
+                "apps" => "apps",
+                _ => null,
+            };
+        }
+
+        return null;
     }
 
     public static bool IsProtocol(IReadOnlyList<string> args) =>

@@ -89,7 +89,7 @@ internal static class Program
                     .ConfigureAwait(false);
                 if (launch == LaunchMode.Open)
                 {
-                    await client.ShowAsync().ConfigureAwait(false);
+                    await client.ShowAsync(LaunchArgs.PageFor(args)).ConfigureAwait(false);
                 }
             }
             catch (Exception ex) when (ex is TimeoutException or IOException or ControlPipeException or UnauthorizedAccessException)
@@ -108,7 +108,7 @@ internal static class Program
         shell.ShowRequested += (_, page) => OpenWindow(paths, page);
         if (launch == LaunchMode.Open && LaunchArgs.IsProtocol(args))
         {
-            shell.RequestShow(null);
+            shell.RequestShow(LaunchArgs.PageFor(args));
         }
         // The hidden window always runs (test mode too) so shutdown, logoff, update and resume reach the host;
         // the icon itself only outside test mode unless asked for.

@@ -46,6 +46,15 @@ public partial class App : Application
     {
         var text = e.Data is Windows.ApplicationModel.Activation.ILaunchActivatedEventArgs launch ? launch.Arguments : null;
         if (TrayPopupArgs.Find(text) is { } at) TogglePopup(at.X, at.Y);
+        else if (PageArgs.Find(text) is { } page)
+        {
+            // A link such as portal-ai-host:settings/performance: open that page, in the running window or a new one.
+            var open = _window is not null;
+            AppOptions.SetStartPage(page);
+            var window = EnsureMainWindow();
+            window.Activate();
+            if (open) AppServices.NavigateTo?.Invoke(page);
+        }
         else EnsureMainWindow().Activate();
     }
 

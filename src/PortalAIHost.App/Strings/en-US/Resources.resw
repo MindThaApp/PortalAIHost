@@ -443,4 +443,60 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="Vm_MoveBody" xml:space="preserve"><value>Your models are copied to {0}, checked, and only then the old copies are removed. The model in use is unloaded while this runs. Files in the old folder that the host did not put there are never touched.</value></data>
   <data name="Vm_MoveYes" xml:space="preserve"><value>Move my models</value></data>
   <data name="Vm_MoveSettingsRunning" xml:space="preserve"><value>Moving your models, {0}%</value></data>
+  <data name="SettingsPerformanceHeader.Text" xml:space="preserve"><value>Performance</value></data>
+  <data name="SettingsResetPerformance.Content" xml:space="preserve"><value>Reset to default</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Reset performance settings to default</value></data>
+  <data name="SettingsPreset.Header" xml:space="preserve"><value>Performance</value></data>
+  <data name="SettingsPreset.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Performance</value></data>
+  <data name="SettingsMemory.Header" xml:space="preserve"><value>Maximum memory for AI</value></data>
+  <data name="SettingsMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Maximum memory for AI</value></data>
+  <data name="SettingsKeepFree.Header" xml:space="preserve"><value>Always leave free</value></data>
+  <data name="SettingsKeepFree.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Always leave free</value></data>
+  <data name="SettingsRunOn.Header" xml:space="preserve"><value>Run on</value></data>
+  <data name="SettingsRunOn.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Run on</value></data>
+  <data name="SettingsGpuMemory.Header" xml:space="preserve"><value>Graphics memory for AI</value></data>
+  <data name="SettingsGpuMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Graphics memory for AI</value></data>
+  <data name="SettingsCores.Header" xml:space="preserve"><value>Processor cores</value></data>
+  <data name="SettingsCores.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Processor cores</value></data>
+  <data name="SettingsPriority.Header" xml:space="preserve"><value>Priority</value></data>
+  <data name="SettingsPriority.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Priority</value></data>
+  <data name="SettingsMemoryHelp.Text" xml:space="preserve"><value>The AI never uses more than this. Lower means a smaller model or slower replies.</value></data>
+  <data name="SettingsKeepFreeHelp.Text" xml:space="preserve"><value>Memory kept free for your other programs.</value></data>
+  <data name="SettingsCoresHelp.Text" xml:space="preserve"><value>Fewer cores keep your PC responsive while the AI works.</value></data>
+  <data name="Vm_Perf_Quiet" xml:space="preserve"><value>Quiet</value></data>
+  <data name="Vm_Perf_Balanced" xml:space="preserve"><value>Balanced</value></data>
+  <data name="Vm_Perf_Fast" xml:space="preserve"><value>Fast</value></data>
+  <data name="Vm_Perf_Custom" xml:space="preserve"><value>Custom</value></data>
+  <data name="Vm_Perf_Help_quiet" xml:space="preserve"><value>About half the speed. Your PC stays responsive.</value></data>
+  <data name="Vm_Perf_Help_balanced" xml:space="preserve"><value>Good speed, and your other programs come first.</value></data>
+  <data name="Vm_Perf_Help_fast" xml:space="preserve"><value>Fastest replies. Other programs may slow down.</value></data>
+  <data name="Vm_Perf_Help_custom" xml:space="preserve"><value>Your own settings.</value></data>
+  <data name="Vm_Perf_Run_Auto" xml:space="preserve"><value>Automatic</value></data>
+  <data name="Vm_Perf_Run_Gpu" xml:space="preserve"><value>Graphics card</value></data>
+  <data name="Vm_Perf_Run_Cpu" xml:space="preserve"><value>Processor</value></data>
+  <data name="Vm_Perf_RunHelp_auto" xml:space="preserve"><value>Uses the graphics card when it helps.</value></data>
+  <data name="Vm_Perf_RunHelp_gpu" xml:space="preserve"><value>Fastest, if the model fits.</value></data>
+  <data name="Vm_Perf_RunHelp_cpu" xml:space="preserve"><value>Slower, but leaves the graphics card free for games.</value></data>
+  <data name="Vm_Perf_NoGpu" xml:space="preserve"><value>Processor only: no supported graphics card found</value></data>
+  <data name="Vm_Perf_Prio_Low" xml:space="preserve"><value>Low</value></data>
+  <data name="Vm_Perf_Prio_Normal" xml:space="preserve"><value>Normal</value></data>
+  <data name="Vm_Perf_PrioHelp_Low" xml:space="preserve"><value>Your own work always comes first.</value></data>
+  <data name="Vm_Perf_PrioHelp_Normal" xml:space="preserve"><value>Faster, but can slow other programs.</value></data>
+  <data name="Vm_Perf_Gb" xml:space="preserve"><value>{0} GB</value></data>
+  <data name="Vm_Perf_Cores" xml:space="preserve"><value>{0} of {1} cores</value></data>
+  <data name="Vm_Perf_MemoryRange" xml:space="preserve"><value>From {0} GB to {1} GB</value></data>
+  <data name="Vm_Perf_StopFull" xml:space="preserve"><value>{0} GB · fits {1} fully</value></data>
+  <data name="Vm_Perf_StopPartial" xml:space="preserve"><value>{0} GB · fits {1}, partly on the processor</value></data>
+  <data name="Vm_Perf_StopCpu" xml:space="preserve"><value>{0} GB · fits {1} on the processor</value></data>
+  <data name="Vm_Perf_StopNone" xml:space="preserve"><value>{0} GB · too small for the models in the list</value></data>
+  <data name="Vm_Perf_Fit_Full" xml:space="preserve"><value>Runs fully on the graphics card</value></data>
+  <data name="Vm_Perf_Fit_Partial" xml:space="preserve"><value>Part on the graphics card, part on the processor: slower</value></data>
+  <data name="Vm_Perf_Fit_Cpu" xml:space="preserve"><value>Runs on the processor: slowest</value></data>
+  <data name="Vm_Perf_Fit_Smaller" xml:space="preserve"><value>Too little memory for {0}. Switch to {1}?</value></data>
+  <data name="Vm_Perf_Fit_LittleMemory" xml:space="preserve"><value>Too little memory for {0}.</value></data>
+  <data name="Vm_Perf_Fit_TooBig" xml:space="preserve"><value>Too big for this PC</value></data>
+  <data name="Vm_Perf_TheModel" xml:space="preserve"><value>The model</value></data>
+  <data name="Vm_Perf_Applied" xml:space="preserve"><value>Applied. The new limits are in force.</value></data>
+  <data name="Vm_Perf_Reloading" xml:space="preserve"><value>Applied. {0} is reloading with the new limits.</value></data>
+  <data name="Vm_Perf_Unloaded" xml:space="preserve"><value>Applied. {0} no longer fits and was unloaded. It stays on disk; pick a smaller one on the Models page.</value></data>
 </root>

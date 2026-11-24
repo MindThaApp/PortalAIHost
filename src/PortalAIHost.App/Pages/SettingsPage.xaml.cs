@@ -17,11 +17,32 @@ public sealed partial class SettingsPage : Page
         ViewModel.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(SettingsViewModel.MessageKind)) ShowSeverity();
+            if (e.PropertyName == nameof(SettingsViewModel.PerformanceMessageKind)) ShowPerformanceSeverity();
         };
+        ShowPerformanceSeverity();
         ShowSeverity();
     }
 
     public SettingsViewModel ViewModel { get; }
+
+    private void ShowPerformanceSeverity() => PerformanceResultBar.Severity = ViewModel.PerformanceMessageKind switch
+    {
+        SettingsViewModel.MessageSuccess => InfoBarSeverity.Success,
+        SettingsViewModel.MessageWarning => InfoBarSeverity.Warning,
+        SettingsViewModel.MessageError => InfoBarSeverity.Error,
+        _ => InfoBarSeverity.Informational,
+    };
+
+    /// <summary>Brings the Performance section into view when a protocol link asked for it.</summary>
+    public void ShowPendingSection()
+    {
+        var section = AppServices.PendingSettingsSection;
+        AppServices.PendingSettingsSection = null;
+        if (section == "performance")
+        {
+            DispatcherQueue.TryEnqueue(() => PerformanceHeader.StartBringIntoView());
+        }
+    }
 
     private void ShowSeverity() => ResultBar.Severity = ViewModel.MessageKind switch
     {
@@ -41,7 +62,11 @@ public sealed partial class SettingsPage : Page
         ViewModel.CommitFolderCommand.Execute(null);
     }
 
-    protected override async void OnNavigatedTo(NavigationEventArgs e) => await ViewModel.LoadAsync();
+    protected override async void OnNavigatedTo(NavigationEventArgs e)
+    {
+        await ViewModel.LoadAsync();
+        ShowPendingSection();
+    }
 
     protected override void OnNavigatedFrom(NavigationEventArgs e) => ViewModel.Dispose();
 }

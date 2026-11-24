@@ -123,6 +123,16 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
     public Task<HostSettings> GetSettingsAsync(CancellationToken ct = default) =>
         RequestAsync(ControlTypes.GetSettings, AiHostJsonContext.Default.HostSettings, ct);
 
+    public async Task<PerformanceView> GetPerformanceAsync(HostSettings? candidate = null, CancellationToken ct = default)
+    {
+        var answer = await CallAsync(ControlTypes.GetPerformance,
+            candidate is null ? null : JsonSerializer.SerializeToElement(candidate, AiHostJsonContext.Default.HostSettings), ct)
+            .ConfigureAwait(false);
+        return answer.Payload is { ValueKind: JsonValueKind.Object } p
+            ? p.Deserialize(AiHostJsonContext.Default.PerformanceView) ?? new PerformanceView()
+            : new PerformanceView();
+    }
+
     public async Task<SettingsSaved> SetSettingsAsync(HostSettings settings, CancellationToken ct = default)
     {
         var answer = await CallAsync(ControlTypes.SetSettings, JsonSerializer.SerializeToElement(settings, AiHostJsonContext.Default.HostSettings), ct)

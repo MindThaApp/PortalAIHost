@@ -46,6 +46,7 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
         TextChoices = Names("Vm_Text_", "Normal", "Larger", "Largest");
         MotionChoices = Names("Vm_Motion_", "Follow", "Reduced", "Off");
         ShowAppearance(shell.State.Appearance);
+        InitPerformance();
     }
 
     public void Dispose() => _shell.Host.StoreProgress -= OnStoreProgress;
@@ -265,6 +266,7 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
             var shownFolder = "";
             try { shownFolder = (await _shell.Host.ListModelsAsync().ConfigureAwait(false)).StorageFolder; }
             catch (Exception ex) when (ex is HostUnavailableException or HostRequestException) { }
+            await LoadPerformanceAsync().ConfigureAwait(false);
             _ui.Post(() =>
             {
                 _loading = true;
@@ -330,17 +332,26 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
             KeepLoaded = IdleIndex == KeepLoadedIndex,
             IdleUnloadSeconds = IdleIndex == FiveMinutesIndex ? 300 : 600,
         };
-        return new HostSettings
+        var next = new HostSettings
         {
             StartWithWindows = StartWithWindows,
             Backend = _current.Backend,
             ModelsFolder = folder ?? _current.ModelsFolder,
             MaxMemoryPercent = _current.MaxMemoryPercent,
+            Preset = _current.Preset,
+            MemoryLimitBytes = _current.MemoryLimitBytes,
+            KeepFreeBytes = _current.KeepFreeBytes,
+            Compute = _current.Compute,
+            GpuMemoryLimitBytes = _current.GpuMemoryLimitBytes,
+            CpuThreads = _current.CpuThreads,
+            Priority = _current.Priority,
             PreventSleepWhileDownloading = _current.PreventSleepWhileDownloading,
             SendCrashReports = _shell.State.SendCrashReports,
             BandwidthCapBytesPerSecond = _current.BandwidthCapBytesPerSecond,
             Kinds = kinds,
         };
+        WritePerformance(next);
+        return next;
     }
 
     private async Task SaveAsync(string? folder = null)
