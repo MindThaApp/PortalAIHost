@@ -82,8 +82,10 @@ offers models whose licences allow commercial use (Apache 2.0 or MIT).
 3. private AI
 4. LLM
 5. AI model
-6. llama
-7. OpenAI compatible
+6. language model
+7. AI server
+
+No other products' names in keywords (Store policy 10.1.3; "llama" and "OpenAI" were rejected in certification).
 
 ## What's new in this version (1.0)
 
