@@ -11,7 +11,14 @@ namespace Portal.AiHost.Platform.Windows.Identity;
 /// </summary>
 public sealed class DpapiHostKeyProtector : IHostKeyProtector
 {
-    private static readonly byte[] Entropy = Encoding.UTF8.GetBytes("PortalAIHost.HostKey.v1");
+    private readonly byte[] _entropy;
+
+    public DpapiHostKeyProtector() : this("PortalAIHost.HostKey.v1")
+    {
+    }
+
+    /// <summary>A protector with its own entropy, so blobs of one purpose cannot be swapped for another.</summary>
+    internal DpapiHostKeyProtector(string entropy) => _entropy = Encoding.UTF8.GetBytes(entropy);
 
     public byte[] Protect(byte[] plaintext)
     {
@@ -32,13 +39,13 @@ public sealed class DpapiHostKeyProtector : IHostKeyProtector
         or unchecked((int)0x80090003) // NTE_BAD_KEY
         or unchecked((int)0x8009000B); // NTE_BAD_KEY_STATE (another user's or a reset profile key)
 
-    private static unsafe byte[] Transform(byte[] input, bool protect)
+    private unsafe byte[] Transform(byte[] input, bool protect)
     {
         fixed (byte* inPtr = input)
-        fixed (byte* entPtr = Entropy)
+        fixed (byte* entPtr = _entropy)
         {
             var inBlob = new IdentityNative.DataBlob { CbData = input.Length, PbData = (nint)inPtr };
-            var entBlob = new IdentityNative.DataBlob { CbData = Entropy.Length, PbData = (nint)entPtr };
+            var entBlob = new IdentityNative.DataBlob { CbData = _entropy.Length, PbData = (nint)entPtr };
             var outBlob = default(IdentityNative.DataBlob);
             var ok = protect
                 ? IdentityNative.CryptProtectData(&inBlob, null, &entBlob, 0, 0,

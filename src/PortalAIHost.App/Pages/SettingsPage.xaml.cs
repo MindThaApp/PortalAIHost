@@ -27,6 +27,27 @@ public sealed partial class SettingsPage : Page
 
     public SettingsViewModel ViewModel { get; }
 
+    /// <summary>Copies the pairing link (the text of the QR code). Never throws: a busy clipboard is retried, then ignored.</summary>
+    private void OnCopyPairingLink(object sender, RoutedEventArgs e)
+    {
+        var text = ViewModel.PairingQrText;
+        if (text.Length == 0) return;
+        for (var attempt = 0; attempt < 3; attempt++)
+        {
+            try
+            {
+                var package = new Windows.ApplicationModel.DataTransfer.DataPackage();
+                package.SetText(text);
+                Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(package);
+                return;
+            }
+            catch (System.Runtime.InteropServices.COMException)
+            {
+                System.Threading.Thread.Sleep(50);
+            }
+        }
+    }
+
     private void OnRemoveDevice(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { Tag: string id }) ViewModel.RemoveDeviceCommand.Execute(id);

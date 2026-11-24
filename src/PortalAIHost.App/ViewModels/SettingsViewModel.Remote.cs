@@ -26,6 +26,7 @@ public sealed partial class SettingsViewModel
     [ObservableProperty] private bool _pairingOpen;
     [ObservableProperty] private string _pairingCode = "";
     [ObservableProperty] private string _pairingQrText = "";
+    [ObservableProperty] private string _pairingAddressText = "";
     [ObservableProperty] private string _pairingExpiryText = "";
     [ObservableProperty] private string _pairingFingerprintText = "";
 
@@ -113,6 +114,7 @@ public sealed partial class SettingsViewModel
         _pairingExpires = offer.ExpiresAt;
         PairingCode = offer.Code;
         PairingQrText = offer.QrText;
+        PairingAddressText = _s.Format("Vm_PairingAddress", offer.Address, offer.Port);
         PairingExpiryText = _s.Format("Vm_PairingExpires", offer.ExpiresAt.LocalDateTime.ToString("t"));
         PairingFingerprintText = _s.Format("Vm_PairingFingerprint", Short(offer.Fingerprint));
         PairingOpen = true;
