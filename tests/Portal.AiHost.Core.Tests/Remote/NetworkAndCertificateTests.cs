@@ -1,3 +1,5 @@
+using Portal.AiHost.Contracts;
+using System.Text;
 using System.Net;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -45,6 +47,26 @@ public sealed class NetworkAndCertificateTests
     {
         var text = RemoteNetwork.QrText("192.168.1.20", 48123, "abc_-", "042917", "Desk PC");
         Assert.Equal("portalai://pair?h=192.168.1.20&p=48123&f=abc_-&c=042917&n=Desk%20PC", text);
+    }
+
+    [Fact]
+    public void QrTextCarriesTheRelayAddressOnlyWhenGiven()
+    {
+        var on = RemoteNetwork.QrText("192.168.1.20", 48123, "abc_-", "042917", "Desk PC", RemoteApi.RelayDefaultUrl);
+        Assert.Equal("portalai://pair?h=192.168.1.20&p=48123&f=abc_-&c=042917&n=Desk%20PC" +
+            "&r=https://portal-relay.portalai.workers.dev", on);
+        Assert.DoesNotContain("&r=", RemoteNetwork.QrText("192.168.1.20", 48123, "abc_-", "042917", "Desk PC", null));
+        Assert.DoesNotContain("&r=", RemoteNetwork.QrText("192.168.1.20", 48123, "abc_-", "042917", "Desk PC", ""));
+    }
+
+    [Fact]
+    public void LongestRealisticQrTextStillFitsTheQrCode()
+    {
+        var fingerprint = new string('A', 43);
+        var relay = "https://" + new string('r', 60) + ".example.com"; // about 80 characters
+        var text = RemoteNetwork.QrText("192.168.100.100", 48133, fingerprint, "ABCDEFGHJKMN", new string('N', 24), relay);
+        Assert.True(Encoding.UTF8.GetByteCount(text) <= 213);
+        Assert.True(QrCode.Encode(text).Version <= 10);
     }
 
     [Fact]

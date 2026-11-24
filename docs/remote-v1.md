@@ -29,7 +29,7 @@ There is no automatic discovery in v1. The device gets the host's address in one
 **Scan the QR code (preferred).** The text of the QR code is:
 
 ```
-portalai://pair?h=<ipv4>&p=<port>&f=<fingerprint>&c=<code>&n=<host name>
+portalai://pair?h=<ipv4>&p=<port>&f=<fingerprint>&c=<code>&n=<host name>[&r=<relay url>]
 ```
 
 | Field | Meaning |
@@ -39,8 +39,9 @@ portalai://pair?h=<ipv4>&p=<port>&f=<fingerprint>&c=<code>&n=<host name>
 | `f` | SHA-256 of the host certificate (DER), base64url without padding (43 characters). |
 | `c` | The pairing code, 12 characters without hyphens (section 3.2). |
 | `n` | The PC's name, URL-escaped (at most 24 characters). |
+| `r` | Optional. The relay base address (section 10.1), URL-escaped (the host leaves `:` and `/` as they are to keep the code small). Present only while the relay is on in the host; absent means no relay, LAN only. |
 
-Parse it as a URI. Unknown fields must be ignored. With a QR code the device knows the certificate fingerprint before
+Parse it as a URI. Unknown fields must be ignored. A device accepts `r` only if it is an absolute `https` URL (plain `http` only for a loopback address, for tests); anything else counts as no `r`. With a QR code the device knows the certificate fingerprint before
 it connects, so it can refuse any other certificate (section 3).
 
 **Type the code.** The device asks for the PC's address (or lets the user pick it) and the 12-character code. The
@@ -291,8 +292,9 @@ Remote use is meant for text chat; the limits below are strict on purpose.
   Nothing else: **the room id is derived from `F`**.
 - `room = base64url_nopad( SHA-256( "portalai-relay-v1" || F ) )`, where `"portalai-relay-v1"` is the 17 ASCII bytes
   and `F` the 32 raw bytes. The result is 43 characters.
-- The relay address. Default `https://portal-relay.portalai.workers.dev` (the owner can override it in the host's
-  settings for testing; a device needs to know the same address, for example from a setting or a future QR field).
+- The relay address, from the `r` field of the QR code (section 2). The host puts its own address there whenever the
+  relay is on: by default `https://portal-relay.portalai.workers.dev`, or the address the owner set in the host's
+  settings for testing. A device never hard-codes it, and **without `r` it must not use a relay**.
 
 A device tries the home network first (section 2) and falls back to the relay when the host's address cannot be reached.
 

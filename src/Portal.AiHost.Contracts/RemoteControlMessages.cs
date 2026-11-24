@@ -39,7 +39,7 @@ public sealed class PairingOfferInfo
     public string Code { get; set; } = "";
     public DateTimeOffset ExpiresAt { get; set; }
 
-    /// <summary>portalai://pair?h=...&amp;p=...&amp;f=...&amp;c=...&amp;n=...</summary>
+    /// <summary>portalai://pair?h=...&amp;p=...&amp;f=...&amp;c=...&amp;n=...[&amp;r=...]</summary>
     public string QrText { get; set; } = "";
     public string HostName { get; set; } = "";
     public string Address { get; set; } = "";

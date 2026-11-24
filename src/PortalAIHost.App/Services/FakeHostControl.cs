@@ -629,7 +629,7 @@ public sealed class FakeHostControl : IHostControl, IDisposable
                 Address = "192.168.1.20",
                 Port = _settings.Remote.Port,
                 Fingerprint = "fake-fingerprint",
-                QrText = "portalai://pair?h=192.168.1.20&p=48123&f=fake-fingerprint&c=ABCDEFGHJKMN&n=Desk%20PC",
+                QrText = "portalai://pair?h=192.168.1.20&p=48123&f=fake-fingerprint&c=ABCDEFGHJKMN&n=Desk%20PC&r=https://portal-relay.portalai.workers.dev",
             };
             return Task.FromResult(Pairing);
         }
