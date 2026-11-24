@@ -330,8 +330,15 @@ public class RoundTripTests
         RoundTrip("""{ "kind": "chat", "state": "ready", "progress": 1 }""", Ctx.EngineStateEvent);
         RoundTrip("""
             { "start_with_windows": true, "backend": "auto", "max_memory_percent": 80, "preset": "balanced", "compute": "auto", "priority": "low", "cpu_ceiling_percent": 100, "ease_off": ["fullscreen", "battery", "app_busy"], "prevent_sleep_while_downloading": true, "send_crash_reports": true,
+              "remote": { "enabled": false, "port": 48123 },
               "kinds": { "chat": { "keep_loaded": false, "idle_unload_seconds": 600 } } }
             """, Ctx.HostSettings);
+        RoundTrip("""{ "enabled": true, "listening": true, "port": 48123, "host_name": "Desk PC", "addresses": ["192.168.1.20"], "devices": [ { "device_id": "dev_a", "name": "Laptop", "created_at": "2026-11-24T10:00:00+00:00" } ] }""", Ctx.RemoteStatus);
+        RoundTrip("""{ "code": "042917", "expires_at": "2026-11-24T10:05:00+00:00", "qr_text": "portalai://pair?h=1", "host_name": "Desk PC", "address": "192.168.1.20", "port": 48123, "fingerprint": "abc" }""", Ctx.PairingOfferInfo);
+        RoundTrip("""{ "client_nonce": "a", "device_name": "Laptop", "device_public_key": "b", "mac": "c" }""", Ctx.PairStartRequest);
+        RoundTrip("""{ "host_nonce": "a", "fingerprint": "b", "host_name": "Desk PC", "mac": "c" }""", Ctx.PairStartResponse);
+        RoundTrip("""{ "host_nonce": "a", "mac": "c" }""", Ctx.PairFinishRequest);
+        RoundTrip("""{ "device_id": "dev_a", "mac": "c" }""", Ctx.PairFinishResponse);
         RoundTrip("""{ "request": { "model": "default", "messages": [ { "role": "user", "content": "hi" } ] } }""", Ctx.TryItRequest);
     }
 
