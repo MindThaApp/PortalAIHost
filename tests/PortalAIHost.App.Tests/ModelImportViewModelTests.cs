@@ -43,6 +43,7 @@ public class ModelImportViewModelTests
         Assert.Equal("Vm_UserAddedBadge", row.Badge);
         Assert.Equal("Vm_UserAddedReason", row.Reason);
         Assert.False(row.CanCheck);
+        Assert.False(row.CanRedownload);
         Assert.True(row.CanRemove);
         Assert.True(row.CanActivate);
         Assert.StartsWith("Vm_RemoveUserBody", row.RemoveBody);

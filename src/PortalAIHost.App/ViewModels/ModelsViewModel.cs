@@ -214,7 +214,7 @@ public sealed partial class ModelRowViewModel : ObservableObject
         // The model in use can be removed too: the host unloads it first.
         CanRemove = InOldFolder || (Installed && !busy && !Removing && !Checking);
         CanCheck = !InOldFolder && Installed && !ExistingCopy && !UserAdded && !Checking && !Removing;
-        CanRedownload = !InOldFolder && Installed && Damaged && !Checking && !Removing && !ExistingCopy;
+        CanRedownload = !InOldFolder && Installed && Damaged && !Checking && !Removing && !ExistingCopy && !UserAdded;
         if (InOldFolder)
         {
             CanPause = CanResume = CanCancel = ShowProgress = false;

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Portal.AiHost.Contracts;
 using Portal.AiHost.Contracts.Control;
 using Portal.AiHost.Core.Store;
@@ -124,6 +125,16 @@ internal sealed partial class ModelCenter
             await PushStoreAsync(new StoreProgressEvent
             {
                 Operation = StoreOperations.Import, State = StoreStates.Failed, Message = ex.Message,
+            }).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException)
+        {
+            // Anything unexpected (a busy model, a missing record): still end the operation so the page is not left busy.
+            Trace.WriteLine("Portal AI Host: import failed: " + ex.GetType().Name);
+            await PushStoreAsync(new StoreProgressEvent
+            {
+                Operation = StoreOperations.Import, State = StoreStates.Failed,
+                Message = "Something went wrong while adding the model. Nothing was kept, and your original file was not changed.",
             }).ConfigureAwait(false);
         }
         finally

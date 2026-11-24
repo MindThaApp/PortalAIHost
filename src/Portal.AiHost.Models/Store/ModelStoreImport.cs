@@ -181,7 +181,7 @@ public sealed partial class ModelStore : IModelStoreImporter
     /// <summary>A store file name from the user's file name: letters, digits, dot, dash and underscore, ending in .gguf.</summary>
     internal static string SafeStoreFileName(string stem)
     {
-        var s = UnsafeNameChars().Replace(stem, "-").Trim('-', '.', '_');
+        var s = DotRuns().Replace(UnsafeNameChars().Replace(stem, "-"), ".").Trim('-', '.', '_');
         if (s.Length == 0 || OwnedFolder.IsReservedDeviceName(s))
         {
             s = "model";
@@ -189,7 +189,8 @@ public sealed partial class ModelStore : IModelStoreImporter
 
         if (s.Length > 150)
         {
-            s = s[..150];
+            s = s[..150].Trim('-', '.', '_');
+            if (s.Length == 0) s = "model";
         }
 
         return s + ".gguf";
@@ -218,6 +219,9 @@ public sealed partial class ModelStore : IModelStoreImporter
             }
         }
     }
+
+    [GeneratedRegex(@"\.{2,}")]
+    private static partial Regex DotRuns();
 
     [GeneratedRegex("[^A-Za-z0-9._-]+")]
     private static partial Regex UnsafeNameChars();

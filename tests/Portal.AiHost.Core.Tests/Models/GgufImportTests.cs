@@ -54,6 +54,20 @@ public class GgufImportTests
     }
 
     [Fact]
+    public void ContextLengthComesOnlyFromTheArchitectureKeyEvenWhenItIsListedFirst()
+    {
+        using var ms = new MemoryStream();
+        using var w = new BinaryWriter(ms);
+        w.Write("GGUF"u8.ToArray()); w.Write(3u); w.Write(1UL); w.Write(3UL);
+        void Str(string v) { w.Write((ulong)v.Length); w.Write(Encoding.UTF8.GetBytes(v)); }
+        Str("other.context_length"); w.Write(4u); w.Write(111u);
+        Str("llama.context_length"); w.Write(4u); w.Write(4096u);
+        Str("general.architecture"); w.Write(8u); Str("llama");
+        w.Write(new byte[64]);
+        Assert.Equal(4096, GgufReader.Read(new MemoryStream(ms.ToArray())).ContextLength);
+    }
+
+    [Fact]
     public void MissingNameStillReads()
     {
         var info = GgufReader.Read(new MemoryStream(Gguf(name: null)));
@@ -275,6 +289,8 @@ public class GgufImportTests
     {
         Assert.Equal("My-Model-Q4.gguf", ModelStore.SafeStoreFileName("My Model (Q4)"));
         Assert.Equal("model.gguf", ModelStore.SafeStoreFileName("..."));
+        Assert.Equal("Model.v2.gguf", ModelStore.SafeStoreFileName("Model..v2"));
+        Assert.Equal("a.b.gguf", ModelStore.SafeStoreFileName(".a...b."));
         Assert.Equal("model.gguf", ModelStore.SafeStoreFileName("CON"));
         Assert.EndsWith(".gguf", ModelStore.SafeStoreFileName(new string('a', 400)));
     }

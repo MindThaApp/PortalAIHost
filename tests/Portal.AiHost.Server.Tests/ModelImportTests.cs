@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Text;
 using Portal.AiHost.Contracts;
 using Portal.AiHost.Contracts.Control;
+using Portal.AiHost.Core.Abstractions;
 using Portal.AiHost.Core.Store;
 using PortalAIHost.Service;
 
@@ -104,5 +105,39 @@ public sealed class ModelImportTests
         Assert.Empty(await store.ListAsync(CancellationToken.None));
         Assert.Empty(Directory.EnumerateFiles(store.Location.Path, "*.part*", SearchOption.AllDirectories));
         Assert.Equal(data, File.ReadAllBytes(src));
+    }
+
+    private sealed class ThrowingStore : IModelStoreImporter
+    {
+        public StoreLocation Location => new("X:\none", Guid.Empty, 0, "NTFS");
+        public Task<ImportResult> ImportGgufAsync(string sourcePath, Action<long>? onCopied, CancellationToken ct) =>
+            throw new InvalidOperationException("busy");
+        public Task<IReadOnlyList<StoredModel>> ListAsync(CancellationToken ct) => Task.FromResult<IReadOnlyList<StoredModel>>([]);
+        public Task<StoredModel?> GetAsync(string modelId, CancellationToken ct) => Task.FromResult<StoredModel?>(null);
+        public Task<string> BeginFileAsync(string modelId, string fileName, CancellationToken ct) => throw new NotSupportedException();
+        public Task<StoredFile> CommitFileAsync(string modelId, string partPath, string sha256, CancellationToken ct) => throw new NotSupportedException();
+        public Task SetInUseAsync(string modelId, bool inUse, CancellationToken ct) => Task.CompletedTask;
+        public Task<StoredModel> AddExternalAsync(string filePath, string kind, string engine, CancellationToken ct) => throw new NotSupportedException();
+        public Task RemoveAsync(string modelId, CancellationToken ct) => Task.CompletedTask;
+        public Task MoveStoreAsync(string newParentFolder, IProgress<double>? progress, CancellationToken ct) => Task.CompletedTask;
+    }
+
+    [Fact(Timeout = 30000)]
+    public async Task An_unexpected_store_error_still_ends_with_a_failed_event_and_frees_the_operation()
+    {
+        using var root = new TestRoot();
+        var src = Path.Combine(root.Sub("in"), "m.gguf");
+        File.WriteAllBytes(src, Gguf(100));
+        var events = new ConcurrentQueue<StoreProgressEvent>();
+        var center = new ModelCenter(new ThrowingStore(), null, null, null, () => new HostSettings(), _ => null, _ => Task.CompletedTask)
+        {
+            Hooks = new ModelCenterHooks { PushStore = e => { events.Enqueue(e); return Task.CompletedTask; } },
+        };
+
+        await await center.StartImportAsync(src, CancellationToken.None);
+
+        Assert.Equal(StoreStates.Failed, events.Last().State);
+        Assert.Equal(StoreOperations.Import, events.Last().Operation);
+        await await center.StartImportAsync(src, CancellationToken.None); // the operation was released
     }
 }

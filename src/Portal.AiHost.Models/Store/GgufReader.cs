@@ -49,6 +49,7 @@ public static class GgufReader
 
         string? name = null, arch = null;
         long? context = null;
+        var candidates = new Dictionary<string, long>(StringComparer.Ordinal);
         for (ulong i = 0; i < count; i++)
         {
             var key = r.Str(MaxKeyBytes);
@@ -70,18 +71,20 @@ public static class GgufReader
             else if (wantsNumber && IsInteger(type))
             {
                 var v = r.Integer(type);
-                if (arch is not null && key == arch + ".context_length")
+                candidates[key] = v; // resolved against the architecture once it is known
+                if (arch is not null && candidates.TryGetValue(arch + ".context_length", out var exact))
                 {
-                    context = v;
-                }
-                else if (arch is null && context is null)
-                {
-                    context = v; // architecture not seen yet; the usual order puts it first, so this is rare
+                    context = exact;
                 }
             }
             else
             {
                 r.Skip(type);
+            }
+
+            if (arch is not null && candidates.TryGetValue(arch + ".context_length", out var found))
+            {
+                context = found;
             }
 
             if (name is not null && arch is not null && context is not null)
