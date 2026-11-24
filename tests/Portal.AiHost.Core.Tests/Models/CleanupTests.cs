@@ -63,7 +63,7 @@ public class CleanupTests
         var old = await AddPartialAsync(store, "old", "o.gguf", 100, ageDays: 7.1);
 
         var found = Assert.Single(await ScanAsync(store));
-        Assert.Contains("o.gguf", found.Label);
+        Assert.Equal("old", found.Label);
         await store.CleanLeftoversAsync([found.Id], Week, Ct);
         Assert.True(File.Exists(fresh));
         Assert.False(File.Exists(old));

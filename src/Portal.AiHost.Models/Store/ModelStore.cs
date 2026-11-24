@@ -754,7 +754,10 @@ public sealed partial class ModelStore : IModelStoreWriter, IModelStoreMover, IM
     public Task RemoveDamagedAsync(string modelId, CancellationToken ct) => RemoveCore(modelId, skipIdentity: true, ct);
 
     private Task RemoveCore(string modelId, bool skipIdentity, CancellationToken ct) =>
-        Locked(ct, () =>
+        Locked(ct, () => RemoveCoreLocked(modelId, skipIdentity));
+
+    /// <summary>The removal of a whole model; the caller holds the store gate.</summary>
+    private void RemoveCoreLocked(string modelId, bool skipIdentity)
         {
             var m = Find(modelId) ?? throw new KeyNotFoundException(modelId);
             if (m.Files.Any(f => f.State == StoredFileState.InUse))
@@ -812,9 +815,15 @@ public sealed partial class ModelStore : IModelStoreWriter, IModelStoreMover, IM
             }
 
             _manifest.Models.Remove(m);
-            _folder.TryRemoveEmptyFolder(m.Folder!);
             SaveManifest();
-        });
+            try
+            {
+                _folder.TryRemoveEmptyFolder(m.Folder!); // the files are gone and recorded as gone; an empty folder left behind is harmless
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+            }
+    }
 
     public Task<bool> ClearStalePreviousStoreAsync(CancellationToken ct) => Locked(ct, ClearStaleCore);
 

@@ -387,6 +387,12 @@ public sealed partial class ModelsViewModel : ObservableObject, IDisposable
 
     private void OnStoreProgress(StoreProgressEvent e) => _ui.Post(() =>
     {
+        if (e.Operation == StoreOperations.Cleanup)
+        {
+            if (e.State == StoreStates.Running && CleanupWorking && e.Message is { Length: > 0 } note) CleanupLine = _s.Get("Vm_CleanupRunning") + " " + note;
+            return;
+        }
+
         if (e.Operation == StoreOperations.Verify)
         {
             Models.FirstOrDefault(m => m.Id == e.CatalogueId && !m.InOldFolder)?.ApplyCheck(e);

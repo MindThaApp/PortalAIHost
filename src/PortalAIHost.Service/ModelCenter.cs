@@ -106,6 +106,39 @@ internal sealed partial class ModelCenter : IAsyncDisposable
         }
     }
 
+    private int _activating;
+
+    /// <summary>
+    /// Held while a model is being switched on: checks for a running move, check or clean and marks the activation in one
+    /// step, so a clean cannot start (and remove that model) until it is done.
+    /// </summary>
+    public IDisposable EnterActivation()
+    {
+        lock (_opSync)
+        {
+            AssertIdle();
+            _activating++;
+        }
+
+        return new ActivationGuard(this);
+    }
+
+    private sealed class ActivationGuard(ModelCenter owner) : IDisposable
+    {
+        private int _done;
+
+        public void Dispose()
+        {
+            if (Interlocked.Exchange(ref _done, 1) == 0)
+            {
+                lock (owner._opSync)
+                {
+                    owner._activating--;
+                }
+            }
+        }
+    }
+
     /// <summary>Optional links to the rest of the host. Set once, right after construction.</summary>
     public ModelCenterHooks Hooks { get; init; } = new();
 
@@ -352,7 +385,20 @@ internal sealed partial class ModelCenter : IAsyncDisposable
         }
 
         var run = new Running();
-        if (_disposed || !_running.TryAdd(id, run))
+        bool added;
+        lock (_opSync)
+        {
+            // Taking the download slot and checking for a running move, check or clean is one step, so a clean cannot slip in between.
+            if (_op is not null)
+            {
+                run.Dispose();
+                AssertIdle();
+            }
+
+            added = !_disposed && _running.TryAdd(id, run);
+        }
+
+        if (!added)
         {
             run.Dispose();
             return; // already downloading, or the host started shutting down

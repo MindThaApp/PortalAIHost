@@ -9,7 +9,7 @@ namespace PortalAIHost.Service;
 /// <summary>
 /// "Free up space": a read-only scan of what the host itself left behind, and the removal of the items the user
 /// ticked. Only the store decides what is removable (see <see cref="IModelStoreCleaner"/>); this class adds the
-/// models a check marked damaged and refuses while a move, check, clean or download is running.
+/// models a check marked damaged and refuses while a move, check, clean, activation or download is running.
 /// </summary>
 internal sealed partial class ModelCenter
 {
@@ -28,9 +28,28 @@ internal sealed partial class ModelCenter
                     : _opName == StoreOperations.Cleanup ? "Space is already being freed up."
                     : "A model is being checked. Wait until that finishes.";
             }
-        }
 
-        return _running.IsEmpty ? null : "A download is running. Pause it first, then free up space.";
+            if (_activating > 0)
+            {
+                return "A model is being switched on. Try again in a moment.";
+            }
+
+            return _running.IsEmpty ? null : "A download is running. Pause it first, then free up space.";
+        }
+    }
+
+    /// <summary>Takes the clean's slot and checks for everything that must not run alongside it, in one step.</summary>
+    private CancellationTokenSource BeginCleanup()
+    {
+        lock (_opSync)
+        {
+            if (CleanupBusyReason() is { } busy)
+            {
+                throw new ControlPipeException(ErrorCodes.InvalidRequest, busy);
+            }
+
+            return BeginOperation(StoreOperations.Cleanup);
+        }
     }
 
     /// <summary>Reads only: what could be removed, and its size.</summary>
@@ -73,7 +92,7 @@ internal sealed partial class ModelCenter
     private async Task<List<CleanupItemInfo>> DamagedCandidatesAsync(CancellationToken ct)
     {
         var list = new List<CleanupItemInfo>();
-        if (_store is not IModelStoreRepair || Hooks.Notes is not { } notes)
+        if (_store is not IModelStoreCleaner cleaner || Hooks.Notes is not { } notes)
         {
             return list;
         }
@@ -86,10 +105,15 @@ internal sealed partial class ModelCenter
                 continue;
             }
 
+            if (await cleaner.DescribeDamagedAsync(m.Id, ct).ConfigureAwait(false) is not { } described)
+            {
+                continue; // links, odd paths or a file in the way: never offered
+            }
+
             list.Add(new CleanupItemInfo
             {
-                Id = $"{DamagedPrefix}{m.Id}|{m.TotalBytes}", Kind = CleanupKinds.Damaged, Label = m.DisplayName,
-                Detail = reason, Bytes = m.TotalBytes, FileCount = m.Files.Count,
+                Id = described.Id, Kind = CleanupKinds.Damaged, Label = m.DisplayName,
+                Detail = reason, Bytes = described.Bytes, FileCount = described.FileCount,
             });
         }
 
@@ -107,20 +131,18 @@ internal sealed partial class ModelCenter
             throw new ControlPipeException(ErrorCodes.FeatureDisabled, "The models folder is not available.");
         }
 
-        if (CleanupBusyReason() is { } busy)
-        {
-            throw new ControlPipeException(ErrorCodes.InvalidRequest, busy);
-        }
-
-        var cts = BeginOperation(StoreOperations.Cleanup);
+        var cts = BeginCleanup();
         try
         {
             using var linked = CancellationTokenSource.CreateLinkedTokenSource(ct, cts.Token);
             var token = linked.Token;
+            await PushStoreAsync(new StoreProgressEvent { Operation = StoreOperations.Cleanup, State = StoreStates.Running, Message = "This can take a while for large models." })
+                .ConfigureAwait(false);
             var previous = (_store as IModelStoreMover)?.PreviousLocation;
             long freed = 0;
             var removed = new List<string>();
             var skipped = new List<CleanupSkipped>();
+            var removedModelIds = new List<string>();
 
             var storeIds = itemIds.Where(i => !i.StartsWith(DamagedPrefix, StringComparison.Ordinal)).ToList();
             if (storeIds.Count > 0 && _store is IModelStoreCleaner cleaner)
@@ -128,35 +150,35 @@ internal sealed partial class ModelCenter
                 var outcome = await cleaner.CleanLeftoversAsync(storeIds, PartialKeepAge, token).ConfigureAwait(false);
                 freed += outcome.FreedBytes;
                 removed.AddRange(outcome.Removed);
+                removedModelIds.AddRange(outcome.RemovedModelIds);
                 skipped.AddRange(outcome.Skipped.Select(s => new CleanupSkipped { Label = s.Label, Reason = s.Reason }));
             }
 
             var damagedIds = itemIds.Where(i => i.StartsWith(DamagedPrefix, StringComparison.Ordinal)).ToList();
-            if (damagedIds.Count > 0)
+            if (damagedIds.Count > 0 && _store is IModelStoreCleaner damagedCleaner)
             {
                 var fresh = (await DamagedCandidatesAsync(token).ConfigureAwait(false)).ToDictionary(i => i.Id, StringComparer.Ordinal);
                 foreach (var id in damagedIds)
                 {
-                    if (!fresh.TryGetValue(id, out var item))
+                    var modelId = id.Split('|').ElementAtOrDefault(1) ?? "";
+                    if (!fresh.ContainsKey(id))
                     {
-                        skipped.Add(new CleanupSkipped { Label = id.Split('|')[1], Reason = "It changed or came into use since it was listed, so it was left alone." });
+                        skipped.Add(new CleanupSkipped { Label = modelId, Reason = "It changed or came into use since it was listed, so it was left alone." });
                         continue;
                     }
 
-                    var modelId = id.Split('|')[1];
-                    try
-                    {
-                        await ((IModelStoreRepair)_store).RemoveDamagedAsync(modelId, token).ConfigureAwait(false);
-                        Hooks.Notes?.ClearDamaged(modelId, forgetUsage: true);
-                        _lastState.TryRemove(modelId, out _);
-                        freed += item.Bytes;
-                        removed.Add(item.Label);
-                    }
-                    catch (Exception ex) when (ex is InvalidOperationException or KeyNotFoundException or IOException or UnauthorizedAccessException)
-                    {
-                        skipped.Add(new CleanupSkipped { Label = item.Label, Reason = ex.Message });
-                    }
+                    var outcome = await damagedCleaner.CleanDamagedAsync(modelId, id, token).ConfigureAwait(false);
+                    freed += outcome.FreedBytes;
+                    removed.AddRange(outcome.Removed);
+                    removedModelIds.AddRange(outcome.RemovedModelIds);
+                    skipped.AddRange(outcome.Skipped.Select(s => new CleanupSkipped { Label = s.Label, Reason = s.Reason }));
                 }
+            }
+
+            foreach (var modelId in removedModelIds)
+            {
+                Hooks.Notes?.ClearDamaged(modelId, forgetUsage: true);
+                _lastState.TryRemove(modelId, out _); // no ghost "paused" download for a model that is gone
             }
 
             _lastStored = null;
@@ -165,6 +187,7 @@ internal sealed partial class ModelCenter
                 Hooks.ForgetFolder?.Invoke(previous); // the old folder's copies are gone: it is no longer an "earlier folder"
             }
 
+            await PushStoreAsync(new StoreProgressEvent { Operation = StoreOperations.Cleanup, State = StoreStates.Done }).ConfigureAwait(false);
             return new CleanupResult { FreedBytes = freed, Removed = removed, Skipped = skipped };
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException)
