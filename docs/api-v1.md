@@ -275,7 +275,7 @@ the host re-plans memory; the revision number tells you when.
 ```
 `endpoints` lists `"performance"` on hosts that have `GET /host/performance` (1.0.2 and later) and `"ease-off"` on
 hosts that have `POST /host/ease-off` (1.0.3 and later), and `"health"` on hosts that have `GET /host/health`
-(1.0.4 and later). Check for them before calling; older hosts do not list them.
+(1.0.3 and later). Check for them before calling; older hosts do not list them.
 
 **How to use the fields:**
 - `context_tokens` is the usable context **per request** right now. It grows on machines with more memory (up to
@@ -336,7 +336,7 @@ The limits the host runs under. Read-only: apps show these and link to the host'
 - Changes apply live: the host re-plans, and if the loaded model no longer fits it reloads with the new placement or
   unloads. Watch `X-Portal-Capabilities-Revision`. Nothing is deleted; model files are never touched.
 
-### `GET /host/health` (host 1.0.4)
+### `GET /host/health` (host 1.0.3)
 Whether the host is working, in plain words, with a fix name where the host's own window has one. Needs a token.
 Check for `"health"` in `endpoints` first. Read-only: it changes nothing and starts no engine.
 ```json

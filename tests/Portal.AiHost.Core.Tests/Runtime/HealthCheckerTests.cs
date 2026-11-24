@@ -120,11 +120,11 @@ public sealed class HealthCheckerTests
     }
 
     [Fact]
-    public void Ease_off_warns_with_the_reason_in_plain_words()
+    public void Ease_off_is_reported_as_ok_with_the_reason_in_plain_words()
     {
         Assert.Equal(HealthStatuses.Ok, HealthChecker.EaseOff(Good()).Status);
         var c = HealthChecker.EaseOff(Good() with { EasedOffNow = EaseOffReasons.Battery });
-        Assert.Equal(HealthStatuses.Warn, c.Status);
+        Assert.Equal(HealthStatuses.Ok, c.Status);
         Assert.Contains("battery", c.Detail);
         Assert.Equal(HealthFixes.OpenPerformance, c.FixAction);
         Assert.Equal("portal-ai-host:settings/performance", c.FixTarget);
@@ -142,12 +142,12 @@ public sealed class HealthCheckerTests
     [Fact]
     public void The_report_status_is_the_worst_check_and_counts_what_needs_attention()
     {
-        var warn = HealthChecker.Evaluate(Good() with { EasedOffNow = EaseOffReasons.Fullscreen });
+        var warn = HealthChecker.Evaluate(Good() with { MemoryCapActive = false, MemoryCapReason = "x" });
         Assert.Equal((HealthStatuses.Warn, 1), (warn.Status, warn.NeedsAttention));
 
         var fail = HealthChecker.Evaluate(Good() with
         {
-            EasedOffNow = EaseOffReasons.Fullscreen, Model = Ready with { DamagedReason = "x" },
+            MemoryCapActive = false, MemoryCapReason = "x", Model = Ready with { DamagedReason = "x" },
         });
         Assert.Equal((HealthStatuses.Fail, 2), (fail.Status, fail.NeedsAttention));
     }

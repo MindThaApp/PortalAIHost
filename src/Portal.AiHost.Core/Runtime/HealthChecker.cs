@@ -227,7 +227,7 @@ public static class HealthChecker
             EaseOffReasons.AppBusy => "a Portal app is busy with live work",
             _ => "your settings ask for it",
         };
-        return Make(HealthIds.EaseOff, HealthStatuses.Warn, title,
+        return Make(HealthIds.EaseOff, HealthStatuses.Ok, title,
             $"The AI is running slower on purpose because {why}. It speeds up again by itself.",
             HealthFixes.OpenPerformance, i.SettingsLink);
     }
