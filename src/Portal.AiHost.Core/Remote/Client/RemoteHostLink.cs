@@ -214,6 +214,89 @@ public sealed class RemoteHostLink : IDisposable
     public async Task<RemoteReply> SendAsync(RemoteRequest request, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(request);
+        var (needsToken, token) = BeginRequest(request);
+        var reply = await SendSignedAsync(request, token, ct).ConfigureAwait(false);
+        if (needsToken && reply.Status == 401 && ErrorCodeOf(reply) is ErrorCodes.TokenInvalid or ErrorCodes.TokenRevoked)
+        {
+            throw TokenRejected();
+        }
+
+        return reply;
+    }
+
+    /// <summary>
+    /// Like <see cref="SendAsync"/> but returns when the response headers arrive and hands over the body as a stream
+    /// (server-sent events from the PC are read chunk by chunk). The same signing, token and error rules apply to the
+    /// headers; a 401 is read in full (it is small) so its reason can be told apart. A failure while the body is read
+    /// is the caller's to report with <see cref="ReportStreamDropped"/>.
+    /// </summary>
+    public async Task<RemoteStreamReply> OpenStreamAsync(RemoteRequest request, CancellationToken ct = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        var (needsToken, token) = BeginRequest(request);
+        ThrowIfTerminal();
+        var signed = Sign(request, token);
+        var started = _time.GetTimestamp();
+        RemoteStreamReply reply;
+        try
+        {
+            reply = await GetChannel().OpenAsync(signed, ct).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (ct.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception ex) when (IsTransportFailure(ex))
+        {
+            throw TransportFailed();
+        }
+
+        if (reply.Status != 401)
+        {
+            MarkConnected(started);
+            return reply;
+        }
+
+        string text;
+        var headers = reply.Headers;
+        try
+        {
+            using var copy = new MemoryStream();
+            await reply.Body.CopyToAsync(copy, ct).ConfigureAwait(false);
+            text = System.Text.Encoding.UTF8.GetString(copy.ToArray());
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException || !ct.IsCancellationRequested)
+        {
+            throw TransportFailed();
+        }
+        finally
+        {
+            reply.Dispose();
+        }
+
+        var asReply = new RemoteReply(401, text);
+        CheckDeviceAuth(asReply);
+        if (needsToken && ErrorCodeOf(asReply) is ErrorCodes.TokenInvalid or ErrorCodes.TokenRevoked)
+        {
+            throw TokenRejected();
+        }
+
+        MarkConnected(started);
+        return new RemoteStreamReply(401, headers, new MemoryStream(System.Text.Encoding.UTF8.GetBytes(text)));
+    }
+
+    /// <summary>A body stream failed after the headers were in: the PC is treated as not reachable until the next check.</summary>
+    public void ReportStreamDropped()
+    {
+        DropChannel();
+        SetStatus(RemoteLinkState.Unreachable, RemoteLinkReasons.Offline);
+    }
+
+    /// <summary>The retry delay callers pass on in <c>retry_after_ms</c>.</summary>
+    public int RetryAfterMs => _retryAfterMs;
+
+    private (bool NeedsToken, string? Token) BeginRequest(RemoteRequest request)
+    {
         lock (_gate)
         {
             _lastRequest = _time.GetTimestamp();
@@ -232,23 +315,22 @@ public sealed class RemoteHostLink : IDisposable
             }
         }
 
-        var reply = await SendSignedAsync(request, token, ct).ConfigureAwait(false);
-        if (needsToken && reply.Status == 401 && ErrorCodeOf(reply) is ErrorCodes.TokenInvalid or ErrorCodes.TokenRevoked)
-        {
-            lock (_gate)
-            {
-                var again = !_reasked;
-                _reasked = true;
-                if (again)
-                {
-                    _ = StartTokenRequest(CancellationToken.None);
-                }
-            }
+        return (needsToken, token);
+    }
 
-            throw new RemoteUnreachableException(RemoteLinkReasons.Refused, _retryAfterMs);
+    private RemoteUnreachableException TokenRejected()
+    {
+        lock (_gate)
+        {
+            var again = !_reasked;
+            _reasked = true;
+            if (again)
+            {
+                _ = StartTokenRequest(CancellationToken.None);
+            }
         }
 
-        return reply;
+        return new RemoteUnreachableException(RemoteLinkReasons.Refused, _retryAfterMs);
     }
 
     /// <summary>
@@ -290,9 +372,8 @@ public sealed class RemoteHostLink : IDisposable
 
     // ---- Signed transport ---------------------------------------------------------------------------------------
 
-    private async Task<RemoteReply> SendSignedAsync(RemoteRequest request, string? token, CancellationToken ct)
+    private RemoteRequest Sign(RemoteRequest request, string? token)
     {
-        ThrowIfTerminal();
         var body = request.Body ?? NoBody;
         var (timestamp, nonce, signature) = RemoteSigning.Sign(_key!, request.Method, request.Target, _time.GetUtcNow(), body);
         var headers = new List<KeyValuePair<string, string>>(request.Headers)
@@ -307,7 +388,30 @@ public sealed class RemoteHostLink : IDisposable
             headers.Add(new("Authorization", "Bearer " + token));
         }
 
-        var signed = request with { Headers = headers };
+        return request with { Headers = headers };
+    }
+
+    private static bool IsTransportFailure(Exception ex) =>
+        ex is HttpRequestException or IOException or SocketException or TaskCanceledException
+            or AuthenticationException or ObjectDisposedException;
+
+    private RemoteUnreachableException TransportFailed()
+    {
+        DropChannel();
+        if (_pinRejected)
+        {
+            SetStatus(RemoteLinkState.FingerprintChanged, RemoteLinkReasons.CertChanged);
+            return new RemoteUnreachableException(RemoteLinkReasons.CertChanged);
+        }
+
+        SetStatus(RemoteLinkState.Unreachable, RemoteLinkReasons.Offline);
+        return new RemoteUnreachableException(RemoteLinkReasons.Offline, _retryAfterMs);
+    }
+
+    private async Task<RemoteReply> SendSignedAsync(RemoteRequest request, string? token, CancellationToken ct)
+    {
+        ThrowIfTerminal();
+        var signed = Sign(request, token);
         var started = _time.GetTimestamp();
         RemoteReply reply;
         try
@@ -318,20 +422,18 @@ public sealed class RemoteHostLink : IDisposable
         {
             throw;
         }
-        catch (Exception ex) when (ex is HttpRequestException or IOException or SocketException or TaskCanceledException
-            or AuthenticationException or ObjectDisposedException)
+        catch (Exception ex) when (IsTransportFailure(ex))
         {
-            DropChannel();
-            if (_pinRejected)
-            {
-                SetStatus(RemoteLinkState.FingerprintChanged, RemoteLinkReasons.CertChanged);
-                throw new RemoteUnreachableException(RemoteLinkReasons.CertChanged);
-            }
-
-            SetStatus(RemoteLinkState.Unreachable, RemoteLinkReasons.Offline);
-            throw new RemoteUnreachableException(RemoteLinkReasons.Offline, _retryAfterMs);
+            throw TransportFailed();
         }
 
+        CheckDeviceAuth(reply);
+        MarkConnected(started);
+        return reply;
+    }
+
+    private void CheckDeviceAuth(RemoteReply reply)
+    {
         if (reply.Status == 401 && ErrorCodeOf(reply) == ErrorCodes.DeviceUnauthorized)
         {
             switch (ErrorReasonOf(reply))
@@ -348,12 +450,14 @@ public sealed class RemoteHostLink : IDisposable
                     throw new RemoteUnreachableException(RemoteLinkReasons.Refused, _retryAfterMs);
             }
         }
+    }
 
+    private void MarkConnected(long started)
+    {
         // Any other answer proves the PC is there.
         var rtt = (int)_time.GetElapsedTime(started).TotalMilliseconds;
         Interlocked.Exchange(ref _failures, 0);
         SetStatus(RemoteLinkState.Connected, null, rtt);
-        return reply;
     }
 
     private IRemoteChannel GetChannel()

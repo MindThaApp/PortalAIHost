@@ -348,7 +348,8 @@ internal sealed class ShellHarness : IAsyncDisposable
     public HostPaths Paths => Options.Paths;
     public FakeEngineSupervisor Chat { get; }
 
-    public static async Task<ShellHarness> StartAsync(TestRoot root, RemoteAccessTestOptions? remote = null)
+    public static async Task<ShellHarness> StartAsync(TestRoot root, RemoteAccessTestOptions? remote = null,
+        Portal.AiHost.Core.Remote.Client.ISecretProtector? secret = null, Portal.AiHost.Core.Remote.Client.IRemoteConnector? connector = null)
     {
         var chat = new FakeEngineSupervisor(ModelKinds.Chat);
         var options = new HostShellOptions
@@ -363,6 +364,8 @@ internal sealed class ShellHarness : IAsyncDisposable
             CallerResolver = new SameUserResolver(),
             QuitGrace = TimeSpan.FromMilliseconds(200),
             RemoteTest = remote,
+            SecretProtector = secret,
+            ClientConnector = connector,
         };
         var shell = await HostShell.StartAsync(options) ?? throw new InvalidOperationException("pipe already owned");
         return new ShellHarness(shell, options, chat);

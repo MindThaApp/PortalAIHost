@@ -44,6 +44,8 @@ namespace Portal.AiHost.Contracts;
 [JsonSerializable(typeof(RemoteStatus))]
 [JsonSerializable(typeof(PairingOfferInfo))]
 [JsonSerializable(typeof(RemoveDeviceCommand))]
+[JsonSerializable(typeof(SetModeCommand))]
+[JsonSerializable(typeof(ClientModeStatus))]
 [JsonSerializable(typeof(ShowRequest))]
 [JsonSerializable(typeof(ControlError))]
 [JsonSerializable(typeof(ApprovalList))]

@@ -345,6 +345,22 @@ internal sealed class ControlHandler(HostShell shell)
 
                 return ControlPipe.Ok(id);
 
+            case ControlTypes.ClientStatus:
+                return Ok(id, shell.ClientMode.Snapshot(), AiHostJsonContext.Default.ClientModeStatus);
+
+            case ControlTypes.ClientSetMode:
+            {
+                var mode = Payload(r, AiHostJsonContext.Default.SetModeCommand)!.Mode;
+                if (mode is not (HostModes.Server or HostModes.Client))
+                {
+                    return ControlPipe.Error(id, ErrorCodes.InvalidRequest, "mode must be server or client.");
+                }
+
+                var status = await shell.ClientMode.SetModeAsync(mode, ct).ConfigureAwait(false);
+                await shell.PushStatusAsync().ConfigureAwait(false);
+                return Ok(id, status, AiHostJsonContext.Default.ClientModeStatus);
+            }
+
             case ControlTypes.Quit:
                 // Answer first, then quit, so the window sees the acknowledgement.
                 _ = Task.Run(async () =>
@@ -366,6 +382,7 @@ internal sealed class ControlHandler(HostShell shell)
     internal SettingsSaved SaveSettings(HostSettings next)
     {
         var old = shell.Settings.Current;
+        next.Mode = old.Mode; // Host-owned: only client.setmode changes the mode.
         var folderChanged = !string.Equals(old.ModelsFolder ?? "", next.ModelsFolder ?? "", StringComparison.OrdinalIgnoreCase);
         var refused = folderChanged ? CheckModelsFolder(next.ModelsFolder, shell.Store?.Location.Path) : null;
         if (refused is not null)

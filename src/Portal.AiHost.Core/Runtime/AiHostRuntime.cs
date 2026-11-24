@@ -810,18 +810,16 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
             HostVersion = _o.HostVersion, InstanceId = _o.InstanceId,
         }, AiHostJsonContext.Default.PingResponse), requiresAuth: false);
         p.Map("GET", Routes.Status, ctx => Tracked(ctx, StatusAsync));
-        p.Map("GET", Routes.Capabilities, ctx => Tracked(ctx, c =>
-            c.WriteJsonAsync(200, BuildCapabilities(), AiHostJsonContext.Default.HostCapabilities)));
-        p.Map("GET", Routes.Models, ctx => Tracked(ctx, ListModelsAsync));
-        p.Map("GET", Routes.Performance, ctx => Tracked(ctx, c =>
-            PerformanceEndpointAsync(c)));
-        p.Map("GET", Routes.Health, ctx => Tracked(ctx, HealthEndpointAsync));
-        p.Map("POST", Routes.EaseOff, ctx => Tracked(ctx, EaseOffSetAsync));
-        p.Map("DELETE", Routes.EaseOff, ctx => Tracked(ctx, EaseOffClearAsync));
-        p.Map("POST", Routes.Warmup, ctx => Tracked(ctx, WarmupAsync));
-        p.Map("POST", Routes.Tokenize, ctx => Tracked(ctx, TokenizeAsync));
-        p.Map("POST", Routes.ChatCompletions, ctx => Tracked(ctx, ChatAsync));
-        p.Map("POST", Routes.Embeddings, ctx => Tracked(ctx, EmbeddingsAsync));
+        p.Map("GET", Routes.Capabilities, ctx => Tracked(ctx, c => Backend.HandleAsync(InferenceRoute.Capabilities, c)));
+        p.Map("GET", Routes.Models, ctx => Tracked(ctx, c => Backend.HandleAsync(InferenceRoute.Models, c)));
+        p.Map("GET", Routes.Performance, ctx => Tracked(ctx, c => Backend.HandleAsync(InferenceRoute.Performance, c)));
+        p.Map("GET", Routes.Health, ctx => Tracked(ctx, c => Backend.HandleAsync(InferenceRoute.Health, c)));
+        p.Map("POST", Routes.EaseOff, ctx => Tracked(ctx, c => Backend.HandleAsync(InferenceRoute.EaseOffSet, c)));
+        p.Map("DELETE", Routes.EaseOff, ctx => Tracked(ctx, c => Backend.HandleAsync(InferenceRoute.EaseOffClear, c)));
+        p.Map("POST", Routes.Warmup, ctx => Tracked(ctx, c => Backend.HandleAsync(InferenceRoute.Warmup, c)));
+        p.Map("POST", Routes.Tokenize, ctx => Tracked(ctx, c => Backend.HandleAsync(InferenceRoute.Tokenize, c)));
+        p.Map("POST", Routes.ChatCompletions, ctx => Tracked(ctx, c => Backend.HandleAsync(InferenceRoute.ChatCompletions, c)));
+        p.Map("POST", Routes.Embeddings, ctx => Tracked(ctx, c => Backend.HandleAsync(InferenceRoute.Embeddings, c)));
     }
 
     private async Task Tracked(ApiContext ctx, Func<ApiContext, Task> handler)

@@ -124,6 +124,17 @@ public sealed class ApiContext
         _sink.WriteSseCommentAsync(AiHostJson.ProgressComment(progress), Aborted);
 
     public ValueTask CompleteAsync() => _sink.CompleteAsync(Aborted);
+
+    // ---- raw pass-through for the client-mode forwarder (the body is another host's answer, copied as it is) ----
+
+    internal ValueTask StartRawAsync(int statusCode, string contentType, IReadOnlyDictionary<string, string>? headers) =>
+        _sink.StartAsync(statusCode, contentType, headers, Aborted);
+
+    internal ValueTask WriteRawAsync(ReadOnlyMemory<byte> data) => _sink.WriteAsync(data, Aborted);
+
+    internal ValueTask WriteSseRawDataAsync(ReadOnlyMemory<byte> payload) => _sink.WriteSseDataAsync(payload, Aborted);
+
+    internal ValueTask WriteSseRawCommentAsync(string comment) => _sink.WriteSseCommentAsync(comment, Aborted);
 }
 
 /// <summary>Remembers whether and how the response started, so errors go out in the right form.</summary>

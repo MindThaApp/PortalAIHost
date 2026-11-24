@@ -85,3 +85,42 @@ public static class RelayStates
     /// <summary>The relay could not be reached (it keeps trying).</summary>
     public const string Unreachable = "unreachable";
 }
+
+/// <summary>Modes of the host (docs/client-mode-v1.md section 1.1).</summary>
+public static class HostModes
+{
+    public const string Server = "server";
+    public const string Client = "client";
+}
+
+/// <summary>Payload of client.setmode: <c>server</c> (this PC runs the AI) or <c>client</c> (use the paired PC).</summary>
+public sealed class SetModeCommand
+{
+    public string Mode { get; set; } = HostModes.Server;
+}
+
+/// <summary>Answer of client.status and client.setmode. Never holds the PC's address, key or token.</summary>
+public sealed class ClientModeStatus
+{
+    /// <summary><c>server</c> or <c>client</c>.</summary>
+    public string Mode { get; set; } = HostModes.Server;
+
+    /// <summary>A PC is saved and could be used.</summary>
+    public bool Paired { get; set; }
+
+    public string? PcName { get; set; }
+
+    /// <summary>Link state while in client mode: connecting, connected, unreachable, revoked, fingerprint_changed, stopped.</summary>
+    public string? State { get; set; }
+
+    /// <summary><c>lan</c> or <c>down</c> (the relay route comes later). Null in server mode.</summary>
+    public string? Route { get; set; }
+
+    /// <summary>Why the link is down (the remote_unreachable reason), if it is.</summary>
+    public string? Reason { get; set; }
+
+    public int? RttMs { get; set; }
+
+    /// <summary>Set by client.setmode when the switch was refused: <c>not_paired</c> or <c>failed</c>.</summary>
+    public string? Refused { get; set; }
+}
