@@ -200,8 +200,8 @@ PC owner sees "Portal AI Host (client mode) on <laptop>" and approves; the pairi
 leaves no files). The token is stored DPAPI-protected (`client\token.dat`). On `token_invalid` or `token_revoked` the
 host asks once more (new request), never in a loop.
 
-Per-app identity is lost over this hop: the home PC sees one app, not "AI Portal". Fair queueing and the owner's
-per-app pause on the home PC therefore work per laptop. The laptop host applies its own per-app pause, priority and
+The token is the device, so security stays per laptop. The home PC still sees the calling app's name as a label
+(`X-Portal-Client-App`, 4.3 and 5.7), used for display and per-app pause. Fair queueing works per laptop. The laptop host applies its own per-app pause, priority and
 queue limits locally before forwarding, so the laptop owner's controls still work (owner decision 2).
 
 ### 3.4 Connection reuse
@@ -258,6 +258,7 @@ Unknown `/host/*` and `/v1/*` routes: `404 not_found` locally, not forwarded (an
 | `X-Portal-Priority`, `X-Portal-Load`, `X-Portal-Context-Tokens` | Forwarded unchanged. Priority also orders the laptop's own queue. |
 | `X-Portal-Deadline-Ms` | The local deadline is the budget. The remote receives the **remaining** budget minus 1 s (floor 1000), so the remote ends first and its `504` (with `details.phase`) wins; the laptop returns its own `504 deadline_exceeded` only if the remote did not answer in time. |
 | `X-Portal-Client-Request-Id` | Forwarded and echoed. |
+| `X-Portal-Client-App` | Added by the laptop host: the calling app's display name (max 64 characters, control characters stripped; empty becomes `Unknown app`). Label only (5.7). Never trusted for access. |
 | Response `X-Portal-Request-Id`, `X-Portal-Queue-Ms`, `X-Portal-Model` | Passed through from the remote; the laptop's own wait is added to `X-Portal-Queue-Ms`. |
 | Device signature headers | Added by the laptop host (3.2); never exposed to apps. |
 | `Origin`, `Sec-Fetch-*` | Already refused on loopback; never forwarded. |
@@ -299,6 +300,7 @@ Mapping of remote answers on the way back:
 | `401 device_unauthorized`, reason `unknown_device` | `503 remote_unreachable`, `reason: "refused"`; the host marks the pairing invalid (5.2). |
 | `401 device_unauthorized`, reason `stale_timestamp` | `503 remote_unreachable`, `reason: "clock"`. |
 | `401 token_invalid` / `token_revoked` (the host's token) | The host requests a new token once (3.3); meanwhile `503 remote_unreachable`, `reason: "refused"`. |
+| `503 device_paused`, `503 device_quiet_hours`, `503 host_busy_gaming`, `429 device_limit_reached` (5.7) | `503 remote_unreachable` with `reason`: `paused`, `quiet_hours`, `gaming_busy`, `limit_reached`. `retry_after_ms` is passed on. With `client_fallback` set to the laptop model, the request falls back as for any `remote_unreachable` (decision 1); with `None` the app sees the error. |
 | `429 rate_limited` (device limit 600 per minute) | Passed through as `429 rate_limited` with `Retry-After`. |
 | `403 model_control_required` or `409 model_conflict` (4.7) | Not sent to apps; shown in the laptop's Models page as a plain message. If a mapped model is missing, apps get the normal `model_not_found` / `no_model`. |
 | TLS fingerprint mismatch | `503 remote_unreachable`, `reason: "cert_changed"`; no request is sent. |
@@ -434,6 +436,60 @@ in the models folder or in user documents. "Forget this PC" deletes only `client
 `remote.json` (own, identifiable files), after a confirmation. Mode switching does not touch the model store or an
 in-progress download. Review of the implementation must read every write and delete path in the new classes.
 
+### 5.7 Devices on this PC
+
+The home PC's Devices view lists every paired laptop. There is one card per laptop, titled with the laptop name.
+The laptop is still one device with one token. The card also shows the laptop's apps, using the name each forwarded
+request carries in `X-Portal-Client-App` (display name, max 64 characters, control characters stripped). The name is
+a label for display and per-app pause only. Any app on the laptop can send any name, so it never grants or widens
+access; the token is the device.
+
+**Info on each card**
+
+- Status (online, idle, offline), route (home network or relay) and last seen.
+- Apps active right now, with queue position.
+- Today's usage per app (requests, tokens) with a 7-day bar.
+- Current model and "loaded by" (the PC or this device), plus speed (tokens per second) and latency.
+
+**Controls on each card**
+
+- **Pause:** the whole device or one app. Paused calls get a clear paused error and the laptop falls back as in
+  decision 1.
+- **Priority:** default is the PC's own apps first; option `Equal`.
+- **Gaming mode:** refuse remote calls as busy while a full-screen game or heavy GPU use is detected. PC-wide switch,
+  default off.
+- **Limits and quiet hours:** requests and tokens per day, and a quiet-hours window, per device.
+- **Allowed models:** which of the PC's models this device may use, per device.
+- **Model control:** the grant and `Take back` are the ones in 4.7 and 5.1a. The card links to them and adds no
+  second set of rules.
+- **Rename** the device, and **Forget** it. Forget is the existing revoke (5.2).
+- **Alerts:** a tray notification on a new pairing, and when a device connects through the relay from away.
+
+**Error codes the laptop sees**
+
+| HTTP | `code` | When | Laptop maps it to |
+|---|---|---|---|
+| 503 | `device_paused` | The device or the calling app is paused. | `remote_unreachable`, reason `paused` |
+| 503 | `device_quiet_hours` | Inside the device's quiet hours. | `remote_unreachable`, reason `quiet_hours` |
+| 503 | `host_busy_gaming` | Gaming mode is on and a game or heavy GPU use is detected. | `remote_unreachable`, reason `gaming_busy` |
+| 429 | `device_limit_reached` | Today's request or token limit is used up. | `remote_unreachable`, reason `limit_reached` |
+
+Each carries `retry_after_ms` (for quiet hours, the time until it ends; for limits, until midnight on the PC). The
+laptop applies its `client_fallback` setting exactly as for `offline`. A model the device may not use gets the
+normal `model_not_found`.
+
+**Data**
+
+Usage stats live in one small file per device under the host state folder, with 7 days kept (older days are dropped
+on rollover). The file holds counts only: requests and tokens per app and per day. App names are labels, and no
+prompt or answer text is stored (5.5). Writes are atomic (temp file, then replace). `Forget` deletes that device's
+stats file only; it touches no other file, and never a model file.
+
+**UI rule**
+
+Buttons and menu items show an icon and a 1 to 3 word label. Explanations go in the tooltip and the automation
+HelpText, never as text under a button. Settings cards and empty states may carry short text.
+
 ## 6. Code plan
 
 ### 6.1 New components
@@ -511,20 +567,29 @@ known `unavailable` code.
    single-slot first and make the second slot its own step. Tests: the Model control list in 6.3 against the fake
    remote. Needs an independent review (it can change what is loaded on the PC: read every load, unload and eviction
    path).
-7. **Model control, laptop side.** `RemoteModelClient`, `client.remote_*` and `client.appmodel` messages, per-app
+7. **Devices on this PC.** The Devices view of 5.7: `X-Portal-Client-App` on the laptop and its parsing on the PC,
+   per-device and per-app stats store (7-day rolling file), pause, priority, gaming mode, limits, quiet hours,
+   allowed models, rename, the four error codes and their laptop mapping, alerts, the Devices UI. Needs step 6 (it
+   links to model control and `Take back`). Tests: app-name header parsing (length, control characters, empty);
+   pause per device and per app; quiet hours (start, end, across midnight); limits per day; gaming-busy refusal;
+   stats rollover at 7 days; `Forget` removes that device's stats file only; laptop mapping of the four codes to
+   fallback. Needs an independent review for the parts that touch user data: the stats file (atomic write,
+   rollover, delete on `Forget`) and anything that deletes or rewrites a file. The reviewer gets the code, not
+   conclusions.
+8. **Model control, laptop side.** `RemoteModelClient`, `client.remote_*` and `client.appmodel` messages, per-app
    mapping store, `model` rewrite in `RemoteBackend`, the `Models on <PC name>` UI, the Apps page dropdown, the empty
    state without the grant. Tests: mapping and rewrite, grant revoked mid-use.
-8. **UI.** Settings card, pairing dialog, Home/Models/tray states, first-run path, strings, accessibility names, UI
-   rule check; then the owner's live test (laptop + home PC, including the relay, fallback and Model control).
+9. **UI.** Settings card, pairing dialog, Home/Models/tray states, first-run path, strings, accessibility names, UI
+   rule check; then the owner's live test (laptop + home PC, including the relay, fallback, Model control and the Devices view).
 
 ## 7. Owner decisions (2026-11-24)
 
 | # | Decision | Where applied |
 |---|---|---|
 | 1 | **Home PC unreachable:** the laptop offers `None` or `Use this laptop's model` in Settings, plus one calm prompt the first time. Default `None` until the user picks. With the laptop model on, the local model loads on demand while the PC is unreachable, unloads by the normal idle rule, and new requests return to the PC when it is reachable again (in-flight requests finish where they started). Model files are never deleted by mode switches. | 1.3, 1.4, 4.5, 6.1, 6.4 step 5 |
-| 2 | The home PC sees the laptop as **one app** (unchanged). | 3.3 |
+| 2 | The home PC sees the laptop as **one paired device with one token** (unchanged), and also shows the laptop's apps. The laptop sends each calling app's name with every forwarded request (`X-Portal-Client-App`, 5.7). The name is a display label and a per-app pause switch only, never a security boundary: the token is the device. | 3.3, 4.3, 5.7 |
 | 3 | **Relay:** `Auto` (default: home network first, relay when away, if the link carried `r`) or `Manual` (relay only when the user turns it on for the session). | 1.4, 3.1, 6.4 step 5 |
-| 4 | **Model control:** the PC decides by default. The PC owner can grant a paired device `Model control` (per device, off by default, revocable): the laptop can list, load and unload the PC's models, map a model per laptop app, and use two at once with the PC's placement controls. The PC owner's local action wins; evicting a model in use by the PC's own apps needs "Devices may replace models" or is refused. The PC shows which device loaded what. | 1.4, 1.5, 4.2, 4.5, 4.7, 5.1a, 6.1, 6.3, 6.4 steps 6 and 7 |
+| 4 | **Model control:** the PC decides by default. The PC owner can grant a paired device `Model control` (per device, off by default, revocable): the laptop can list, load and unload the PC's models, map a model per laptop app, and use two at once with the PC's placement controls. The PC owner's local action wins; evicting a model in use by the PC's own apps needs "Devices may replace models" or is refused. The PC shows which device loaded what. | 1.4, 1.5, 4.2, 4.5, 4.7, 5.1a, 6.1, 6.3, 6.4 steps 6 and 8 |
 | 5 | **Address + code without a link:** allowed, LAN only until a link with `r` has been used. | 2.2, 3.1 |
 
 Points to confirm before step 6: (a) the second concurrent model slot is new engine work, not only remote plumbing
