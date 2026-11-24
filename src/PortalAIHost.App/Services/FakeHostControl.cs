@@ -609,6 +609,7 @@ public sealed class FakeHostControl : IHostControl, IDisposable
                 Fingerprint = "fake-fingerprint",
                 Devices = [.. Devices],
                 Pairing = _settings.Remote.Enabled ? Pairing : null,
+                Relay = _settings.Remote.Enabled && _settings.Remote.Relay ? RelayStates.Connected : RelayStates.Off,
             });
         }
     }

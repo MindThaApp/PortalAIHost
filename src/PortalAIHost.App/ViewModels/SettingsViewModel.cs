@@ -291,6 +291,7 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
                 ModelsFolder = s.ModelsFolder ?? "";
                 FolderPlaceholder = Fmt.PrivatePath(shownFolder);
                 RemoteEnabled = s.Remote.Enabled;
+                RemoteRelay = s.Remote.Relay;
                 Available = true;
                 Message = "";
                 _loading = false;
@@ -384,7 +385,10 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
             SendCrashReports = _shell.State.SendCrashReports,
             BandwidthCapBytesPerSecond = _current.BandwidthCapBytesPerSecond,
             MutedNotifications = MutedKinds(),
-            Remote = new RemoteSettings { Enabled = RemoteEnabled, Port = _current.Remote.Port },
+            Remote = new RemoteSettings
+            {
+                Enabled = RemoteEnabled, Port = _current.Remote.Port, Relay = RemoteRelay, RelayUrl = _current.Remote.RelayUrl,
+            },
             Kinds = kinds,
         };
         WritePerformance(next);

@@ -166,6 +166,9 @@
                     <TextBlock x:Uid="SettingsRemoteHelp" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                     <InfoBar IsOpen="{x:Bind ViewModel.HasRemoteProblem, Mode=OneWay}" Message="{x:Bind ViewModel.RemoteProblem, Mode=OneWay}" Severity="Warning" IsClosable="False" />
                     <TextBlock Text="{x:Bind ViewModel.RemoteAddressText, Mode=OneWay}" TextWrapping="Wrap" Style="{StaticResource CaptionTextBlockStyle}" />
+                    <ToggleSwitch x:Uid="SettingsRemoteRelay" IsOn="{x:Bind ViewModel.RemoteRelay, Mode=TwoWay}" IsEnabled="{x:Bind ViewModel.RemoteEnabled, Mode=OneWay}" />
+                    <TextBlock x:Uid="SettingsRemoteRelayHelp" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock Text="{x:Bind ViewModel.RelayStatusText, Mode=OneWay}" TextWrapping="Wrap" Style="{StaticResource BodyStrongTextBlockStyle}" />
                     <Button x:Uid="SettingsPairDevice" Command="{x:Bind ViewModel.PairDeviceCommand}" IsEnabled="{x:Bind ViewModel.RemoteEnabled, Mode=OneWay}" HorizontalAlignment="Left" />
 
                     <StackPanel x:Name="PairingPanel" Spacing="8" Visibility="{x:Bind ViewModel.PairingOpen, Mode=OneWay}">
