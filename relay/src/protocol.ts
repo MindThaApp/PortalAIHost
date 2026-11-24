@@ -10,6 +10,10 @@ export const LIMITS = {
   MAX_STREAMS_PER_ROOM: 8,
   /** Bytes forwarded per room per minute, both directions together. */
   BYTES_PER_MINUTE: 20 * 1024 * 1024,
+  /** Every forwarded or dropped binary frame counts at least this many bytes, so empty and tiny frames are not free. */
+  FRAME_OVERHEAD_BYTES: 64,
+  /** Binary frames per room per minute, both directions together. */
+  MESSAGES_PER_MINUTE: 12_000,
   /** Largest payload of one binary frame (the 4-byte stream tag on host frames is extra). */
   MAX_FRAME_BYTES: 64 * 1024,
   /** A device stream that carries no frame for this long is closed. */

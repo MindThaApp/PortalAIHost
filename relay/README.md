@@ -13,14 +13,15 @@ All limits are constants in `src/protocol.ts` (`LIMITS`). Remote use is text cha
 | Limit | Value |
 |---|---|
 | Device streams per room | 8 |
-| Bytes per room per minute (both directions) | 20 MB |
+| Bytes per room per minute (both directions) | 20 MB (each frame counts at least 64 bytes) |
+| Binary frames per room per minute | 12000 |
 | Largest frame payload | 64 KiB |
 | Idle device stream | 5 minutes |
 | Host handshake | 10 seconds |
 | Unproven host sockets per room | 4 |
 | Connections per IP per minute | 30 |
 
-Nothing that passes through is logged or stored. The only state is in memory and in the sockets' attachments.
+Nothing that passes through is logged or stored. The only state is the rate counters (saved in the relay's own storage, so hibernation does not reset them) and the sockets' attachments.
 
 ## Develop and test
 

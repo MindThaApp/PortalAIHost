@@ -9,6 +9,7 @@ import {
   type EffectiveLimits,
   type Env,
 } from "./protocol";
+import { PersistedWindow } from "./window";
 
 /** Close codes (4000-4999 are free for applications). */
 const Close = {
@@ -44,12 +45,14 @@ interface Attachment {
 export class Room extends DurableObject<Env> {
   private readonly limits: EffectiveLimits;
   private nextStream: number;
-  private windowStart = 0;
-  private windowBytes = 0;
+  // Slot 0: bytes, slot 1: frames. Saved on each window roll and every 256 KiB / 256 frames, so hibernation forgets
+  // at most that much.
+  private readonly window: PersistedWindow;
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
     this.limits = limitsFor(env);
+    this.window = new PersistedWindow(ctx.storage.kv, "w", 2, [256 * 1024, 256]);
     this.nextStream = crypto.getRandomValues(new Uint32Array(1))[0]!;
     // Keep-alive pings are answered without waking the room.
     ctx.setWebSocketAutoResponse(new WebSocketRequestResponsePair("ping", "pong"));
@@ -234,7 +237,11 @@ export class Room extends DurableObject<Env> {
       return;
     }
 
-    if (message.byteLength < 4) return;
+    if (message.byteLength < 4) {
+      this.spend(0);
+      return;
+    }
+
     if (message.byteLength > this.limits.MAX_FRAME_BYTES + 4) {
       this.closeSocket(ws, Close.TooBig, "frame_too_big");
       return;
@@ -250,6 +257,7 @@ export class Room extends DurableObject<Env> {
     }
 
     this.touch(d);
+    if (message.byteLength === 4) return; // an empty payload carries nothing: charged, not forwarded
     try {
       d.send(message.slice(4));
     } catch {
@@ -284,6 +292,7 @@ export class Room extends DurableObject<Env> {
       return;
     }
 
+    if (message.byteLength === 0) return; // an empty payload carries nothing: charged, not forwarded
     const frame = new Uint8Array(4 + message.byteLength);
     new DataView(frame.buffer).setUint32(0, a.stream!);
     frame.set(new Uint8Array(message), 4);
@@ -348,16 +357,11 @@ export class Room extends DurableObject<Env> {
     }
   }
 
-  /** Per-room byte budget for the current minute. */
+  /** Per-room byte and frame budget for the current minute. Each frame costs its payload or the minimum overhead. */
   private spend(bytes: number): boolean {
-    const now = Date.now();
-    if (now - this.windowStart >= 60_000) {
-      this.windowStart = now;
-      this.windowBytes = 0;
-    }
-
-    this.windowBytes += bytes;
-    return this.windowBytes <= this.limits.BYTES_PER_MINUTE;
+    const total = this.window.add(0, Math.max(bytes, this.limits.FRAME_OVERHEAD_BYTES));
+    const frames = this.window.add(1, 1);
+    return total <= this.limits.BYTES_PER_MINUTE && frames <= this.limits.MESSAGES_PER_MINUTE;
   }
 
   private publicLimits(): object {
