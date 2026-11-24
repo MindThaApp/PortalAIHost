@@ -25,6 +25,9 @@ public sealed class RelayBridgeOptions
     public required IPEndPoint LocalTarget { get; init; }
 
     public TimeSpan InitialDelay { get; init; } = TimeSpan.FromSeconds(2);
+
+    /// <summary>A link must stay up this long before the reconnect delay starts over (stops a flapping link from hammering the relay).</summary>
+    public TimeSpan StableAfter { get; init; } = TimeSpan.FromSeconds(30);
     public TimeSpan MaxDelay { get; init; } = TimeSpan.FromMinutes(5);
     public TimeSpan ConnectTimeout { get; init; } = TimeSpan.FromSeconds(15);
     public TimeSpan HandshakeTimeout { get; init; } = TimeSpan.FromSeconds(10);
@@ -99,10 +102,11 @@ public sealed class RelayBridge : IAsyncDisposable
         while (!ct.IsCancellationRequested)
         {
             var connected = false;
+            long upSince = 0;
             var wait = delay;
             try
             {
-                await SessionAsync(() => connected = true, ct).ConfigureAwait(false);
+                await SessionAsync(() => { connected = true; upSince = Environment.TickCount64; }, ct).ConfigureAwait(false);
             }
             catch (OperationCanceledException) when (ct.IsCancellationRequested)
             {
@@ -119,10 +123,16 @@ public sealed class RelayBridge : IAsyncDisposable
                 // The relay is not reachable or the link broke: retried below.
             }
 
-            if (connected)
+            if (connected && TimeSpan.FromMilliseconds(Environment.TickCount64 - upSince) >= _o.StableAfter)
             {
-                delay = _o.InitialDelay; // it worked: start over quickly
+                delay = _o.InitialDelay; // it stayed up: start over quickly
                 wait = delay;
+                SetState(RelayStates.Connecting);
+            }
+            else if (connected)
+            {
+                // Came up but dropped quickly: keep backing off.
+                delay = TimeSpan.FromTicks(Math.Min(_o.MaxDelay.Ticks, delay.Ticks * 2));
                 SetState(RelayStates.Connecting);
             }
             else
@@ -410,9 +420,9 @@ public sealed class RelayBridge : IAsyncDisposable
         finally
         {
             // Closed by the relay already: nothing to tell. Ended here: tell the relay.
-            if (_streams.TryRemove(pipe.Id, out var removed))
+            if (((ICollection<KeyValuePair<uint, StreamPipe>>)_streams).Remove(new KeyValuePair<uint, StreamPipe>(pipe.Id, pipe)))
             {
-                removed.Dispose();
+                pipe.Dispose();
                 await SendCloseAsync(ws, pipe.Id, CancellationToken.None).ConfigureAwait(false);
             }
         }
@@ -469,7 +479,7 @@ public sealed class RelayBridge : IAsyncDisposable
     /// <summary>Bytes from the device waiting to be written to the local connection.</summary>
     private sealed class StreamPipe : IDisposable
     {
-        private readonly Channel<byte[]> _channel = Channel.CreateBounded<byte[]>(new BoundedChannelOptions(256)
+        private readonly Channel<byte[]> _channel = Channel.CreateBounded<byte[]>(new BoundedChannelOptions(32)
         {
             SingleReader = true,
             SingleWriter = true,
