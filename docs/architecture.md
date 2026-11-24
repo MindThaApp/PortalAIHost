@@ -380,3 +380,24 @@ parallel. Each package owns only the listed paths, and changes to another packag
 1. `scripts/sign-catalogue.ps1` reads an unencrypted PEM private key, and it neither checks the signing key against
    `CatalogueTrust` nor checks that `catalogue_version` is higher than the published copy before signing. Decide on a
    password-protected key (or a hardware key) and add both checks before the first published catalogue.
+
+## Notifications
+
+The host raises Windows notifications for things a person wants to know while the window is closed. It uses the
+tray icon's balloon (`Shell_NotifyIcon` with `NIF_INFO`, shown by Windows as a normal notification and held back by
+Focus Assist) instead of a toast API. Reason: the host is NativeAOT and has no WinRT projection; the tray route needs no
+new capability, no manifest entry, no COM activator and no change to the AOT publish. A click comes back as
+`NIN_BALLOONUSERCLICK` inside the host, which asks the window to open the right page (`RequestShow`), the same path
+as the tray and the `portal-ai-host:` links. No extra focus is taken beyond that click.
+
+- **Kinds** (`NotificationKinds`, setting `muted_notifications`): `downloads` (a model download finished or failed, with
+  a plain reason), `approvals` (an app asks for approval; click opens the approvals page), `problems` (an engine
+  that had been running failed and gave up restarting, or the health check turned to fail; click opens Home).
+- **Rules** (`NotificationCenter`): a muted kind is never shown; one notification per kind per 3 minutes; nothing while
+  the window is open (it shows everything live); nothing while a full-screen program is in front
+  (`EaseOffSensors.IsFullscreen`), except approval requests, which wait (several become one) and show when the full
+  screen ends and the rate limit allows. An approval notification replaces the automatic window pop-up; when it is
+  muted, cannot be shown or the window is already open, the window opens as before.
+- **Health:** the host reads the health checks every 10 minutes (first after one minute) and notifies only when the
+  overall status turns to fail. A problem already present at the first read is left to the window.
+- Not included: "newer recommended model available" (the host has no cheap source for it today).

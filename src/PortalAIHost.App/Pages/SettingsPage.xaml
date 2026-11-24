@@ -146,6 +146,19 @@
             </Border>
 
             <Grid>
+                <TextBlock x:Uid="SettingsNotificationsHeader" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center" />
+                <HyperlinkButton x:Uid="SettingsResetNotifications" Command="{x:Bind ViewModel.ResetNotificationsCommand}" HorizontalAlignment="Right" />
+            </Grid>
+            <Border Style="{StaticResource CardBorder}">
+                <StackPanel Spacing="16">
+                    <TextBlock x:Uid="SettingsNotificationsHelp" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <ToggleSwitch x:Uid="SettingsNotifyDownloads" IsOn="{x:Bind ViewModel.NotifyDownloads, Mode=TwoWay}" IsEnabled="{x:Bind ViewModel.Available, Mode=OneWay}" />
+                    <ToggleSwitch x:Uid="SettingsNotifyApprovals" IsOn="{x:Bind ViewModel.NotifyApprovals, Mode=TwoWay}" IsEnabled="{x:Bind ViewModel.Available, Mode=OneWay}" />
+                    <ToggleSwitch x:Uid="SettingsNotifyProblems" IsOn="{x:Bind ViewModel.NotifyProblems, Mode=TwoWay}" IsEnabled="{x:Bind ViewModel.Available, Mode=OneWay}" />
+                </StackPanel>
+            </Border>
+
+            <Grid>
                 <TextBlock x:Uid="SettingsPrivacyHeader" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center" />
                 <HyperlinkButton x:Uid="SettingsResetPrivacy" Command="{x:Bind ViewModel.ResetPrivacyCommand}" HorizontalAlignment="Right" />
             </Grid>

@@ -156,6 +156,9 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
 
     [ObservableProperty] private bool _startWithWindows;
     [ObservableProperty] private bool _sendCrashReports = true;
+    [ObservableProperty] private bool _notifyDownloads = true;
+    [ObservableProperty] private bool _notifyApprovals = true;
+    [ObservableProperty] private bool _notifyProblems = true;
     [ObservableProperty] private int _idleIndex = TenMinutesIndex;
     [ObservableProperty] private string _modelsFolder = "";
     [ObservableProperty] private string _folderPlaceholder = "";
@@ -277,6 +280,9 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
                     : startup is StartupStates.Enabled or StartupStates.EnabledByPolicy;
                 IdleIndex = IndexFor(s);
                 SendCrashReports = _shell.State.SendCrashReports;
+                NotifyDownloads = IsOn(s, NotificationKinds.Downloads);
+                NotifyApprovals = IsOn(s, NotificationKinds.Approvals);
+                NotifyProblems = IsOn(s, NotificationKinds.Problems);
                 ModelsFolder = s.ModelsFolder ?? "";
                 FolderPlaceholder = Fmt.PrivatePath(shownFolder);
                 Available = true;
@@ -289,6 +295,28 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
             _ui.Post(() => { Available = false; Say(_s.Get("Vm_NoHostTitle"), MessageError); });
         }
     }
+
+    private static bool IsOn(HostSettings s, string kind) => s.MutedNotifications?.Contains(kind) != true;
+
+    /// <summary>The notification kinds switched off, or null when all are on (the saved form).</summary>
+    private List<string>? MutedKinds()
+    {
+        List<string> muted = [];
+        if (!NotifyDownloads) muted.Add(NotificationKinds.Downloads);
+        if (!NotifyApprovals) muted.Add(NotificationKinds.Approvals);
+        if (!NotifyProblems) muted.Add(NotificationKinds.Problems);
+        // Names this version does not know stay as they were.
+        muted.AddRange((_current.MutedNotifications ?? []).Where(k => !NotificationKinds.All.Contains(k)));
+        return muted.Count == 0 ? null : muted;
+    }
+
+    partial void OnNotifyDownloadsChanged(bool value) { if (!_loading) _ = SaveAsync(); }
+    partial void OnNotifyApprovalsChanged(bool value) { if (!_loading) _ = SaveAsync(); }
+    partial void OnNotifyProblemsChanged(bool value) { if (!_loading) _ = SaveAsync(); }
+
+    /// <summary>Puts the notification choices back to their defaults (all on).</summary>
+    [RelayCommand]
+    private void ResetNotifications() => (NotifyDownloads, NotifyApprovals, NotifyProblems) = (true, true, true);
 
     private static int IndexFor(HostSettings s)
     {
@@ -348,6 +376,7 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
             PreventSleepWhileDownloading = _current.PreventSleepWhileDownloading,
             SendCrashReports = _shell.State.SendCrashReports,
             BandwidthCapBytesPerSecond = _current.BandwidthCapBytesPerSecond,
+            MutedNotifications = MutedKinds(),
             Kinds = kinds,
         };
         WritePerformance(next);
