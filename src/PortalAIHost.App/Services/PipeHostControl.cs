@@ -26,6 +26,7 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
     public event Action<TrayPopupEvent>? TrayPopup;
     public event Action<StoreProgressEvent>? StoreProgress;
     public event Action? RemoteChanged;
+    public event Action<DeviceAlert>? DeviceAlerted;
 
     /// <summary>True while a connection is open.</summary>
     public bool IsConnected => Volatile.Read(ref _channel) is not null;
@@ -303,6 +304,36 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
     public Task<ClientModeStatus> GetClientStatusAsync(CancellationToken ct = default) =>
         RequestAsync(ControlTypes.ClientStatus, AiHostJsonContext.Default.ClientModeStatus, ct);
 
+    public async Task<ClientModeStatus> SetClientModeAsync(string mode, CancellationToken ct = default) =>
+        Read(await CallAsync(ControlTypes.ClientSetMode, JsonSerializer.SerializeToElement(
+            new SetModeCommand { Mode = mode }, AiHostJsonContext.Default.SetModeCommand), ct).ConfigureAwait(false),
+            AiHostJsonContext.Default.ClientModeStatus);
+
+    public async Task<ClientModeStatus> SetClientFallbackAsync(string fallback, CancellationToken ct = default) =>
+        Read(await CallAsync(ControlTypes.ClientSetFallback, JsonSerializer.SerializeToElement(
+            new SetFallbackCommand { Fallback = fallback }, AiHostJsonContext.Default.SetFallbackCommand), ct).ConfigureAwait(false),
+            AiHostJsonContext.Default.ClientModeStatus);
+
+    public async Task<ClientModeStatus> SetRelayModeAsync(string relayMode, CancellationToken ct = default) =>
+        Read(await CallAsync(ControlTypes.ClientSetRelayMode, JsonSerializer.SerializeToElement(
+            new SetRelayModeCommand { RelayMode = relayMode }, AiHostJsonContext.Default.SetRelayModeCommand), ct).ConfigureAwait(false),
+            AiHostJsonContext.Default.ClientModeStatus);
+
+    public async Task<ClientModeStatus> SetUseRelayAsync(bool enabled, CancellationToken ct = default) =>
+        Read(await CallAsync(ControlTypes.ClientUseRelay, JsonSerializer.SerializeToElement(
+            new UseRelayCommand { Enabled = enabled }, AiHostJsonContext.Default.UseRelayCommand), ct).ConfigureAwait(false),
+            AiHostJsonContext.Default.ClientModeStatus);
+
+    public async Task<ClientModeStatus> MarkFallbackPromptShownAsync(CancellationToken ct = default) =>
+        Read(await CallAsync(ControlTypes.ClientPromptShown, null, ct).ConfigureAwait(false), AiHostJsonContext.Default.ClientModeStatus);
+
+    public async Task<PairResult> PairClientAsync(PairCommand command, CancellationToken ct = default) =>
+        Read(await CallAsync(ControlTypes.ClientPair, JsonSerializer.SerializeToElement(
+            command, AiHostJsonContext.Default.PairCommand), ct).ConfigureAwait(false), AiHostJsonContext.Default.PairResult);
+
+    public async Task<ClientModeStatus> UnpairClientAsync(CancellationToken ct = default) =>
+        Read(await CallAsync(ControlTypes.ClientUnpair, null, ct).ConfigureAwait(false), AiHostJsonContext.Default.ClientModeStatus);
+
     public Task<RemoteModelsAnswer> ListRemoteModelsAsync(CancellationToken ct = default) =>
         RequestAsync(ControlTypes.ClientRemoteModels, AiHostJsonContext.Default.RemoteModelsAnswer, ct);
 
@@ -443,6 +474,9 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
                     break;
                 case ControlTypes.EventTrayPopup when p.Deserialize(AiHostJsonContext.Default.TrayPopupEvent) is { } tp:
                     TrayPopup?.Invoke(tp);
+                    break;
+                case ControlTypes.EventDeviceAlert when p.Deserialize(AiHostJsonContext.Default.DeviceAlert) is { } alert:
+                    DeviceAlerted?.Invoke(alert);
                     break;
                 case ControlTypes.EventTryItChunk when p.Deserialize(AiHostJsonContext.Default.TryItChunkEvent) is { } chunk:
                     Action<TryItChunkEvent>? sink;

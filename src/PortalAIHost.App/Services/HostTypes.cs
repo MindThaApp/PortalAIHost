@@ -64,6 +64,9 @@ public interface IHostControl
     /// <summary>Paired devices, the pairing code or the network listener changed on the host: read <see cref="GetRemoteAsync"/> again.</summary>
     event Action? RemoteChanged;
 
+    /// <summary>A new device paired, or a device connected from away (the host also shows a Windows notification unless that kind is muted).</summary>
+    event Action<DeviceAlert>? DeviceAlerted;
+
     Task<HostSnapshot> GetStatusAsync(CancellationToken ct = default);
 
     /// <summary>Today's per-app counts and which apps are generating now (counts and times only).</summary>
@@ -168,6 +171,27 @@ public interface IHostControl
 
     /// <summary>The host mode and, in client mode, the link to the PC, whether this laptop has Model control and what it loaded there.</summary>
     Task<ClientModeStatus> GetClientStatusAsync(CancellationToken ct = default);
+
+    /// <summary>Switches this PC between running the AI itself (<see cref="HostModes.Server"/>) and using the paired PC (<see cref="HostModes.Client"/>).</summary>
+    Task<ClientModeStatus> SetClientModeAsync(string mode, CancellationToken ct = default);
+
+    /// <summary>Saves what happens while the home PC is unreachable: <see cref="ClientFallbackModes.None"/> or <see cref="ClientFallbackModes.Local"/>.</summary>
+    Task<ClientModeStatus> SetClientFallbackAsync(string fallback, CancellationToken ct = default);
+
+    /// <summary>Saves the relay policy: <see cref="RelayModes.Auto"/> or <see cref="RelayModes.Manual"/>.</summary>
+    Task<ClientModeStatus> SetRelayModeAsync(string relayMode, CancellationToken ct = default);
+
+    /// <summary>Turns the relay on or off for this session only.</summary>
+    Task<ClientModeStatus> SetUseRelayAsync(bool enabled, CancellationToken ct = default);
+
+    /// <summary>Tells the host the one-time "home PC unreachable" prompt was shown, so it is never raised again.</summary>
+    Task<ClientModeStatus> MarkFallbackPromptShownAsync(CancellationToken ct = default);
+
+    /// <summary>Pairs with a PC and switches to client mode. A failure comes back as an answer with <c>Ok = false</c>.</summary>
+    Task<PairResult> PairClientAsync(PairCommand command, CancellationToken ct = default);
+
+    /// <summary>Leaves client mode and forgets the paired PC (the app's own pairing files only).</summary>
+    Task<ClientModeStatus> UnpairClientAsync(CancellationToken ct = default);
 
     /// <summary>The PC's installed models (client mode with Model control). A refusal comes back as an answer with a plain message.</summary>
     Task<RemoteModelsAnswer> ListRemoteModelsAsync(CancellationToken ct = default);

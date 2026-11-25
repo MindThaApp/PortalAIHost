@@ -1,4 +1,5 @@
 using Portal.AiHost.Contracts;
+using Portal.AiHost.Core.Remote.Client;
 using Portal.AiHost.Contracts.Control;
 
 namespace PortalAIHost.App.Services;
@@ -769,21 +770,191 @@ public sealed class FakeHostControl : IHostControl, IDisposable
 
     public List<string> RemoteCalls { get; } = [];
 
+
+    // ---- client mode state, link and settings ----
+
+    /// <summary>A PC is saved while this fake is in server mode (the status still names it).</summary>
+    public bool SavedPairing { get; set; }
+
+    /// <summary>Link state while in client mode: connecting, connected, unreachable, revoked, fingerprint_changed, stopped.</summary>
+    public string ClientLinkState { get; set; } = "connected";
+
+    public string ClientRoute { get; set; } = RemoteRoutes.Lan;
+
+    public int? ClientRtt { get; set; } = 12;
+
+    public string ClientFallbackValue { get; set; } = ClientFallbackModes.None;
+
+    public bool FallbackUnset { get; set; } = true;
+
+    public bool FallbackPromptPending { get; set; }
+
+    public bool UsingLaptopModel { get; set; }
+
+    public string RelayModeValue { get; set; } = RelayModes.Auto;
+
+    public bool UseRelayValue { get; set; }
+
+    /// <summary>Every client.* call the window made, in order (for example <c>setfallback:local</c>, <c>promptshown</c>).</summary>
+    public List<string> ClientCalls { get; } = [];
+
+    public List<PairCommand> PairCalls { get; } = [];
+
+    /// <summary>What the next client.pair answers; null: a success naming <see cref="ClientPcName"/>.</summary>
+    public PairResult? NextPairResult { get; set; }
+
+    /// <summary>Runs inside a pairing call (a test holds it open to see the progress state or cancel).</summary>
+    public Func<CancellationToken, Task>? PairHook { get; set; }
+
+    /// <summary>Makes the next client.* call throw like a host that went away.</summary>
+    public bool ClientStatusFails { get; set; }
+
+    public ClientModeStatus ClientStatusNow()
+    {
+        lock (_gate)
+        {
+            var link = ClientMode;
+            return new ClientModeStatus
+            {
+                Mode = link ? HostModes.Client : HostModes.Server,
+                Paired = link || SavedPairing,
+                PcName = link || SavedPairing ? ClientPcName : null,
+                State = link ? ClientLinkState : null,
+                Route = link ? (ClientLinkState == "connected" ? ClientRoute : RemoteRoutes.Down) : null,
+                RttMs = link && ClientLinkState == "connected" ? ClientRtt : null,
+                ClientFallback = ClientFallbackValue,
+                FallbackUnset = FallbackUnset,
+                FallbackPromptPending = FallbackPromptPending,
+                UsingLaptopModel = link && UsingLaptopModel,
+                RelayMode = RelayModeValue,
+                UseRelay = UseRelayValue,
+                ModelControl = link ? ModelControlGranted : null,
+                LoadedOnPc = RemoteModels.Where(m => m.LoadedBy == "dev_me").Select(m => m.Id).ToList(),
+            };
+        }
+    }
+
     public Task<ClientModeStatus> GetClientStatusAsync(CancellationToken ct = default)
+    {
+        Require();
+        if (ClientStatusFails) throw new HostUnavailableException();
+        return Task.FromResult(ClientStatusNow());
+    }
+
+    public Task<ClientModeStatus> SetClientModeAsync(string mode, CancellationToken ct = default)
     {
         Require();
         lock (_gate)
         {
-            return Task.FromResult(new ClientModeStatus
+            ClientCalls.Add("setmode:" + mode);
+            if (mode == HostModes.Client && !SavedPairing && !ClientMode)
             {
-                Mode = ClientMode ? HostModes.Client : HostModes.Server,
-                Paired = ClientMode,
-                PcName = ClientMode ? ClientPcName : null,
-                ModelControl = ClientMode ? ModelControlGranted : null,
-                LoadedOnPc = RemoteModels.Where(m => m.LoadedBy == "dev_me").Select(m => m.Id).ToList(),
-            });
+                var refused = ClientStatusNow();
+                refused.Refused = "not_paired";
+                return Task.FromResult(refused);
+            }
+
+            ClientMode = mode == HostModes.Client;
         }
+
+        RemoteChanged?.Invoke();
+        return Task.FromResult(ClientStatusNow());
     }
+
+    public Task<ClientModeStatus> SetClientFallbackAsync(string fallback, CancellationToken ct = default)
+    {
+        Require();
+        lock (_gate)
+        {
+            ClientCalls.Add("setfallback:" + fallback);
+            ClientFallbackValue = fallback;
+            FallbackUnset = false;
+        }
+
+        return Task.FromResult(ClientStatusNow());
+    }
+
+    public Task<ClientModeStatus> SetRelayModeAsync(string relayMode, CancellationToken ct = default)
+    {
+        Require();
+        lock (_gate)
+        {
+            ClientCalls.Add("setrelaymode:" + relayMode);
+            RelayModeValue = relayMode;
+        }
+
+        return Task.FromResult(ClientStatusNow());
+    }
+
+    public Task<ClientModeStatus> SetUseRelayAsync(bool enabled, CancellationToken ct = default)
+    {
+        Require();
+        lock (_gate)
+        {
+            ClientCalls.Add("userelay:" + enabled);
+            UseRelayValue = enabled;
+        }
+
+        return Task.FromResult(ClientStatusNow());
+    }
+
+    public Task<ClientModeStatus> MarkFallbackPromptShownAsync(CancellationToken ct = default)
+    {
+        Require();
+        lock (_gate)
+        {
+            ClientCalls.Add("promptshown");
+            FallbackPromptPending = false;
+        }
+
+        return Task.FromResult(ClientStatusNow());
+    }
+
+    public async Task<PairResult> PairClientAsync(PairCommand command, CancellationToken ct = default)
+    {
+        Require();
+        lock (_gate) PairCalls.Add(command);
+        if (PairHook is { } hook) await hook(ct).ConfigureAwait(false);
+        ct.ThrowIfCancellationRequested();
+        lock (_gate)
+        {
+            ClientCalls.Add("pair");
+            if (NextPairResult is { } fixedResult)
+            {
+                NextPairResult = null;
+                fixedResult.Status = ClientStatusNow();
+                return fixedResult;
+            }
+
+            SavedPairing = true;
+            ClientMode = true;
+            ClientLinkState = "connecting";
+        }
+
+        RemoteChanged?.Invoke();
+        return new PairResult { Ok = true, PcName = ClientPcName, Status = ClientStatusNow() };
+    }
+
+    public Task<ClientModeStatus> UnpairClientAsync(CancellationToken ct = default)
+    {
+        Require();
+        lock (_gate)
+        {
+            ClientCalls.Add("unpair");
+            ClientMode = false;
+            SavedPairing = false;
+            UsingLaptopModel = false;
+        }
+
+        RemoteChanged?.Invoke();
+        return Task.FromResult(ClientStatusNow());
+    }
+
+    public event Action<DeviceAlert>? DeviceAlerted;
+
+    /// <summary>The host announces a new pairing or a device connecting from away.</summary>
+    public void RaiseDeviceAlert(string kind, string deviceName) =>
+        DeviceAlerted?.Invoke(new DeviceAlert { Kind = kind, DeviceId = "dev_x", DeviceName = deviceName });
 
     private RemoteModelsAnswer RemoteAnswer(string? code = null, string? reason = null, string? message = null)
     {
