@@ -32,6 +32,15 @@ public sealed class RemoteBackendOptions
     /// reached, before anything was written. Return true when the request was answered some other way.
     /// </summary>
     public Func<InferenceRoute, ApiContext, ApiException, Task<bool>>? OnUnreachable { get; init; }
+
+    /// <summary>
+    /// The PC model this app asked to use (Model control, 4.7), or null to leave <c>model</c> as the app sent it. Only
+    /// consulted for chat and embeddings requests; the caller returns null while there is no grant.
+    /// </summary>
+    public Func<ClientPrincipal, string?>? ModelFor { get; init; }
+
+    /// <summary>Told whether the PC's capabilities answer carries <c>model_control</c> (true, false, or null when absent).</summary>
+    public Action<bool?>? OnModelControl { get; init; }
 }
 
 /// <summary>
@@ -188,6 +197,8 @@ public sealed class RemoteBackend(RemoteHostLink link, RemoteBackendOptions? opt
                     _capabilities = (body, _time.GetUtcNow() + _o.CapabilitiesCache);
                 }
 
+                _o.OnModelControl?.Invoke(ReadModelControl(body));
+
                 await WriteCapabilitiesAsync(context, body).ConfigureAwait(false);
                 return;
             }
@@ -244,7 +255,47 @@ public sealed class RemoteBackend(RemoteHostLink link, RemoteBackendOptions? opt
             Math.Clamp(left, ApiLimits.MinDeadlineMs, ApiLimits.MaxDeadlineMs).ToString(CultureInfo.InvariantCulture)));
         headers.Add(new(ClientAppHeader, ClientAppLabel(context.Principal)));
         var body = endpoint.Method == "POST" ? context.Request.Body.ToArray() : null;
+        if (body is not null && context.Principal is { } principal
+            && endpoint.Target is Routes.ChatCompletions or Routes.Embeddings
+            && _o.ModelFor?.Invoke(principal) is { Length: > 0 } mapped)
+        {
+            body = WithModel(body, mapped);
+        }
+
         return new RemoteRequest(endpoint.Method, endpoint.Target, headers, body);
+    }
+
+    private static bool? ReadModelControl(byte[] capabilities)
+    {
+        try
+        {
+            using var doc = JsonDocument.Parse(capabilities);
+            return doc.RootElement.ValueKind == JsonValueKind.Object && doc.RootElement.TryGetProperty("model_control", out var m)
+                && m.ValueKind is JsonValueKind.True or JsonValueKind.False ? m.GetBoolean() : null;
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>Sets <c>model</c> in a JSON request body; a body that is not a JSON object goes on unchanged.</summary>
+    internal static byte[] WithModel(byte[] body, string model)
+    {
+        try
+        {
+            if (JsonNode.Parse(body) is JsonObject obj)
+            {
+                obj["model"] = model;
+                return Encoding.UTF8.GetBytes(obj.ToJsonString());
+            }
+        }
+        catch (JsonException)
+        {
+            // Not JSON: the PC answers it as it would have.
+        }
+
+        return body;
     }
 
     private string ClientAppLabel(ClientPrincipal? principal)

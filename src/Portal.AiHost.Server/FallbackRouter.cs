@@ -43,6 +43,8 @@ public sealed class FallbackRouter : IInferenceBackend
             DeadlineMargin = o.DeadlineMargin,
             MaxErrorBytes = o.MaxErrorBytes,
             AppName = o.AppName,
+            ModelFor = o.ModelFor,
+            OnModelControl = o.OnModelControl,
             OnUnreachable = OnUnreachableAsync,
         }, time);
     }

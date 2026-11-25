@@ -132,6 +132,24 @@ public static class ControlTypes
     /// <summary>The one-time unreachable prompt was shown: it is not raised again. No payload; answers <see cref="ClientModeStatus"/>.</summary>
     public const string ClientPromptShown = "client.promptshown";
 
+    /// <summary>
+    /// Lists the PC's installed models for this laptop (Model control). No payload; answers <see cref="RemoteModelsAnswer"/>.
+    /// A refusal (no grant, PC unreachable) is an answer with <c>ok: false</c>, not a pipe error.
+    /// </summary>
+    public const string ClientRemoteModels = "client.remote_models";
+
+    /// <summary>Loads a model on the PC. Payload <see cref="DeviceLoadRequest"/>; answers <see cref="RemoteModelsAnswer"/>.</summary>
+    public const string ClientRemoteLoad = "client.remote_load";
+
+    /// <summary>Unloads a model this laptop loaded on the PC. Payload <see cref="DeviceUnloadRequest"/>; answers <see cref="RemoteModelsAnswer"/>.</summary>
+    public const string ClientRemoteUnload = "client.remote_unload";
+
+    /// <summary>Reads or sets the placement of a model this laptop loaded. Payload <see cref="RemotePlacementCommand"/>; answers <see cref="RemoteModelsAnswer"/>.</summary>
+    public const string ClientRemotePlacement = "client.remote_placement";
+
+    /// <summary>Reads or sets which PC model a local app asks for. Payload <see cref="AppModelCommand"/>; answers <see cref="AppModelList"/>.</summary>
+    public const string ClientAppModel = "client.appmodel";
+
     // Host -> UI answers.
     public const string Ok = "ok";
     public const string Error = "error";

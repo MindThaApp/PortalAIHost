@@ -31,6 +31,9 @@ public sealed class ClientModeOptions
     /// <summary>Saves the fallback, the relay mode and the prompt flag in the settings store (atomically). Called after a change.</summary>
     public Action<string?, string, bool>? PersistPrefs { get; init; }
 
+    /// <summary>Which PC model each local app asks for (<c>clientpps.json</c>). Null: no mapping (Model control is not offered).</summary>
+    public AppModelStore? AppModels { get; init; }
+
     /// <summary>Clock for the forwarding backend (fake in tests).</summary>
     public TimeProvider? Time { get; init; }
 
@@ -54,6 +57,7 @@ public sealed class ClientModeController : IAsyncDisposable
     private RemoteHostLink? _link;
     private string _mode = HostModes.Server;
     private FallbackRouter? _router;
+    private RemoteModelClient? _models;
     private volatile string? _fallback;
     private volatile string _relayMode = RelayModes.Auto;
     private volatile bool _promptShown;
@@ -72,6 +76,12 @@ public sealed class ClientModeController : IAsyncDisposable
 
     /// <summary>The router answering the model routes in client mode (null in server mode).</summary>
     public FallbackRouter? Router => _router;
+
+    /// <summary>Model control calls to the PC (null in server mode).</summary>
+    public RemoteModelClient? Models => _models;
+
+    /// <summary>The per-app PC model choices (null when not configured).</summary>
+    public AppModelStore? AppModels => _o.AppModels;
 
     /// <summary>The effective <c>client_fallback</c>: <c>none</c> until the user picks.</summary>
     public string Fallback => _fallback ?? ClientFallbackModes.None;
@@ -162,6 +172,11 @@ public sealed class ClientModeController : IAsyncDisposable
             status.Route = s.State == RemoteLinkState.Connected ? s.Route ?? RemoteRoutes.Lan : RemoteRoutes.Down;
             status.Reason = s.Reason;
             status.RttMs = s.RttMs;
+            if (_models is { } models)
+            {
+                status.ModelControl = models.Granted;
+                status.LoadedOnPc = models.LoadedByThisLaptop.ToList();
+            }
         }
 
         return status;
@@ -252,7 +267,10 @@ public sealed class ClientModeController : IAsyncDisposable
             link.Start();
             _link = link;
             link.RelayPolicy = RelayAllowed;
-            var router = new FallbackRouter(link, _runtime.LocalInferenceBackend, () => _fallback, _o.Backend, _o.Time);
+            var models = new RemoteModelClient(link);
+            models.Changed += OnModelsChanged;
+            _models = models;
+            var router = new FallbackRouter(link, _runtime.LocalInferenceBackend, () => _fallback, BackendOptions(models), _o.Time);
             router.UsingLocalChanged += OnUsingLocalChanged;
             _router = router;
             _runtime.SetBackend(router);
@@ -317,8 +335,34 @@ public sealed class ClientModeController : IAsyncDisposable
         _o.PersistMode?.Invoke(HostModes.Server);
     }
 
+    private RemoteBackendOptions BackendOptions(RemoteModelClient models)
+    {
+        var o = _o.Backend ?? new RemoteBackendOptions();
+        var maps = _o.AppModels;
+        return new RemoteBackendOptions
+        {
+            CapabilitiesCache = o.CapabilitiesCache,
+            QueuedCommentInterval = o.QueuedCommentInterval,
+            DeadlineMargin = o.DeadlineMargin,
+            MaxErrorBytes = o.MaxErrorBytes,
+            AppName = o.AppName,
+            OnUnreachable = o.OnUnreachable,
+            // The choice only applies while this laptop has Model control; without it `model` stays as the app sent it.
+            ModelFor = maps is null ? null : principal => models.Granted == true ? maps.Get(principal.AppId) : null,
+            OnModelControl = models.NoteGrant,
+        };
+    }
+
+    private void OnModelsChanged() => Changed?.Invoke();
+
     private void DropRouter()
     {
+        if (_models is { } models)
+        {
+            models.Changed -= OnModelsChanged;
+        }
+
+        _models = null;
         if (_router is { } router)
         {
             router.UsingLocalChanged -= OnUsingLocalChanged;

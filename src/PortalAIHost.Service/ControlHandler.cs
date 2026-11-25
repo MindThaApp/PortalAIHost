@@ -451,6 +451,75 @@ internal sealed class ControlHandler(HostShell shell)
                 shell.ClientMode.MarkPromptShown();
                 return Ok(id, shell.ClientMode.Snapshot(), AiHostJsonContext.Default.ClientModeStatus);
 
+            case ControlTypes.ClientRemoteModels:
+            {
+                var models = shell.ClientMode.Models;
+                if (models is null)
+                {
+                    return Ok(id, NotClient(), AiHostJsonContext.Default.RemoteModelsAnswer);
+                }
+
+                return Ok(id, await models.ListAsync(ct).ConfigureAwait(false), AiHostJsonContext.Default.RemoteModelsAnswer);
+            }
+
+            case ControlTypes.ClientRemoteLoad:
+            {
+                var cmd = Payload(r, AiHostJsonContext.Default.DeviceLoadRequest)!;
+                var models = shell.ClientMode.Models;
+                return Ok(id, models is null ? NotClient() : await models.LoadAsync(cmd.ModelId, cmd.Placement, ct).ConfigureAwait(false),
+                    AiHostJsonContext.Default.RemoteModelsAnswer);
+            }
+
+            case ControlTypes.ClientRemoteUnload:
+            {
+                var cmd = Payload(r, AiHostJsonContext.Default.DeviceUnloadRequest)!;
+                var models = shell.ClientMode.Models;
+                return Ok(id, models is null ? NotClient() : await models.UnloadAsync(cmd.ModelId, ct).ConfigureAwait(false),
+                    AiHostJsonContext.Default.RemoteModelsAnswer);
+            }
+
+            case ControlTypes.ClientRemotePlacement:
+            {
+                var cmd = Payload(r, AiHostJsonContext.Default.RemotePlacementCommand, optional: true);
+                var models = shell.ClientMode.Models;
+                RemoteModelsAnswer answer;
+                if (models is null)
+                {
+                    answer = NotClient();
+                }
+                else if (cmd?.Set is { } set)
+                {
+                    answer = await models.SetPlacementAsync(set, ct).ConfigureAwait(false);
+                }
+                else
+                {
+                    answer = await models.GetPlacementsAsync(ct).ConfigureAwait(false);
+                }
+
+                return Ok(id, answer, AiHostJsonContext.Default.RemoteModelsAnswer);
+            }
+
+            case ControlTypes.ClientAppModel:
+            {
+                var cmd = Payload(r, AiHostJsonContext.Default.AppModelCommand, optional: true);
+                var store = shell.ClientMode.AppModels;
+                if (store is null)
+                {
+                    return ControlPipe.Error(id, ErrorCodes.InvalidRequest, "App models are not available.");
+                }
+
+                if (!string.IsNullOrEmpty(cmd?.AppId) && !store.Set(cmd.AppId, cmd.ModelId))
+                {
+                    return ControlPipe.Error(id, ErrorCodes.InvalidRequest, "That app or model id is not valid.");
+                }
+
+                return Ok(id, new AppModelList
+                {
+                    Apps = store.All().OrderBy(p => p.Key, StringComparer.Ordinal)
+                        .Select(p => new AppModelEntry { AppId = p.Key, ModelId = p.Value }).ToList(),
+                }, AiHostJsonContext.Default.AppModelList);
+            }
+
             case ControlTypes.Quit:
                 // Answer first, then quit, so the window sees the acknowledgement.
                 _ = Task.Run(async () =>
@@ -506,6 +575,13 @@ internal sealed class ControlHandler(HostShell shell)
                 : null,
         };
     }
+
+    private static RemoteModelsAnswer NotClient() => new()
+    {
+        Ok = false,
+        ErrorCode = "not_client",
+        Message = "This computer is not using another PC.",
+    };
 
     /// <summary>Earlier models folders kept in settings.</summary>
     internal const int MaxPreviousStoreFolders = 5;

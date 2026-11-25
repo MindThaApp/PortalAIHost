@@ -331,4 +331,64 @@ public sealed class ClientModeStatus
 
     /// <summary>Set by client.setmode when the switch was refused: <c>not_paired</c> or <c>failed</c>.</summary>
     public string? Refused { get; set; }
+
+    /// <summary>This laptop has Model control on the PC (as last seen). Null in server mode or before the PC answered.</summary>
+    public bool? ModelControl { get; set; }
+
+    /// <summary>Ids of the models this laptop has loaded on the PC (as last seen).</summary>
+    public List<string>? LoadedOnPc { get; set; }
+}
+
+/// <summary>Payload of client.remote_placement: a placement to set, or none to read the laptop's placements.</summary>
+public sealed class RemotePlacementCommand
+{
+    public DevicePlacementRequest? Set { get; set; }
+}
+
+/// <summary>
+/// Answer of the client.remote_* messages. <c>Ok</c> is false when the PC refused or could not be reached; then
+/// <c>ErrorCode</c>, <c>Reason</c> and a short plain <c>Message</c> say why. The list is the PC's fresh list when known.
+/// </summary>
+public sealed class RemoteModelsAnswer
+{
+    public bool Ok { get; set; }
+
+    /// <summary>This laptop has Model control on the PC (as last seen).</summary>
+    public bool ModelControl { get; set; }
+
+    public string? PcName { get; set; }
+
+    /// <summary>The device id this laptop has on the PC; <c>LoadedBy</c> of its own models carries it.</summary>
+    public string? DeviceId { get; set; }
+
+    public List<DeviceModelState> Models { get; set; } = [];
+
+    public List<DevicePlacementRequest>? Placements { get; set; }
+
+    public string? ErrorCode { get; set; }
+
+    public string? Reason { get; set; }
+
+    public string? Message { get; set; }
+}
+
+/// <summary>Payload of client.appmodel. A missing <c>AppId</c> only reads; a missing <c>ModelId</c> clears the choice (the PC's choice).</summary>
+public sealed class AppModelCommand
+{
+    public string? AppId { get; set; }
+
+    public string? ModelId { get; set; }
+}
+
+public sealed class AppModelEntry
+{
+    public string AppId { get; set; } = "";
+
+    public string ModelId { get; set; } = "";
+}
+
+/// <summary>Answer of client.appmodel: every app with a chosen PC model.</summary>
+public sealed class AppModelList
+{
+    public List<AppModelEntry> Apps { get; set; } = [];
 }
