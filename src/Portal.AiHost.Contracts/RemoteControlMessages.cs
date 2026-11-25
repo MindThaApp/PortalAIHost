@@ -271,6 +271,59 @@ public static class RelayModes
     public const string Manual = "manual";
 }
 
+/// <summary>
+/// Payload of client.pair: a pairing <c>Link</c> (<c>portalai://pair?...</c>), or a typed <c>Address</c>, optional <c>Port</c> and
+/// <c>Code</c> (LAN only, no fingerprint). <c>DeviceName</c> is the name the PC will show for this laptop (1 to 64 characters).
+/// </summary>
+public sealed class PairCommand
+{
+    public string? Link { get; set; }
+
+    public string? Address { get; set; }
+
+    public int? Port { get; set; }
+
+    public string? Code { get; set; }
+
+    public string DeviceName { get; set; } = "";
+}
+
+/// <summary>Values of <see cref="PairResult.Error"/>.</summary>
+public static class PairErrors
+{
+    public const string InvalidInput = "invalid_input";
+    public const string AddressNotAllowed = "address_not_allowed";
+    public const string Unreachable = "unreachable";
+    public const string CertificateMismatch = "certificate_mismatch";
+    public const string HostProofInvalid = "host_proof_invalid";
+    public const string Refused = "refused";
+    public const string ProtocolError = "protocol_error";
+    public const string SaveFailed = "save_failed";
+
+    /// <summary>A PC is already paired: forget it first.</summary>
+    public const string AlreadyPaired = "already_paired";
+
+    /// <summary>This install cannot protect the pairing key.</summary>
+    public const string NotAvailable = "not_available";
+}
+
+/// <summary>Answer of client.pair. <c>Error</c> is a <see cref="PairErrors"/> value; <c>Reason</c> is the PC's pairing reason when it refused.</summary>
+public sealed class PairResult
+{
+    public bool Ok { get; set; }
+
+    public string? Error { get; set; }
+
+    public string? Reason { get; set; }
+
+    /// <summary>A short plain sentence (English; the window prefers its own text for the error and reason).</summary>
+    public string? Message { get; set; }
+
+    public string? PcName { get; set; }
+
+    public ClientModeStatus Status { get; set; } = new();
+}
+
 /// <summary>Payload of client.setfallback: <see cref="ClientFallbackModes.None"/> or <see cref="ClientFallbackModes.Local"/>.</summary>
 public sealed class SetFallbackCommand
 {

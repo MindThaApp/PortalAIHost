@@ -34,6 +34,12 @@ public sealed class ClientModeOptions
     /// <summary>Which PC model each local app asks for (<c>clientpps.json</c>). Null: no mapping (Model control is not offered).</summary>
     public AppModelStore? AppModels { get; init; }
 
+    /// <summary>The client state folder (<c>client\</c>): lets the window pair and forget a PC, and shows the saved PC while in server mode. Null: no pairing from this laptop.</summary>
+    public ClientStateStore? State { get; init; }
+
+    /// <summary>How pairing reaches the PC (a fake in tests). Null: the LAN connector.</summary>
+    public IRemoteConnector? PairingConnector { get; init; }
+
     /// <summary>Clock for the forwarding backend (fake in tests).</summary>
     public TimeProvider? Time { get; init; }
 
@@ -63,6 +69,7 @@ public sealed class ClientModeController : IAsyncDisposable
     private volatile bool _promptShown;
     private volatile bool _promptPending;
     private volatile bool _useRelay;
+    private volatile string? _pairedName;
 
     public ClientModeController(AiHostRuntime runtime, RemoteAccess remote, ClientModeOptions options)
     {
@@ -72,6 +79,7 @@ public sealed class ClientModeController : IAsyncDisposable
         _fallback = _o.InitialFallback is ClientFallbackModes.None or ClientFallbackModes.Local ? _o.InitialFallback : null;
         _relayMode = _o.InitialRelayMode == RelayModes.Manual ? RelayModes.Manual : RelayModes.Auto;
         _promptShown = _o.InitialPromptShown || _fallback is not null;
+        _pairedName = SafePairedName();
     }
 
     /// <summary>The router answering the model routes in client mode (null in server mode).</summary>
@@ -156,7 +164,8 @@ public sealed class ClientModeController : IAsyncDisposable
         var status = new ClientModeStatus
         {
             Mode = _mode,
-            Paired = link?.Remote is not null,
+            Paired = link?.Remote is not null || _pairedName is not null,
+            PcName = _pairedName,
             ClientFallback = Fallback,
             FallbackUnset = _fallback is null,
             FallbackPromptPending = _promptPending,
@@ -391,11 +400,128 @@ public sealed class ClientModeController : IAsyncDisposable
         Changed?.Invoke();
     }
 
+    private readonly SemaphoreSlim _pairGate = new(1, 1);
+
+    private string? SafePairedName()
+    {
+        try
+        {
+            return _o.State?.LoadRemote()?.PcName;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Pairs with a PC (docs/client-mode-v1.md section 2.3) and then switches to client mode. Nothing is saved unless the
+    /// whole handshake was verified. A PC that is already paired must be forgotten first, so a saved pairing is never
+    /// replaced by accident. Expected failures are answers, not exceptions.
+    /// </summary>
+    public async Task<PairResult> PairAsync(PairCommand command, CancellationToken ct = default)
+    {
+        ArgumentNullException.ThrowIfNull(command);
+        var store = _o.State;
+        if (store is null)
+        {
+            return Failed(PairErrors.NotAvailable, "Pairing is not available on this install.");
+        }
+
+        await _pairGate.WaitAsync(ct).ConfigureAwait(false);
+        try
+        {
+            if (store.IsPaired || _mode == HostModes.Client)
+            {
+                return Failed(PairErrors.AlreadyPaired, "A PC is already paired. Forget it first.");
+            }
+
+            PairingTarget target;
+            if (!string.IsNullOrWhiteSpace(command.Link))
+            {
+                if (!PairingLink.TryParse(command.Link.Trim(), out var link) || link is null)
+                {
+                    return Failed(PairErrors.InvalidInput, "The link is not valid.");
+                }
+
+                target = PairingTarget.FromLink(link, command.DeviceName);
+            }
+            else
+            {
+                target = PairingTarget.FromTypedCode(command.Address ?? "", command.Port, command.Code ?? "", command.DeviceName);
+            }
+
+            var connector = _o.PairingConnector ?? new LanConnector(LanConnector.LinkConnectTimeout);
+            var outcome = await new DevicePairingClient(connector, store, _o.Time).PairAsync(target, ct).ConfigureAwait(false);
+            if (!outcome.Succeeded)
+            {
+                return new PairResult
+                {
+                    Ok = false,
+                    Error = outcome.Error switch
+                    {
+                        PairingError.InvalidInput => PairErrors.InvalidInput,
+                        PairingError.AddressNotAllowed => PairErrors.AddressNotAllowed,
+                        PairingError.Unreachable => PairErrors.Unreachable,
+                        PairingError.CertificateMismatch => PairErrors.CertificateMismatch,
+                        PairingError.HostProofInvalid => PairErrors.HostProofInvalid,
+                        PairingError.Refused => PairErrors.Refused,
+                        PairingError.SaveFailed => PairErrors.SaveFailed,
+                        _ => PairErrors.ProtocolError,
+                    },
+                    Reason = outcome.Reason,
+                    Message = outcome.Message,
+                    Status = Snapshot(),
+                };
+            }
+
+            _pairedName = outcome.Remote?.PcName;
+        }
+        finally
+        {
+            _pairGate.Release();
+        }
+
+        // Paired: switch now. If the switch cannot start the link yet the pairing stays saved and the user can retry.
+        var status = await SetModeAsync(HostModes.Client, ct).ConfigureAwait(false);
+        return new PairResult { Ok = true, PcName = status.PcName ?? _pairedName, Message = "Paired.", Status = status };
+    }
+
+    /// <summary>
+    /// Leaves client mode and forgets the paired PC: removes only this app's own pairing files
+    /// (<see cref="ClientStateStore.Forget"/>). Model files and downloads are never touched.
+    /// </summary>
+    public async Task<ClientModeStatus> UnpairAsync(CancellationToken ct = default)
+    {
+        await _pairGate.WaitAsync(ct).ConfigureAwait(false);
+        try
+        {
+            if (_mode == HostModes.Client)
+            {
+                await SetModeAsync(HostModes.Server, ct).ConfigureAwait(false);
+            }
+
+            _o.State?.Forget();
+            _pairedName = null;
+        }
+        finally
+        {
+            _pairGate.Release();
+        }
+
+        Changed?.Invoke();
+        return Snapshot();
+    }
+
+    private PairResult Failed(string error, string message) =>
+        new() { Ok = false, Error = error, Message = message, Status = Snapshot() };
+
     public async ValueTask DisposeAsync()
     {
         _link?.Dispose();
         _link = null;
         _gate.Dispose();
+        _pairGate.Dispose();
         await Task.CompletedTask.ConfigureAwait(false);
     }
 }

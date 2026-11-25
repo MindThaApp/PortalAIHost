@@ -451,6 +451,25 @@ internal sealed class ControlHandler(HostShell shell)
                 shell.ClientMode.MarkPromptShown();
                 return Ok(id, shell.ClientMode.Snapshot(), AiHostJsonContext.Default.ClientModeStatus);
 
+            case ControlTypes.ClientPair:
+            {
+                var cmd = Payload(r, AiHostJsonContext.Default.PairCommand)!;
+                var result = await shell.ClientMode.PairAsync(cmd, ct).ConfigureAwait(false);
+                if (result.Ok)
+                {
+                    await shell.PushStatusAsync().ConfigureAwait(false);
+                }
+
+                return Ok(id, result, AiHostJsonContext.Default.PairResult);
+            }
+
+            case ControlTypes.ClientUnpair:
+            {
+                var status = await shell.ClientMode.UnpairAsync(ct).ConfigureAwait(false);
+                await shell.PushStatusAsync().ConfigureAwait(false);
+                return Ok(id, status, AiHostJsonContext.Default.ClientModeStatus);
+            }
+
             case ControlTypes.ClientRemoteModels:
             {
                 var models = shell.ClientMode.Models;

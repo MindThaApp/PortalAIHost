@@ -62,6 +62,8 @@ namespace Portal.AiHost.Contracts;
 [JsonSerializable(typeof(SetRelayModeCommand))]
 [JsonSerializable(typeof(UseRelayCommand))]
 [JsonSerializable(typeof(ClientModeStatus))]
+[JsonSerializable(typeof(PairCommand))]
+[JsonSerializable(typeof(PairResult))]
 [JsonSerializable(typeof(RemotePlacementCommand))]
 [JsonSerializable(typeof(RemoteModelsAnswer))]
 [JsonSerializable(typeof(AppModelCommand))]
