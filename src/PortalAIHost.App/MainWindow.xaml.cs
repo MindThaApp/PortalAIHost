@@ -294,6 +294,7 @@ public sealed partial class MainWindow : Window, IAppearanceApplier
         {
             "models" => typeof(ModelsPage),
             "apps" => typeof(AppsPage),
+            "devices" => typeof(DevicesPage),
             "tryit" => typeof(TryItPage),
             "settings" => typeof(SettingsPage),
             "about" => typeof(AboutPage),

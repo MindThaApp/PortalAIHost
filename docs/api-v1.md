@@ -181,6 +181,11 @@ and may be localised later. Each code always comes with the same `type` (OpenAI-
 | 403 | `access_denied` | `permission_error` | no | The user denied the access request (24 h cool-down). |
 | 403 | `model_control_required` | `permission_error` | no | LAN and relay only: this paired device does not have Model control, so it may not list, load or unload the PC's models. The PC owner turns it on per device. |
 | 409 | `model_conflict` | `conflict_error` | no | A device model call conflicts with what is loaded. `details.reason` is `owner_changed`, `in_use_by_host`, `in_use_by_device` or `not_loaded_by_device` ([client-mode-v1.md](client-mode-v1.md) section 4.7). |
+| 404 | `model_not_found` | `not_found_error` | no | LAN and relay only: the paired device may not use that model (its allowed-models list on the PC). |
+| 503 | `device_paused` | `unavailable` | yes | LAN and relay only: the PC owner paused this device or the calling app. `retry_after_ms` is set. |
+| 503 | `device_quiet_hours` | `unavailable` | yes | LAN and relay only: inside the device's quiet hours. `retry_after_ms` is the time until they end. |
+| 503 | `host_busy_gaming` | `unavailable` | yes | LAN and relay only: gaming mode is on and a full-screen game or heavy GPU use is detected. |
+| 429 | `device_limit_reached` | `rate_limit_error` | yes | LAN and relay only: today's request or token limit of the device is used up. `retry_after_ms` is the time until midnight on the PC. |
 | 403 | `app_paused` | `permission_error` | no | The user paused your app in the host. Approval is kept. Requests that were already queued wait; running ones finish. Tell the user generation is paused, and retry only after `GET /host/status` shows `client.paused: false`. |
 | 403 | `forbidden_origin` | `permission_error` | no | Browser origin or bad `Host` header. |
 | 404 | `not_found` | `not_found_error` | no | Unknown route or request id. |

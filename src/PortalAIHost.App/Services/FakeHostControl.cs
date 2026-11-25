@@ -685,6 +685,66 @@ public sealed class FakeHostControl : IHostControl, IDisposable
         return Task.CompletedTask;
     }
 
+    public Task PauseDeviceAsync(string deviceId, string? app, bool paused, CancellationToken ct = default)
+    {
+        Require();
+        lock (_gate)
+        {
+            var d = Devices.FirstOrDefault(x => x.DeviceId == deviceId) ?? throw new HostRequestException("not_found", "Unknown device.");
+            if (app is null)
+            {
+                d.Paused = paused;
+            }
+            else
+            {
+                d.PausedApps.RemoveAll(a => a == app);
+                if (paused) d.PausedApps.Add(app);
+                foreach (var row in d.Apps.Where(a => a.Name == app)) row.Paused = paused;
+            }
+        }
+
+        RemoteChanged?.Invoke();
+        return Task.CompletedTask;
+    }
+
+    public SetDeviceSettingsCommand? LastDeviceSettings { get; private set; }
+
+    public Task SetDeviceSettingsAsync(SetDeviceSettingsCommand settings, CancellationToken ct = default)
+    {
+        Require();
+        lock (_gate)
+        {
+            var d = Devices.FirstOrDefault(x => x.DeviceId == settings.DeviceId) ?? throw new HostRequestException("not_found", "Unknown device.");
+            LastDeviceSettings = settings;
+            d.PriorityEqual = settings.PriorityEqual;
+            d.MaxRequestsPerDay = settings.MaxRequestsPerDay;
+            d.MaxTokensPerDay = settings.MaxTokensPerDay;
+            d.QuietStart = settings.QuietStart;
+            d.QuietEnd = settings.QuietEnd;
+            d.AllowedModels = [.. settings.AllowedModels];
+        }
+
+        RemoteChanged?.Invoke();
+        return Task.CompletedTask;
+    }
+
+    public Task RenameDeviceAsync(string deviceId, string name, CancellationToken ct = default)
+    {
+        Require();
+        lock (_gate)
+        {
+            var d = Devices.FirstOrDefault(x => x.DeviceId == deviceId) ?? throw new HostRequestException("not_found", "Unknown device.");
+            if (string.IsNullOrWhiteSpace(name)) throw new HostRequestException("invalid_request", "The name is empty.");
+            d.Name = name.Trim();
+        }
+
+        RemoteChanged?.Invoke();
+        return Task.CompletedTask;
+    }
+
+    /// <summary>Pushes a remote-changed event with nothing new (a burst test).</summary>
+    public void CompletePairingNoop() => RemoteChanged?.Invoke();
+
     /// <summary>Pretends a device finished pairing: it appears in the list and the code is used up.</summary>
     public void CompletePairing(string name)
     {
