@@ -118,7 +118,16 @@ public sealed class RemoteAccess : IAsyncDisposable
     }
 
     /// <summary>Turns Model control on or off for a device (saved at once, atomic). False for an unknown device.</summary>
-    public bool SetModelControl(string deviceId, bool enabled) => Devices.SetModelControl(deviceId, enabled);
+    public bool SetModelControl(string deviceId, bool enabled)
+    {
+        var done = Devices.SetModelControl(deviceId, enabled);
+        if (done && !enabled)
+        {
+            ModelControl.ForgetDevice(deviceId);
+        }
+
+        return done;
+    }
 
     /// <summary>What each paired device has in flight; cancelled when the device is removed.</summary>
     public DeviceSessions Sessions { get; }
@@ -331,6 +340,7 @@ public sealed class RemoteAccess : IAsyncDisposable
         {
             Sessions.Revoke(deviceId);
             _o.RevokeDevice(deviceId);
+            ModelControl.ForgetDevice(deviceId);
         }
 
         return removed;

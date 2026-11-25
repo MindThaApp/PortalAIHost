@@ -19,6 +19,8 @@ internal sealed class FakeModelHost : IModelControlHost
 {
     private readonly string _folder;
     public int Changes;
+    public readonly HashSet<string> Removed = [];
+    public bool ThrowOnResolve;
 
     public FakeModelHost(string folder)
     {
@@ -39,7 +41,8 @@ internal sealed class FakeModelHost : IModelControlHost
         ]);
 
     public Task<ActiveModel?> ResolveAsync(string modelId, CancellationToken ct) =>
-        Task.FromResult<ActiveModel?>(modelId is "pc-model" or "alpha" or "beta"
+        ThrowOnResolve ? throw new InvalidOperationException("boom") :
+        Task.FromResult<ActiveModel?>(modelId is "pc-model" or "alpha" or "beta" && !Removed.Contains(modelId)
             ? new ActiveModel(ModelKinds.Chat, modelId, modelId, [Path.Combine(_folder, modelId + ".gguf")])
             : null);
 
@@ -81,7 +84,7 @@ public sealed class DeviceModelControlTests : IAsyncLifetime
             Addresses = () => ["192.168.1.20"],
             ModelHost = _models,
         });
-        await _remote.ApplyAsync(new RemoteSettings { Enabled = true, Relay = false });
+        await _remote.ApplyAsync(new RemoteSettings { Enabled = true, Relay = false, AllowReplaceModels = true });
         var pinned = _remote.Snapshot().Fingerprint;
         _http = new HttpClient(new SocketsHttpHandler
         {
@@ -311,6 +314,7 @@ public sealed class DeviceModelControlTests : IAsyncLifetime
     public async Task ADeviceCannotReplaceAModelThePcIsUsingUnlessTheSwitchIsOn()
     {
         var client = await PairedWithGrantAsync();
+        await _remote.ApplyAsync(new RemoteSettings { Enabled = true, Relay = false, AllowReplaceModels = false });
         await _host.Runtime.EnsureLoadedAsync(ModelKinds.Chat, default); // the PC's own apps use pc-model
         Assert.Equal(EngineState.Ready, _host.Chat.State);
 
@@ -431,5 +435,127 @@ public sealed class DeviceModelControlTests : IAsyncLifetime
         var again = await PairAsync("Laptop");
         Assert.NotEqual(client.DeviceId, again.DeviceId);
         Assert.False(_remote.Devices.Find(again.DeviceId!)!.ModelControl); // pairing again never brings the grant back
+    }
+
+    [Fact]
+    public async Task TheOwnersChoiceDuringADeviceLoadIsNeverOverwritten()
+    {
+        var client = await PairedWithGrantAsync();
+        _host.Chat.Options.LoadDelay = TimeSpan.FromMilliseconds(800);
+        var load = CallAsync(client, HttpMethod.Post, Routes.DeviceModelLoad, Load("alpha"));
+        await EventuallyAsync(() => _host.Chat.State is EngineState.Starting or EngineState.Loading);
+
+        // The owner picks another model while the device's load is running, as the Models page does.
+        await _remote.ModelControl.OwnerChangedAsync(ModelKinds.Chat, default);
+        await _host.Runtime.SetActiveAsync(ModelKinds.Chat,
+            new ActiveModel(ModelKinds.Chat, "beta", "beta", [Path.Combine(_host.RootPath, "models", "beta.gguf")]), default);
+
+        var (status, answer) = await load;
+        AssertError(status, answer, HttpStatusCode.Conflict, "model_conflict", "owner_changed");
+        Assert.Equal("beta", _host.Runtime.GetActive(ModelKinds.Chat)!.ModelId);
+        Assert.Empty(_remote.Snapshot().LoadedModels);
+        // The owner's choice is what would be saved; the device's model is never held.
+        Assert.False(_remote.ModelControl.PcChoice(ModelKinds.Chat, "beta").Held);
+    }
+
+    [Fact]
+    public async Task AGrantTakenBackWhileACallWaitsStopsThatCall()
+    {
+        var first = await PairedWithGrantAsync("First");
+        var second = await PairedWithGrantAsync("Second");
+        _host.Chat.Options.LoadDelay = TimeSpan.FromMilliseconds(800);
+        var slow = CallAsync(first, HttpMethod.Post, Routes.DeviceModelLoad, Load("alpha"));
+        await EventuallyAsync(() => _host.Chat.State is EngineState.Starting or EngineState.Loading);
+        var waiting = CallAsync(second, HttpMethod.Post, Routes.DeviceModelLoad, Load("alpha", "cpu"));
+        await Task.Delay(100);
+        _remote.SetModelControl(second.DeviceId!, false);
+
+        Assert.Equal(HttpStatusCode.OK, (await slow).Status);
+        var (status, answer) = await waiting;
+        AssertError(status, answer, HttpStatusCode.Forbidden, "model_control_required");
+        Assert.Equal("alpha", Assert.Single(_remote.Snapshot().LoadedModels).ModelId);
+        Assert.Equal(first.DeviceId, _remote.Snapshot().LoadedModels[0].DeviceId);
+    }
+
+    [Fact]
+    public async Task AnUnexpectedFailureAnswersAsJsonAndLeavesNoClaim()
+    {
+        var client = await PairedWithGrantAsync();
+        _models.ThrowOnResolve = true;
+        var (status, answer) = await CallAsync(client, HttpMethod.Post, Routes.DeviceModelLoad, Load("alpha"));
+        AssertError(status, answer, HttpStatusCode.InternalServerError, "internal_error");
+        Assert.Empty(_remote.Snapshot().LoadedModels);
+        Assert.Equal("pc-model", _host.Runtime.GetActive(ModelKinds.Chat)!.ModelId);
+    }
+
+    [Fact]
+    public async Task APcModelThatIsGoneMeanwhileIsNotBroughtBack()
+    {
+        var client = await PairedWithGrantAsync();
+        await CallAsync(client, HttpMethod.Post, Routes.DeviceModelLoad, Load("alpha"));
+        _models.Removed.Add("pc-model"); // the owner removed the PC's own model while the device's was loaded
+
+        var (status, _) = await CallAsync(client, HttpMethod.Post, Routes.DeviceModelUnload, Unload("alpha"));
+        Assert.Equal(HttpStatusCode.OK, status);
+        Assert.Null(_host.Runtime.GetActive(ModelKinds.Chat)); // no stale model comes back
+        Assert.Empty(_remote.Snapshot().LoadedModels);
+    }
+
+    [Fact]
+    public async Task TheSavedChoiceIsTheDevicesOnlyWhileItsModelIsActive()
+    {
+        var client = await PairedWithGrantAsync();
+        await CallAsync(client, HttpMethod.Post, Routes.DeviceModelLoad, Load("alpha"));
+        Assert.Equal((true, "pc-model"), _remote.ModelControl.PcChoice(ModelKinds.Chat, "alpha"));
+        Assert.False(_remote.ModelControl.PcChoice(ModelKinds.Chat, "beta").Held); // something else is active now
+        _remote.ModelControl.ForgetPcChoice(ModelKinds.Chat);
+        Assert.Equal((true, (string?)null), _remote.ModelControl.PcChoice(ModelKinds.Chat, "alpha"));
+    }
+
+    [Fact]
+    public async Task ThePcsChosenModelNeedsTheSwitchEvenWhileItsEngineIsStopped()
+    {
+        var client = await PairedWithGrantAsync();
+        await _remote.ApplyAsync(new RemoteSettings { Enabled = true, Relay = false, AllowReplaceModels = false });
+        Assert.Equal(EngineState.Stopped, _host.Chat.State);
+        var (status, answer) = await CallAsync(client, HttpMethod.Post, Routes.DeviceModelLoad, Load("alpha"));
+        AssertError(status, answer, HttpStatusCode.Conflict, "model_conflict", "in_use_by_host");
+    }
+
+    [Fact]
+    public async Task ThreadsAreCutToThisPcsProcessorCount()
+    {
+        var client = await PairedWithGrantAsync();
+        await CallAsync(client, HttpMethod.Post, Routes.DeviceModelLoad, Load("alpha", "cpu"));
+        var (status, _) = await CallAsync(client, HttpMethod.Post, Routes.DevicePlacement,
+            """{ "model_id": "alpha", "compute": "cpu", "cpu_threads": 100000 }""");
+        Assert.Equal(HttpStatusCode.OK, status);
+        Assert.Equal(Environment.ProcessorCount, _host.Runtime.GetActive(ModelKinds.Chat)!.Override!.CpuThreads);
+    }
+
+    [Fact]
+    public async Task WhatADeviceWasToldIsForgottenWhenItLosesTheGrant()
+    {
+        var client = await PairedWithGrantAsync();
+        await CallAsync(client, HttpMethod.Post, Routes.DeviceModelLoad, Load("alpha"));
+        Assert.True(await _remote.ModelControl.TakeBackAsync(ModelKinds.Chat, default)); // the device would learn owner_changed
+        _remote.SetModelControl(client.DeviceId!, false);
+        _remote.SetModelControl(client.DeviceId!, true);
+
+        var (status, answer) = await CallAsync(client, HttpMethod.Post, Routes.DeviceModelUnload, Unload("alpha"));
+        AssertError(status, answer, HttpStatusCode.Conflict, "model_conflict", "not_loaded_by_device");
+    }
+
+    [Fact]
+    public async Task TwoUnloadsOfTheSameModelRemoveOnlyOneClaim()
+    {
+        var client = await PairedWithGrantAsync();
+        await CallAsync(client, HttpMethod.Post, Routes.DeviceModelLoad, Load("alpha"));
+        var results = await Task.WhenAll(
+            CallAsync(client, HttpMethod.Post, Routes.DeviceModelUnload, Unload("alpha")),
+            CallAsync(client, HttpMethod.Post, Routes.DeviceModelUnload, Unload("alpha")));
+        Assert.Single(results, r => r.Status == HttpStatusCode.OK);
+        Assert.Single(results, r => r.Status == HttpStatusCode.Conflict);
+        Assert.Equal("pc-model", _host.Runtime.GetActive(ModelKinds.Chat)!.ModelId);
     }
 }

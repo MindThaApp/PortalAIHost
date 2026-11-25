@@ -41,8 +41,11 @@ public sealed class ModelControl
         public required string Placement { get; init; }
         public required PlacementOverride? Override { get; init; }
 
-        /// <summary>The PC's own choice for this kind before the device loaded, put back when the device's model goes.</summary>
-        public required ActiveModel? Previous { get; init; }
+        /// <summary>
+        /// The id of the PC's own choice for this kind before the device loaded. It is put back when the device's model
+        /// goes, looked up again then (it may have been removed meanwhile), so no stale model is ever kept here.
+        /// </summary>
+        public string? PreviousId { get; set; }
 
         /// <summary>True once the engine finished loading. Only then does a stopped engine end the entry.</summary>
         public bool Confirmed { get; set; }
@@ -55,6 +58,8 @@ public sealed class ModelControl
     private readonly Lock _lock = new();
     private readonly Dictionary<string, Entry> _loaded = new(StringComparer.Ordinal);
     private readonly HashSet<(string Device, string Model)> _displaced = [];
+    private readonly Dictionary<string, long> _epoch = new(StringComparer.Ordinal);
+    private const int MaxDisplaced = 256;
     private readonly SemaphoreSlim _gate = new(1, 1);
 
     public ModelControl(AiHostRuntime runtime, DeviceStore devices, IModelControlHost host, Func<bool> allowReplace)
@@ -90,27 +95,63 @@ public sealed class ModelControl
         }
     }
 
-    /// <summary>The model the PC itself chose for a kind while a device's model is active; null when no device holds the kind.</summary>
-    public (bool Held, string? PcModelId) PcChoice(string kind)
+    /// <summary>
+    /// The model the PC itself chose for a kind while a device's model is active. Held only while the entry's model is
+    /// still the active one; otherwise the active model is the PC's own and nothing is held.
+    /// </summary>
+    public (bool Held, string? PcModelId) PcChoice(string kind, string? activeModelId)
     {
         lock (_lock)
         {
-            return _loaded.TryGetValue(kind, out var e) ? (true, e.Previous?.ModelId) : (false, null);
+            return _loaded.TryGetValue(kind, out var e) && e.ModelId == activeModelId ? (true, e.PreviousId) : (false, null);
+        }
+    }
+
+    /// <summary>The PC's saved choice is no longer installed: forget it, so the kind falls back to "no model" on restore.</summary>
+    public void ForgetPcChoice(string kind)
+    {
+        lock (_lock)
+        {
+            if (_loaded.TryGetValue(kind, out var e))
+            {
+                e.PreviousId = null;
+            }
+        }
+    }
+
+    /// <summary>A device was removed or lost its grant: what it was told about earlier owner changes is of no use any more.</summary>
+    public void ForgetDevice(string deviceId)
+    {
+        lock (_lock)
+        {
+            _displaced.RemoveWhere(d => d.Device == deviceId);
         }
     }
 
     // ---- the PC owner's side ----------------------------------------------------------------------
 
+    private long EpochOf(string kind)
+    {
+        lock (_lock)
+        {
+            return _epoch.GetValueOrDefault(kind);
+        }
+    }
+
+    /// <summary>Counts an owner-side change of a kind. A device operation that started earlier sees the change and stops. Call under <c>_lock</c>.</summary>
+    private long BumpLocked(string kind) => _epoch[kind] = _epoch.GetValueOrDefault(kind) + 1;
+
     /// <summary>
     /// The PC owner is about to change this kind (load, unload or pick another model). The device's claim ends first and the PC's
-    /// own choice comes back, then the owner's action runs. The device sees <c>owner_changed</c> on its next call.
+    /// own choice comes back, then the owner's action runs. A device operation in flight for this kind is cancelled
+    /// (it never touches the engine again), and the device sees <c>owner_changed</c>.
     /// </summary>
     public async Task OwnerChangedAsync(string kind, CancellationToken ct)
     {
-        var entry = Remove(kind, displaced: true);
+        var (entry, epoch) = Remove(kind, displaced: true);
         if (entry is not null)
         {
-            await RestoreAsync(entry, stopEngine: false, ct).ConfigureAwait(false);
+            await RestoreAsync(entry, epoch, stopEngine: false, ct).ConfigureAwait(false);
             Changed?.Invoke();
         }
     }
@@ -118,13 +159,13 @@ public sealed class ModelControl
     /// <summary>"Take back": unloads the model a device loaded for this kind (memory only) and gives the PC's choice back.</summary>
     public async Task<bool> TakeBackAsync(string kind, CancellationToken ct)
     {
-        var entry = Remove(kind, displaced: true);
+        var (entry, epoch) = Remove(kind, displaced: true);
         if (entry is null)
         {
             return false;
         }
 
-        await RestoreAsync(entry, stopEngine: true, ct).ConfigureAwait(false);
+        await RestoreAsync(entry, epoch, stopEngine: true, ct).ConfigureAwait(false);
         Changed?.Invoke();
         await _host.ChangedAsync().ConfigureAwait(false);
         return true;
@@ -200,14 +241,17 @@ public sealed class ModelControl
     public async Task<DevicePlacementRequest> SetPlacementAsync(string deviceId, DevicePlacementRequest request, CancellationToken ct)
     {
         if (string.IsNullOrEmpty(request.ModelId) || !DevicePlacements.IsValid(request.Compute) ||
-            request.GpuMemoryLimitBytes is <= 0 || request.MemoryLimitBytes is <= 0 || request.CpuThreads is <= 0 or > 1024)
+            request.GpuMemoryLimitBytes is <= 0 || request.MemoryLimitBytes is <= 0 || request.CpuThreads is <= 0)
         {
             throw new ApiException(ErrorCodes.InvalidRequest,
                 "model_id is required; compute must be auto, gpu or cpu; limits must be positive.");
         }
 
-        var over = new PlacementOverride(request.Compute, request.GpuMemoryLimitBytes, request.MemoryLimitBytes, request.CpuThreads);
+        // Never more threads than this PC has (the PC's own limit is applied on top when it sets one).
+        var threads = request.CpuThreads is { } t ? Math.Min(t, Environment.ProcessorCount) : (int?)null;
+        var over = new PlacementOverride(request.Compute, request.GpuMemoryLimitBytes, request.MemoryLimitBytes, threads);
         await ReplaceAsync(deviceId, request.ModelId, request.Compute, over, requireOwn: true, ct).ConfigureAwait(false);
+        request.CpuThreads = threads;
         return request;
     }
 
@@ -226,12 +270,26 @@ public sealed class ModelControl
         }
     }
 
+    private bool Granted(string deviceId) => _devices.Find(deviceId)?.ModelControl == true;
+
+    private static ApiException NoGrant() =>
+        new(ErrorCodes.ModelControlRequired, "This device does not have Model control. Ask the owner of this PC to turn it on.");
+
+    private static ApiException OwnerChanged() =>
+        Conflict(ModelConflictReasons.OwnerChanged, "The owner of this PC changed the model.");
+
     private async Task<DeviceModelState> ReplaceAsync(string deviceId, string modelId, string placementWord,
         PlacementOverride? over, bool requireOwn, CancellationToken ct)
     {
         await _gate.WaitAsync(ct).ConfigureAwait(false);
         try
         {
+            // The grant may have been taken back while this call waited.
+            if (!Granted(deviceId))
+            {
+                throw NoGrant();
+            }
+
             await ReconcileAsync(null, ct).ConfigureAwait(false);
             var installed = (await _host.ListInstalledAsync(ct).ConfigureAwait(false)).FirstOrDefault(m => m.Id == modelId);
             var resolved = installed is null ? null : await _host.ResolveAsync(modelId, ct).ConfigureAwait(false);
@@ -241,6 +299,7 @@ public sealed class ModelControl
             }
 
             var kind = resolved.Kind;
+            var epoch = EpochOf(kind); // any owner-side change of this kind after this point cancels the call
             var active = _runtime.GetActive(kind);
             var engine = _runtime.EngineStateOf(kind);
             var running = engine is EngineState.Starting or EngineState.Loading or EngineState.Ready;
@@ -262,14 +321,15 @@ public sealed class ModelControl
                 return StateOf(installed); // already loaded (by the PC or a device): nothing changes hands
             }
 
-            if (running && !requireOwn)
+            if (!requireOwn)
             {
                 if (held is not null && held.DeviceId != deviceId)
                 {
                     throw Conflict(ModelConflictReasons.InUseByDevice, "Another device loaded a model on this PC.");
                 }
 
-                if (held is null && active is not null && !_allowReplace())
+                // The PC's own chosen model is protected whether or not its engine is running right now.
+                if (held is null && active is not null && active.ModelId != modelId && !_allowReplace())
                 {
                     throw Conflict(ModelConflictReasons.InUseByHost, "This PC's own apps are using a model.");
                 }
@@ -284,44 +344,75 @@ public sealed class ModelControl
             {
                 Kind = kind, ModelId = modelId, DisplayName = resolved.DisplayName, DeviceId = deviceId,
                 Placement = placementWord, Override = over,
-                Previous = held is not null ? held.Previous : active?.Override is null ? active : active with { Override = null },
+                PreviousId = held is not null ? held.PreviousId : active?.ModelId,
             };
             lock (_lock)
             {
+                if (_epoch.GetValueOrDefault(kind) != epoch || !Granted(deviceId))
+                {
+                    throw _epoch.GetValueOrDefault(kind) != epoch ? OwnerChanged() : NoGrant();
+                }
+
                 _loaded[kind] = entry;
                 _displaced.Remove((deviceId, modelId));
             }
 
+            var aborted = false;
             try
             {
                 // The model in memory goes only when it differs or a placement changed (an explicit stop first).
                 if (running && active is not null && (active.ModelId != modelId || requireOwn))
                 {
+                    if (EpochOf(kind) != epoch)
+                    {
+                        aborted = true;
+                        throw OwnerChanged();
+                    }
+
                     await _runtime.UnloadAsync(kind, ct).ConfigureAwait(false); // engine unload: memory only
                 }
 
-                await _runtime.SetActiveAsync(kind, next, ct).ConfigureAwait(false);
-                await _runtime.EnsureLoadedAsync(kind, ct).ConfigureAwait(false);
-            }
-            catch (Exception ex) when (ex is ApiException or EngineException or EngineCrashedException or OperationCanceledException)
-            {
-                var mine = false;
+                // The check and the change of the active model happen together under the lock, so an owner action
+                // (which counts the epoch under the same lock) either comes first and stops this, or comes after and wins.
+                Task setActive;
                 lock (_lock)
                 {
-                    if (_loaded.TryGetValue(kind, out var now) && ReferenceEquals(now, entry))
+                    if (_epoch.GetValueOrDefault(kind) != epoch)
                     {
-                        _loaded.Remove(kind);
-                        mine = true;
+                        aborted = true;
+                        throw OwnerChanged();
                     }
+
+                    if (!Granted(deviceId))
+                    {
+                        throw NoGrant();
+                    }
+
+                    setActive = _runtime.SetActiveAsync(kind, next, ct);
                 }
 
-                if (mine)
+                await setActive.ConfigureAwait(false);
+                if (EpochOf(kind) != epoch)
                 {
-                    await RestoreAsync(entry, stopEngine: true, CancellationToken.None).ConfigureAwait(false);
+                    aborted = true;
+                    throw OwnerChanged();
                 }
-                else
+
+                await _runtime.EnsureLoadedAsync(kind, ct).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                // Whatever went wrong (engine, memory, cancellation, anything else): this device's claim ends here.
+                // After an owner change the owner's own steps already put things right, so the runtime is left alone.
+                var (mine, ep) = RemoveExact(entry, displaced: false);
+                if (mine && !aborted)
                 {
-                    throw Conflict(ModelConflictReasons.OwnerChanged, "The owner of this PC changed the model.");
+                    await RestoreAsync(entry, ep, stopEngine: true, CancellationToken.None).ConfigureAwait(false);
+                }
+
+                if (!mine && !aborted)
+                {
+                    throw OwnerChanged(); // the owner took the kind over while this call was loading
                 }
 
                 throw;
@@ -329,9 +420,9 @@ public sealed class ModelControl
 
             lock (_lock)
             {
-                if (!_loaded.TryGetValue(kind, out var now) || !ReferenceEquals(now, entry))
+                if (_epoch.GetValueOrDefault(kind) != epoch || !_loaded.TryGetValue(kind, out var now) || !ReferenceEquals(now, entry))
                 {
-                    throw Conflict(ModelConflictReasons.OwnerChanged, "The owner of this PC changed the model.");
+                    throw OwnerChanged();
                 }
 
                 entry.Confirmed = true;
@@ -358,6 +449,11 @@ public sealed class ModelControl
         await _gate.WaitAsync(ct).ConfigureAwait(false);
         try
         {
+            if (!Granted(deviceId))
+            {
+                throw NoGrant();
+            }
+
             await ReconcileAsync(null, ct).ConfigureAwait(false);
             Entry? entry;
             lock (_lock)
@@ -370,8 +466,14 @@ public sealed class ModelControl
                 throw NotYours(deviceId, request.ModelId);
             }
 
-            Remove(entry.Kind, displaced: false);
-            await RestoreAsync(entry, stopEngine: true, ct).ConfigureAwait(false); // engine unload: memory only
+            // Only the very entry looked up: if the owner or another load changed the kind meanwhile, this call stops.
+            var (removed, epoch) = RemoveExact(entry, displaced: false);
+            if (!removed)
+            {
+                throw NotYours(deviceId, request.ModelId);
+            }
+
+            await RestoreAsync(entry, epoch, stopEngine: true, ct).ConfigureAwait(false); // engine unload: memory only
             Changed?.Invoke();
             await _host.ChangedAsync().ConfigureAwait(false);
             var installed = (await _host.ListInstalledAsync(ct).ConfigureAwait(false)).FirstOrDefault(m => m.Id == request.ModelId);
@@ -398,57 +500,102 @@ public sealed class ModelControl
 
     // ---- shared steps -----------------------------------------------------------------------------
 
-    private Entry? Remove(string kind, bool displaced)
+    /// <summary>Ends the claim on a kind (if any) and counts the change, so an operation in flight for the kind stops.</summary>
+    private (Entry? Entry, long Epoch) Remove(string kind, bool displaced)
     {
         lock (_lock)
         {
+            var epoch = BumpLocked(kind); // counted even with no entry: a device call may be between its checks and its entry
             if (!_loaded.Remove(kind, out var entry))
             {
-                return null;
+                return (null, epoch);
             }
 
             if (displaced)
             {
-                _displaced.Add((entry.DeviceId, entry.ModelId));
+                AddDisplacedLocked(entry);
             }
 
-            return entry;
+            return (entry, epoch);
         }
     }
 
-    /// <summary>Gives the PC's own choice for the kind back. The device's model leaves memory first when asked (memory only).</summary>
-    private async Task RestoreAsync(Entry entry, bool stopEngine, CancellationToken ct)
+    /// <summary>Removes this very entry (never a newer one for the same kind).</summary>
+    private (bool Removed, long Epoch) RemoveExact(Entry entry, bool displaced)
+    {
+        lock (_lock)
+        {
+            if (!_loaded.TryGetValue(entry.Kind, out var now) || !ReferenceEquals(now, entry))
+            {
+                return (false, _epoch.GetValueOrDefault(entry.Kind));
+            }
+
+            _loaded.Remove(entry.Kind);
+            if (displaced)
+            {
+                AddDisplacedLocked(entry);
+            }
+
+            return (true, BumpLocked(entry.Kind));
+        }
+    }
+
+    private void AddDisplacedLocked(Entry entry)
+    {
+        if (_displaced.Count >= MaxDisplaced)
+        {
+            _displaced.Clear(); // a device that missed the news only learns not_loaded_by_device instead
+        }
+
+        _displaced.Add((entry.DeviceId, entry.ModelId));
+    }
+
+    /// <summary>
+    /// Gives the PC's own choice for the kind back. The device's model leaves memory first when asked (memory only). The
+    /// PC's model is looked up again (it may be gone), and nothing happens if the kind changed since <paramref name="epoch"/>.
+    /// </summary>
+    private async Task RestoreAsync(Entry entry, long epoch, bool stopEngine, CancellationToken ct)
     {
         if (stopEngine && _runtime.EngineStateOf(entry.Kind) is not (EngineState.Stopped or null) &&
-            _runtime.GetActive(entry.Kind)?.ModelId == entry.ModelId)
+            _runtime.GetActive(entry.Kind)?.ModelId == entry.ModelId && EpochOf(entry.Kind) == epoch)
         {
             await _runtime.UnloadAsync(entry.Kind, ct).ConfigureAwait(false); // engine unload: memory only
         }
 
-        // Only while the active model is still the device's own: never undo a choice the owner made since.
-        if (_runtime.GetActive(entry.Kind)?.ModelId == entry.ModelId)
+        var previous = entry.PreviousId is null ? null : await _host.ResolveAsync(entry.PreviousId, ct).ConfigureAwait(false);
+        Task? set = null;
+        lock (_lock)
         {
-            await _runtime.SetActiveAsync(entry.Kind, entry.Previous, ct).ConfigureAwait(false);
+            // Only while nothing else changed this kind and the active model is still the device's own.
+            if (_epoch.GetValueOrDefault(entry.Kind) == epoch && _runtime.GetActive(entry.Kind)?.ModelId == entry.ModelId)
+            {
+                set = _runtime.SetActiveAsync(entry.Kind, previous, ct); // null when the PC's model is no longer installed
+            }
+        }
+
+        if (set is not null)
+        {
+            await set.ConfigureAwait(false);
         }
     }
 
     /// <summary>A device's model whose engine has stopped (idle unload, crash) is no longer the device's: the PC's choice returns.</summary>
     private async Task ReconcileAsync(string? kind, CancellationToken ct)
     {
-        List<Entry> gone;
+        List<(Entry Entry, long Epoch)> gone = [];
         lock (_lock)
         {
-            gone = [.. _loaded.Values.Where(e => (kind is null || e.Kind == kind) && e.Confirmed &&
-                _runtime.EngineStateOf(e.Kind) is EngineState.Stopped or EngineState.Failed or null)];
-            foreach (var e in gone)
+            foreach (var e in _loaded.Values.Where(e => (kind is null || e.Kind == kind) && e.Confirmed &&
+                _runtime.EngineStateOf(e.Kind) is EngineState.Stopped or EngineState.Failed or null).ToList())
             {
                 _loaded.Remove(e.Kind);
+                gone.Add((e, BumpLocked(e.Kind)));
             }
         }
 
-        foreach (var e in gone)
+        foreach (var (e, epoch) in gone)
         {
-            await RestoreAsync(e, stopEngine: false, ct).ConfigureAwait(false);
+            await RestoreAsync(e, epoch, stopEngine: false, ct).ConfigureAwait(false);
         }
 
         if (gone.Count > 0)
@@ -468,47 +615,59 @@ public sealed class ModelControl
     {
         ArgumentNullException.ThrowIfNull(pipeline);
         var json = AiHostJsonContext.Default;
-        pipeline.Map("GET", Routes.DeviceModels, async c =>
+        pipeline.Map("GET", Routes.DeviceModels, c => Guarded(async () =>
         {
             Grant(c);
             await c.WriteJsonAsync(200, await ListAsync(c.Aborted).ConfigureAwait(false), json.DeviceModelList).ConfigureAwait(false);
-        }, requiresAuth: false);
-        pipeline.Map("POST", Routes.DeviceModelLoad, async c =>
+        }), requiresAuth: false);
+        pipeline.Map("POST", Routes.DeviceModelLoad, c => Guarded(async () =>
         {
             var device = Grant(c);
             var body = c.ReadJson(json.DeviceLoadRequest);
             await c.WriteJsonAsync(200, await LoadAsync(device, body, c.Aborted).ConfigureAwait(false), json.DeviceModelState)
                 .ConfigureAwait(false);
-        }, requiresAuth: false);
-        pipeline.Map("POST", Routes.DeviceModelUnload, async c =>
+        }), requiresAuth: false);
+        pipeline.Map("POST", Routes.DeviceModelUnload, c => Guarded(async () =>
         {
             var device = Grant(c);
             var body = c.ReadJson(json.DeviceUnloadRequest);
             await c.WriteJsonAsync(200, await UnloadAsync(device, body, c.Aborted).ConfigureAwait(false), json.DeviceModelState)
                 .ConfigureAwait(false);
-        }, requiresAuth: false);
-        pipeline.Map("GET", Routes.DevicePlacement, async c =>
+        }), requiresAuth: false);
+        pipeline.Map("GET", Routes.DevicePlacement, c => Guarded(async () =>
         {
             var device = Grant(c);
             await c.WriteJsonAsync(200, PlacementsOf(device), json.DevicePlacementList).ConfigureAwait(false);
-        }, requiresAuth: false);
-        pipeline.Map("POST", Routes.DevicePlacement, async c =>
+        }), requiresAuth: false);
+        pipeline.Map("POST", Routes.DevicePlacement, c => Guarded(async () =>
         {
             var device = Grant(c);
             var body = c.ReadJson(json.DevicePlacementRequest);
             await c.WriteJsonAsync(200, await SetPlacementAsync(device, body, c.Aborted).ConfigureAwait(false), json.DevicePlacementRequest)
                 .ConfigureAwait(false);
-        }, requiresAuth: false);
+        }), requiresAuth: false);
+    }
+
+    /// <summary>Anything unexpected becomes the standard JSON error answer (no exception text), never an unhandled throw.</summary>
+    private static async Task Guarded(Func<Task> work)
+    {
+        try
+        {
+            await work().ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is not (ApiException or OperationCanceledException or EngineException or EngineCrashedException))
+        {
+            throw new ApiException(ErrorCodes.InternalError, "Unexpected host error.");
+        }
     }
 
     /// <summary>The calling device's id, when it is a signed device that holds Model control right now.</summary>
     private string Grant(ApiContext context)
     {
         var id = context.Request.Caller?.Remote?.Id ?? throw new ApiException(ErrorCodes.NotFound, "Unknown route.");
-        if (_devices.Find(id)?.ModelControl != true)
+        if (!Granted(id))
         {
-            throw new ApiException(ErrorCodes.ModelControlRequired,
-                "This device does not have Model control. Ask the owner of this PC to turn it on.");
+            throw NoGrant();
         }
 
         return id;

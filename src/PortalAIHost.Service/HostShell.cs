@@ -835,7 +835,7 @@ public sealed class HostShell : IAsyncDisposable
         foreach (var kind in new[] { ModelKinds.Chat, ModelKinds.Embedding })
         {
             // While a device's model is active the PC's own choice is what is saved, never the device's.
-            var (held, pcModelId) = Remote?.ModelControl.PcChoice(kind) ?? (false, null);
+            var (held, pcModelId) = Remote?.ModelControl.PcChoice(kind, Runtime.GetActive(kind)?.ModelId) ?? (false, null);
             if (held)
             {
                 if (pcModelId is not null)
@@ -854,6 +854,19 @@ public sealed class HostShell : IAsyncDisposable
 
     private async Task PersistActiveAsync()
     {
+        // The PC's own choice is saved only while that model is still installed.
+        if (Remote is { } remote && _store is not null)
+        {
+            foreach (var kind in new[] { ModelKinds.Chat, ModelKinds.Embedding })
+            {
+                var (held, pcId) = remote.ModelControl.PcChoice(kind, Runtime.GetActive(kind)?.ModelId);
+                if (held && pcId is not null && await _store.GetAsync(pcId, CancellationToken.None).ConfigureAwait(false) is not { IsComplete: true })
+                {
+                    remote.ModelControl.ForgetPcChoice(kind);
+                }
+            }
+        }
+
         WriteActiveModels();
         await PushStatusAsync().ConfigureAwait(false);
     }
@@ -861,6 +874,11 @@ public sealed class HostShell : IAsyncDisposable
     /// <summary>Stops the engine of a kind and leaves it with no model. Files are never touched.</summary>
     private async Task ClearActiveAsync(string kind, CancellationToken ct)
     {
+        if (Remote is { } remote)
+        {
+            await remote.ModelControl.OwnerChangedAsync(kind, ct).ConfigureAwait(false); // the owner's action wins
+        }
+
         await Runtime.SetActiveAsync(kind, null, ct).ConfigureAwait(false);
         await PersistActiveAsync().ConfigureAwait(false);
     }
@@ -896,6 +914,11 @@ public sealed class HostShell : IAsyncDisposable
 
         foreach (var kind in new[] { ModelKinds.Chat, ModelKinds.Embedding })
         {
+            if (Remote is { } remote)
+            {
+                await remote.ModelControl.OwnerChangedAsync(kind, ct).ConfigureAwait(false); // the owner's action wins
+            }
+
             if (Runtime.GetActive(kind) is { } m && await _store.GetAsync(m.ModelId, ct).ConfigureAwait(false) is { IsComplete: true } stored)
             {
                 await Runtime.SetActiveAsync(kind, ToActive(stored), ct).ConfigureAwait(false);
