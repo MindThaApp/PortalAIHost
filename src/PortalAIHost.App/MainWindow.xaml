@@ -46,6 +46,7 @@
                 <NavigationViewItem x:Uid="NavHome" Tag="home" Icon="Home" />
                 <NavigationViewItem x:Uid="NavModels" Tag="models" Icon="Download" />
                 <NavigationViewItem x:Uid="NavApps" Tag="apps" Icon="Contact" />
+                <NavigationViewItem x:Uid="NavDevices" Tag="devices" Icon="TwoPage" />
                 <NavigationViewItem x:Uid="NavTryIt" Tag="tryit" Icon="Message" />
             </NavigationView.MenuItems>
             <NavigationView.FooterMenuItems>

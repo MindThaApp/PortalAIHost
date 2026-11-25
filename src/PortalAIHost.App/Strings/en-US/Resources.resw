@@ -648,4 +648,65 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="Vm_RemoveDeviceBody" xml:space="preserve"><value>{0} loses access to this PC&apos;s AI at once. Its apps stop working until you pair it again.</value></data>
   <data name="Vm_RemoveDeviceConfirm" xml:space="preserve"><value>Remove device</value></data>
   <data name="Vm_AppOnDevice" xml:space="preserve"><value>{0} on {1}</value></data>
+  <data name="NavDevices.Content" xml:space="preserve"><value>This PC&apos;s devices</value></data>
+  <data name="NavDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>This PC&apos;s devices</value></data>
+  <data name="DevicesTitle.Text" xml:space="preserve"><value>Devices on this PC</value></data>
+  <data name="DevicesGamingTitle.Text" xml:space="preserve"><value>Gaming mode</value></data>
+  <data name="DevicesGamingText.Text" xml:space="preserve"><value>While a full-screen game is running, calls from other devices are told this PC is busy. Off by default.</value></data>
+  <data name="DevicesGaming.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Gaming mode</value></data>
+  <data name="DevicesNone.Text" xml:space="preserve"><value>No device is paired yet. Pair one in Settings, under Other devices.</value></data>
+  <data name="DevicesForgetLabel.Text" xml:space="preserve"><value>Forget</value></data>
+  <data name="DevicesForget.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Remove this device. Its access stops at once and its usage history is deleted. Models are not touched.</value></data>
+  <data name="DevicesForget.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Remove this device. Its access stops at once and its usage history is deleted. Models are not touched.</value></data>
+  <data name="DevicesTakeBackLabel.Text" xml:space="preserve"><value>Take back</value></data>
+  <data name="DevicesTakeBack.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Unload the model this device loaded. This PC&apos;s own choice comes back. No model file is touched.</value></data>
+  <data name="DevicesTakeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Unload the model this device loaded. This PC&apos;s own choice comes back. No model file is touched.</value></data>
+  <data name="DevicesRenameLabel.Text" xml:space="preserve"><value>Rename</value></data>
+  <data name="DevicesRename.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Change the name shown for this device</value></data>
+  <data name="DevicesRename.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Change the name shown for this device</value></data>
+  <data name="DevicesNewName.Header" xml:space="preserve"><value>Device name</value></data>
+  <data name="DevicesRenameSave.Content" xml:space="preserve"><value>Rename</value></data>
+  <data name="DevicesLimitsLabel.Text" xml:space="preserve"><value>Limits</value></data>
+  <data name="DevicesLimits.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Priority, daily limits, quiet hours and the models this device may use</value></data>
+  <data name="DevicesLimits.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Priority, daily limits, quiet hours and the models this device may use</value></data>
+  <data name="DevicesPriorityEqual.Header" xml:space="preserve"><value>Same priority as this PC&apos;s apps</value></data>
+  <data name="DevicesPriorityEqual.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Off: this PC&apos;s own apps go first. On: this device waits in the same line.</value></data>
+  <data name="DevicesRequestLimit.Header" xml:space="preserve"><value>Requests per day</value></data>
+  <data name="DevicesTokenLimit.Header" xml:space="preserve"><value>Tokens per day</value></data>
+  <data name="DevicesQuiet.Header" xml:space="preserve"><value>Quiet hours</value></data>
+  <data name="DevicesQuiet.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>The device gets no answers between these times (this PC&apos;s time)</value></data>
+  <data name="DevicesQuietFrom.Header" xml:space="preserve"><value>From</value></data>
+  <data name="DevicesQuietTo.Header" xml:space="preserve"><value>Until</value></data>
+  <data name="DevicesModelsHeader.Text" xml:space="preserve"><value>Models this device may use</value></data>
+  <data name="DevicesSaveLabel.Text" xml:space="preserve"><value>Save</value></data>
+  <data name="DevicesSave.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Save these settings for this device</value></data>
+  <data name="DevicesSave.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Save these settings for this device</value></data>
+  <data name="Vm_DevOnline" xml:space="preserve"><value>Online</value></data>
+  <data name="Vm_DevIdle" xml:space="preserve"><value>Idle</value></data>
+  <data name="Vm_DevOffline" xml:space="preserve"><value>Offline</value></data>
+  <data name="Vm_DevRouteLan" xml:space="preserve"><value>Home network</value></data>
+  <data name="Vm_DevRouteRelay" xml:space="preserve"><value>Relay (away)</value></data>
+  <data name="Vm_DevRouteNone" xml:space="preserve"><value>No route yet</value></data>
+  <data name="Vm_DevRunning" xml:space="preserve"><value>Running now: {0}</value></data>
+  <data name="Vm_DevRunningQueued" xml:space="preserve"><value>Running now: {0}, waiting: {1}</value></data>
+  <data name="Vm_DevToday" xml:space="preserve"><value>Today: {0} requests, {1} tokens</value></data>
+  <data name="Vm_DevBar" xml:space="preserve"><value>{0} requests, {1} days ago</value></data>
+  <data name="Vm_DevModel" xml:space="preserve"><value>Model: {0}</value></data>
+  <data name="Vm_DevModelNone" xml:space="preserve"><value>No call yet</value></data>
+  <data name="Vm_DevLoadedByPc" xml:space="preserve"><value>{0}, loaded by this PC</value></data>
+  <data name="Vm_DevLoadedByDevice" xml:space="preserve"><value>{1}, loaded by {0}</value></data>
+  <data name="Vm_DevSpeed" xml:space="preserve"><value>Speed: {0} tokens/s, {1} ms to first byte</value></data>
+  <data name="Vm_DevSpeedNone" xml:space="preserve"><value>Speed: not measured yet</value></data>
+  <data name="Vm_DevPause" xml:space="preserve"><value>Pause</value></data>
+  <data name="Vm_DevResume" xml:space="preserve"><value>Resume</value></data>
+  <data name="Vm_DevPauseTip" xml:space="preserve"><value>Pause this device. Its calls get a paused answer and the laptop uses its own fallback.</value></data>
+  <data name="Vm_DevResumeTip" xml:space="preserve"><value>Let this device use this PC again</value></data>
+  <data name="Vm_DevAppPauseTip" xml:space="preserve"><value>Pause only this app on this device</value></data>
+  <data name="Vm_DevAppResumeTip" xml:space="preserve"><value>Let this app use this PC again</value></data>
+  <data name="Vm_DevGamingBusy" xml:space="preserve"><value>A game is running: devices are told this PC is busy.</value></data>
+  <data name="Vm_AutoDevPause" xml:space="preserve"><value>Pause {0}</value></data>
+  <data name="Vm_AutoDevResume" xml:space="preserve"><value>Resume {0}</value></data>
+  <data name="Vm_AutoDevAppPause" xml:space="preserve"><value>Pause {0} on {1}</value></data>
+  <data name="Vm_AutoDevAppResume" xml:space="preserve"><value>Resume {0} on {1}</value></data>
+  <data name="Vm_AutoDevRename" xml:space="preserve"><value>Rename {0}</value></data>
 </root>

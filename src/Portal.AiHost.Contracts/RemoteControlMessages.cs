@@ -23,6 +23,12 @@ public sealed class RemoteSettings
     /// own apps are using in order to load another. Off: such a load is refused with <c>in_use_by_host</c>.
     /// </summary>
     public bool AllowReplaceModels { get; set; }
+
+    /// <summary>
+    /// Gaming mode (PC-wide, off by default): while a full-screen game or heavy GPU use is detected, calls from devices
+    /// are refused with <c>503 host_busy_gaming</c> (docs/client-mode-v1.md 5.7).
+    /// </summary>
+    public bool GamingMode { get; set; }
 }
 
 /// <summary>Payload of remote.device_remove.</summary>
@@ -40,6 +46,104 @@ public sealed class PairedDeviceSummary
 
     /// <summary>The device may list, load and unload this PC's models (off by default, revocable).</summary>
     public bool ModelControl { get; set; }
+
+    /// <summary>The whole device is paused: its calls get <c>503 device_paused</c>.</summary>
+    public bool Paused { get; set; }
+
+    /// <summary>Apps (by the name the laptop sent) that are paused on their own.</summary>
+    public List<string> PausedApps { get; set; } = [];
+
+    /// <summary>Priority option <c>Equal</c>; false (default) means this PC's own apps go first.</summary>
+    public bool PriorityEqual { get; set; }
+
+    public int? MaxRequestsPerDay { get; set; }
+    public long? MaxTokensPerDay { get; set; }
+
+    /// <summary>Quiet hours as local "HH:mm" (a window across midnight is fine). Both null: none.</summary>
+    public string? QuietStart { get; set; }
+    public string? QuietEnd { get; set; }
+
+    /// <summary>Model ids this device may use; empty means every model.</summary>
+    public List<string> AllowedModels { get; set; } = [];
+
+    /// <summary><c>online</c> (a call is running), <c>idle</c> (seen in the last 10 minutes) or <c>offline</c>.</summary>
+    public string Status { get; set; } = DeviceStatuses.Offline;
+
+    /// <summary><c>lan</c> or <c>relay</c> for the latest call; null when none yet.</summary>
+    public string? Route { get; set; }
+
+    public List<DeviceAppSummary> Apps { get; set; } = [];
+
+    /// <summary>Latest model the device used (id and display name), if any.</summary>
+    public string? CurrentModel { get; set; }
+    public string? CurrentModelName { get; set; }
+
+    /// <summary>Tokens per second and time to first byte of the latest call.</summary>
+    public double? TokensPerSecond { get; set; }
+    public int? LatencyMs { get; set; }
+}
+
+/// <summary>Values of <see cref="PairedDeviceSummary.Status"/>.</summary>
+public static class DeviceStatuses
+{
+    public const string Online = "online";
+    public const string Idle = "idle";
+    public const string Offline = "offline";
+}
+
+/// <summary>One app of a device (the name it sent in X-Portal-Client-App) with today's counts. Counts only, no content.</summary>
+public sealed class DeviceAppSummary
+{
+    public string Name { get; set; } = "";
+    public bool Paused { get; set; }
+
+    /// <summary>Calls running right now.</summary>
+    public int Active { get; set; }
+
+    /// <summary>Calls of this app waiting behind another one right now.</summary>
+    public int Queued { get; set; }
+
+    public int RequestsToday { get; set; }
+    public long TokensToday { get; set; }
+
+    /// <summary>Requests of the last 7 days, oldest first, today last (always 7 entries).</summary>
+    public List<int> Last7Days { get; set; } = [];
+}
+
+/// <summary>Payload of remote.device_pause: pauses or resumes the whole device (App null) or one app of it.</summary>
+public sealed class PauseDeviceCommand
+{
+    public string DeviceId { get; set; } = "";
+    public string? App { get; set; }
+    public bool Paused { get; set; }
+}
+
+/// <summary>Payload of remote.device_settings: replaces the priority, limits, quiet hours and allowed models of a device.</summary>
+public sealed class SetDeviceSettingsCommand
+{
+    public string DeviceId { get; set; } = "";
+    public bool PriorityEqual { get; set; }
+    public int? MaxRequestsPerDay { get; set; }
+    public long? MaxTokensPerDay { get; set; }
+    public string? QuietStart { get; set; }
+    public string? QuietEnd { get; set; }
+    public List<string> AllowedModels { get; set; } = [];
+}
+
+/// <summary>Payload of remote.device_rename.</summary>
+public sealed class RenameDeviceCommand
+{
+    public string DeviceId { get; set; } = "";
+    public string Name { get; set; } = "";
+}
+
+/// <summary>Payload of event.device_alert: a new pairing, or a device that connected through the relay from away.</summary>
+public sealed class DeviceAlert
+{
+    /// <summary><c>paired</c> or <c>relay_connect</c>.</summary>
+    public string Kind { get; set; } = "";
+    public string DeviceId { get; set; } = "";
+    public string DeviceName { get; set; } = "";
 }
 
 /// <summary>A pairing code to show to the user (XXXX-XXXX-XXXX), and the QR text that carries the same code.</summary>
@@ -82,6 +186,9 @@ public sealed class RemoteStatus
 
     /// <summary>"Devices may replace models" as saved.</summary>
     public bool AllowReplaceModels { get; set; }
+
+    /// <summary>Gaming mode is on and a game or heavy GPU use is detected right now.</summary>
+    public bool GamingBusy { get; set; }
 
     /// <summary>The models loaded right now and who loaded each (the PC or a device).</summary>
     public List<LoadedModelInfo> LoadedModels { get; set; } = [];

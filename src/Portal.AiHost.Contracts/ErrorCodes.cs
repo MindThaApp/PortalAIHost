@@ -30,6 +30,11 @@ public static class ErrorCodes
     public const string PairingFailed = "pairing_failed";
     public const string ModelControlRequired = "model_control_required";
     public const string ModelConflict = "model_conflict";
+    public const string ModelNotFound = "model_not_found";
+    public const string DevicePaused = "device_paused";
+    public const string DeviceQuietHours = "device_quiet_hours";
+    public const string HostBusyGaming = "host_busy_gaming";
+    public const string DeviceLimitReached = "device_limit_reached";
     public const string DeadlineExceeded = "deadline_exceeded";
     public const string EngineError = "engine_error";
     public const string InternalError = "internal_error";
@@ -68,6 +73,11 @@ public static class ErrorCatalog
         [ErrorCodes.AccessDenied] = new(403, ErrorTypes.Permission, false),
         [ErrorCodes.ModelControlRequired] = new(403, ErrorTypes.Permission, false),
         [ErrorCodes.ModelConflict] = new(409, ErrorTypes.Conflict, false),
+        [ErrorCodes.ModelNotFound] = new(404, ErrorTypes.NotFound, false),
+        [ErrorCodes.DevicePaused] = new(503, ErrorTypes.Unavailable, true),
+        [ErrorCodes.DeviceQuietHours] = new(503, ErrorTypes.Unavailable, true),
+        [ErrorCodes.HostBusyGaming] = new(503, ErrorTypes.Unavailable, true),
+        [ErrorCodes.DeviceLimitReached] = new(429, ErrorTypes.RateLimit, true),
         [ErrorCodes.AppPaused] = new(403, ErrorTypes.Permission, false),
         [ErrorCodes.ForbiddenOrigin] = new(403, ErrorTypes.Permission, false),
         [ErrorCodes.NotFound] = new(404, ErrorTypes.NotFound, false),

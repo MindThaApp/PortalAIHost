@@ -19,7 +19,32 @@ public sealed class PairedDevice
     /// </summary>
     public bool ModelControl { get; set; }
 
-    internal PairedDevice Copy() => (PairedDevice)MemberwiseClone();
+    /// <summary>The whole device is paused (docs/client-mode-v1.md 5.7): its calls get 503 device_paused.</summary>
+    public bool Paused { get; set; }
+
+    /// <summary>App labels paused on their own. Labels only; a label never grants access.</summary>
+    public List<string> PausedApps { get; set; } = [];
+
+    /// <summary>Priority option "Equal". False (default): this PC's own apps go first.</summary>
+    public bool PriorityEqual { get; set; }
+
+    public int? MaxRequestsPerDay { get; set; }
+    public long? MaxTokensPerDay { get; set; }
+
+    /// <summary>Quiet hours as local "HH:mm". Both null: none.</summary>
+    public string? QuietStart { get; set; }
+    public string? QuietEnd { get; set; }
+
+    /// <summary>Model ids the device may use. Empty: every model.</summary>
+    public List<string> AllowedModels { get; set; } = [];
+
+    internal PairedDevice Copy()
+    {
+        var copy = (PairedDevice)MemberwiseClone();
+        copy.PausedApps = [.. PausedApps];
+        copy.AllowedModels = [.. AllowedModels];
+        return copy;
+    }
 }
 
 internal sealed class DeviceFile
@@ -63,8 +88,11 @@ public sealed class DeviceStore
         Load();
     }
 
-    /// <summary>Raised after a device was added or removed.</summary>
+    /// <summary>Raised after a device was added or removed (and after its settings changed).</summary>
     public event Action? Changed;
+
+    /// <summary>Raised after a new device was paired and saved.</summary>
+    public event Action<PairedDevice>? Added;
 
     public int Count
     {
@@ -126,6 +154,7 @@ public sealed class DeviceStore
             device = device.Copy();
         }
 
+        Added?.Invoke(device);
         Changed?.Invoke();
         return device;
     }
@@ -192,6 +221,58 @@ public sealed class DeviceStore
 
         Changed?.Invoke();
         return true;
+    }
+
+    /// <summary>
+    /// Changes the settings of a device and saves (atomic). Nothing changes when the save fails. Returns false for an
+    /// unknown id.
+    /// </summary>
+    public bool Update(string id, Action<PairedDevice> change)
+    {
+        ArgumentNullException.ThrowIfNull(change);
+        lock (_gate)
+        {
+            var index = _devices.FindIndex(d => string.Equals(d.Id, id, StringComparison.Ordinal));
+            if (index < 0)
+            {
+                return false;
+            }
+
+            var before = _devices[index];
+            var after = before.Copy();
+            change(after);
+            _devices[index] = after;
+            try
+            {
+                Save(_time.GetUtcNow());
+            }
+            catch
+            {
+                _devices[index] = before;
+                throw;
+            }
+        }
+
+        Changed?.Invoke();
+        return true;
+    }
+
+    /// <summary>Changes the name shown for a device. The name is trimmed, cleaned of control characters and cut to 64 characters.</summary>
+    public bool Rename(string id, string name)
+    {
+        var clean = CleanName(name);
+        if (clean.Length == 0)
+        {
+            return false;
+        }
+
+        return Update(id, d => d.Name = clean);
+    }
+
+    internal static string CleanName(string? name)
+    {
+        var text = new string([.. (name ?? "").Where(c => !char.IsControl(c))]).Trim();
+        return text.Length > 64 ? text[..64].TrimEnd() : text;
     }
 
     /// <summary>Records that the device was seen. Kept in memory; written to disk at most once a minute.</summary>

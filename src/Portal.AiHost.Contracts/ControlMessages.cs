@@ -105,6 +105,15 @@ public static class ControlTypes
     /// <summary>Unloads a model a device loaded and gives the PC's own choice back. Payload <see cref="TakeBackCommand"/>; answers <see cref="RemoteStatus"/>.</summary>
     public const string RemoteTakeBack = "remote.take_back";
 
+    /// <summary>Pauses or resumes a device or one of its apps. Payload <see cref="PauseDeviceCommand"/>; answers <see cref="RemoteStatus"/>.</summary>
+    public const string RemoteDevicePause = "remote.device_pause";
+
+    /// <summary>Sets priority, limits, quiet hours and allowed models of a device. Payload <see cref="SetDeviceSettingsCommand"/>; answers <see cref="RemoteStatus"/>.</summary>
+    public const string RemoteDeviceSettings = "remote.device_settings";
+
+    /// <summary>Renames a paired device. Payload <see cref="RenameDeviceCommand"/>; answers <see cref="RemoteStatus"/>.</summary>
+    public const string RemoteDeviceRename = "remote.device_rename";
+
     /// <summary>Answers <see cref="ClientModeStatus"/>: the host mode and, in client mode, the state of the link to the PC.</summary>
     public const string ClientStatus = "client.status";
 
@@ -144,6 +153,9 @@ public static class ControlTypes
 
     /// <summary>Paired devices, the pairing code or the listener changed: ask <see cref="RemoteGet"/> again. No payload.</summary>
     public const string EventRemoteChanged = "event.remote_changed";
+
+    /// <summary>A new pairing, or a device connecting through the relay from away: the tray shows a notification. Payload <see cref="DeviceAlert"/>.</summary>
+    public const string EventDeviceAlert = "event.device_alert";
 }
 
 /// <summary>Wire envelope. Payload is a JSON object whose type depends on Type.</summary>
@@ -662,6 +674,9 @@ public static class NotificationKinds
 
     /// <summary>The engine stopped and could not restart, or the health check turned to fail.</summary>
     public const string Problems = "problems";
+
+    /// <summary>A new device paired, or a device connected through the relay from away. Not in <see cref="All"/>: no switch for it yet.</summary>
+    public const string Devices = "devices";
 
     public static readonly string[] All = [Downloads, Approvals, Problems];
 }

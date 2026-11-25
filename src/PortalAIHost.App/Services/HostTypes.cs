@@ -156,6 +156,15 @@ public interface IHostControl
 
     /// <summary>Unloads the model a device loaded for this kind (memory only) and gives the PC's own choice back.</summary>
     Task TakeBackAsync(string kind, CancellationToken ct = default);
+
+    /// <summary>Pauses or resumes a device (<paramref name="app"/> null) or one of its apps.</summary>
+    Task PauseDeviceAsync(string deviceId, string? app, bool paused, CancellationToken ct = default);
+
+    /// <summary>Replaces priority, limits, quiet hours and allowed models of a device.</summary>
+    Task SetDeviceSettingsAsync(SetDeviceSettingsCommand settings, CancellationToken ct = default);
+
+    /// <summary>Renames a paired device.</summary>
+    Task RenameDeviceAsync(string deviceId, string name, CancellationToken ct = default);
 }
 
 /// <summary>One piece of a "Try it" reply: the model's thinking text or its answer.</summary>

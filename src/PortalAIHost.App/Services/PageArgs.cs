@@ -8,7 +8,7 @@ public static class PageArgs
 {
     public const string Switch = "--page=";
 
-    private static readonly string[] Known = ["home", "models", "apps", "tryit", "settings", "about", "whatsnew", "approvals"];
+    private static readonly string[] Known = ["home", "models", "apps", "devices", "tryit", "settings", "about", "whatsnew", "approvals"];
 
     /// <summary>The page text from a command line (or redirected activation text), or null.</summary>
     public static string? Find(string? commandLine)

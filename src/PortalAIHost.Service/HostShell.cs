@@ -377,8 +377,10 @@ public sealed class HostShell : IAsyncDisposable
             UseDefaultRelay = !_o.Paths.TestMode,
             RelayInitialDelay = _o.RemoteTest?.RelayInitialDelay,
             RelayMaxDelay = _o.RemoteTest?.RelayMaxDelay,
+            BusyDetector = _o.Paths.TestMode ? null : new Portal.AiHost.Platform.Windows.Usage.FullScreenGameDetector(),
         });
         Remote.Changed += () => _ = PushRemoteChangedAsync();
+        Remote.Alert += a => _ = PushDeviceAlertAsync(a);
         // Client mode never listens: the suspension is in place before the first Apply, so nothing opens even briefly.
         if (settings.Mode == HostModes.Client)
         {
@@ -1071,8 +1073,34 @@ public sealed class HostShell : IAsyncDisposable
         }
     }
 
+    private async Task PushDeviceAlertAsync(DeviceAlert alert)
+    {
+        var (title, body) = alert.Kind == "paired"
+            ? ("New device paired", $"{alert.DeviceName} can now use this PC's AI.")
+            : ("Device connected from away", $"{alert.DeviceName} connected through the relay.");
+        _notifyCenter.Raise(new ToastRequest(NotificationKinds.Devices, title, body, "settings"));
+        try
+        {
+            await _pipe.BroadcastAsync(ControlTypes.EventDeviceAlert,
+                JsonSerializer.SerializeToElement(alert, AiHostJsonContext.Default.DeviceAlert)).ConfigureAwait(false);
+        }
+        catch (ObjectDisposedException)
+        {
+        }
+    }
+
+    private int _remoteBurst;
+
     private async Task PushRemoteChangedAsync()
     {
+        // Bursts (a call starting, finishing, stats) become one push per 250 ms.
+        if (Interlocked.Exchange(ref _remoteBurst, 1) == 1)
+        {
+            return;
+        }
+
+        await Task.Delay(250).ConfigureAwait(false);
+        Volatile.Write(ref _remoteBurst, 0);
         try
         {
             await _pipe.BroadcastAsync(ControlTypes.EventRemoteChanged, null).ConfigureAwait(false);
