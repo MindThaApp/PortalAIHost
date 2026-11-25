@@ -62,7 +62,7 @@ discovery file, the app token store and the Apps page.
 
 **Unreachable-PC choice (owner decision 1).**
 
-- Stored as `client_fallback: "none" | "local"` in the settings store; default `none`, so nothing is loaded on a
+- Stored as `client_fallback: "none" | "local"` in the settings store; null means never chosen and behaves as `none`, so nothing is loaded on a
   laptop without the user's say-so.
 - The first time the remote becomes unreachable while the value is still unset, the host shows **one** calm prompt
   (a tray notification of kind `problems` that opens the Settings card). It is never repeated; the choice stays one
@@ -110,6 +110,25 @@ All under the host's existing state directory (the one that holds the settings a
 | `client\token.dat` | the host's own access token for the remote PC (3.3) | DPAPI, same as above. |
 
 The authoritative mode flag lives in the existing settings store (`mode: "server" | "client"`), together with `client_fallback` (1.3) and `relay_mode: "auto" | "manual"` (3.1). `Forget this PC` removes only the own `client\` files above and nothing else.
+
+### 1.6 Implemented control messages (steps 3 and 5)
+
+The current-user control pipe (api-v1 section 10) provides `client.status` and
+`client.setmode` `{ mode: "server" | "client" }` from step 3. Step 5 adds:
+
+- `client.setfallback` `{ fallback: "none" | "local" }`: saves the explicit fallback choice.
+- `client.setrelaymode` `{ relay_mode: "auto" | "manual" }`: saves the relay policy (default `auto`).
+- `client.userelay` `{ enabled: true | false }`: changes session-only relay permission; resets when the host quits.
+- `client.promptshown` (no payload): persists `fallback_prompt_shown` and clears the one-time pending prompt.
+
+All answer `ClientModeStatus`. Its step 5 properties are `ClientFallback`, `FallbackUnset`,
+`FallbackPromptPending`, `UsingLaptopModel`, `RelayMode`, and `UseRelay`; on the wire these are
+`client_fallback`, `fallback_unset`, `fallback_prompt_pending`, `using_laptop_model`, `relay_mode`, and `use_relay`.
+`ClientFallback` is `none` until explicitly chosen; `FallbackUnset` distinguishes that from an explicit None.
+The status also includes `Mode`, `Paired`, `PcName`, `State`, `Route`, `Reason`, `RttMs`, and `Refused`
+(snake_case on the wire). `Refused` is `not_paired` or `failed` when a mode switch is refused.
+Settings persist `client_fallback` (null until chosen), `relay_mode`, and `fallback_prompt_shown` (default false).
+Use these messages to change them; generic `settings.set` preserves the host-owned values.
 
 ## 2. Pairing from the laptop
 
@@ -304,6 +323,8 @@ Mapping of remote answers on the way back:
 | `429 rate_limited` (device limit 600 per minute) | Passed through as `429 rate_limited` with `Retry-After`. |
 | `403 model_control_required` or `409 model_conflict` (4.7) | Not sent to apps; shown in the laptop's Models page as a plain message. If a mapped model is missing, apps get the normal `model_not_found` / `no_model`. |
 | TLS fingerprint mismatch | `503 remote_unreachable`, `reason: "cert_changed"`; no request is sent. |
+| Relay reports the home PC absent | `503 remote_unreachable`, `reason: "relay_host_offline"`. |
+| Relay capacity or traffic budget exhausted | `503 remote_unreachable`, `reason: "relay_busy"`. |
 | No connection on LAN or relay | `503 remote_unreachable`, `reason: "offline"` or the relay reason. |
 
 ### 4.6 Timeouts and relay budget

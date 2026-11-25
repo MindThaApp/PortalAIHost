@@ -539,6 +539,25 @@ Not for client apps. The window talks to the host over `\.\pipe\PortalAIHost.Con
 only). Messages are JSON envelopes `{ "id", "type", "payload" }`; answers are `ok` or `error`
 (`{ "code", "message" }`, codes from section 5). Pushes have no `id`. Field names are snake_case.
 
+**Client mode (steps 3 and 5)**
+
+The current-user control pipe (api-v1 section 10) provides `client.status` and
+`client.setmode` `{ mode: "server" | "client" }` from step 3. Step 5 adds:
+
+- `client.setfallback` `{ fallback: "none" | "local" }`: saves the explicit fallback choice.
+- `client.setrelaymode` `{ relay_mode: "auto" | "manual" }`: saves the relay policy (default `auto`).
+- `client.userelay` `{ enabled: true | false }`: changes session-only relay permission; resets when the host quits.
+- `client.promptshown` (no payload): persists `fallback_prompt_shown` and clears the one-time pending prompt.
+
+All answer `ClientModeStatus`. Its step 5 properties are `ClientFallback`, `FallbackUnset`,
+`FallbackPromptPending`, `UsingLaptopModel`, `RelayMode`, and `UseRelay`; on the wire these are
+`client_fallback`, `fallback_unset`, `fallback_prompt_pending`, `using_laptop_model`, `relay_mode`, and `use_relay`.
+`ClientFallback` is `none` until explicitly chosen; `FallbackUnset` distinguishes that from an explicit None.
+The status also includes `Mode`, `Paired`, `PcName`, `State`, `Route`, `Reason`, `RttMs`, and `Refused`
+(snake_case on the wire). `Refused` is `not_paired` or `failed` when a mode switch is refused.
+Settings persist `client_fallback` (null until chosen), `relay_mode`, and `fallback_prompt_shown` (default false).
+Use these messages to change them; generic `settings.set` preserves the host-owned values.
+
 **Models**
 
 - `models.list` answers `{ models: [...], models_folder, free_bytes, upgrade_model_id, catalogue_available }`.
