@@ -330,10 +330,10 @@ public class RoundTripTests
         RoundTrip("""{ "kind": "chat", "state": "ready", "progress": 1 }""", Ctx.EngineStateEvent);
         RoundTrip("""
             { "mode": "server", "fallback_prompt_shown": false, "relay_mode": "auto", "start_with_windows": true, "backend": "auto", "max_memory_percent": 80, "preset": "balanced", "compute": "auto", "priority": "low", "cpu_ceiling_percent": 100, "ease_off": ["fullscreen", "battery", "app_busy"], "prevent_sleep_while_downloading": true, "send_crash_reports": true,
-              "remote": { "enabled": false, "port": 48123, "relay": true },
+              "remote": { "enabled": false, "port": 48123, "relay": true, "allow_replace_models": false },
               "kinds": { "chat": { "keep_loaded": false, "idle_unload_seconds": 600 } } }
             """, Ctx.HostSettings);
-        RoundTrip("""{ "enabled": true, "listening": true, "port": 48123, "host_name": "Desk PC", "addresses": ["192.168.1.20"], "devices": [ { "device_id": "dev_a", "name": "Laptop", "created_at": "2026-11-24T10:00:00+00:00" } ], "relay": "off" }""", Ctx.RemoteStatus);
+        RoundTrip("""{ "enabled": true, "listening": true, "port": 48123, "host_name": "Desk PC", "addresses": ["192.168.1.20"], "devices": [ { "device_id": "dev_a", "name": "Laptop", "created_at": "2026-11-24T10:00:00+00:00", "model_control": false } ], "relay": "off", "allow_replace_models": false, "loaded_models": [] }""", Ctx.RemoteStatus);
         RoundTrip("""{ "code": "042917", "expires_at": "2026-11-24T10:05:00+00:00", "qr_text": "portalai://pair?h=1", "host_name": "Desk PC", "address": "192.168.1.20", "port": 48123, "fingerprint": "abc" }""", Ctx.PairingOfferInfo);
         RoundTrip("""{ "client_nonce": "a", "device_name": "Laptop", "device_public_key": "b", "mac": "c" }""", Ctx.PairStartRequest);
         RoundTrip("""{ "host_nonce": "a", "fingerprint": "b", "host_name": "Desk PC", "mac": "c" }""", Ctx.PairStartResponse);
@@ -427,5 +427,18 @@ public class RoundTripTests
         Assert.Equal("X-Portal-Queue-Ms", HeaderNames.QueueMs);
         Assert.Equal("X-Portal-Model", HeaderNames.Model);
         Assert.Equal("X-Portal-Capabilities-Revision", HeaderNames.CapabilitiesRevision);
+    }
+
+    [Fact]
+    public void ModelControlMessages()
+    {
+        RoundTrip("""{ "device_id": "dev_a", "enabled": true }""", Ctx.SetModelControlCommand);
+        RoundTrip("""{ "kind": "chat" }""", Ctx.TakeBackCommand);
+        RoundTrip("""{ "model_id": "m", "placement": "gpu" }""", Ctx.DeviceLoadRequest);
+        RoundTrip("""{ "model_id": "m" }""", Ctx.DeviceUnloadRequest);
+        RoundTrip("""{ "model_id": "m", "compute": "cpu", "gpu_memory_limit_bytes": 1, "memory_limit_bytes": 2, "cpu_threads": 3 }""", Ctx.DevicePlacementRequest);
+        RoundTrip("""{ "models": [ { "id": "m", "display_name": "M", "kind": "chat", "size_bytes": 5, "fits_this_pc": true, "state": "loaded", "placement": "auto", "loaded_by": "pc" } ] }""", Ctx.DeviceModelList);
+        Assert.Equal(403, ErrorCatalog.Get(ErrorCodes.ModelControlRequired).HttpStatus);
+        Assert.Equal(409, ErrorCatalog.Get(ErrorCodes.ModelConflict).HttpStatus);
     }
 }
