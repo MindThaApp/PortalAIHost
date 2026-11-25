@@ -48,6 +48,16 @@ public sealed partial class SettingsPage : Page
         }
     }
 
+    private void OnModelControlToggled(object sender, RoutedEventArgs e)
+    {
+        if (sender is ToggleSwitch { Tag: string id } toggle) _ = ViewModel.SetModelControlAsync(id, toggle.IsOn);
+    }
+
+    private void OnTakeBack(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { Tag: string kind }) ViewModel.TakeBackCommand.Execute(kind);
+    }
+
     private void OnRemoveDevice(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { Tag: string id }) ViewModel.RemoveDeviceCommand.Execute(id);

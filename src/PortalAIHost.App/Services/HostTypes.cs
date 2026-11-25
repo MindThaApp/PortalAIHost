@@ -150,6 +150,12 @@ public interface IHostControl
 
     /// <summary>Removes a paired device; its access stops at once.</summary>
     Task RemoveDeviceAsync(string deviceId, CancellationToken ct = default);
+
+    /// <summary>Turns Model control on or off for a paired device (takes effect at once).</summary>
+    Task SetModelControlAsync(string deviceId, bool enabled, CancellationToken ct = default);
+
+    /// <summary>Unloads the model a device loaded for this kind (memory only) and gives the PC's own choice back.</summary>
+    Task TakeBackAsync(string kind, CancellationToken ct = default);
 }
 
 /// <summary>One piece of a "Try it" reply: the model's thinking text or its answer.</summary>

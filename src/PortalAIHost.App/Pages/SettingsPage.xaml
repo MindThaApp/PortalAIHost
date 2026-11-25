@@ -168,6 +168,8 @@
                     <TextBlock Text="{x:Bind ViewModel.RemoteAddressText, Mode=OneWay}" TextWrapping="Wrap" Style="{StaticResource CaptionTextBlockStyle}" />
                     <ToggleSwitch x:Uid="SettingsRemoteRelay" IsOn="{x:Bind ViewModel.RemoteRelay, Mode=TwoWay}" IsEnabled="{x:Bind ViewModel.RemoteEnabled, Mode=OneWay}" />
                     <TextBlock x:Uid="SettingsRemoteRelayHelp" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <ToggleSwitch x:Uid="SettingsAllowReplace" IsOn="{x:Bind ViewModel.AllowReplaceModels, Mode=TwoWay}" IsEnabled="{x:Bind ViewModel.RemoteEnabled, Mode=OneWay}" />
+                    <TextBlock x:Uid="SettingsAllowReplaceHelp" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                     <TextBlock Text="{x:Bind ViewModel.RelayStatusText, Mode=OneWay}" TextWrapping="Wrap" Style="{StaticResource BodyStrongTextBlockStyle}" />
                     <Button x:Uid="SettingsPairDevice" Command="{x:Bind ViewModel.PairDeviceCommand}" IsEnabled="{x:Bind ViewModel.RemoteEnabled, Mode=OneWay}" HorizontalAlignment="Left" />
 
@@ -197,9 +199,20 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <StackPanel>
+                                    <StackPanel Spacing="2">
                                         <TextBlock Text="{x:Bind Name}" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="Wrap" />
                                         <TextBlock Text="{x:Bind LastSeenText}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                        <ToggleSwitch x:Uid="SettingsDeviceModelControl" IsOn="{x:Bind ModelControl}" Tag="{x:Bind DeviceId}" Toggled="OnModelControlToggled"
+                                                      AutomationProperties.Name="{x:Bind ModelControlAutomation}" />
+                                        <StackPanel Orientation="Horizontal" Spacing="8" Visibility="{x:Bind HasLoaded}">
+                                            <TextBlock Text="{x:Bind LoadedByText}" Style="{StaticResource CaptionTextBlockStyle}" TextWrapping="Wrap" VerticalAlignment="Center" />
+                                            <Button x:Uid="SettingsTakeBack" Tag="{x:Bind TakeBackKind}" Click="OnTakeBack" AutomationProperties.Name="{x:Bind TakeBackAutomation}">
+                                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                                    <FontIcon Glyph="&#xE7A7;" FontSize="14" />
+                                                    <TextBlock x:Uid="SettingsTakeBackLabel" />
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
                                     </StackPanel>
                                     <Button Grid.Column="1" x:Uid="SettingsRemoveDevice" Tag="{x:Bind DeviceId}" Click="OnRemoveDevice"
                                             AutomationProperties.Name="{x:Bind RemoveAutomation}" VerticalAlignment="Center" />

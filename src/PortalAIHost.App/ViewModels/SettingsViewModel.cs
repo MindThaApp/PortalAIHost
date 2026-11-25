@@ -292,6 +292,7 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
                 FolderPlaceholder = Fmt.PrivatePath(shownFolder);
                 RemoteEnabled = s.Remote.Enabled;
                 RemoteRelay = s.Remote.Relay;
+                AllowReplaceModels = s.Remote.AllowReplaceModels;
                 Available = true;
                 Message = "";
                 _loading = false;
@@ -388,6 +389,7 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
             Remote = new RemoteSettings
             {
                 Enabled = RemoteEnabled, Port = _current.Remote.Port, Relay = RemoteRelay, RelayUrl = _current.Remote.RelayUrl,
+                AllowReplaceModels = AllowReplaceModels,
             },
             Kinds = kinds,
         };

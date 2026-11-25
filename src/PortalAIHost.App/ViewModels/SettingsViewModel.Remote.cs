@@ -7,7 +7,13 @@ using PortalAIHost.App.Services;
 namespace PortalAIHost.App.ViewModels;
 
 /// <summary>One paired device in the list.</summary>
-public sealed record DeviceRow(string DeviceId, string Name, string LastSeenText, string RemoveAutomation);
+public sealed record DeviceRow(string DeviceId, string Name, string LastSeenText, string RemoveAutomation,
+    bool ModelControl = false, string ModelControlAutomation = "", string LoadedByText = "", string TakeBackKind = "chat",
+    string TakeBackAutomation = "")
+{
+    /// <summary>True while a model this device loaded is in memory (shows "Loaded by" and Take back).</summary>
+    public bool HasLoaded => LoadedByText.Length > 0;
+}
 
 /// <summary>"Other devices": the switch, the pairing code and the paired-device list.</summary>
 public sealed partial class SettingsViewModel
@@ -18,6 +24,7 @@ public sealed partial class SettingsViewModel
 
     [ObservableProperty] private bool _remoteEnabled;
     [ObservableProperty] private bool _remoteRelay = true;
+    [ObservableProperty] private bool _allowReplaceModels;
     [ObservableProperty] private string _relayStatusText = "";
     [ObservableProperty] private bool _hasRemoteProblem;
     [ObservableProperty] private string _remoteProblem = "";
@@ -42,6 +49,12 @@ public sealed partial class SettingsViewModel
     }
 
     partial void OnRemoteRelayChanged(bool value)
+    {
+        if (_loading) return;
+        _ = SetRemoteEnabledAsync();
+    }
+
+    partial void OnAllowReplaceModelsChanged(bool value)
     {
         if (_loading) return;
         _ = SetRemoteEnabledAsync();
@@ -73,6 +86,7 @@ public sealed partial class SettingsViewModel
         var wasLoading = _loading;
         _loading = true;
         RemoteEnabled = status.Enabled;
+        AllowReplaceModels = status.AllowReplaceModels;
         _loading = wasLoading;
 
         RelayStatusText = !status.Enabled ? "" : status.Relay switch
@@ -92,7 +106,12 @@ public sealed partial class SettingsViewModel
         foreach (var d in status.Devices)
         {
             var seen = d.LastSeenAt is { } t ? _s.Format("Vm_RemoteLastSeen", t.LocalDateTime.ToString("g")) : _s.Get("Vm_RemoteNeverSeen");
-            Devices.Add(new DeviceRow(d.DeviceId, d.Name, seen, _s.Format("Vm_AutoRemoveDevice", d.Name)));
+            var loaded = status.LoadedModels.FirstOrDefault(m => m.DeviceId == d.DeviceId);
+            Devices.Add(new DeviceRow(d.DeviceId, d.Name, seen, _s.Format("Vm_AutoRemoveDevice", d.Name),
+                d.ModelControl, _s.Format("Vm_AutoModelControl", d.Name),
+                loaded is null ? "" : _s.Format("Vm_LoadedBy", d.Name, loaded.DisplayName,
+                    loaded.Placement switch { "gpu" => _s.Get("Vm_PlacementGpu"), "cpu" => _s.Get("Vm_PlacementCpu"), _ => _s.Get("Vm_PlacementAuto") }),
+                loaded?.Kind ?? "chat", _s.Format("Vm_AutoTakeBack", d.Name)));
         }
 
         HasDevices = Devices.Count > 0;
@@ -178,6 +197,44 @@ public sealed partial class SettingsViewModel
             PairingCode = "";
             PairingQrText = "";
         });
+    }
+
+    /// <summary>Turns Model control on or off for one device; the host applies it at once.</summary>
+    public async Task SetModelControlAsync(string deviceId, bool enabled)
+    {
+        if (Devices.FirstOrDefault(d => d.DeviceId == deviceId) is { } row && row.ModelControl == enabled) return;
+        try
+        {
+            await _shell.Host.SetModelControlAsync(deviceId, enabled).ConfigureAwait(false);
+            await RefreshRemoteAsync().ConfigureAwait(false);
+        }
+        catch (HostUnavailableException)
+        {
+            _ui.Post(() => Say(_s.Get("Vm_NoHostTitle"), MessageError));
+        }
+        catch (HostRequestException ex)
+        {
+            _ui.Post(() => Say(ex.Message, MessageError));
+        }
+    }
+
+    /// <summary>Unloads the model a device loaded (memory only; no file is touched). The PC's own choice comes back.</summary>
+    [RelayCommand]
+    private async Task TakeBackAsync(string? kind)
+    {
+        try
+        {
+            await _shell.Host.TakeBackAsync(kind ?? "chat").ConfigureAwait(false);
+            await RefreshRemoteAsync().ConfigureAwait(false);
+        }
+        catch (HostUnavailableException)
+        {
+            _ui.Post(() => Say(_s.Get("Vm_NoHostTitle"), MessageError));
+        }
+        catch (HostRequestException ex)
+        {
+            _ui.Post(() => Say(ex.Message, MessageError));
+        }
     }
 
     /// <summary>Asks first, then removes the device. Its access stops at once.</summary>

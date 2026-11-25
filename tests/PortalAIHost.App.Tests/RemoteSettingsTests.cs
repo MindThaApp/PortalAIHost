@@ -143,4 +143,62 @@ public class RemoteSettingsTests
         Assert.Equal("AbCd EfGh IjKl", SettingsViewModel.Short("AbCdEfGhIjKlMnOpQrStUv"));
         Assert.Equal("short", SettingsViewModel.Short("short"));
     }
+
+    [Fact]
+    public async Task ModelControlIsOffByDefaultAndTheSwitchReachesTheHost()
+    {
+        var (rig, vm) = await StartAsync();
+        using var _ = rig;
+        vm.RemoteEnabled = true;
+        rig.Host.CompletePairing("Laptop");
+        await Task.Delay(50);
+        var row = Assert.Single(vm.Devices);
+        Assert.False(row.ModelControl);
+        Assert.False(row.HasLoaded);
+
+        await vm.SetModelControlAsync(row.DeviceId, true);
+        await Task.Delay(50);
+        Assert.True(Assert.Single(vm.Devices).ModelControl);
+        Assert.True(Assert.Single((await rig.Host.GetRemoteAsync()).Devices).ModelControl);
+
+        await vm.SetModelControlAsync(row.DeviceId, false); // revoke
+        await Task.Delay(50);
+        Assert.False(Assert.Single(vm.Devices).ModelControl);
+    }
+
+    [Fact]
+    public async Task LoadedByShowsTheDeviceAndTakeBackClearsIt()
+    {
+        var (rig, vm) = await StartAsync();
+        using var _ = rig;
+        vm.RemoteEnabled = true;
+        rig.Host.CompletePairing("Laptop");
+        var id = Assert.Single(await rig.Host.GetRemoteAsync().ContinueWith(t => t.Result.Devices)).DeviceId;
+        rig.Host.LoadedModels.Add(new LoadedModelInfo { Kind = "chat", ModelId = "alpha", DisplayName = "Alpha", DeviceId = id, DeviceName = "Laptop", Placement = "gpu" });
+        await vm.RefreshRemoteAsync();
+        await Task.Delay(50);
+
+        var row = Assert.Single(vm.Devices);
+        Assert.True(row.HasLoaded);
+        Assert.Equal("Vm_LoadedBy:Laptop|Alpha|Vm_PlacementGpu", row.LoadedByText);
+
+        await vm.TakeBackCommand.ExecuteAsync(row.TakeBackKind);
+        await Task.Delay(50);
+        Assert.Equal(1, rig.Host.TakeBacks);
+        Assert.False(Assert.Single(vm.Devices).HasLoaded);
+    }
+
+    [Fact]
+    public async Task DevicesMayReplaceModelsIsOffByDefaultAndIsSaved()
+    {
+        var (rig, vm) = await StartAsync();
+        using var _ = rig;
+        Assert.False(vm.AllowReplaceModels);
+        vm.RemoteEnabled = true;
+        vm.AllowReplaceModels = true;
+        Assert.True((await rig.Host.GetSettingsAsync()).Remote.AllowReplaceModels);
+        Assert.True((await rig.Host.GetSettingsAsync()).Remote.Enabled); // the other settings are kept
+        vm.AllowReplaceModels = false;
+        Assert.False((await rig.Host.GetSettingsAsync()).Remote.AllowReplaceModels);
+    }
 }
