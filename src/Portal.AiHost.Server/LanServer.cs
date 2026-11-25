@@ -39,6 +39,11 @@ public sealed class LanServerOptions
     /// there are accepted although they come from this PC; the device still has to pair and sign every request.
     /// </summary>
     public bool EnableBridgeEndpoint { get; init; }
+
+    /// <summary>Pause, quiet hours, gaming mode, limits, allowed models and stats for device calls. Null: none of them.</summary>
+    public DeviceGate? Gate { get; init; }
+
+    public TimeProvider? Time { get; init; }
 }
 
 /// <summary>
@@ -277,6 +282,47 @@ public sealed class LanServer : IAsyncDisposable
         using var link = CancellationTokenSource.CreateLinkedTokenSource(http.RequestAborted, revoked);
         using var abort = revoked.Register(static state => ((HttpContext)state!).Abort(), http);
 
+        // The label of the calling app: for display and per-app pause only, never for access.
+        var app = headers.TryGetValue(Core.Remote.Client.RemoteBackend.ClientAppHeader, out var label)
+            ? Core.Remote.Client.RemoteBackend.SanitizeAppName(label)
+            : Core.Remote.Client.RemoteBackend.SanitizeAppName(null);
+        var gate = _options.Gate;
+        DeviceGate.DeviceCall? call = null;
+        IResponseSink sink = new KestrelResponseSink(http, link.Token);
+        UsageCountingSink? counting = null;
+        if (gate is not null)
+        {
+            gate.NoteArrival(device, viaBridge);
+            if (IsGated(path))
+            {
+                // Read again: the owner may have changed the device since it signed in.
+                var current = gate.Find(device.Id) ?? device;
+                if (gate.Check(current, app) is { } refusal)
+                {
+                    await AiHostServer.WriteErrorAsync(http, refusal.Code, refusal.Message, retryAfterMs: refusal.RetryAfterMs)
+                        .ConfigureAwait(false);
+                    return;
+                }
+
+                var kind = path == Routes.Embeddings ? ModelKinds.Embedding : ModelKinds.Chat;
+                var active = path == Routes.Warmup ? null : _runtime.GetActive(kind);
+                if (active is not null && current.AllowedModels.Count > 0 &&
+                    !current.AllowedModels.Contains(active.ModelId, StringComparer.Ordinal))
+                {
+                    await AiHostServer.WriteErrorAsync(http, ErrorCodes.ModelNotFound, "This device may not use that model.")
+                        .ConfigureAwait(false);
+                    return;
+                }
+
+                call = gate.Begin(current, app, viaBridge, counts: path is Routes.ChatCompletions or Routes.Embeddings);
+                sink = counting = new UsageCountingSink(sink, _options.Time ?? TimeProvider.System);
+                if (!current.PriorityEqual)
+                {
+                    PcFirst(headers);
+                }
+            }
+        }
+
         var apiRequest = new ApiRequest
         {
             Method = request.Method,
@@ -287,7 +333,37 @@ public sealed class LanServer : IAsyncDisposable
             Caller = new CallerIdentity(0, null, null, Verified: false, SameUser: true,
                 Remote: new RemoteDevice(device.Id, device.Name)),
         };
-        await _runtime.Pipeline.HandleAsync(apiRequest, new KestrelResponseSink(http, link.Token)).ConfigureAwait(false);
+        try
+        {
+            await _runtime.Pipeline.HandleAsync(apiRequest, sink).ConfigureAwait(false);
+        }
+        finally
+        {
+            if (call is not null)
+            {
+                var model = path == Routes.ChatCompletions ? _runtime.GetActive(ModelKinds.Chat) : null;
+                call.Complete(counting?.Tokens ?? 0, counting?.FirstByte, model?.ModelId, model?.DisplayName);
+                call.Dispose();
+            }
+        }
+    }
+
+    private static bool IsGated(string path) => path is Routes.ChatCompletions or Routes.Embeddings or Routes.Warmup;
+
+    /// <summary>
+    /// Priority "PC first" (the default): a device call never goes ahead of this PC's own interactive calls, so it
+    /// is queued as batch. Its deadline stays the interactive one unless the device asked for another.
+    /// </summary>
+    private static void PcFirst(Dictionary<string, string> headers)
+    {
+        if (headers.TryGetValue(HeaderNames.Priority, out var p) && p.Trim() != PriorityValues.Interactive)
+        {
+            return;
+        }
+
+        headers[HeaderNames.Priority] = PriorityValues.Batch;
+        headers.TryAdd(HeaderNames.DeadlineMs,
+            ApiLimits.DefaultInteractiveDeadlineMs.ToString(System.Globalization.CultureInfo.InvariantCulture));
     }
 
     private async Task HandlePairingAsync(HttpContext http, string path, byte[] body)

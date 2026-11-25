@@ -20,6 +20,12 @@ public sealed class RemoteAccessOptions
 
     public TimeProvider? Time { get; init; }
 
+    /// <summary>Detects a full-screen game or heavy GPU use for gaming mode. Null: the PC is never busy.</summary>
+    public IBusyDetector? BusyDetector { get; init; }
+
+    /// <summary>Tests: the time zone that decides "today" and quiet hours (default: this PC's).</summary>
+    public TimeZoneInfo? Zone { get; init; }
+
     /// <summary>The model store as Model control needs it. Without one a device sees no models.</summary>
     public IModelControlHost? ModelHost { get; init; }
 
@@ -98,8 +104,64 @@ public sealed class RemoteAccess : IAsyncDisposable
         ModelControl.Changed += RaiseChanged;
         runtime.DeviceModelControl = id => Devices.Find(id)?.ModelControl == true;
         Sessions = new DeviceSessions(Devices);
+        Stats = new DeviceStatsStore(options.DataDirectory, id => Devices.Find(id) is not null, _time, options.Zone);
+        Gate = new DeviceGate(Devices, Stats, _time, options.Zone, () => _settings.GamingMode, options.BusyDetector);
+        Gate.Alert += a => Alert?.Invoke(a);
+        Gate.ActivityChanged += RaiseChanged;
         Devices.Changed += RaiseChanged;
     }
+
+    /// <summary>Per-device usage stats (one small file per device).</summary>
+    public DeviceStatsStore Stats { get; }
+
+    /// <summary>Pause, quiet hours, gaming mode, limits and the running calls of the devices.</summary>
+    public DeviceGate Gate { get; }
+
+    /// <summary>A new pairing, or a device connecting through the relay from away. The tray shows a notification.</summary>
+    public event Action<DeviceAlert>? Alert;
+
+    /// <summary>Pauses or resumes a whole device (<paramref name="app"/> null) or one app of it. False for an unknown device.</summary>
+    public bool SetPaused(string deviceId, string? app, bool paused)
+    {
+        var label = app is null ? null : Core.Remote.Client.RemoteBackend.SanitizeAppName(app);
+        return Devices.Update(deviceId, d =>
+        {
+            if (label is null)
+            {
+                d.Paused = paused;
+            }
+            else
+            {
+                d.PausedApps.RemoveAll(a => string.Equals(a, label, StringComparison.Ordinal));
+                if (paused)
+                {
+                    d.PausedApps.Add(label);
+                }
+            }
+        });
+    }
+
+    /// <summary>
+    /// Replaces priority, limits, quiet hours and allowed models. A limit of zero or less means none; quiet hours need
+    /// both times as HH:mm, otherwise they are cleared. False for an unknown device.
+    /// </summary>
+    public bool SetDeviceSettings(SetDeviceSettingsCommand cmd)
+    {
+        ArgumentNullException.ThrowIfNull(cmd);
+        var quiet = QuietHours.Parse(cmd.QuietStart) is not null && QuietHours.Parse(cmd.QuietEnd) is not null;
+        return Devices.Update(cmd.DeviceId, d =>
+        {
+            d.PriorityEqual = cmd.PriorityEqual;
+            d.MaxRequestsPerDay = cmd.MaxRequestsPerDay is > 0 ? cmd.MaxRequestsPerDay : null;
+            d.MaxTokensPerDay = cmd.MaxTokensPerDay is > 0 ? cmd.MaxTokensPerDay : null;
+            d.QuietStart = quiet ? cmd.QuietStart!.Trim() : null;
+            d.QuietEnd = quiet ? cmd.QuietEnd!.Trim() : null;
+            d.AllowedModels = [.. cmd.AllowedModels.Where(m => !string.IsNullOrWhiteSpace(m)).Select(m => m.Trim()).Distinct(StringComparer.Ordinal).Take(64)];
+        });
+    }
+
+    /// <summary>Renames a device. False for an unknown device or an empty name.</summary>
+    public bool RenameDevice(string deviceId, string name) => Devices.Rename(deviceId, name);
 
     public DeviceStore Devices { get; }
 
@@ -177,7 +239,7 @@ public sealed class RemoteAccess : IAsyncDisposable
             _settings = new RemoteSettings
             {
                 Enabled = settings.Enabled, Port = settings.Port, Relay = settings.Relay, RelayUrl = settings.RelayUrl,
-                AllowReplaceModels = settings.AllowReplaceModels,
+                AllowReplaceModels = settings.AllowReplaceModels, GamingMode = settings.GamingMode,
             };
             var wantRelay = wantOn && settings.Relay;
             _problem = settings.Enabled && !gate.Allowed ? gate.Reason ?? "Other devices are not available." : null;
@@ -277,6 +339,8 @@ public sealed class RemoteAccess : IAsyncDisposable
                 BindAddress = _o.BindAddress,
                 AllowSource = _o.AllowSource ?? RemoteNetwork.IsPrivateAddress,
                 EnableBridgeEndpoint = bridgeEndpoint,
+                Gate = Gate,
+                Time = _time,
             }, ct).ConfigureAwait(false);
             _serverHasBridge = bridgeEndpoint;
         }
@@ -341,6 +405,7 @@ public sealed class RemoteAccess : IAsyncDisposable
             Sessions.Revoke(deviceId);
             _o.RevokeDevice(deviceId);
             ModelControl.ForgetDevice(deviceId);
+            Stats.Delete(deviceId); // this device's own stats file only
         }
 
         return removed;
@@ -363,9 +428,17 @@ public sealed class RemoteAccess : IAsyncDisposable
             Devices = [.. Devices.List().Select(d => new PairedDeviceSummary
             {
                 DeviceId = d.Id, Name = d.Name, CreatedAt = d.CreatedAt, LastSeenAt = d.LastSeenAt, ModelControl = d.ModelControl,
+                Paused = d.Paused, PausedApps = [.. d.PausedApps], PriorityEqual = d.PriorityEqual,
+                MaxRequestsPerDay = d.MaxRequestsPerDay, MaxTokensPerDay = d.MaxTokensPerDay,
+                QuietStart = d.QuietStart, QuietEnd = d.QuietEnd, AllowedModels = [.. d.AllowedModels],
+                Status = Gate.StatusOf(d), Route = Gate.RouteOf(d.Id) ?? Stats.View(d.Id).LastRoute,
+                Apps = Gate.AppsOf(d),
+                CurrentModel = Stats.View(d.Id).LastModel, CurrentModelName = Stats.View(d.Id).LastModelName,
+                TokensPerSecond = Stats.View(d.Id).TokensPerSecond, LatencyMs = Stats.View(d.Id).LatencyMs,
             })],
             Relay = RelayState(),
             AllowReplaceModels = _settings.AllowReplaceModels,
+            GamingBusy = Gate.GamingBusyNow,
             LoadedModels = [.. ModelControl.Loaded()],
             Pairing = offer is null || _server is null ? null : new PairingOfferInfo
             {

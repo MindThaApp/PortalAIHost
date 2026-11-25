@@ -186,12 +186,13 @@ public sealed class ModelControl
         return doc.RootElement.Clone();
     }
 
-    public async Task<DeviceModelList> ListAsync(CancellationToken ct)
+    /// <summary>The installed models. With a device id, only the models that device may use (its allowed list; empty means all).</summary>
+    public async Task<DeviceModelList> ListAsync(CancellationToken ct, string? deviceId = null)
     {
         await ReconcileAsync(null, ct).ConfigureAwait(false);
         var installed = await _host.ListInstalledAsync(ct).ConfigureAwait(false);
         var list = new DeviceModelList();
-        foreach (var m in installed)
+        foreach (var m in installed.Where(m => deviceId is null || MayUse(deviceId, m.Id)))
         {
             list.Models.Add(StateOf(m));
         }
@@ -270,6 +271,10 @@ public sealed class ModelControl
         }
     }
 
+    /// <summary>The device's allowed-models list lets it use the model (an empty list allows every model).</summary>
+    private bool MayUse(string deviceId, string modelId) =>
+        _devices.Find(deviceId) is not { } d || d.AllowedModels.Count == 0 || d.AllowedModels.Contains(modelId, StringComparer.Ordinal);
+
     private bool Granted(string deviceId) => _devices.Find(deviceId)?.ModelControl == true;
 
     private static ApiException NoGrant() =>
@@ -296,6 +301,11 @@ public sealed class ModelControl
             if (installed is null || resolved is null)
             {
                 throw new ApiException(ErrorCodes.NotFound, "That model is not installed.");
+            }
+
+            if (!MayUse(deviceId, modelId))
+            {
+                throw new ApiException(ErrorCodes.ModelNotFound, "This device may not use that model.");
             }
 
             var kind = resolved.Kind;
@@ -617,8 +627,8 @@ public sealed class ModelControl
         var json = AiHostJsonContext.Default;
         pipeline.Map("GET", Routes.DeviceModels, c => Guarded(async () =>
         {
-            Grant(c);
-            await c.WriteJsonAsync(200, await ListAsync(c.Aborted).ConfigureAwait(false), json.DeviceModelList).ConfigureAwait(false);
+            var device = Grant(c);
+            await c.WriteJsonAsync(200, await ListAsync(c.Aborted, device).ConfigureAwait(false), json.DeviceModelList).ConfigureAwait(false);
         }), requiresAuth: false);
         pipeline.Map("POST", Routes.DeviceModelLoad, c => Guarded(async () =>
         {

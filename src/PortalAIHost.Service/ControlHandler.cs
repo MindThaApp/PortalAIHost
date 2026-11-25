@@ -369,6 +369,39 @@ internal sealed class ControlHandler(HostShell shell)
                 return Ok(id, shell.Remote.Snapshot(), AiHostJsonContext.Default.RemoteStatus);
             }
 
+            case ControlTypes.RemoteDevicePause:
+            {
+                var cmd = Payload(r, AiHostJsonContext.Default.PauseDeviceCommand)!;
+                if (!shell.Remote.SetPaused(cmd.DeviceId, cmd.App, cmd.Paused))
+                {
+                    return ControlPipe.Error(id, ErrorCodes.NotFound, "Unknown device.");
+                }
+
+                return Ok(id, shell.Remote.Snapshot(), AiHostJsonContext.Default.RemoteStatus);
+            }
+
+            case ControlTypes.RemoteDeviceSettings:
+            {
+                var cmd = Payload(r, AiHostJsonContext.Default.SetDeviceSettingsCommand)!;
+                if (!shell.Remote.SetDeviceSettings(cmd))
+                {
+                    return ControlPipe.Error(id, ErrorCodes.NotFound, "Unknown device.");
+                }
+
+                return Ok(id, shell.Remote.Snapshot(), AiHostJsonContext.Default.RemoteStatus);
+            }
+
+            case ControlTypes.RemoteDeviceRename:
+            {
+                var cmd = Payload(r, AiHostJsonContext.Default.RenameDeviceCommand)!;
+                if (!shell.Remote.RenameDevice(cmd.DeviceId, cmd.Name))
+                {
+                    return ControlPipe.Error(id, ErrorCodes.NotFound, "Unknown device, or the name is empty.");
+                }
+
+                return Ok(id, shell.Remote.Snapshot(), AiHostJsonContext.Default.RemoteStatus);
+            }
+
             case ControlTypes.ClientStatus:
                 return Ok(id, shell.ClientMode.Snapshot(), AiHostJsonContext.Default.ClientModeStatus);
 
