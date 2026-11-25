@@ -368,6 +368,7 @@ public sealed class HostShell : IAsyncDisposable
             DataDirectory = root,
             KeyProtector = _o.KeyProtector,
             RevokeDevice = id => _registry.RevokeDevice(id),
+            ModelHost = new ShellModelHost(this),
             // Under a test data root the listener never leaves this PC (a listener on the network raises a firewall prompt).
             BindAddress = _o.RemoteTest?.BindAddress ?? (_o.Paths.TestMode ? System.Net.IPAddress.Loopback : null),
             AllowSource = _o.RemoteTest?.AllowSource,
@@ -808,6 +809,12 @@ public sealed class HostShell : IAsyncDisposable
             throw new ControlPipeException(ErrorCodes.NotFound, "That model is not installed.");
         }
 
+        // The owner's choice wins over a device's: the device's claim on this kind ends first.
+        if (Remote is { } remote)
+        {
+            await remote.ModelControl.OwnerChangedAsync(stored.Kind, ct).ConfigureAwait(false);
+        }
+
         await Runtime.SetActiveAsync(stored.Kind, ToActive(stored), ct).ConfigureAwait(false);
         await PersistActiveAsync().ConfigureAwait(false);
     }
@@ -827,7 +834,16 @@ public sealed class HostShell : IAsyncDisposable
         var map = new Dictionary<string, string>(StringComparer.Ordinal);
         foreach (var kind in new[] { ModelKinds.Chat, ModelKinds.Embedding })
         {
-            if (Runtime.GetActive(kind) is { } m)
+            // While a device's model is active the PC's own choice is what is saved, never the device's.
+            var (held, pcModelId) = Remote?.ModelControl.PcChoice(kind, Runtime.GetActive(kind)?.ModelId) ?? (false, null);
+            if (held)
+            {
+                if (pcModelId is not null)
+                {
+                    map[kind] = pcModelId;
+                }
+            }
+            else if (Runtime.GetActive(kind) is { } m)
             {
                 map[kind] = m.ModelId;
             }
@@ -838,6 +854,19 @@ public sealed class HostShell : IAsyncDisposable
 
     private async Task PersistActiveAsync()
     {
+        // The PC's own choice is saved only while that model is still installed.
+        if (Remote is { } remote && _store is not null)
+        {
+            foreach (var kind in new[] { ModelKinds.Chat, ModelKinds.Embedding })
+            {
+                var (held, pcId) = remote.ModelControl.PcChoice(kind, Runtime.GetActive(kind)?.ModelId);
+                if (held && pcId is not null && await _store.GetAsync(pcId, CancellationToken.None).ConfigureAwait(false) is not { IsComplete: true })
+                {
+                    remote.ModelControl.ForgetPcChoice(kind);
+                }
+            }
+        }
+
         WriteActiveModels();
         await PushStatusAsync().ConfigureAwait(false);
     }
@@ -845,6 +874,11 @@ public sealed class HostShell : IAsyncDisposable
     /// <summary>Stops the engine of a kind and leaves it with no model. Files are never touched.</summary>
     private async Task ClearActiveAsync(string kind, CancellationToken ct)
     {
+        if (Remote is { } remote)
+        {
+            await remote.ModelControl.OwnerChangedAsync(kind, ct).ConfigureAwait(false); // the owner's action wins
+        }
+
         await Runtime.SetActiveAsync(kind, null, ct).ConfigureAwait(false);
         await PersistActiveAsync().ConfigureAwait(false);
     }
@@ -880,6 +914,11 @@ public sealed class HostShell : IAsyncDisposable
 
         foreach (var kind in new[] { ModelKinds.Chat, ModelKinds.Embedding })
         {
+            if (Remote is { } remote)
+            {
+                await remote.ModelControl.OwnerChangedAsync(kind, ct).ConfigureAwait(false); // the owner's action wins
+            }
+
             if (Runtime.GetActive(kind) is { } m && await _store.GetAsync(m.ModelId, ct).ConfigureAwait(false) is { IsComplete: true } stored)
             {
                 await Runtime.SetActiveAsync(kind, ToActive(stored), ct).ConfigureAwait(false);
@@ -956,6 +995,10 @@ public sealed class HostShell : IAsyncDisposable
 
     private static ActiveModel ToActive(StoredModel m) =>
         new(m.Kind, m.Id, m.DisplayName, m.Files.Select(f => f.Path).ToList());
+
+    internal ActiveModel ToActiveModel(StoredModel m) => ToActive(m);
+
+    internal CatalogueEntry? CatalogueEntry(string id) => _o.Catalogue?.FirstOrDefault(e => e.Id == id);
 
     // ---- pushes -------------------------------------------------------------------------------
 

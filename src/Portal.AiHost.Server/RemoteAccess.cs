@@ -20,6 +20,9 @@ public sealed class RemoteAccessOptions
 
     public TimeProvider? Time { get; init; }
 
+    /// <summary>The model store as Model control needs it. Without one a device sees no models.</summary>
+    public IModelControlHost? ModelHost { get; init; }
+
     /// <summary>Name shown to a new device. Default: the computer name.</summary>
     public string? HostName { get; init; }
 
@@ -90,11 +93,41 @@ public sealed class RemoteAccess : IAsyncDisposable
         _time = options.Time ?? TimeProvider.System;
         _hostName = options.HostName ?? Environment.MachineName;
         Devices = new DeviceStore(options.DataDirectory, _time);
+        ModelControl = new ModelControl(runtime, Devices, options.ModelHost ?? new NoModelHost(), () => _settings.AllowReplaceModels);
+        ModelControl.MapRoutes(runtime.Pipeline);
+        ModelControl.Changed += RaiseChanged;
+        runtime.DeviceModelControl = id => Devices.Find(id)?.ModelControl == true;
         Sessions = new DeviceSessions(Devices);
         Devices.Changed += RaiseChanged;
     }
 
     public DeviceStore Devices { get; }
+
+    /// <summary>The models paired devices with the grant loaded on this PC.</summary>
+    public ModelControl ModelControl { get; }
+
+    private sealed class NoModelHost : IModelControlHost
+    {
+        public Task<IReadOnlyList<InstalledModel>> ListInstalledAsync(CancellationToken ct) =>
+            Task.FromResult<IReadOnlyList<InstalledModel>>([]);
+
+        public Task<Portal.AiHost.Core.Runtime.ActiveModel?> ResolveAsync(string modelId, CancellationToken ct) =>
+            Task.FromResult<Portal.AiHost.Core.Runtime.ActiveModel?>(null);
+
+        public Task ChangedAsync() => Task.CompletedTask;
+    }
+
+    /// <summary>Turns Model control on or off for a device (saved at once, atomic). False for an unknown device.</summary>
+    public bool SetModelControl(string deviceId, bool enabled)
+    {
+        var done = Devices.SetModelControl(deviceId, enabled);
+        if (done && !enabled)
+        {
+            ModelControl.ForgetDevice(deviceId);
+        }
+
+        return done;
+    }
 
     /// <summary>What each paired device has in flight; cancelled when the device is removed.</summary>
     public DeviceSessions Sessions { get; }
@@ -144,6 +177,7 @@ public sealed class RemoteAccess : IAsyncDisposable
             _settings = new RemoteSettings
             {
                 Enabled = settings.Enabled, Port = settings.Port, Relay = settings.Relay, RelayUrl = settings.RelayUrl,
+                AllowReplaceModels = settings.AllowReplaceModels,
             };
             var wantRelay = wantOn && settings.Relay;
             _problem = settings.Enabled && !gate.Allowed ? gate.Reason ?? "Other devices are not available." : null;
@@ -306,6 +340,7 @@ public sealed class RemoteAccess : IAsyncDisposable
         {
             Sessions.Revoke(deviceId);
             _o.RevokeDevice(deviceId);
+            ModelControl.ForgetDevice(deviceId);
         }
 
         return removed;
@@ -327,9 +362,11 @@ public sealed class RemoteAccess : IAsyncDisposable
             Fingerprint = fingerprint,
             Devices = [.. Devices.List().Select(d => new PairedDeviceSummary
             {
-                DeviceId = d.Id, Name = d.Name, CreatedAt = d.CreatedAt, LastSeenAt = d.LastSeenAt,
+                DeviceId = d.Id, Name = d.Name, CreatedAt = d.CreatedAt, LastSeenAt = d.LastSeenAt, ModelControl = d.ModelControl,
             })],
             Relay = RelayState(),
+            AllowReplaceModels = _settings.AllowReplaceModels,
+            LoadedModels = [.. ModelControl.Loaded()],
             Pairing = offer is null || _server is null ? null : new PairingOfferInfo
             {
                 Code = offer.Code,

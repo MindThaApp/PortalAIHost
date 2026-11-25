@@ -166,6 +166,11 @@ public sealed class HostCapabilities
     public EmbeddingCapabilities Embeddings { get; set; } = new();
     public CapabilityLimits Limits { get; set; } = new();
     public List<string> Endpoints { get; set; } = new();
+
+    /// <summary>
+    /// Only in the answer to a paired device: whether this device has Model control (4.7). Missing for local apps.
+    /// </summary>
+    public bool? ModelControl { get; set; }
 }
 
 public sealed class ChatCapabilities

@@ -28,6 +28,8 @@ public static class ErrorCodes
     public const string RemoteUnreachable = "remote_unreachable";
     public const string DeviceUnauthorized = "device_unauthorized";
     public const string PairingFailed = "pairing_failed";
+    public const string ModelControlRequired = "model_control_required";
+    public const string ModelConflict = "model_conflict";
     public const string DeadlineExceeded = "deadline_exceeded";
     public const string EngineError = "engine_error";
     public const string InternalError = "internal_error";
@@ -40,6 +42,7 @@ public static class ErrorTypes
     public const string Authentication = "authentication_error";
     public const string Permission = "permission_error";
     public const string NotFound = "not_found_error";
+    public const string Conflict = "conflict_error";
     public const string RateLimit = "rate_limit_error";
     public const string Unavailable = "unavailable";
     public const string Timeout = "timeout";
@@ -63,6 +66,8 @@ public static class ErrorCatalog
         [ErrorCodes.DeviceUnauthorized] = new(401, ErrorTypes.Authentication, false),
         [ErrorCodes.PairingFailed] = new(403, ErrorTypes.Permission, false),
         [ErrorCodes.AccessDenied] = new(403, ErrorTypes.Permission, false),
+        [ErrorCodes.ModelControlRequired] = new(403, ErrorTypes.Permission, false),
+        [ErrorCodes.ModelConflict] = new(409, ErrorTypes.Conflict, false),
         [ErrorCodes.AppPaused] = new(403, ErrorTypes.Permission, false),
         [ErrorCodes.ForbiddenOrigin] = new(403, ErrorTypes.Permission, false),
         [ErrorCodes.NotFound] = new(404, ErrorTypes.NotFound, false),

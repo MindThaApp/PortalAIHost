@@ -269,6 +269,14 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
         SendAsync(ControlTypes.RemoteRemoveDevice, new RemoveDeviceCommand { DeviceId = deviceId },
             AiHostJsonContext.Default.RemoveDeviceCommand, ct);
 
+    public Task SetModelControlAsync(string deviceId, bool enabled, CancellationToken ct = default) =>
+        SendAsync(ControlTypes.RemoteSetModelControl, new SetModelControlCommand { DeviceId = deviceId, Enabled = enabled },
+            AiHostJsonContext.Default.SetModelControlCommand, ct);
+
+    public Task TakeBackAsync(string kind, CancellationToken ct = default) =>
+        SendAsync(ControlTypes.RemoteTakeBack, new TakeBackCommand { Kind = kind },
+            AiHostJsonContext.Default.TakeBackCommand, ct);
+
     private Task Download(string type, string id, CancellationToken ct) =>
         SendAsync(type, new DownloadCommand { CatalogueId = id }, AiHostJsonContext.Default.DownloadCommand, ct);
 

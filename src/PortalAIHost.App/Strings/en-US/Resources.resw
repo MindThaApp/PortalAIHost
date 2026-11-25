@@ -606,6 +606,25 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="SettingsDevicesHeader.Text" xml:space="preserve"><value>Paired devices</value></data>
   <data name="SettingsNoDevices.Text" xml:space="preserve"><value>No device is paired yet.</value></data>
   <data name="SettingsRemoveDevice.Content" xml:space="preserve"><value>Remove</value></data>
+  <data name="SettingsDeviceModelControl.Header" xml:space="preserve"><value>Model control</value></data>
+  <data name="SettingsDeviceModelControl.OnContent" xml:space="preserve"><value>On</value></data>
+  <data name="SettingsDeviceModelControl.OffContent" xml:space="preserve"><value>Off</value></data>
+  <data name="SettingsDeviceModelControl.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Lets this device load and unload models and choose which model each of its apps uses</value></data>
+  <data name="SettingsDeviceModelControl.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Lets this device load and unload models and choose which model each of its apps uses</value></data>
+  <data name="SettingsTakeBackLabel.Text" xml:space="preserve"><value>Take back</value></data>
+  <data name="SettingsTakeBack.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Unload the model this device loaded. This PC's own choice comes back. No model file is touched.</value></data>
+  <data name="SettingsTakeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Unload the model this device loaded. This PC's own choice comes back. No model file is touched.</value></data>
+  <data name="SettingsAllowReplace.Header" xml:space="preserve"><value>Devices may replace models</value></data>
+  <data name="SettingsAllowReplace.OnContent" xml:space="preserve"><value>On</value></data>
+  <data name="SettingsAllowReplace.OffContent" xml:space="preserve"><value>Off</value></data>
+  <data name="SettingsAllowReplace.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Devices may replace models</value></data>
+  <data name="SettingsAllowReplaceHelp.Text" xml:space="preserve"><value>Only matters for devices that have Model control. Off: a device cannot unload a model your own apps are using. On: it can, and your apps load their model again on their next request.</value></data>
+  <data name="Vm_AutoModelControl" xml:space="preserve"><value>Model control for {0}</value></data>
+  <data name="Vm_AutoTakeBack" xml:space="preserve"><value>Take back the model {0} loaded</value></data>
+  <data name="Vm_LoadedBy" xml:space="preserve"><value>Loaded by {0}: {1} ({2})</value></data>
+  <data name="Vm_PlacementAuto" xml:space="preserve"><value>automatic placement</value></data>
+  <data name="Vm_PlacementGpu" xml:space="preserve"><value>graphics card</value></data>
+  <data name="Vm_PlacementCpu" xml:space="preserve"><value>system memory</value></data>
   <data name="SettingsRemoteRelay.Header" xml:space="preserve"><value>Also reach this PC away from home</value></data>
   <data name="SettingsRemoteRelay.OnContent" xml:space="preserve"><value>On</value></data>
   <data name="SettingsRemoteRelay.OffContent" xml:space="preserve"><value>Off</value></data>
@@ -624,7 +643,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Send this to the other PC. It works for 5 minutes and one device.</value></data>
   <data name="SettingsPairingCopyLinkText.Text" xml:space="preserve"><value>Copy link</value></data>
   <data name="Vm_PairingAddress" xml:space="preserve"><value>Address: {0}:{1}</value></data>
-  <data name="Vm_PairingFingerprint"xml:space="preserve"><value>Certificate check: {0}</value></data>
+  <data name="Vm_PairingFingerprint" xml:space="preserve"><value>Certificate check: {0}</value></data>
   <data name="Vm_RemoveDeviceTitle" xml:space="preserve"><value>Remove {0}?</value></data>
   <data name="Vm_RemoveDeviceBody" xml:space="preserve"><value>{0} loses access to this PC&apos;s AI at once. Its apps stop working until you pair it again.</value></data>
   <data name="Vm_RemoveDeviceConfirm" xml:space="preserve"><value>Remove device</value></data>

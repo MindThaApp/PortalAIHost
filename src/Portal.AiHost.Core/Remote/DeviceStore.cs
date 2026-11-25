@@ -13,6 +13,12 @@ public sealed class PairedDevice
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset? LastSeenAt { get; set; }
 
+    /// <summary>
+    /// Model control (docs/client-mode-v1.md 4.7): the device may list, load and unload this PC's models. Off by default;
+    /// removing the device removes it, and pairing again never brings it back.
+    /// </summary>
+    public bool ModelControl { get; set; }
+
     internal PairedDevice Copy() => (PairedDevice)MemberwiseClone();
 }
 
@@ -145,6 +151,41 @@ public sealed class DeviceStore
             {
                 // The device stays refused only if the file is rewritten; undo so what is shown matches what is saved.
                 _devices.Insert(index, removed);
+                throw;
+            }
+        }
+
+        Changed?.Invoke();
+        return true;
+    }
+
+    /// <summary>
+    /// Turns Model control on or off for a device and saves (atomic). The next request of that device sees the new value.
+    /// Returns false for an unknown id. Nothing changes when the save fails.
+    /// </summary>
+    public bool SetModelControl(string id, bool enabled)
+    {
+        lock (_gate)
+        {
+            var device = _devices.FirstOrDefault(d => string.Equals(d.Id, id, StringComparison.Ordinal));
+            if (device is null)
+            {
+                return false;
+            }
+
+            if (device.ModelControl == enabled)
+            {
+                return true;
+            }
+
+            device.ModelControl = enabled;
+            try
+            {
+                Save(_time.GetUtcNow());
+            }
+            catch
+            {
+                device.ModelControl = !enabled;
                 throw;
             }
         }

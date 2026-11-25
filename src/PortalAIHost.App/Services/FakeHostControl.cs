@@ -594,6 +594,11 @@ public sealed class FakeHostControl : IHostControl, IDisposable
 
     public int PairingStarts { get; private set; }
 
+    /// <summary>The models the fake says devices loaded (shown as "Loaded by").</summary>
+    public List<LoadedModelInfo> LoadedModels { get; } = new();
+
+    public int TakeBacks { get; private set; }
+
     public Task<RemoteStatus> GetRemoteAsync(CancellationToken ct = default)
     {
         Require();
@@ -608,6 +613,8 @@ public sealed class FakeHostControl : IHostControl, IDisposable
                 Addresses = ["192.168.1.20"],
                 Fingerprint = "fake-fingerprint",
                 Devices = [.. Devices],
+                AllowReplaceModels = _settings.Remote.AllowReplaceModels,
+                LoadedModels = [.. LoadedModels],
                 Pairing = _settings.Remote.Enabled ? Pairing : null,
                 Relay = _settings.Remote.Enabled && _settings.Remote.Relay ? RelayStates.Connected : RelayStates.Off,
             });
@@ -647,6 +654,33 @@ public sealed class FakeHostControl : IHostControl, IDisposable
     {
         Require();
         lock (_gate) Devices.RemoveAll(d => d.DeviceId == deviceId);
+        RemoteChanged?.Invoke();
+        return Task.CompletedTask;
+    }
+
+    public Task SetModelControlAsync(string deviceId, bool enabled, CancellationToken ct = default)
+    {
+        Require();
+        lock (_gate)
+        {
+            var device = Devices.FirstOrDefault(d => d.DeviceId == deviceId)
+                ?? throw new HostRequestException("not_found", "Unknown device.");
+            device.ModelControl = enabled;
+        }
+
+        RemoteChanged?.Invoke();
+        return Task.CompletedTask;
+    }
+
+    public Task TakeBackAsync(string kind, CancellationToken ct = default)
+    {
+        Require();
+        lock (_gate)
+        {
+            TakeBacks++;
+            LoadedModels.RemoveAll(m => m.Kind == kind);
+        }
+
         RemoteChanged?.Invoke();
         return Task.CompletedTask;
     }

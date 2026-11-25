@@ -42,7 +42,7 @@ public sealed partial class AiHostRuntime
             {
                 await (route switch
                 {
-                    InferenceRoute.Capabilities => context.WriteJsonAsync(200, runtime.BuildCapabilities(),
+                    InferenceRoute.Capabilities => context.WriteJsonAsync(200, runtime.BuildCapabilities(context.Request.Caller?.Remote?.Id),
                         Portal.AiHost.Contracts.AiHostJsonContext.Default.HostCapabilities),
                     InferenceRoute.Models => runtime.ListModelsAsync(context),
                     InferenceRoute.Performance => runtime.PerformanceEndpointAsync(context),

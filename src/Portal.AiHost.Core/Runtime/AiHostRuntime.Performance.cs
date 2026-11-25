@@ -122,7 +122,7 @@ public sealed partial class AiHostRuntime
             try
             {
                 var (placement, _) = await DecidePlacementAsync(model, ct).ConfigureAwait(false);
-                if (SamePlacement(current.Placement, placement) && current.Threads == limits.CpuThreads
+                if (SamePlacement(current.Placement, placement) && current.Threads == ThreadsFor(model)
                     && current.MemoryLimitBytes == limits.MemoryLimitBytes)
                 {
                     continue;
@@ -146,6 +146,30 @@ public sealed partial class AiHostRuntime
         }
 
         return new PerformanceApplied(reloaded, unloaded);
+    }
+
+    /// <summary>The planner inputs for one model: the PC's own limits, lowered by a device's placement when it has one.</summary>
+    private PlannerSettings PlannerFor(ActiveModel model)
+    {
+        var planner = CurrentPlanner;
+        if (model.Override is not { } o)
+        {
+            return planner;
+        }
+
+        static long? Lower(long? pc, long? asked) => asked is null ? pc : pc is null ? asked : Math.Min(pc.Value, asked.Value);
+        return planner with
+        {
+            Backend = planner.Backend == "auto" && o.Compute is "gpu" or "cpu" ? o.Compute : planner.Backend,
+            GpuMemoryLimitBytes = Lower(planner.GpuMemoryLimitBytes, o.GpuMemoryLimitBytes),
+            MemoryLimitBytes = Lower(planner.MemoryLimitBytes, o.MemoryLimitBytes),
+        };
+    }
+
+    private int? ThreadsFor(ActiveModel model)
+    {
+        var pc = _limits?.CpuThreads;
+        return model.Override?.CpuThreads is { } asked && asked > 0 ? (pc is null ? asked : Math.Min(pc.Value, asked)) : pc;
     }
 
     private static bool SamePlacement(Placement a, Placement b) =>
