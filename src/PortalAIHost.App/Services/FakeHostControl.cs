@@ -745,6 +745,175 @@ public sealed class FakeHostControl : IHostControl, IDisposable
     /// <summary>Pushes a remote-changed event with nothing new (a burst test).</summary>
     public void CompletePairingNoop() => RemoteChanged?.Invoke();
 
+    // ---- Model control, laptop side (client mode) ----
+
+    /// <summary>The fake is a laptop using another PC.</summary>
+    public bool ClientMode { get; set; }
+
+    public string ClientPcName { get; set; } = "Desk PC";
+
+    /// <summary>This laptop has Model control on the PC.</summary>
+    public bool ModelControlGranted { get; set; }
+
+    /// <summary>The PC's installed models as the fake PC reports them.</summary>
+    public List<DeviceModelState> RemoteModels { get; } =
+    [
+        new() { Id = "alpha", DisplayName = "Alpha", Kind = ModelKinds.Chat, SizeBytes = 2_000_000_000 },
+        new() { Id = "beta", DisplayName = "Beta", Kind = ModelKinds.Chat, SizeBytes = 4_000_000_000 },
+    ];
+
+    /// <summary>Makes the next load or unload fail like the PC would (code, reason).</summary>
+    public (string Code, string? Reason)? NextRemoteError { get; set; }
+
+    public Dictionary<string, string> AppModelChoices { get; } = new(StringComparer.Ordinal);
+
+    public List<string> RemoteCalls { get; } = [];
+
+    public Task<ClientModeStatus> GetClientStatusAsync(CancellationToken ct = default)
+    {
+        Require();
+        lock (_gate)
+        {
+            return Task.FromResult(new ClientModeStatus
+            {
+                Mode = ClientMode ? HostModes.Client : HostModes.Server,
+                Paired = ClientMode,
+                PcName = ClientMode ? ClientPcName : null,
+                ModelControl = ClientMode ? ModelControlGranted : null,
+                LoadedOnPc = RemoteModels.Where(m => m.LoadedBy == "dev_me").Select(m => m.Id).ToList(),
+            });
+        }
+    }
+
+    private RemoteModelsAnswer RemoteAnswer(string? code = null, string? reason = null, string? message = null)
+    {
+        lock (_gate)
+        {
+            var answer = new RemoteModelsAnswer
+            {
+                Ok = code is null,
+                ModelControl = ModelControlGranted,
+                PcName = ClientPcName,
+                DeviceId = "dev_me",
+                Models = RemoteModels.Select(m => new DeviceModelState
+                {
+                    Id = m.Id, DisplayName = m.DisplayName, Kind = m.Kind, SizeBytes = m.SizeBytes, FitsThisPc = m.FitsThisPc,
+                    State = m.State, Placement = m.Placement, LoadedBy = m.LoadedBy,
+                }).ToList(),
+                ErrorCode = code,
+                Reason = reason,
+                Message = message,
+            };
+            return answer;
+        }
+    }
+
+    public Task<RemoteModelsAnswer> ListRemoteModelsAsync(CancellationToken ct = default)
+    {
+        Require();
+        lock (_gate)
+        {
+            RemoteCalls.Add("list");
+            return Task.FromResult(ModelControlGranted
+                ? RemoteAnswer()
+                : RemoteAnswer(ErrorCodes.ModelControlRequired, null, "This laptop does not have Model control. Ask the PC owner."));
+        }
+    }
+
+    public Task<RemoteModelsAnswer> LoadRemoteModelAsync(string modelId, string? placement, CancellationToken ct = default)
+    {
+        Require();
+        lock (_gate)
+        {
+            RemoteCalls.Add($"load:{modelId}:{placement ?? "auto"}");
+            if (!ModelControlGranted)
+            {
+                return Task.FromResult(RemoteAnswer(ErrorCodes.ModelControlRequired, null, "This laptop does not have Model control. Ask the PC owner."));
+            }
+
+            if (NextRemoteError is { } error)
+            {
+                NextRemoteError = null;
+                return Task.FromResult(RemoteAnswer(error.Code, error.Reason, "The PC said no."));
+            }
+
+            var model = RemoteModels.FirstOrDefault(m => m.Id == modelId);
+            if (model is null)
+            {
+                return Task.FromResult(RemoteAnswer(ErrorCodes.NotFound, null, "The PC does not have that model."));
+            }
+
+            foreach (var other in RemoteModels.Where(m => m.LoadedBy == "dev_me" && m.Kind == model.Kind))
+            {
+                other.State = "unloaded";
+                other.LoadedBy = null;
+                other.Placement = null;
+            }
+
+            model.State = "loaded";
+            model.LoadedBy = "dev_me";
+            model.Placement = placement ?? DevicePlacements.Auto;
+            return Task.FromResult(RemoteAnswer());
+        }
+    }
+
+    public Task<RemoteModelsAnswer> UnloadRemoteModelAsync(string modelId, CancellationToken ct = default)
+    {
+        Require();
+        lock (_gate)
+        {
+            RemoteCalls.Add($"unload:{modelId}");
+            if (!ModelControlGranted)
+            {
+                return Task.FromResult(RemoteAnswer(ErrorCodes.ModelControlRequired, null, "This laptop does not have Model control. Ask the PC owner."));
+            }
+
+            if (NextRemoteError is { } error)
+            {
+                NextRemoteError = null;
+                return Task.FromResult(RemoteAnswer(error.Code, error.Reason, "The PC said no."));
+            }
+
+            var model = RemoteModels.FirstOrDefault(m => m.Id == modelId && m.LoadedBy == "dev_me");
+            if (model is null)
+            {
+                return Task.FromResult(RemoteAnswer(ErrorCodes.ModelConflict, ModelConflictReasons.NotLoadedByDevice,
+                    "This laptop did not load that model, so it cannot unload it."));
+            }
+
+            model.State = "unloaded";
+            model.LoadedBy = null;
+            model.Placement = null;
+            return Task.FromResult(RemoteAnswer());
+        }
+    }
+
+    public Task<AppModelList> GetAppModelsAsync(CancellationToken ct = default)
+    {
+        Require();
+        lock (_gate)
+        {
+            return Task.FromResult(new AppModelList
+            {
+                Apps = AppModelChoices.Select(p => new AppModelEntry { AppId = p.Key, ModelId = p.Value }).ToList(),
+            });
+        }
+    }
+
+    public Task<AppModelList> SetAppModelAsync(string appId, string? modelId, CancellationToken ct = default)
+    {
+        Require();
+        lock (_gate)
+        {
+            if (string.IsNullOrEmpty(modelId)) AppModelChoices.Remove(appId);
+            else AppModelChoices[appId] = modelId;
+            RemoteCalls.Add($"appmodel:{appId}:{modelId ?? "-"}");
+        }
+
+        return GetAppModelsAsync(ct);
+    }
+
+
     /// <summary>Pretends a device finished pairing: it appears in the list and the code is used up.</summary>
     public void CompletePairing(string name)
     {

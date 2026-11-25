@@ -165,6 +165,25 @@ public interface IHostControl
 
     /// <summary>Renames a paired device.</summary>
     Task RenameDeviceAsync(string deviceId, string name, CancellationToken ct = default);
+
+    /// <summary>The host mode and, in client mode, the link to the PC, whether this laptop has Model control and what it loaded there.</summary>
+    Task<ClientModeStatus> GetClientStatusAsync(CancellationToken ct = default);
+
+    /// <summary>The PC's installed models (client mode with Model control). A refusal comes back as an answer with a plain message.</summary>
+    Task<RemoteModelsAnswer> ListRemoteModelsAsync(CancellationToken ct = default);
+
+    /// <summary>Loads a model on the PC. <paramref name="placement"/> is auto, gpu or cpu (null: auto).</summary>
+    Task<RemoteModelsAnswer> LoadRemoteModelAsync(string modelId, string? placement, CancellationToken ct = default);
+
+    /// <summary>Unloads a model this laptop loaded on the PC. Never touches a model file.</summary>
+    Task<RemoteModelsAnswer> UnloadRemoteModelAsync(string modelId, CancellationToken ct = default);
+
+    /// <summary>The PC model each local app asks for.</summary>
+    Task<AppModelList> GetAppModelsAsync(CancellationToken ct = default);
+
+    /// <summary>Chooses the PC model an app asks for; null clears the choice (the PC's choice).</summary>
+    Task<AppModelList> SetAppModelAsync(string appId, string? modelId, CancellationToken ct = default);
+
 }
 
 /// <summary>One piece of a "Try it" reply: the model's thinking text or its answer.</summary>

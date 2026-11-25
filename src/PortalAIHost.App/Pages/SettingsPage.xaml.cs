@@ -13,6 +13,7 @@ public sealed partial class SettingsPage : Page
     public SettingsPage()
     {
         ViewModel = new SettingsViewModel(AppServices.Shell, AppServices.Ui, AppServices.Strings, AppServices.Dialogs, AppServices.Startup, AppServices.Appearance);
+        AppModels = new AppModelsViewModel(AppServices.Shell, AppServices.Ui, AppServices.Strings);
         InitializeComponent();
         CrashWhatsSent.NavigateUri = new Uri(Links.PrivacyUrl);
         ViewModel.PropertyChanged += (_, e) =>
@@ -26,6 +27,8 @@ public sealed partial class SettingsPage : Page
     }
 
     public SettingsViewModel ViewModel { get; }
+
+    public AppModelsViewModel AppModels { get; }
 
     /// <summary>Copies the pairing link (the text of the QR code). Never throws: a busy clipboard is retried, then ignored.</summary>
     private void OnCopyPairingLink(object sender, RoutedEventArgs e)
@@ -150,9 +153,14 @@ public sealed partial class SettingsPage : Page
 
     protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
+        _ = AppModels.LoadAsync();
         await ViewModel.LoadAsync();
         ShowPendingSection();
     }
 
-    protected override void OnNavigatedFrom(NavigationEventArgs e) => ViewModel.Dispose();
+    protected override void OnNavigatedFrom(NavigationEventArgs e)
+    {
+        AppModels.Dispose();
+        ViewModel.Dispose();
+    }
 }

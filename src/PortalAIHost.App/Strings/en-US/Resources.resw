@@ -709,4 +709,31 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="Vm_AutoDevAppPause" xml:space="preserve"><value>Pause {0} on {1}</value></data>
   <data name="Vm_AutoDevAppResume" xml:space="preserve"><value>Resume {0} on {1}</value></data>
   <data name="Vm_AutoDevRename" xml:space="preserve"><value>Rename {0}</value></data>
+  <data name="RemoteModelLoadLabel.Text" xml:space="preserve"><value>Load</value></data>
+  <data name="RemoteModelUnloadLabel.Text" xml:space="preserve"><value>Unload</value></data>
+  <data name="RemoteModelLoad.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Load this model on the PC. It stays loaded there until you unload it or the PC owner changes it.</value></data>
+  <data name="RemoteModelLoad.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Load this model on the PC. It stays loaded there until you unload it or the PC owner changes it.</value></data>
+  <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Unload the model this laptop loaded on the PC. No model file is touched.</value></data>
+  <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Unload the model this laptop loaded on the PC. No model file is touched.</value></data>
+  <data name="RemoteModelPlacement.Header" xml:space="preserve"><value>Run on</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Where the PC runs this model: decided by the PC, on its graphics card, or in system memory. The PC's own limits still apply.</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Where the PC runs this model: decided by the PC, on its graphics card, or in system memory. The PC's own limits still apply.</value></data>
+  <data name="RemoteModelTooBig.Text" xml:space="preserve"><value>Too big for the PC</value></data>
+  <data name="SettingsAppModelsHeader.Text" xml:space="preserve"><value>PC model for each app</value></data>
+  <data name="SettingsAppModelsHelp.Text" xml:space="preserve"><value>Choose which of the PC's models each app on this laptop uses. PC's choice leaves it to the PC.</value></data>
+  <data name="Vm_RemTitle" xml:space="preserve"><value>Models on {0}</value></data>
+  <data name="Vm_RemAskOwner" xml:space="preserve"><value>Ask the owner of {0} to turn on Model control for this laptop.</value></data>
+  <data name="Vm_RemPlacementAuto" xml:space="preserve"><value>Automatic</value></data>
+  <data name="Vm_RemPlacementGpu" xml:space="preserve"><value>Graphics card</value></data>
+  <data name="Vm_RemPlacementCpu" xml:space="preserve"><value>System memory</value></data>
+  <data name="Vm_RemStateLoaded" xml:space="preserve"><value>Loaded</value></data>
+  <data name="Vm_RemStateLoading" xml:space="preserve"><value>Loading</value></data>
+  <data name="Vm_RemByLaptop" xml:space="preserve"><value>Loaded by this laptop</value></data>
+  <data name="Vm_RemByPc" xml:space="preserve"><value>Loaded by the PC</value></data>
+  <data name="Vm_RemByOther" xml:space="preserve"><value>Loaded by another device</value></data>
+  <data name="Vm_RemAutoLoad" xml:space="preserve"><value>Load {0} on the PC</value></data>
+  <data name="Vm_RemAutoUnload" xml:space="preserve"><value>Unload {0} from the PC</value></data>
+  <data name="Vm_RemHostGone" xml:space="preserve"><value>The host is not running.</value></data>
+  <data name="Vm_AppModelPcChoice" xml:space="preserve"><value>PC's choice</value></data>
+  <data name="Vm_AppModelAutomation" xml:space="preserve"><value>PC model for {0}</value></data>
 </root>

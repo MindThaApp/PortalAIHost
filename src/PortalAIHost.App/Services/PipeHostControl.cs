@@ -300,6 +300,30 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
 
     // ---- plumbing -------------------------------------------------------------------------------
 
+    public Task<ClientModeStatus> GetClientStatusAsync(CancellationToken ct = default) =>
+        RequestAsync(ControlTypes.ClientStatus, AiHostJsonContext.Default.ClientModeStatus, ct);
+
+    public Task<RemoteModelsAnswer> ListRemoteModelsAsync(CancellationToken ct = default) =>
+        RequestAsync(ControlTypes.ClientRemoteModels, AiHostJsonContext.Default.RemoteModelsAnswer, ct);
+
+    public async Task<RemoteModelsAnswer> LoadRemoteModelAsync(string modelId, string? placement, CancellationToken ct = default) =>
+        Read(await CallAsync(ControlTypes.ClientRemoteLoad, JsonSerializer.SerializeToElement(
+            new DeviceLoadRequest { ModelId = modelId, Placement = placement }, AiHostJsonContext.Default.DeviceLoadRequest), ct)
+            .ConfigureAwait(false), AiHostJsonContext.Default.RemoteModelsAnswer);
+
+    public async Task<RemoteModelsAnswer> UnloadRemoteModelAsync(string modelId, CancellationToken ct = default) =>
+        Read(await CallAsync(ControlTypes.ClientRemoteUnload, JsonSerializer.SerializeToElement(
+            new DeviceUnloadRequest { ModelId = modelId }, AiHostJsonContext.Default.DeviceUnloadRequest), ct)
+            .ConfigureAwait(false), AiHostJsonContext.Default.RemoteModelsAnswer);
+
+    public Task<AppModelList> GetAppModelsAsync(CancellationToken ct = default) =>
+        RequestAsync(ControlTypes.ClientAppModel, AiHostJsonContext.Default.AppModelList, ct);
+
+    public async Task<AppModelList> SetAppModelAsync(string appId, string? modelId, CancellationToken ct = default) =>
+        Read(await CallAsync(ControlTypes.ClientAppModel, JsonSerializer.SerializeToElement(
+            new AppModelCommand { AppId = appId, ModelId = modelId }, AiHostJsonContext.Default.AppModelCommand), ct)
+            .ConfigureAwait(false), AiHostJsonContext.Default.AppModelList);
+
     private async Task SendAsync<T>(string type, T payload, JsonTypeInfo<T> info, CancellationToken ct) =>
         await CallAsync(type, JsonSerializer.SerializeToElement(payload, info), ct).ConfigureAwait(false);
 

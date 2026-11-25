@@ -261,6 +261,30 @@
                 </StackPanel>
             </Border>
 
+            <StackPanel Spacing="8" Visibility="{x:Bind AppModels.Available, Mode=OneWay}">
+                <TextBlock x:Uid="SettingsAppModelsHeader" Style="{StaticResource SubtitleTextBlockStyle}" />
+                <Border Style="{StaticResource CardBorder}">
+                    <StackPanel Spacing="12">
+                        <InfoBar IsOpen="{x:Bind AppModels.HasMessage, Mode=OneWay}" Severity="Warning" Message="{x:Bind AppModels.Message, Mode=OneWay}" IsClosable="False" />
+                        <TextBlock x:Uid="SettingsAppModelsHelp" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Style="{StaticResource CaptionTextBlockStyle}" />
+                        <ItemsControl ItemsSource="{x:Bind AppModels.Rows}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:AppModelRowViewModel">
+                                    <Grid ColumnSpacing="16" Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{x:Bind Name}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                                        <ComboBox Grid.Column="1" MinWidth="220" ItemsSource="{x:Bind Choices}" SelectedIndex="{x:Bind SelectedIndex, Mode=TwoWay}" AutomationProperties.Name="{x:Bind Automation}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
             <Grid>
                 <TextBlock x:Uid="SettingsAppearanceHeader" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center" />
                 <HyperlinkButton x:Uid="SettingsResetAppearance" Command="{x:Bind ViewModel.ResetAppearanceCommand}" HorizontalAlignment="Right" />

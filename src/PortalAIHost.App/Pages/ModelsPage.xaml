@@ -15,6 +15,43 @@
                 </StackPanel>
             </CheckBox>
         </DataTemplate>
+        <DataTemplate x:Key="RemoteModelRowTemplate" x:DataType="vm:RemoteModelRowViewModel">
+            <Border Style="{StaticResource CardBorder}" Margin="0,0,0,10">
+                <Grid ColumnSpacing="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Spacing="4">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="{x:Bind Name, Mode=OneWay}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                            <TextBlock Text="{x:Bind StateText, Mode=OneWay}" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <TextBlock Text="{x:Bind SizeText, Mode=OneWay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            <TextBlock Text="{x:Bind LoadedByText, Mode=OneWay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        </StackPanel>
+                        <TextBlock x:Uid="RemoteModelTooBig" Visibility="{x:Bind TooBig, Mode=OneWay}" TextWrapping="Wrap" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="6" VerticalAlignment="Center" MinWidth="150">
+                        <ComboBox x:Uid="RemoteModelPlacement" ItemsSource="{x:Bind PlacementChoices}" SelectedIndex="{x:Bind PlacementIndex, Mode=TwoWay}" IsEnabled="{x:Bind CanLoad, Mode=OneWay}" HorizontalAlignment="Stretch" />
+                        <Button x:Uid="RemoteModelLoad" AutomationProperties.Name="{x:Bind AutoLoad, Mode=OneWay}" Command="{x:Bind LoadCommand}" Visibility="{x:Bind CanLoad, Mode=OneWay}" IsEnabled="{x:Bind Idle, Mode=OneWay}" HorizontalAlignment="Stretch" Style="{StaticResource AccentButtonStyle}">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <FontIcon Glyph="&#xE768;" FontSize="14" />
+                                <TextBlock x:Uid="RemoteModelLoadLabel" />
+                            </StackPanel>
+                        </Button>
+                        <Button x:Uid="RemoteModelUnload" AutomationProperties.Name="{x:Bind AutoUnload, Mode=OneWay}" Command="{x:Bind UnloadCommand}" Visibility="{x:Bind CanUnload, Mode=OneWay}" IsEnabled="{x:Bind Idle, Mode=OneWay}" HorizontalAlignment="Stretch">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <FontIcon Glyph="&#xE71A;" FontSize="14" />
+                                <TextBlock x:Uid="RemoteModelUnloadLabel" />
+                            </StackPanel>
+                        </Button>
+                        <ProgressBar IsIndeterminate="True" Visibility="{x:Bind Busy, Mode=OneWay}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </DataTemplate>
         <DataTemplate x:Key="ModelRowTemplate" x:DataType="vm:ModelRowViewModel">
             <Border Style="{StaticResource CardBorder}" Margin="0,0,0,10">
                 <Grid ColumnSpacing="16">
@@ -127,6 +164,18 @@
                     </StackPanel>
                 </StackPanel>
             </Border>
+
+            <StackPanel Spacing="8" Visibility="{x:Bind Remote.IsClientMode, Mode=OneWay}">
+                <TextBlock Text="{x:Bind Remote.Title, Mode=OneWay}" Style="{StaticResource SubtitleTextBlockStyle}" />
+                <InfoBar IsOpen="{x:Bind Remote.HasMessage, Mode=OneWay}" Severity="Warning" Message="{x:Bind Remote.Message, Mode=OneWay}" IsClosable="False" />
+                <ProgressRing IsActive="{x:Bind Remote.IsLoading, Mode=OneWay}" Visibility="{x:Bind Remote.IsLoading, Mode=OneWay}" HorizontalAlignment="Left" Width="28" Height="28" />
+                <TextBlock Text="{x:Bind Remote.EmptyText, Mode=OneWay}" Visibility="{x:Bind Remote.ShowEmpty, Mode=OneWay}" TextWrapping="Wrap" />
+                <ItemsControl ItemsSource="{x:Bind Remote.Rows}" ItemTemplate="{StaticResource RemoteModelRowTemplate}" Opacity="{x:Bind Remote.ListOpacity, Mode=OneWay}">
+                    <ItemsControl.OpacityTransition>
+                        <ScalarTransition />
+                    </ItemsControl.OpacityTransition>
+                </ItemsControl>
+            </StackPanel>
 
             <TextBlock x:Uid="ModelsDownloadedHeader" Style="{StaticResource SubtitleTextBlockStyle}" Visibility="{x:Bind ViewModel.HasDownloaded, Mode=OneWay}" />
             <ItemsControl ItemsSource="{x:Bind ViewModel.Downloaded}" ItemTemplate="{StaticResource ModelRowTemplate}" />
