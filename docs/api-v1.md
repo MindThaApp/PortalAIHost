@@ -695,7 +695,12 @@ Use these messages to change them; generic `settings.set` preserves the host-own
   addresses, fingerprint?, devices: [{ device_id, name, created_at, last_seen_at? }], pairing? }`;
   `remote.pair_start` opens a code and answers `{ code, expires_at, qr_text, host_name, address, port, fingerprint }`
   (`feature_disabled` while the setting is off); `remote.pair_cancel`; `remote.device_remove` `{ device_id }` removes
-  the device and revokes its tokens (`not_found` for an unknown id). `event.remote_changed` (push, no payload) means
+  the device and revokes its tokens (`not_found` for an unknown id). Model control ([client-mode-v1.md](client-mode-v1.md)
+  section 4.7): `remote.model_control` `{ device_id, enabled }` turns the per-device grant on or off at once (answers
+  `remote.get`'s shape; `not_found` for an unknown id), `remote.take_back` `{ kind }` unloads the model a device loaded
+  (memory only) and gives this PC's own choice back; `remote.get` also carries `devices[].model_control`,
+  `allow_replace_models` and `loaded_models: [{ kind, model_id, display_name, device_id?, device_name?, placement }]`. The
+  setting `remote.allow_replace_models` is "Devices may replace models". `event.remote_changed` (push, no payload) means
   ask `remote.get` again. `approvals.list` and `event.approval_pending` carry `device_name` for a request from a
   device, and `clients.list` carries `device_name`.
 - `health.get` answers the `GET /host/health` body (`HealthReport`). Read-only.

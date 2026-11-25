@@ -111,7 +111,7 @@ All under the host's existing state directory (the one that holds the settings a
 
 The authoritative mode flag lives in the existing settings store (`mode: "server" | "client"`), together with `client_fallback` (1.3) and `relay_mode: "auto" | "manual"` (3.1). `Forget this PC` removes only the own `client\` files above and nothing else.
 
-### 1.6 Implemented control messages (steps 3 and 5)
+### 1.6 Implemented control messages (steps 3, 5 and 6)
 
 The current-user control pipe (api-v1 section 10) provides `client.status` and
 `client.setmode` `{ mode: "server" | "client" }` from step 3. Step 5 adds:
@@ -129,6 +129,9 @@ The status also includes `Mode`, `Paired`, `PcName`, `State`, `Route`, `Reason`,
 (snake_case on the wire). `Refused` is `not_paired` or `failed` when a mode switch is refused.
 Settings persist `client_fallback` (null until chosen), `relay_mode`, and `fallback_prompt_shown` (default false).
 Use these messages to change them; generic `settings.set` preserves the host-owned values.
+
+Step 6 (PC side, Model control) adds `remote.model_control` `{ device_id, enabled }` and `remote.take_back`
+`{ kind }` (4.7); both answer `RemoteStatus`.
 
 ## 2. Pairing from the laptop
 
@@ -339,6 +342,22 @@ Mapping of remote answers on the way back:
   api-v1 when this ships).
 
 ### 4.7 Models and Model control
+
+**Implemented in step 6 (PC side).** `ModelControl` (`src/Portal.AiHost.Server/ModelControl.cs`) holds the routes, the
+"loaded by" table and the conflict rules; the model store reaches it through `IModelControlHost` (read-only: list
+installed models, resolve one). The four routes below are mapped on the host's own pipeline for a signed device only (a
+request from this PC finds no route, `404 not_found`; routes outside the table, such as remove, download, verify or
+import, also answer `404 not_found`). The grant is read from `devices.json` on every call. **Single slot:** one model
+per kind is active at a time, so a second load of the same kind replaces the first under the conflict rules; the
+**second concurrent slot is its own step** (engine and planner work), and the "Two models at once" paragraph below
+describes that later step. Placement: `placement` is `auto`, `gpu` or `cpu`; the PC's own limits always win (a PC set to
+`cpu` stays `cpu`; a device's memory and thread numbers are only ever cut to the PC's). A model that is not in the model
+list has no memory estimate, so only its thread count is applied. A device's model is never saved as the PC's choice
+(`active-models.json` keeps the PC's own model); when the device's engine stops (idle, crash, `Take back`) the PC's own
+choice becomes active again and loads on the next request. Device calls answer `400 invalid_request`, `404 not_found`,
+`403 model_control_required` and `409 model_conflict` with `details.reason` `owner_changed`, `in_use_by_host`,
+`in_use_by_device` or `not_loaded_by_device` (a device unloads or re-places only a model it loaded itself).
+`GET /host/capabilities` for a signed device carries `model_control: true | false`.
 
 **Default (no grant).** Remote models are what apps see in `/v1/models` and in capabilities. Which model is active on
 the home PC is the home owner's decision; the laptop uses whatever the PC has loaded. The laptop's own installed
