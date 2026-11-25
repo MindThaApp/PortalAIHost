@@ -17,6 +17,12 @@ public sealed class RemoteSettings
 
     /// <summary>Replaces <see cref="RemoteApi.RelayDefaultUrl"/> (testing). Null or empty uses the default.</summary>
     public string? RelayUrl { get; set; }
+
+    /// <summary>
+    /// "Devices may replace models" (PC-wide, off by default): a device with Model control may unload a model the PC's
+    /// own apps are using in order to load another. Off: such a load is refused with <c>in_use_by_host</c>.
+    /// </summary>
+    public bool AllowReplaceModels { get; set; }
 }
 
 /// <summary>Payload of remote.device_remove.</summary>
@@ -31,6 +37,9 @@ public sealed class PairedDeviceSummary
     public string Name { get; set; } = "";
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset? LastSeenAt { get; set; }
+
+    /// <summary>The device may list, load and unload this PC's models (off by default, revocable).</summary>
+    public bool ModelControl { get; set; }
 }
 
 /// <summary>A pairing code to show to the user (XXXX-XXXX-XXXX), and the QR text that carries the same code.</summary>
@@ -70,6 +79,42 @@ public sealed class RemoteStatus
 
     /// <summary>One of <see cref="RelayStates"/>.</summary>
     public string Relay { get; set; } = RelayStates.Off;
+
+    /// <summary>"Devices may replace models" as saved.</summary>
+    public bool AllowReplaceModels { get; set; }
+
+    /// <summary>The models loaded right now and who loaded each (the PC or a device).</summary>
+    public List<LoadedModelInfo> LoadedModels { get; set; } = [];
+}
+
+/// <summary>One loaded model and who loaded it. Shown as "Loaded by &lt;device&gt;" with a Take back button.</summary>
+public sealed class LoadedModelInfo
+{
+    public string Kind { get; set; } = "";
+    public string ModelId { get; set; } = "";
+    public string DisplayName { get; set; } = "";
+
+    /// <summary>Id of the device that loaded it, or null when this PC did.</summary>
+    public string? DeviceId { get; set; }
+
+    /// <summary>Name of that device ("a removed device" when it was removed meanwhile), or null for this PC.</summary>
+    public string? DeviceName { get; set; }
+
+    /// <summary><c>auto</c>, <c>gpu</c> or <c>cpu</c> as the loader asked.</summary>
+    public string Placement { get; set; } = "auto";
+}
+
+/// <summary>Payload of remote.model_control: turns Model control on or off for one device.</summary>
+public sealed class SetModelControlCommand
+{
+    public string DeviceId { get; set; } = "";
+    public bool Enabled { get; set; }
+}
+
+/// <summary>Payload of remote.take_back: unloads the model a device loaded (memory only; no file is touched).</summary>
+public sealed class TakeBackCommand
+{
+    public string Kind { get; set; } = "chat";
 }
 
 /// <summary>Values of <see cref="RemoteStatus.Relay"/>.</summary>

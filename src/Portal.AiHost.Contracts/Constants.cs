@@ -188,6 +188,12 @@ public static class Routes
     public const string Capabilities = "/host/capabilities";
     public const string Performance = "/host/performance";
     public const string EaseOff = "/host/ease-off";
+
+    // Model control (paired devices with the grant only; docs/client-mode-v1.md section 4.7).
+    public const string DeviceModels = "/host/models";
+    public const string DeviceModelLoad = "/host/models/load";
+    public const string DeviceModelUnload = "/host/models/unload";
+    public const string DevicePlacement = "/host/placement";
     public const string Health = "/host/health";
     public const string Warmup = "/host/warmup";
     public const string Tokenize = "/host/tokenize";

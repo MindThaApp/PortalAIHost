@@ -92,3 +92,79 @@ public sealed class PairFinishResponse
     public string DeviceId { get; set; } = "";
     public string Mac { get; set; } = "";
 }
+
+// ---- Model control (docs/client-mode-v1.md section 4.7) ---------------------------------------------------------
+
+/// <summary>Placement words of a device load: <c>auto</c> (the PC decides), <c>gpu</c> (graphics card) or <c>cpu</c> (system memory).</summary>
+public static class DevicePlacements
+{
+    public const string Auto = "auto";
+    public const string Gpu = "gpu";
+    public const string Cpu = "cpu";
+
+    public static bool IsValid(string? value) => value is Auto or Gpu or Cpu;
+}
+
+/// <summary>details.reason of the model_conflict error.</summary>
+public static class ModelConflictReasons
+{
+    public const string OwnerChanged = "owner_changed";
+    public const string InUseByHost = "in_use_by_host";
+    public const string InUseByDevice = "in_use_by_device";
+    public const string NotLoadedByDevice = "not_loaded_by_device";
+}
+
+/// <summary>One installed model as a device sees it. No download or catalogue data.</summary>
+public sealed class DeviceModelState
+{
+    public string Id { get; set; } = "";
+    public string DisplayName { get; set; } = "";
+    public string Kind { get; set; } = "chat";
+    public long SizeBytes { get; set; }
+    public bool FitsThisPc { get; set; } = true;
+
+    /// <summary><c>unloaded</c>, <c>loading</c> or <c>loaded</c>.</summary>
+    public string State { get; set; } = "unloaded";
+
+    public string? Placement { get; set; }
+
+    /// <summary><c>pc</c> or the id of the device that loaded it; null while unloaded.</summary>
+    public string? LoadedBy { get; set; }
+}
+
+/// <summary>GET /host/models.</summary>
+public sealed class DeviceModelList
+{
+    public List<DeviceModelState> Models { get; set; } = [];
+}
+
+/// <summary>POST /host/models/load.</summary>
+public sealed class DeviceLoadRequest
+{
+    public string ModelId { get; set; } = "";
+
+    /// <summary><see cref="DevicePlacements"/>; missing means <c>auto</c>.</summary>
+    public string? Placement { get; set; }
+}
+
+/// <summary>POST /host/models/unload.</summary>
+public sealed class DeviceUnloadRequest
+{
+    public string ModelId { get; set; } = "";
+}
+
+/// <summary>POST /host/placement: the controls the PC has locally, scoped to a model this device loaded. Lowers limits only.</summary>
+public sealed class DevicePlacementRequest
+{
+    public string ModelId { get; set; } = "";
+    public string Compute { get; set; } = DevicePlacements.Auto;
+    public long? GpuMemoryLimitBytes { get; set; }
+    public long? MemoryLimitBytes { get; set; }
+    public int? CpuThreads { get; set; }
+}
+
+/// <summary>GET /host/placement: the placements of the models this device loaded.</summary>
+public sealed class DevicePlacementList
+{
+    public List<DevicePlacementRequest> Placements { get; set; } = [];
+}

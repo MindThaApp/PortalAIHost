@@ -21,7 +21,14 @@ public sealed record ActiveModel(
     int ParallelSlots = 1,
     bool SupportsTools = false,
     bool SupportsReasoning = false,
-    int EmbeddingDimensions = 0);
+    int EmbeddingDimensions = 0,
+    PlacementOverride? Override = null);
+
+/// <summary>
+/// A placement a paired device with Model control asked for. It can only lower what the PC allows: a PC setting of
+/// "cpu" stays "cpu", and the memory and thread numbers are cut to the PC's own limits.
+/// </summary>
+public sealed record PlacementOverride(string Compute, long? GpuMemoryLimitBytes, long? MemoryLimitBytes, int? CpuThreads);
 
 public sealed class AiHostRuntimeOptions
 {
@@ -190,6 +197,9 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         ct.ThrowIfCancellationRequested();
         return Task.FromResult(new AiHostRuntime(options));
     }
+
+    /// <summary>The state of the engine of a kind (null for an unknown kind).</summary>
+    public EngineState? EngineStateOf(string kind) => Supervisor(kind)?.State;
 
     public ActiveModel? GetActive(string kind) => _active.TryGetValue(kind, out var m) ? m : null;
 
@@ -419,7 +429,13 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         };
     }
 
-    public HostCapabilities BuildCapabilities()
+    /// <summary>
+    /// Set by the "Other devices" part: whether a paired device has Model control right now (read on every call, so a
+    /// revoke shows at once).
+    /// </summary>
+    public Func<string, bool>? DeviceModelControl { get; set; }
+
+    public HostCapabilities BuildCapabilities(string? deviceId = null)
     {
         var chat = GetActive(ModelKinds.Chat);
         var emb = GetActive(ModelKinds.Embedding);
@@ -428,6 +444,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         return new HostCapabilities
         {
             CapabilitiesRevision = CapabilitiesRevision,
+            ModelControl = deviceId is null ? null : DeviceModelControl?.Invoke(deviceId) ?? false,
             Chat = chat is null || chatSup is null
                 ? new ChatCapabilities { Available = false, Reason = UnavailableReasons.NoModel }
                 : new ChatCapabilities
@@ -565,7 +582,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         }
 
         var hw = await _o.Hardware.ProbeAsync(ct).ConfigureAwait(false);
-        var plan = PlacementPlanner.Plan(model.Entry, hw, _o.Hardware.GetMemory(), CurrentPlanner,
+        var plan = PlacementPlanner.Plan(model.Entry, hw, _o.Hardware.GetMemory(), PlannerFor(model),
             CommittedExcept(model.Kind));
         if (!plan.Fits || plan.Placement is null)
         {
@@ -625,7 +642,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
                 Placement = placement,
                 SupportsTools = model.SupportsTools,
                 SupportsReasoning = model.SupportsReasoning,
-                Threads = _limits?.CpuThreads,
+                Threads = ThreadsFor(model),
                 MemoryLimitBytes = _limits is { } lim ? PerformanceModel.CapFor(lim.MemoryLimitBytes) : null,
             }, kind).ConfigureAwait(false);
             ks.LastPlan = plan;

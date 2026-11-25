@@ -99,6 +99,12 @@ public static class ControlTypes
     /// <summary>Removes a paired device and revokes its tokens at once. Payload <see cref="RemoveDeviceCommand"/>.</summary>
     public const string RemoteRemoveDevice = "remote.device_remove";
 
+    /// <summary>Turns Model control on or off for a paired device (takes effect at once). Payload <see cref="SetModelControlCommand"/>; answers <see cref="RemoteStatus"/>.</summary>
+    public const string RemoteSetModelControl = "remote.model_control";
+
+    /// <summary>Unloads a model a device loaded and gives the PC's own choice back. Payload <see cref="TakeBackCommand"/>; answers <see cref="RemoteStatus"/>.</summary>
+    public const string RemoteTakeBack = "remote.take_back";
+
     /// <summary>Answers <see cref="ClientModeStatus"/>: the host mode and, in client mode, the state of the link to the PC.</summary>
     public const string ClientStatus = "client.status";
 

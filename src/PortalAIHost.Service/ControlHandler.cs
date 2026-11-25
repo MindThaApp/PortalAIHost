@@ -315,6 +315,7 @@ internal sealed class ControlHandler(HostShell shell)
             {
                 // Stops the engine process only. Model files are never touched.
                 var kind = Payload(r, AiHostJsonContext.Default.EngineCommand, optional: true)?.Kind ?? ModelKinds.Chat;
+                await shell.Remote.ModelControl.OwnerChangedAsync(kind, ct).ConfigureAwait(false); // the owner's action wins
                 await runtime.UnloadAsync(kind, ct).ConfigureAwait(false);
                 await shell.PushStatusAsync().ConfigureAwait(false);
                 return ControlPipe.Ok(id);
@@ -344,6 +345,29 @@ internal sealed class ControlHandler(HostShell shell)
                 }
 
                 return ControlPipe.Ok(id);
+
+            case ControlTypes.RemoteSetModelControl:
+            {
+                var cmd = Payload(r, AiHostJsonContext.Default.SetModelControlCommand)!;
+                if (!shell.Remote.SetModelControl(cmd.DeviceId, cmd.Enabled))
+                {
+                    return ControlPipe.Error(id, ErrorCodes.NotFound, "Unknown device.");
+                }
+
+                return Ok(id, shell.Remote.Snapshot(), AiHostJsonContext.Default.RemoteStatus);
+            }
+
+            case ControlTypes.RemoteTakeBack:
+            {
+                var kind = Payload(r, AiHostJsonContext.Default.TakeBackCommand)!.Kind;
+                if (kind is not (ModelKinds.Chat or ModelKinds.Embedding))
+                {
+                    return ControlPipe.Error(id, ErrorCodes.InvalidRequest, "kind must be chat or embedding.");
+                }
+
+                await shell.Remote.ModelControl.TakeBackAsync(kind, ct).ConfigureAwait(false);
+                return Ok(id, shell.Remote.Snapshot(), AiHostJsonContext.Default.RemoteStatus);
+            }
 
             case ControlTypes.ClientStatus:
                 return Ok(id, shell.ClientMode.Snapshot(), AiHostJsonContext.Default.ClientModeStatus);

@@ -400,7 +400,7 @@ public class RoundTripTests
             "invalid_request", "unsupported_parameter", "context_length_exceeded", "auth_required", "token_invalid",
             "token_revoked", "access_denied", "app_paused", "forbidden_origin", "not_found", "feature_disabled", "request_too_large",
             "queue_full", "rate_limited", "no_model", "model_loading", "engine_restarting", "insufficient_memory",
-            "host_stopping", "auth_unavailable", "remote_unreachable", "device_unauthorized", "pairing_failed", "deadline_exceeded", "engine_error", "internal_error",
+            "host_stopping", "auth_unavailable", "remote_unreachable", "device_unauthorized", "pairing_failed", "model_control_required", "model_conflict", "deadline_exceeded", "engine_error", "internal_error",
         ];
         Assert.Equal(documented.Order(), ErrorCatalog.AllCodes.Order());
         Assert.Equal(400, ErrorCatalog.Get(ErrorCodes.InvalidRequest).HttpStatus);
