@@ -625,6 +625,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="Vm_PlacementAuto" xml:space="preserve"><value>automatic placement</value></data>
   <data name="Vm_PlacementGpu" xml:space="preserve"><value>graphics card</value></data>
   <data name="Vm_PlacementCpu" xml:space="preserve"><value>system memory</value></data>
+  <data name="Vm_PlacementCpuOnly" xml:space="preserve"><value>processor only</value></data>
   <data name="SettingsRemoteRelay.Header" xml:space="preserve"><value>Also reach this PC away from home</value></data>
   <data name="SettingsRemoteRelay.OnContent" xml:space="preserve"><value>On</value></data>
   <data name="SettingsRemoteRelay.OffContent" xml:space="preserve"><value>Off</value></data>
@@ -716,8 +717,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Unload the model this laptop loaded on the PC. No model file is touched.</value></data>
   <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Unload the model this laptop loaded on the PC. No model file is touched.</value></data>
   <data name="RemoteModelPlacement.Header" xml:space="preserve"><value>Run on</value></data>
-  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Where the PC runs this model: decided by the PC, on its graphics card, or in system memory. The PC's own limits still apply.</value></data>
-  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Where the PC runs this model: decided by the PC, on its graphics card, or in system memory. The PC's own limits still apply.</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Where the PC runs this model: decided by the PC, on its graphics card, in system memory, or on the processor only with a thread cap (half the cores). The PC's own limits still apply.</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Where the PC runs this model: decided by the PC, on its graphics card, in system memory, or on the processor only with a thread cap (half the cores). The PC's own limits still apply.</value></data>
   <data name="RemoteModelTooBig.Text" xml:space="preserve"><value>Too big for the PC</value></data>
   <data name="SettingsAppModelsHeader.Text" xml:space="preserve"><value>PC model for each app</value></data>
   <data name="SettingsAppModelsHelp.Text" xml:space="preserve"><value>Choose which of the PC's models each app on this laptop uses. PC's choice leaves it to the PC.</value></data>
@@ -726,6 +727,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="Vm_RemPlacementAuto" xml:space="preserve"><value>Automatic</value></data>
   <data name="Vm_RemPlacementGpu" xml:space="preserve"><value>Graphics card</value></data>
   <data name="Vm_RemPlacementCpu" xml:space="preserve"><value>System memory</value></data>
+  <data name="Vm_RemPlacementCpuOnly" xml:space="preserve"><value>Processor only</value></data>
   <data name="Vm_RemStateLoaded" xml:space="preserve"><value>Loaded</value></data>
   <data name="Vm_RemStateLoading" xml:space="preserve"><value>Loading</value></data>
   <data name="Vm_RemByLaptop" xml:space="preserve"><value>Loaded by this laptop</value></data>
@@ -835,4 +837,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="Vm_PairReason_no_offer" xml:space="preserve"><value>That PC is not waiting for a device. Open a new code on it.</value></data>
   <data name="Vm_PairReason_too_many_devices" xml:space="preserve"><value>That PC already has 16 devices. Remove one first.</value></data>
   <data name="Vm_PairReason_wrong_code" xml:space="preserve"><value>The code is not right.</value></data>
+  <data name="ModelsMemoryTitle.Text" xml:space="preserve"><value>Memory budget</value></data>
+  <data name="ModelsMemoryTitle.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>What the loaded and loading models are planned to use, against the RAM limit and the graphics card memory. A model that would not fit is refused.</value></data>
+  <data name="Vm_MemRam" xml:space="preserve"><value>RAM</value></data>
+  <data name="Vm_MemVram" xml:space="preserve"><value>Graphics memory</value></data>
+  <data name="Vm_MemLine" xml:space="preserve"><value>{0}: {1} used, {2} reserved while loading, {3} free of {4}</value></data>
 </root>

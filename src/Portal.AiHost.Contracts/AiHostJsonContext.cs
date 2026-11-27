@@ -20,6 +20,8 @@ namespace Portal.AiHost.Contracts;
 [JsonSerializable(typeof(HostStatus))]
 [JsonSerializable(typeof(StatusRemote))]
 [JsonSerializable(typeof(HostUsage))]
+[JsonSerializable(typeof(MemoryBudgetStatus))]
+[JsonSerializable(typeof(EngineMemoryStatus))]
 [JsonSerializable(typeof(HostCapabilities))]
 [JsonSerializable(typeof(PerformanceInfo))]
 [JsonSerializable(typeof(HealthReport))]
