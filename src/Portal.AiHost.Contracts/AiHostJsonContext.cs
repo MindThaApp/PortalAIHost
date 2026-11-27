@@ -114,6 +114,8 @@ namespace Portal.AiHost.Contracts;
 [JsonSerializable(typeof(GenerationDetail))]
 [JsonSerializable(typeof(GenerationModelList))]
 [JsonSerializable(typeof(VideoJoinRequest))]
+[JsonSerializable(typeof(UpscaleRequest))]
+[JsonSerializable(typeof(UpscaleEstimate))]
 [JsonSerializable(typeof(MediaEncoderList))]
 [JsonSerializable(typeof(UploadInfo))]
 [JsonSerializable(typeof(TrayPopupEvent))]

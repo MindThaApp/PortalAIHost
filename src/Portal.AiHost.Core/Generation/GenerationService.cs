@@ -47,6 +47,18 @@ public sealed class GenerationServiceOptions
     /// <summary>The uploads of this PC's apps; a join clip may name one of the caller's own video uploads. Null: no uploads.</summary>
     public UploadService? Uploads { get; init; }
 
+    /// <summary>The upscale helper client. Null: no helper (upscale reports no_engine).</summary>
+    public IUpscaleHelper? Upscaler { get; init; }
+
+    /// <summary>The Host-owned folder with the upscale models (ONNX files). Null: none.</summary>
+    public string? UpscaleModelFolder { get; init; }
+
+    /// <summary>True while the Best add-on is installed. Null: not installed.</summary>
+    public Func<bool>? UpscaleBestInstalled { get; init; }
+
+    /// <summary>Output megapixels per second for a tier on GPU (true) or CPU (false). Null: built-in defaults.</summary>
+    public Func<string, bool, double>? UpscaleRate { get; init; }
+
     /// <summary>The WAV bytes of a finished speech job of the app (the soundtrack of a join), or null. Null delegate: no speech source.</summary>
     public Func<string, string, byte[]?>? SpeechAudio { get; init; }
 
@@ -128,6 +140,7 @@ public sealed partial class GenerationService : IAsyncDisposable
             Queued = states.Count(s => s == GenerationJobStates.Queued),
             Running = running,
             Detail = new GenerationDetail { Image = Detail(image), Video = Detail(video) },
+            Upscale = UpscaleAvailabilityNow(),
         };
     }
 
@@ -220,6 +233,10 @@ public sealed partial class GenerationService : IAsyncDisposable
             pipeline.Map("GET", root + "/{id}/result", c => WriteResultAsync(c, kind));
             pipeline.Map("GET", root + "/{id}/preview", c => WritePreviewAsync(c, kind));
             MapMediaRoutes(pipeline, kind, root);
+            if (kind == ModelKinds.Image)
+            {
+                MapUpscaleRoutes(pipeline);
+            }
         }
     }
 
@@ -886,7 +903,7 @@ public sealed partial class GenerationService : IAsyncDisposable
         }
 
         await _lifetime.CancelAsync().ConfigureAwait(false);
-        var running = _jobs.Values.Select(j => j.Task).Where(t => t is not null).Select(t => t!).Concat(RunningJoinTasks()).ToArray();
+        var running = _jobs.Values.Select(j => j.Task).Where(t => t is not null).Select(t => t!).Concat(RunningJoinTasks()).Concat(RunningUpscaleTasks()).ToArray();
         await Task.WhenAny(Task.WhenAll(running), Task.Delay(_o.CancelWait)).ConfigureAwait(false);
         _lifetime.Dispose();
     }

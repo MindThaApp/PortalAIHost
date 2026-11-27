@@ -197,6 +197,9 @@ public sealed class GenerationAvailability
 
     /// <summary>True when GET /host/media/encoders and the <c>encode</c> object are available (ffmpeg is installed).</summary>
     public bool MediaEncoders { get; init; }
+
+    /// <summary>Image upscaling: availability, reason and tiers.</summary>
+    public UpscaleAvailability? Upscale { get; init; }
 }
 
 /// <summary>Values of <see cref="GenerationDetail"/>. The set is open: clients ignore values they do not know.</summary>

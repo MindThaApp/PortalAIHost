@@ -727,6 +727,32 @@ relay `POST /host/uploads` answers `404 feature_disabled`. Capabilities list the
 - An upload belongs to the app that made it: another app's id is `404 not_found`. An upload expires 24 hours after it was last used (a join that takes it counts as use). The host removes expired files at start and every 30 minutes, and only files of its own `upl_` name pattern.
 - A join takes an upload id in `clips` like a job id: `{ "clips": ["upl_...", "gen_..."] }`. Only video uploads are clips; a picture is `404 not_found` there.
 
+### Image upscales
+
+`POST /host/image/upscales` upscales a picture of this app. Listed as `image.upscales` while an upscale model and the
+helper are installed. The new picture is published as a new file under a unique name; the input is never changed.
+
+| Route | What it does |
+|---|---|
+| `POST /host/image/upscales` | Queues. `202` with the job (`object: "generation.upscale"`) and `Location`. |
+| `POST /host/image/upscales/estimate` | Same body; returns the estimate without queueing. |
+| `GET /host/image/upscales`, `GET /host/image/upscales/{id}` | This app's upscales, newest first; one upscale. |
+| `DELETE /host/image/upscales/{id}` | Cancels and removes the partial file; answers once ended. |
+| `GET /host/image/upscales/{id}/result` | The finished PNG. |
+
+Request: `{ "source": { "job": "gen_..." } | { "upload": "upl_..." }, "tier": "balanced", "scale": 2, "device": "auto" }`.
+- `source` is exactly one id: this app's finished image job or this app's picture upload. A path, folder or URL is
+  `400 invalid_request`; another app's id is `404 not_found`.
+- `tier`: `fast`, `balanced` (default) or `best` (only while the Best add-on is installed). `scale`: 2 (default) or 4.
+  `device`: `auto` (default), `gpu` or `cpu`. Anything else is `400 unsupported_parameter` with `param`.
+- A GPU upscale runs one at a time; a CPU upscale runs in its own lane and never blocks the GPU one.
+- No model or no helper: `503 engine_missing`. Capabilities then show `upscale.detail` `no_model` or `no_engine`
+  (per tier in `upscale.tiers`; `best` shows `needs_download` until the add-on is installed).
+
+Estimate: `{ "tier", "device", "available", "reason", "seconds_per_image", "warning" }`. `warning` is `none`, `slow`
+(above 10 seconds per image) or `very_slow` (above 100 seconds per image). A slow tier is never hidden; clients show
+the warning and let the person decide.
+
 ### Voice: cloning and text to speech (host 1.1)
 
 Make a voice once from a short recording, then read any text with it. The library of voices lives in the host and is
