@@ -158,6 +158,22 @@ public sealed class GenerationJob
     public ApiErrorBody? Error { get; set; }
 }
 
+/// <summary>The <c>generation</c> section of /host/status and /host/capabilities.</summary>
+public sealed class GenerationAvailability
+{
+    /// <summary>True when the engine is installed and an available image model is installed.</summary>
+    public bool Image { get; init; }
+
+    /// <summary>True when the engine is installed and an available video model is installed.</summary>
+    public bool Video { get; init; }
+
+    /// <summary>Jobs waiting in the queue on this host (every app).</summary>
+    public int Queued { get; init; }
+
+    /// <summary>Jobs running now (at most one).</summary>
+    public int Running { get; init; }
+}
+
 /// <summary>GET /host/{kind}/jobs: the calling app's jobs of that kind, newest first.</summary>
 public sealed class GenerationJobList
 {

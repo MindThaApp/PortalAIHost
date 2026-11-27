@@ -175,6 +175,17 @@ public sealed class SdCppArgsTests
         Assert.Equal(GenerationFamilies.Sd15, GenerationFamilies.Normalize("stable-diffusion-1.5"));
         Assert.Equal(GenerationFamilies.Wan, GenerationFamilies.Normalize("wan2.1"));
         Assert.Null(GenerationFamilies.Normalize("ltx-video"));
+        Assert.Equal(GenerationFamilies.Sd15, GenerationFamilies.Normalize("stable-diffusion", "sd-1.5 Stable Diffusion 1.5"));
+        Assert.Equal(GenerationFamilies.Sdxl, GenerationFamilies.Normalize("stable-diffusion", "sdxl-base"));
+
+        // The catalogue's role words (model-categories schema).
+        Assert.Equal(GenerationFileRoles.Model, GenerationFileRoles.FromCatalogue("checkpoint", "v1-5-pruned-emaonly-fp16.safetensors", 1));
+        Assert.Equal(GenerationFileRoles.Diffusion, GenerationFileRoles.FromCatalogue("diffusion_model", "wan2.1_t2v_1.3B_fp16.safetensors", 3));
+        Assert.Equal(GenerationFileRoles.HighNoise, GenerationFileRoles.FromCatalogue("diffusion_model", "wan2.2_high_noise_14B.gguf", 4));
+        Assert.Equal(GenerationFileRoles.T5xxl, GenerationFileRoles.FromCatalogue("text_encoder", "umt5-xxl-encoder-Q4_K_M.gguf", 3));
+        Assert.Equal(GenerationFileRoles.ClipL, GenerationFileRoles.FromCatalogue("text_encoder", "clip_l.safetensors", 4));
+        Assert.Equal(GenerationFileRoles.Vae, GenerationFileRoles.FromCatalogue("vae", "wan_2.1_vae.safetensors", 3));
+        Assert.Equal(GenerationFileRoles.Vae, GenerationFileRoles.FromCatalogue(null, "wan_2.1_vae.safetensors", 3));
     }
 }
 

@@ -528,6 +528,11 @@ must allow the model; the device's pause, quiet hours, gaming mode and daily req
 | `GET /host/{kind}/jobs/{id}/result` | The finished file: `image/png`, or `video/x-msvideo` (MJPEG AVI) for video. `404 not_found` until `succeeded`. |
 | `GET /host/{kind}/jobs/{id}/preview` | The latest preview picture (`image/png`) while the job runs, when the engine writes one; otherwise `404 not_found`. |
 
+**What can run:** `/host/status` and `/host/capabilities` carry `"generation": { "image": true, "video": false, "queued": 0, "running": 0 }`.
+`image` and `video` are true only when the engine is installed and an available model of that kind is installed;
+the counts cover every app on this host. Capabilities then also list the endpoints `image.jobs` and `video.jobs`.
+Older hosts leave `generation` out.
+
 `{kind}` is `image` or `video`. A job belongs to the app and device that created it: any other caller gets
 `404 not_found`. The host remembers the last 200 finished jobs until it quits; their files stay on disk.
 

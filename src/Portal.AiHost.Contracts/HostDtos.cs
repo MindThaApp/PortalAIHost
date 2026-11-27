@@ -89,6 +89,9 @@ public sealed class HostStatus
 
     /// <summary>Planned memory of every running engine against the user's RAM limit. Null when the host cannot tell yet.</summary>
     public MemoryBudgetStatus? Memory { get; set; }
+
+    /// <summary>Image and video jobs: what can run here and how many jobs are queued or running. Null on older hosts.</summary>
+    public GenerationAvailability? Generation { get; set; }
 }
 
 /// <summary>The paired PC as <c>/host/status</c> shows it in client mode.</summary>
@@ -174,6 +177,9 @@ public sealed class HostCapabilities
     /// Only in the answer to a paired device: whether this device has Model control (4.7). Missing for local apps.
     /// </summary>
     public bool? ModelControl { get; set; }
+
+    /// <summary>Image and video jobs: what can run here and how many jobs are queued or running. Null on older hosts.</summary>
+    public GenerationAvailability? Generation { get; set; }
 }
 
 public sealed class ChatCapabilities

@@ -331,6 +331,47 @@ public sealed class GenerationJobTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task StatusAndCapabilitiesShowWhatCanRunAndTheJobCounts()
+    {
+        var token = await _host.GetTokenAsync();
+        await _service.RefreshAvailabilityAsync();
+        var (_, status) = await SendAsync(HttpMethod.Get, Routes.Status, token);
+        var gen = status.GetProperty("generation");
+        Assert.True(gen.GetProperty("image").GetBoolean());
+        Assert.True(gen.GetProperty("video").GetBoolean());
+        Assert.Equal(0, gen.GetProperty("running").GetInt32());
+        var (_, caps) = await SendAsync(HttpMethod.Get, Routes.Capabilities, token);
+        Assert.True(caps.GetProperty("generation").GetProperty("image").GetBoolean());
+        var endpoints = caps.GetProperty("endpoints").EnumerateArray().Select(e => e.GetString()).ToList();
+        Assert.Contains(EndpointNames.ImageJobs, endpoints);
+        Assert.Contains(EndpointNames.VideoJobs, endpoints);
+
+        _engine.Gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        _engine.Started += _ => started.TrySetResult();
+        var first = await CreateAsync(token);
+        await started.Task.WaitAsync(TimeSpan.FromSeconds(10));
+        await CreateAsync(token);
+        (_, status) = await SendAsync(HttpMethod.Get, Routes.Status, token);
+        Assert.Equal(1, status.GetProperty("generation").GetProperty("running").GetInt32());
+        Assert.Equal(1, status.GetProperty("generation").GetProperty("queued").GetInt32());
+        _engine.Gate.TrySetResult();
+        await WaitAsync(token, first, GenerationJobStates.Succeeded);
+
+        // No engine, or no model: false, and the endpoints are not listed.
+        _engine.Present = false;
+        await _service.RefreshAvailabilityAsync();
+        (_, caps) = await SendAsync(HttpMethod.Get, Routes.Capabilities, token);
+        Assert.False(caps.GetProperty("generation").GetProperty("image").GetBoolean());
+        Assert.DoesNotContain(EndpointNames.ImageJobs, caps.GetProperty("endpoints").EnumerateArray().Select(e => e.GetString()));
+        _engine.Present = true;
+        _models.Empty = true;
+        await _service.RefreshAvailabilityAsync();
+        (_, status) = await SendAsync(HttpMethod.Get, Routes.Status, token);
+        Assert.False(status.GetProperty("generation").GetProperty("video").GetBoolean());
+    }
+
+    [Fact]
     public async Task EngineMissingAndModelNotInstalledAreClearErrors()
     {
         var token = await _host.GetTokenAsync();

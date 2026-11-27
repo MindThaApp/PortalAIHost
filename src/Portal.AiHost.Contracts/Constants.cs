@@ -243,6 +243,12 @@ public static class EndpointNames
     public const string Performance = "performance";
     public const string EaseOff = "ease-off";
     public const string Health = "health";
+
+    /// <summary>Listed while an image model can run (POST /host/image/jobs).</summary>
+    public const string ImageJobs = "image.jobs";
+
+    /// <summary>Listed while a video model can run (POST /host/video/jobs).</summary>
+    public const string VideoJobs = "video.jobs";
 }
 
 /// <summary>Route paths.</summary>

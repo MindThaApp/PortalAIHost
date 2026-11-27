@@ -413,6 +413,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
             Models = models,
             Usage = _sampler?.Get(Activity.LastTokensPerSecond),
             Memory = BuildMemoryBudget(hardware ?? _hardwareProfile),
+            Generation = GenerationInfo?.Invoke(),
             Queue = new QueueStatus
             {
                 Running = snap.Running,
@@ -447,8 +448,10 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         var emb = GetActive(ModelKinds.Embedding);
         var chatSup = Supervisor(ModelKinds.Chat);
         var placement = chatSup?.Current?.Placement;
+        var generation = GenerationInfo?.Invoke();
         return new HostCapabilities
         {
+            Generation = generation,
             CapabilitiesRevision = CapabilitiesRevision,
             ModelControl = deviceId is null ? null : DeviceModelControl?.Invoke(deviceId) ?? false,
             Chat = chat is null || chatSup is null
@@ -503,6 +506,8 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
                 EndpointNames.ChatCompletions, EndpointNames.Embeddings, EndpointNames.Models,
                 EndpointNames.Tokenize, EndpointNames.Warmup, EndpointNames.Performance,
                 EndpointNames.EaseOff, EndpointNames.Health,
+                .. generation is { Image: true } ? [EndpointNames.ImageJobs] : Array.Empty<string>(),
+                .. generation is { Video: true } ? [EndpointNames.VideoJobs] : Array.Empty<string>(),
             ],
         };
     }
@@ -1062,6 +1067,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         ApiVersion = s.ApiVersion, HostVersion = s.HostVersion, InstanceId = s.InstanceId, State = s.State,
         Client = client, Models = s.Models, Queue = s.Queue, Hardware = s.Hardware,
         UpgradeAvailable = s.UpgradeAvailable, Sharing = s.Sharing, Usage = s.Usage, Mode = s.Mode, Remote = s.Remote, Memory = s.Memory,
+        Generation = s.Generation,
     };
 
     private Task ListModelsAsync(ApiContext ctx)

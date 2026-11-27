@@ -16,6 +16,9 @@ public sealed partial class AiHostRuntime
     /// <summary>Slot name the generation engine plans under (never a supervisor kind).</summary>
     public const string GenerationSlot = "generation";
 
+    /// <summary>The generation section of status and capabilities (set by the generation service; null: none).</summary>
+    public Func<Contracts.GenerationAvailability?>? GenerationInfo { get; set; }
+
     /// <summary>True once the host started quitting.</summary>
     public bool IsStopping => _stopping;
 
@@ -78,6 +81,9 @@ public sealed partial class AiHostRuntime
         Interlocked.Increment(ref _revision);
         return new Release(this, jobId);
     }
+
+    /// <summary>The generation section changed (an engine or model appeared or went): capabilities get a new revision.</summary>
+    public void NoteGenerationChanged() => Interlocked.Increment(ref _revision);
 
     /// <summary>RAM and graphics memory reserved by running generation jobs.</summary>
     public (long RamBytes, long VramBytes) GenerationReserved()

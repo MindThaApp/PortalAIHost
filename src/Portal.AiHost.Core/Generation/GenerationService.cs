@@ -75,10 +75,88 @@ public sealed partial class GenerationService : IAsyncDisposable
     private readonly CancellationTokenSource _lifetime = new();
     private int _disposed;
 
+    private int _availableBits; // 1: image, 2: video
+    private long _availableAt = long.MinValue;
+    private int _refreshing;
+
+    /// <summary>How long the cached "engine and model present" answer of <see cref="Availability"/> is reused.</summary>
+    public static readonly TimeSpan AvailabilityMaxAge = TimeSpan.FromSeconds(5);
+
     public GenerationService(GenerationServiceOptions options)
     {
         ArgumentNullException.ThrowIfNull(options);
         _o = options;
+        _o.Runtime.GenerationInfo = Availability;
+        _ = RefreshAvailabilityAsync();
+    }
+
+    /// <summary>
+    /// The generation section of status and capabilities. Engine and model presence is cached (it needs a store
+    /// listing) and refreshed in the background when older than <see cref="AvailabilityMaxAge"/>; the job counts are live.
+    /// </summary>
+    public GenerationAvailability Availability()
+    {
+        var age = System.Diagnostics.Stopwatch.GetElapsedTime(Interlocked.Read(ref _availableAt));
+        if (age > AvailabilityMaxAge)
+        {
+            _ = RefreshAvailabilityAsync();
+        }
+
+        var bits = Volatile.Read(ref _availableBits);
+        var (image, video) = ((bits & 1) != 0, (bits & 2) != 0);
+        var states = _jobs.Values.Select(j => j.SnapshotState()).ToList();
+        return new GenerationAvailability
+        {
+            Image = image,
+            Video = video,
+            Queued = states.Count(s => s == GenerationJobStates.Queued),
+            Running = states.Count(s => s == GenerationJobStates.Running),
+        };
+    }
+
+    /// <summary>Checks now whether the engine binary and an available model of each kind are installed.</summary>
+    public async Task RefreshAvailabilityAsync()
+    {
+        if (Interlocked.Exchange(ref _refreshing, 1) != 0)
+        {
+            return;
+        }
+
+        try
+        {
+            var present = _o.Engine.Check().Present;
+            var image = present && await HasModelAsync(ModelKinds.Image).ConfigureAwait(false);
+            var video = present && await HasModelAsync(ModelKinds.Video).ConfigureAwait(false);
+            var next = (image ? 1 : 0) | (video ? 2 : 0);
+            if (Interlocked.Exchange(ref _availableBits, next) != next)
+            {
+                _o.Runtime.NoteGenerationChanged();
+            }
+
+            Interlocked.Exchange(ref _availableAt, System.Diagnostics.Stopwatch.GetTimestamp());
+        }
+        catch (Exception e) when (e is not OutOfMemoryException)
+        {
+            _o.Log?.Invoke("Generation availability check failed: " + e.GetType().Name);
+        }
+        finally
+        {
+            Volatile.Write(ref _refreshing, 0);
+        }
+    }
+
+    private async Task<bool> HasModelAsync(string kind)
+    {
+        foreach (var m in await _o.Models.ListAsync(kind, _lifetime.Token).ConfigureAwait(false))
+        {
+            if (GenerationFamilies.Normalize(m.Entry?.Family ?? m.Family, m.Id + " " + m.DisplayName) is { } f &&
+                _o.Engine.SupportsFamily(f, kind))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>Paired device: its allowed-models list lets it use the model (set once the device store exists).</summary>
