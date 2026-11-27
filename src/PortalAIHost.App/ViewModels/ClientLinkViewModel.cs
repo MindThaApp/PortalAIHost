@@ -100,6 +100,7 @@ public sealed partial class ClientLinkViewModel : ObservableObject, IDisposable
     public async Task RefreshAsync(CancellationToken ct = default)
     {
         ClientModeStatus status;
+        var generation = Volatile.Read(ref _commandGeneration);
         try
         {
             status = await _host.GetClientStatusAsync(ct).ConfigureAwait(false);
@@ -110,11 +111,24 @@ public sealed partial class ClientLinkViewModel : ObservableObject, IDisposable
         }
 
         if (ct.IsCancellationRequested) return;
-        _ui.Post(() => Apply(status));
+        // An answer to a command that arrived while this read was in flight is newer than the read: drop the read,
+        // or the card would briefly jump back to the value the user just changed.
+        _ui.Post(() =>
+        {
+            if (generation == Volatile.Read(ref _commandGeneration)) ApplyCore(status);
+        });
     }
 
-    /// <summary>Applies a host answer (also used for the answer of a command).</summary>
+    private int _commandGeneration;
+
+    /// <summary>Applies the answer of a command (a refresh that started before it is dropped).</summary>
     public void Apply(ClientModeStatus status)
+    {
+        Interlocked.Increment(ref _commandGeneration);
+        ApplyCore(status);
+    }
+
+    private void ApplyCore(ClientModeStatus status)
     {
         Status = status;
         IsClientMode = status.Mode == HostModes.Client;
