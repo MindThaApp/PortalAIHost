@@ -6,6 +6,7 @@
     <Project Path="src/Portal.AiHost.Models.Windows/Portal.AiHost.Models.Windows.csproj" />
     <Project Path="src/Portal.AiHost.CrashReports/Portal.AiHost.CrashReports.csproj" />
     <Project Path="src/Portal.AiHost.Engine/Portal.AiHost.Engine.csproj" />
+    <Project Path="src/Portal.AiHost.VoiceServer/Portal.AiHost.VoiceServer.csproj" />
     <Project Path="src/Portal.AiHost.Client/Portal.AiHost.Client.csproj" />
     <Project Path="src/Portal.AiHost.Platform.Windows/Portal.AiHost.Platform.Windows.csproj" />
     <Project Path="src/Portal.AiHost.Server/Portal.AiHost.Server.csproj" />
@@ -19,6 +20,7 @@
     <Project Path="tests/Portal.AiHost.CrashReports.Tests/Portal.AiHost.CrashReports.Tests.csproj" />
     <Project Path="tests/Portal.AiHost.Platform.Windows.Tests/Portal.AiHost.Platform.Windows.Tests.csproj" />
     <Project Path="tests/Portal.AiHost.Engine.Tests/Portal.AiHost.Engine.Tests.csproj" />
+    <Project Path="tests/Portal.AiHost.VoiceServer.Tests/Portal.AiHost.VoiceServer.Tests.csproj" />
     <Project Path="tests/Portal.AiHost.Server.Tests/Portal.AiHost.Server.Tests.csproj" />
     <Project Path="tests/Portal.AiHost.Client.Tests/Portal.AiHost.Client.Tests.csproj" />
     <Project Path="tests/PortalAIHost.App.Tests/PortalAIHost.App.Tests.csproj" />

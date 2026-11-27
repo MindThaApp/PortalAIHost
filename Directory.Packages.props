@@ -4,6 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="xunit.v3.mtp-v2" Version="3.2.0" />
+    <PackageVersion Include="org.k2fsa.sherpa.onnx" Version="2.0.3" />
     <PackageVersion Include="Sentry" Version="6.13.0" />
   </ItemGroup>
 </Project>
