@@ -21,7 +21,18 @@
         "family": { "type": "string" },
         "maker": { "type": "string" },
         "engine": { "type": "string", "description": "llama-server today; unknown engines are ignored." },
-        "kind": { "type": "string", "description": "chat, embedding or transcription (speech); open set." },
+        "kind": { "type": "string", "description": "chat, embedding, transcription (speech), image or video; open set." },
+        "category": {
+          "type": "string",
+          "description": "Optional use-case group for the Models page: chat, coding, reasoning, vision, search, image, video, speech or other. Missing or unknown: derived from kind. Older hosts ignore it."
+        },
+        "available": {
+          "type": "boolean",
+          "default": true,
+          "description": "False when the host has no engine for the model yet (coming soon): listed, never downloaded. Hashes may be placeholders."
+        },
+        "min_vram_gb": { "type": "number", "minimum": 0, "description": "Minimum graphics memory in GB with CPU offload (video models)." },
+        "recommended_vram_gb": { "type": "number", "minimum": 0, "description": "Recommended graphics memory in GB (video models)." },
         "licence": {
           "type": "object",
           "required": ["spdx", "url", "commercial_ok"],
@@ -45,7 +56,10 @@
             "type": "object",
             "required": ["name", "size", "sha256", "urls"],
             "properties": {
-              "name": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,199}\\.(gguf|bin)$" },
+              "name": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,199}\\.(gguf|bin|safetensors)$" },
+              "role": { "type": "string", "description": "Part role for multi-file models: diffusion_model, vae, text_encoder or checkpoint." },
+              "hf_repo": { "type": "string", "description": "Repository of this file when it differs from the entry's; needs hf_commit." },
+              "hf_commit": { "type": "string", "description": "40-hex commit of the file's own repository." },
               "size": { "type": "integer", "minimum": 1 },
               "sha256": { "type": "string", "description": "64 lower-case hex; a placeholder fails verification." },
               "urls": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^https://" } }

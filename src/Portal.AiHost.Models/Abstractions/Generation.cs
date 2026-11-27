@@ -10,8 +10,12 @@ public static class GenerationFamilies
     public const string Flux = "flux";
     public const string Wan = "wan";
 
-    /// <summary>Maps the catalogue's family text ("SD 1.5", "stable-diffusion-xl", "wan2.1") to a known family, or null.</summary>
-    public static string? Normalize(string? family)
+    /// <summary>
+    /// Maps the catalogue's family text ("SD 1.5", "stable-diffusion-xl", "wan2.1") to a known family, or null. A
+    /// generic family ("stable-diffusion") is narrowed by the model id or name (<paramref name="hint"/>): "xl" is SDXL,
+    /// "3" SD3, "2" SD 2, anything else SD 1.5.
+    /// </summary>
+    public static string? Normalize(string? family, string? hint = null)
     {
         if (string.IsNullOrWhiteSpace(family))
         {
@@ -19,6 +23,15 @@ public static class GenerationFamilies
         }
 
         var f = family.Trim().ToLowerInvariant().Replace(" ", "", StringComparison.Ordinal).Replace("_", "-", StringComparison.Ordinal);
+        if (f is "stable-diffusion" or "sd")
+        {
+            var h = (hint ?? "").ToLowerInvariant();
+            return h.Contains("xl", StringComparison.Ordinal) ? Sdxl
+                : h.Contains("sd3", StringComparison.Ordinal) || h.Contains("-3", StringComparison.Ordinal) ? Sd3
+                : h.Contains("sd2", StringComparison.Ordinal) || h.Contains("-2", StringComparison.Ordinal) ? Sd2
+                : Sd15;
+        }
+
         if (f.StartsWith("stable-diffusion-", StringComparison.Ordinal))
         {
             f = "sd" + f["stable-diffusion-".Length..];
@@ -59,6 +72,33 @@ public static class GenerationFileRoles
 
     /// <summary>Wan 2.1 image to video: the picture encoder.</summary>
     public const string ClipVision = "clip_vision";
+
+    /// <summary>
+    /// The engine role of a file from its catalogue role (checkpoint, diffusion_model, vae, text_encoder; this host's own
+    /// role words are accepted too). A text_encoder is narrowed by its file name (clip_l, clip_g, clip_vision, else
+    /// T5/UMT5). No role: guessed from the name.
+    /// </summary>
+    public static string FromCatalogue(string? role, string fileName, int fileCount)
+    {
+        var r = role?.Trim().ToLowerInvariant();
+        switch (r)
+        {
+            case null or "":
+                return Guess(fileName, fileCount);
+            case "checkpoint":
+                return Model;
+            case "diffusion_model":
+                var n = fileName.ToLowerInvariant();
+                return n.Contains("high_noise", StringComparison.Ordinal) || n.Contains("high-noise", StringComparison.Ordinal) ? HighNoise : Diffusion;
+            case "text_encoder":
+                var guess = Guess(fileName, 2);
+                return IsEncoder(guess) ? guess : T5xxl;
+            case Model or Diffusion or HighNoise or ClipL or ClipG or T5xxl or Vae or ClipVision:
+                return r;
+            default:
+                return Guess(fileName, fileCount);
+        }
+    }
 
     /// <summary>True for the text and picture encoders (they can run on the processor with clip-on-cpu).</summary>
     public static bool IsEncoder(string role) => role is ClipL or ClipG or T5xxl or ClipVision;

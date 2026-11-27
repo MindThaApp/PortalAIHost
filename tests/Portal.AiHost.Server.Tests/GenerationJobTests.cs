@@ -20,6 +20,7 @@ internal sealed class FakeGenerationModels : IGenerationModelSource
     private readonly string _folder;
     public long ImageBytes = 2L << 30;
     public long VideoDiffusionBytes = 1400L << 20;
+    public long VideoEncoderBytes = 6L << 30;
     public bool Empty;
     public int InUse;
     public int Released;
@@ -47,7 +48,7 @@ internal sealed class FakeGenerationModels : IGenerationModelSource
                 ? [new("wan-1.3b", "Wan 1.3B", kind, "wan",
                 [
                     new(GenerationFileRoles.Diffusion, Path.Combine(_folder, "wan-diffusion.gguf"), VideoDiffusionBytes),
-                    new(GenerationFileRoles.T5xxl, Path.Combine(_folder, "umt5-xxl.gguf"), 6L << 30),
+                    new(GenerationFileRoles.T5xxl, Path.Combine(_folder, "umt5-xxl.gguf"), VideoEncoderBytes),
                     new(GenerationFileRoles.Vae, Path.Combine(_folder, "wan-vae.safetensors"), 250L << 20),
                 ])]
                 : [];

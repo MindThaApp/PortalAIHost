@@ -1,3 +1,4 @@
+using Portal.AiHost.Contracts;
 using Portal.AiHost.Core.Abstractions;
 using Portal.AiHost.Core.Generation;
 
@@ -25,12 +26,18 @@ internal sealed class ShellGenerationModels(HostShell shell, Func<string, string
                 continue;
             }
 
+            // Engine stable-diffusion-cpp only, and only entries the catalogue marks available (not "coming soon").
             var entry = shell.CatalogueEntry(m.Id);
+            if ((entry is not null && (!entry.Available || entry.Engine != EngineKinds.StableDiffusionCpp)) ||
+                (entry is null && m.Engine is { Length: > 0 } engine && engine != EngineKinds.StableDiffusionCpp))
+            {
+                continue;
+            }
+
             var components = m.Files.Select(f =>
             {
-                var role = entry?.Files.FirstOrDefault(cf => string.Equals(cf.Name, f.Name, StringComparison.OrdinalIgnoreCase))?.Role
-                    ?? GenerationFileRoles.Guess(f.Name, m.Files.Count);
-                return new GenerationComponent(role, f.Path, f.SizeBytes);
+                var catalogueRole = entry?.Files.FirstOrDefault(cf => string.Equals(cf.Name, f.Name, StringComparison.OrdinalIgnoreCase))?.Role;
+                return new GenerationComponent(GenerationFileRoles.FromCatalogue(catalogueRole, f.Name, m.Files.Count), f.Path, f.SizeBytes);
             }).ToList();
             list.Add(new GenerationModel(m.Id, m.DisplayName, m.Kind, entry?.Family ?? "", components, entry));
         }

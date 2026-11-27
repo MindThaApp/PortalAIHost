@@ -872,4 +872,34 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Open the Microsoft Store page to update Portal AI Host</value></data>
   <data name="UpdateButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Open the Microsoft Store page to update Portal AI Host</value></data>
   <data name="UpdateButtonText.Text" xml:space="preserve"><value>Update</value></data>
+  <data name="Vm_ComingSoon" xml:space="preserve"><value>Coming soon</value></data>
+  <data name="Vm_VramBoth" xml:space="preserve"><value>Needs {0} GB of graphics memory with CPU offload; {1} GB recommended.</value></data>
+  <data name="Vm_VramMin" xml:space="preserve"><value>Needs {0} GB of graphics memory with CPU offload.</value></data>
+  <data name="Vm_VramRec" xml:space="preserve"><value>{0} GB of graphics memory recommended.</value></data>
+  <data name="Vm_GroupCount" xml:space="preserve"><value>{0} models</value></data>
+  <data name="Vm_ShowAll" xml:space="preserve"><value>Show all {0}</value></data>
+  <data name="Vm_ShowFewer" xml:space="preserve"><value>Show fewer</value></data>
+  <data name="Vm_CatAllTip" xml:space="preserve"><value>Show models of every kind</value></data>
+  <data name="Vm_CatChip_all" xml:space="preserve"><value>All</value></data>
+  <data name="Vm_CatChip_chat" xml:space="preserve"><value>Chat</value></data>
+  <data name="Vm_CatChip_coding" xml:space="preserve"><value>Coding</value></data>
+  <data name="Vm_CatChip_reasoning" xml:space="preserve"><value>Reasoning</value></data>
+  <data name="Vm_CatChip_vision" xml:space="preserve"><value>Vision</value></data>
+  <data name="Vm_CatChip_search" xml:space="preserve"><value>Search</value></data>
+  <data name="Vm_CatChip_image" xml:space="preserve"><value>Images</value></data>
+  <data name="Vm_CatChip_video" xml:space="preserve"><value>Video</value></data>
+  <data name="Vm_CatChip_speech" xml:space="preserve"><value>Speech</value></data>
+  <data name="Vm_CatChip_other" xml:space="preserve"><value>Other</value></data>
+  <data name="Vm_Cat_chat" xml:space="preserve"><value>Chat &amp; writing</value></data>
+  <data name="Vm_Cat_coding" xml:space="preserve"><value>Coding</value></data>
+  <data name="Vm_Cat_reasoning" xml:space="preserve"><value>Reasoning</value></data>
+  <data name="Vm_Cat_vision" xml:space="preserve"><value>Understanding pictures</value></data>
+  <data name="Vm_Cat_search" xml:space="preserve"><value>Search &amp; embeddings</value></data>
+  <data name="Vm_Cat_image" xml:space="preserve"><value>Image generation</value></data>
+  <data name="Vm_Cat_video" xml:space="preserve"><value>Video generation</value></data>
+  <data name="Vm_Cat_speech" xml:space="preserve"><value>Speech</value></data>
+  <data name="Vm_Cat_other" xml:space="preserve"><value>Other models</value></data>
+  <data name="ModelsSearch.PlaceholderText" xml:space="preserve"><value>Search models</value></data>
+  <data name="ModelsSearch.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Search models</value></data>
+  <data name="ModelsNoMatches.Text" xml:space="preserve"><value>No models match. Clear the search or choose All.</value></data>
 </root>

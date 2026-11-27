@@ -11,7 +11,7 @@ namespace Portal.AiHost.Core.Runtime;
 /// </summary>
 public sealed partial class AiHostRuntime
 {
-    private readonly ConcurrentDictionary<string, GenerationPlan> _generationReserved = new(StringComparer.Ordinal);
+    private readonly ConcurrentDictionary<string, (GenerationPlan Plan, string? ModelId)> _generationReserved = new(StringComparer.Ordinal);
 
     /// <summary>Slot name the generation engine plans under (never a supervisor kind).</summary>
     public const string GenerationSlot = "generation";
@@ -32,7 +32,7 @@ public sealed partial class AiHostRuntime
     /// is created, since it waits for the one running now anyway).
     /// </summary>
     public async Task<GenerationPlan> PlanGenerationAsync(GenerationNeeds needs, bool gpuBuild, long pixels, CancellationToken ct,
-        bool ignoreGenerationJobs = false)
+        bool ignoreGenerationJobs = false, long minVramBytes = 0, string? ignoreSlot = null)
     {
         ArgumentNullException.ThrowIfNull(needs);
         var settings = CurrentPlanner;
@@ -46,7 +46,7 @@ public sealed partial class AiHostRuntime
         }
 
         var hw = await _o.Hardware.ProbeAsync(ct).ConfigureAwait(false);
-        var committed = CommittedExcept(GenerationSlot);
+        var committed = CommittedExcept(GenerationSlot, ignoreSlot);
         if (ignoreGenerationJobs)
         {
             var (genRam, genVram) = GenerationReserved();
@@ -55,14 +55,26 @@ public sealed partial class AiHostRuntime
         }
 
         var budget = MemoryBudget.From(hw, _o.Hardware.GetMemory(), settings, committed);
-        return GenerationPlanner.Plan(needs, budget, settings.Backend, gpuBuild, pixels);
+        return GenerationPlanner.Plan(needs, budget, settings.Backend, gpuBuild, pixels, minVramBytes);
     }
 
-    /// <summary>Holds a running job's planned memory until the returned handle is disposed.</summary>
-    public IDisposable ReserveGeneration(string jobId, GenerationPlan plan)
+    /// <summary>
+    /// True when the second chat slot (the director) runs on the processor only and could yield its RAM to a clip
+    /// (<see cref="YieldDirectorAsync"/>).
+    /// </summary>
+    public bool DirectorCanYield =>
+        Supervisor(Contracts.ModelSlots.Second(Contracts.ModelKinds.Chat)) is { } sup &&
+        sup.State is not (EngineState.Stopped or EngineState.Failed) &&
+        sup.Current?.Placement is { } placement && placement.GpuLayers <= 0;
+
+    /// <summary>
+    /// Holds a running job's planned memory until the returned handle is disposed. It is counted for every other
+    /// engine's plan and shows in the status memory budget as slot "generation".
+    /// </summary>
+    public IDisposable ReserveGeneration(string jobId, GenerationPlan plan, string? modelId = null)
     {
         ArgumentNullException.ThrowIfNull(plan);
-        _generationReserved[jobId] = plan;
+        _generationReserved[jobId] = (plan, modelId);
         Interlocked.Increment(ref _revision);
         return new Release(this, jobId);
     }
@@ -71,7 +83,7 @@ public sealed partial class AiHostRuntime
     public (long RamBytes, long VramBytes) GenerationReserved()
     {
         long ram = 0, vram = 0;
-        foreach (var plan in _generationReserved.Values)
+        foreach (var (plan, _) in _generationReserved.Values)
         {
             ram += plan.CpuBytes;
             vram += plan.GpuBytes;
@@ -79,6 +91,9 @@ public sealed partial class AiHostRuntime
 
         return (ram, vram);
     }
+
+    /// <summary>The model of a running generation job, for the status memory budget (null when none runs).</summary>
+    private string? GenerationModelId() => _generationReserved.Values.Select(r => r.ModelId).FirstOrDefault(m => m is not null);
 
     private sealed class Release(AiHostRuntime owner, string jobId) : IDisposable
     {

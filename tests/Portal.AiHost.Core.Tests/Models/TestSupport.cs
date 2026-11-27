@@ -153,6 +153,9 @@ internal static class TestData
         throw new InvalidOperationException("repo root not found");
     }
 
+    public static byte[] GenCatalogueBytes() =>
+        File.ReadAllBytes(System.IO.Path.Combine(RepoRoot(), "catalogue", "catalogue-gen.json"));
+
     public static byte[] SeedCatalogueBytes() =>
         File.ReadAllBytes(System.IO.Path.Combine(RepoRoot(), "catalogue", "catalogue.json"));
 }

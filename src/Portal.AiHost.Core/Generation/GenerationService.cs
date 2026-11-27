@@ -157,7 +157,7 @@ public sealed partial class GenerationService : IAsyncDisposable
                 : $"No {kind} model is installed on this PC.", request.Model is { Length: > 0 } ? "model" : null) { Details = KindDetails(kind) };
         }
 
-        var family = GenerationFamilies.Normalize(model.Entry?.Family ?? model.Family);
+        var family = GenerationFamilies.Normalize(model.Entry?.Family ?? model.Family, model.Id + " " + model.DisplayName);
         if (family is null || !_o.Engine.SupportsFamily(family, kind))
         {
             throw new ApiException(ErrorCodes.UnsupportedParameter, "The image and video engine cannot run this model.", "model");
@@ -195,8 +195,10 @@ public sealed partial class GenerationService : IAsyncDisposable
 
         // Refuse at once when the run cannot fit even with no other image or video job running.
         var needs = Needs(model, family, video, settings);
-        var plan = await _o.Runtime.PlanGenerationAsync(needs, check.GpuBuild, (long)settings.Width * settings.Height, ct, ignoreGenerationJobs: true)
-            .ConfigureAwait(false);
+        // A video job may count the RAM of a processor-only director (chat.2) as free: the director yields while it runs.
+        var plan = await _o.Runtime.PlanGenerationAsync(needs, check.GpuBuild, (long)settings.Width * settings.Height, ct,
+            ignoreGenerationJobs: true, minVramBytes: MinVram(model),
+            ignoreSlot: video && _o.Runtime.DirectorCanYield ? ModelSlots.Second(ModelKinds.Chat) : null).ConfigureAwait(false);
         if (!plan.Fits)
         {
             throw InsufficientMemory(plan, needs);
@@ -217,6 +219,10 @@ public sealed partial class GenerationService : IAsyncDisposable
         Raise(job);
         return job.Snapshot(Routes.JobsFor(kind)!);
     }
+
+    /// <summary>The catalogue's min_vram_gb in bytes, or 0 when the entry gives none.</summary>
+    private static long MinVram(GenerationModel model) =>
+        model.Entry?.MinVramGb is { } gb && gb > 0 ? (long)(gb * (1L << 30)) : 0;
 
     private static Dictionary<string, JsonElement> KindDetails(string kind) =>
         new() { ["kind"] = JsonSerializer.SerializeToElement(kind, AiHostJsonContext.Default.String) };
@@ -382,6 +388,7 @@ public sealed partial class GenerationService : IAsyncDisposable
         using var cts = CancellationTokenSource.CreateLinkedTokenSource(job.Cancel.Token, _lifetime.Token);
         var ct = cts.Token;
         string? partial = null;
+        var yielded = false;
         try
         {
             var queued = new Progress<QueueEvent>(e =>
@@ -415,14 +422,30 @@ public sealed partial class GenerationService : IAsyncDisposable
             await using var inUse = await _o.Models.UseAsync(job.Model.Id, ct).ConfigureAwait(false);
             var video = job.Kind == ModelKinds.Video;
             var needs = Needs(job.Model, job.Family, video, job.Settings);
-            var plan = await _o.Runtime.PlanGenerationAsync(needs, check.GpuBuild, (long)job.Settings.Width * job.Settings.Height, ct)
-                .ConfigureAwait(false);
+            var pixels = (long)job.Settings.Width * job.Settings.Height;
+            var minVram = MinVram(job.Model);
+            var plan = await _o.Runtime.PlanGenerationAsync(needs, check.GpuBuild, pixels, ct, minVramBytes: minVram).ConfigureAwait(false);
+            if (!plan.Fits && video && _o.Runtime.DirectorCanYield)
+            {
+                // Plan section 6.4: when the clip does not fit next to a processor-only director, the director yields
+                // (engine stop of chat.2 only) and is loaded again after the clip.
+                var second = ModelSlots.Second(ModelKinds.Chat);
+                var without = await _o.Runtime.PlanGenerationAsync(needs, check.GpuBuild, pixels, ct, minVramBytes: minVram, ignoreSlot: second)
+                    .ConfigureAwait(false);
+                if (without.Fits && await _o.Runtime.YieldDirectorAsync(ct).ConfigureAwait(false))
+                {
+                    yielded = true;
+                    plan = await _o.Runtime.PlanGenerationAsync(needs, check.GpuBuild, pixels, ct, minVramBytes: minVram).ConfigureAwait(false);
+                    plan = plan.Fits ? plan : without;
+                }
+            }
+
             if (!plan.Fits || plan.Placement is null)
             {
                 throw InsufficientMemory(plan, needs);
             }
 
-            using var reservation = _o.Runtime.ReserveGeneration(job.Id, plan);
+            using var reservation = _o.Runtime.ReserveGeneration(job.Id, plan, job.Model.Id);
             partial = GenerationOutputFolder.PartialPath(job.WorkDir!, video ? ".avi" : ".png");
             job.Update(j =>
             {
@@ -515,7 +538,25 @@ public sealed partial class GenerationService : IAsyncDisposable
                 Guard(() => _o.Output.CleanWorkFolder(work));
             }
 
+            if (yielded)
+            {
+                await ResumeDirectorQuietlyAsync().ConfigureAwait(false);
+            }
+
             Raise(job);
+        }
+    }
+
+    private async Task ResumeDirectorQuietlyAsync()
+    {
+        try
+        {
+            await _o.Runtime.ResumeDirectorAsync(CancellationToken.None).ConfigureAwait(false);
+        }
+        catch (Exception e) when (e is not OutOfMemoryException)
+        {
+            // The next chat.2 request loads it again.
+            _o.Log?.Invoke("Director did not resume after a clip: " + e.GetType().Name);
         }
     }
 

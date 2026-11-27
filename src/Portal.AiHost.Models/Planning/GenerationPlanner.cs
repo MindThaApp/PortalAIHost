@@ -106,9 +106,11 @@ public static class GenerationPlanner
 
     /// <summary>
     /// Plans one run. <paramref name="backend"/> is the user's choice (auto, gpu or cpu); <paramref name="gpuBuild"/> says
-    /// whether a graphics-card build of the engine is installed.
+    /// whether a graphics-card build of the engine is installed. <paramref name="minVramBytes"/> is the catalogue's
+    /// min_vram_gb: a card with less dedicated memory is not used for this model.
     /// </summary>
-    public static GenerationPlan Plan(GenerationNeeds needs, MemoryBudget budget, string backend, bool gpuBuild, long pixels = 0)
+    public static GenerationPlan Plan(GenerationNeeds needs, MemoryBudget budget, string backend, bool gpuBuild, long pixels = 0,
+        long minVramBytes = 0)
     {
         ArgumentNullException.ThrowIfNull(needs);
         ArgumentNullException.ThrowIfNull(budget);
@@ -120,7 +122,8 @@ public static class GenerationPlanner
         var c = needs.ComputeBytes;
         var tiling = needs.Video || pixels > TilingAbovePixels;
         var wantCpu = string.Equals(backend, "cpu", StringComparison.OrdinalIgnoreCase);
-        var canGpu = !wantCpu && gpuBuild && budget.Gpu is not null && vram > 0;
+        var cardTooSmall = budget.Gpu is { } card && minVramBytes > 0 && card.VramBytes < minVramBytes;
+        var canGpu = !wantCpu && gpuBuild && budget.Gpu is not null && vram > 0 && !cardTooSmall;
 
         if (canGpu)
         {
@@ -154,9 +157,11 @@ public static class GenerationPlanner
             }, "", 0, cpuOnly);
         }
 
-        var reason = needs.Video && !wantCpu && !canGpu
-            ? "Video needs a graphics card with enough free memory."
-            : "The model cannot run in the memory available now.";
+        var reason = cardTooSmall && !wantCpu
+            ? $"This model needs a graphics card with at least {minVramBytes / (double)(1L << 30):0.#} GB."
+            : needs.Video && !wantCpu && !canGpu
+                ? "Video needs a graphics card with enough free memory."
+                : "The model cannot run in the memory available now.";
         return new GenerationPlan(false, null, reason, 0, 0);
     }
 }

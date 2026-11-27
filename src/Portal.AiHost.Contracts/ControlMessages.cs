@@ -307,6 +307,19 @@ public sealed class CatalogueModelSummary
     public bool Active { get; init; }
     public bool FitsThisPc { get; init; }
 
+    /// <summary>Use-case category id (see ModelCategories). Null from an older host: the window derives it from the kind.</summary>
+    public string? Category { get; init; }
+
+    /// <summary>True when the host has no engine for this model yet. It is listed but cannot be downloaded.</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public bool ComingSoon { get; init; }
+
+    /// <summary>Minimum graphics memory in GB (with CPU offload) for models that need a graphics card, or null.</summary>
+    public double? MinVramGb { get; init; }
+
+    /// <summary>Recommended graphics memory in GB, or null.</summary>
+    public double? RecommendedVramGb { get; init; }
+
     /// <summary>True when the host found this model already on the PC (a file added in place) instead of downloading it.</summary>
     public bool ExistingCopy { get; init; }
 

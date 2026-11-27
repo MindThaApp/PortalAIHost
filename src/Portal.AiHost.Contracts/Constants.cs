@@ -86,6 +86,46 @@ public static class ModelKinds
 }
 
 /// <summary>
+/// Use-case categories the Models page groups by. Open strings: a catalogue or host may send an id this build does not
+/// know, which then shows under <see cref="Other"/>. <see cref="Resolve"/> falls back to the model kind.
+/// </summary>
+public static class ModelCategories
+{
+    public const string Chat = "chat";
+    public const string Coding = "coding";
+    public const string Reasoning = "reasoning";
+    public const string Vision = "vision";
+    public const string Search = "search";
+    public const string Image = "image";
+    public const string Video = "video";
+    public const string Speech = "speech";
+    public const string Other = "other";
+
+    /// <summary>Display order of the known categories.</summary>
+    public static IReadOnlyList<string> Ordered { get; } =
+        [Chat, Coding, Reasoning, Vision, Search, Image, Video, Speech, Other];
+
+    /// <summary>Category for a model kind when the catalogue gives none.</summary>
+    public static string FromKind(string? kind) => kind switch
+    {
+        ModelKinds.Chat => Chat,
+        ModelKinds.Embedding => Search,
+        ModelKinds.Transcription => Speech,
+        "speech" => Speech,
+        "image" => Image,
+        "video" => Video,
+        _ => Other,
+    };
+
+    /// <summary>The catalogue category when it is a known id, otherwise the one derived from the kind.</summary>
+    public static string Resolve(string? category, string? kind)
+    {
+        var c = category?.Trim().ToLowerInvariant();
+        return c is { Length: > 0 } && Ordered.Contains(c) ? c : FromKind(kind);
+    }
+}
+
+/// <summary>
 /// The second concurrent engine slot of a kind. A slot is named by its key: the kind itself for the first slot (the PC's
 /// own model lives there) and the kind plus ".2" for the second, which only a device with Model control fills.
 /// </summary>
@@ -107,11 +147,8 @@ public static class EngineKinds
     public const string LlamaServer = "llama-server";
     public const string WhisperServer = "whisper-server";
 
-    /// <summary>Image generation, served by the bundled stable-diffusion.cpp runtime.</summary>
-    public const string ImageEngine = "image-engine";
-
-    /// <summary>Video generation, served by the same stable-diffusion.cpp runtime as <see cref="ImageEngine"/>.</summary>
-    public const string VideoEngine = "video-engine";
+    /// <summary>Image and video generation (model kinds image and video), served by the bundled stable-diffusion.cpp runtime.</summary>
+    public const string StableDiffusionCpp = "stable-diffusion-cpp";
 }
 
 /// <summary>Model names clients may send in the request model field.</summary>

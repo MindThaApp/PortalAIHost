@@ -675,6 +675,10 @@ Use these messages to change them; generic `settings.set` preserves the host-own
 - `models.list` answers `{ models: [...], models_folder, free_bytes, upgrade_model_id, catalogue_available }`.
   `models_bytes` is the disk space the models in the current folder use. Each model has `id, display_name, kind,
   engine, size_bytes, quality, recommended, installed, active, fits_this_pc, reason`, plus:
+  - `category`: use-case group the Models page lists the model under (`chat`, `coding`, `reasoning`, `vision`, `search`,
+    `image`, `video`, `speech`, `other`); absent from an older host, then derive it from `kind`;
+  - `coming_soon`: `true` when the host has no engine for the model yet; it is listed but cannot be downloaded;
+  - `min_vram_gb`, `recommended_vram_gb`: graphics memory in GB (with CPU offload / recommended), only when the model list gives them;
   - `last_used_at`: when an engine last loaded the model (absent when never);
   - `damaged`, `damaged_reason`: a file check found a file that does not match the model list (nothing was deleted);
   - `advice_summary`, `good_for`, `caveats`: the model list's advice, each only when present;

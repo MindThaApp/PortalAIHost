@@ -1,21 +1,13 @@
 namespace Portal.AiHost.Core.Catalogue;
 
-// Optional catalogue fields for image and video models (generation engine). Older hosts ignore them; entries of
-// other kinds leave them out. Every field may be missing: the engine then uses its per-family defaults.
+// Optional generation defaults for image and video models (engine stable-diffusion-cpp). Older hosts ignore the
+// block; every field may be missing, and the engine then uses its per-family defaults. The file roles
+// (CatalogueFile.Role), availability and graphics-memory needs (MinVramGb) are the entry's own catalogue fields.
 
 public sealed partial class CatalogueEntry
 {
     /// <summary>Image and video models only: defaults and limits for the generation engine. Null for other kinds.</summary>
     public CatalogueGeneration? Generation { get; init; }
-}
-
-public sealed partial class CatalogueFile
-{
-    /// <summary>
-    /// Generation models: which part of the model this file is (see <c>GenerationFileRoles</c>: model, diffusion,
-    /// high_noise, clip_l, clip_g, t5xxl, vae, clip_vision). Null: guessed from the file name.
-    /// </summary>
-    public string? Role { get; init; }
 }
 
 /// <summary>Generation defaults and limits of one catalogue entry.</summary>
