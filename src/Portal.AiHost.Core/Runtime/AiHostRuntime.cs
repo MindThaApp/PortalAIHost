@@ -295,7 +295,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
                     reload = true;
                 }
 
-                if (reload)
+                if (reload && !ModelSlots.IsSecond(kind))
                 {
                     try
                     {
@@ -525,10 +525,65 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         }
 
         var second = ModelSlots.Second(kind);
-        return GetActive(second) is { } m2 && m2.ModelId == requestedModel && GetActive(kind)?.ModelId != requestedModel
+        // A slot-2 engine that has stopped (idle, the PC's own load, a crash) is gone for routing at once, before the
+        // device's claim on it is cleaned up; its model is then no longer reachable by name.
+        return GetActive(second) is { } m2 && m2.ModelId == requestedModel && GetActive(kind)?.ModelId != requestedModel &&
+            (Supervisor(second)?.State is EngineState.Starting or EngineState.Loading or EngineState.Ready)
             ? second
             : kind;
     }
+
+    /// <summary>
+    /// Set by the "Other devices" part: true while a device (not the PC) holds this slot key. The PC's own load may take
+    /// back memory from a device's second slot only when the first slot is the PC's.
+    /// </summary>
+    public Func<string, bool>? HasDeviceClaim { get; set; }
+
+    private readonly ConcurrentDictionary<string, DateTimeOffset> _autoLoadAt = new(StringComparer.Ordinal);
+    private static readonly TimeSpan AutoLoadGap = TimeSpan.FromSeconds(60);
+
+    /// <summary>Slot, model and engine for a request. A second slot that was cleared meanwhile falls back to the first.</summary>
+    private (string Slot, ActiveModel Model, IEngineSupervisor Sup) ResolveSlot(string kind, string? requestedModel)
+    {
+        var slot = SlotFor(kind, requestedModel);
+        if (slot != kind)
+        {
+            try
+            {
+                var (m, s) = Require(slot);
+                return (slot, m, s);
+            }
+            catch (ApiException ex) when (ex.Code == ErrorCodes.NoModel)
+            {
+                slot = kind;
+            }
+        }
+
+        var (model, sup) = Require(slot);
+        return (slot, model, sup);
+    }
+
+    private static ApiException SlotChanged() =>
+        new(ErrorCodes.EngineRestarting, "The model you asked for was changed on the PC. Try again.", retryAfterMs: 1000);
+
+    /// <summary>
+    /// After queueing and loading: the model that was routed must still be the one in the slot and running. A request
+    /// that named a model is never served by a different one.
+    /// </summary>
+    private void EnsureStillRouted(string slot, ActiveModel model, string? requestedModel)
+    {
+        var now = GetActive(slot);
+        var sup = Supervisor(slot);
+        var changed = now is null || now.ModelId != model.ModelId || sup is null || sup.Current?.ModelId != model.ModelId;
+        if (changed && (ModelSlots.IsSecond(slot) || requestedModel == model.ModelId))
+        {
+            throw SlotChanged();
+        }
+    }
+
+    private bool AnyLoading(string kind) =>
+        Supervisor(kind)?.State is EngineState.Starting or EngineState.Loading ||
+        Supervisor(ModelSlots.Second(kind))?.State is EngineState.Starting or EngineState.Loading;
 
     /// <summary>
     /// Set by the "Other devices" part: loads the installed model a granted device named when it is not loaded in any slot
@@ -545,6 +600,15 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
             return;
         }
 
+        // Never swap a slot while one is loading, and at most one automatic load per device a minute: the device then
+        // keeps being served by what is loaded, instead of two apps pulling slot 2 back and forth.
+        var now = _o.Time.GetUtcNow();
+        if (AnyLoading(kind) || (_autoLoadAt.TryGetValue(deviceId, out var last) && now - last < AutoLoadGap))
+        {
+            return;
+        }
+
+        _autoLoadAt[deviceId] = now;
         try
         {
             await load(deviceId, requestedModel, kind, ctx.Aborted).ConfigureAwait(false);
@@ -599,13 +663,20 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
     /// Memory held by engines of other kinds, so a second model is planned against what is really left
     /// (WP3 planner, <see cref="CommittedMemory"/>).
     /// </summary>
-    public CommittedMemory CommittedExcept(string kind)
+    public CommittedMemory CommittedExcept(string kind, string? ignoreKind = null)
     {
         long ram = 0;
         var vram = new List<long>();
         foreach (var (k, ks) in _kinds)
         {
-            if (k == kind || ks.LastPlan is not { } plan || Supervisor(k)?.State is EngineState.Stopped or null)
+            if (k == kind || k == ignoreKind)
+            {
+                continue;
+            }
+
+            // A load in progress holds its planned memory from the moment the placement was decided.
+            var plan = ks.Reserved ?? (Supervisor(k)?.State is EngineState.Stopped or null ? null : ks.LastPlan);
+            if (plan is null)
             {
                 continue;
             }
@@ -624,7 +695,10 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
     }
 
     /// <summary>Decides the placement for a load: planned when the hardware and catalogue entry are known.</summary>
-    public async Task<(Placement Placement, PlanResult? Plan)> DecidePlacementAsync(ActiveModel model, CancellationToken ct)
+    public Task<(Placement Placement, PlanResult? Plan)> DecidePlacementAsync(ActiveModel model, CancellationToken ct) =>
+        DecidePlacementAsync(model, null, ct);
+
+    private async Task<(Placement Placement, PlanResult? Plan)> DecidePlacementAsync(ActiveModel model, string? ignoreKind, CancellationToken ct)
     {
         if (_o.Hardware is null || model.Entry is null)
         {
@@ -633,7 +707,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
 
         var hw = await _o.Hardware.ProbeAsync(ct).ConfigureAwait(false);
         var plan = PlacementPlanner.Plan(model.Entry, hw, _o.Hardware.GetMemory(), PlannerFor(model),
-            CommittedExcept(model.Kind));
+            CommittedExcept(model.Kind, ignoreKind));
         if (!plan.Fits || plan.Placement is null)
         {
             throw new ApiException(ErrorCodes.InsufficientMemory,
@@ -671,17 +745,32 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
     {
         await Task.Yield();
         (Placement Placement, PlanResult? Plan) decided;
+
+        // One placement decision at a time across slots, and the planned memory is reserved before the gate opens, so a PC
+        // load and a device load that start together cannot both plan against the same free memory.
+        await _placeGate.WaitAsync(_lifetime.Token).ConfigureAwait(false);
         try
         {
-            decided = await DecidePlacementAsync(model, _lifetime.Token).ConfigureAwait(false);
+            try
+            {
+                decided = await DecidePlacementAsync(model, _lifetime.Token).ConfigureAwait(false);
+            }
+            catch (ApiException ex) when (ex.Code == ErrorCodes.InsufficientMemory && !ModelSlots.IsSecond(kind) &&
+                HasDeviceClaim is { } claimed && !claimed(kind) && claimed(ModelSlots.Second(kind)) &&
+                Supervisor(ModelSlots.Second(kind)) is { State: not EngineState.Stopped } secondSup)
+            {
+                // The PC's own model does not fit next to a device's second model. Only when it would fit without it does
+                // the PC's limit win: the device's engine stops (memory only, files untouched) and the load is planned again.
+                var alone = await DecidePlacementAsync(model, ModelSlots.Second(kind), _lifetime.Token).ConfigureAwait(false);
+                await secondSup.StopAsync(_lifetime.Token).ConfigureAwait(false); // engine stop: slot 2 only
+                decided = alone;
+            }
+
+            ks.Reserved = decided.Plan;
         }
-        catch (ApiException ex) when (ex.Code == ErrorCodes.InsufficientMemory && !ModelSlots.IsSecond(kind) &&
-            Supervisor(ModelSlots.Second(kind)) is { State: not EngineState.Stopped } secondSup)
+        finally
         {
-            // The PC's own model needs the memory a device's second model holds: the PC's limits and apps win, so the
-            // device's engine stops (memory only, model files untouched) and the load is planned again.
-            await secondSup.StopAsync(_lifetime.Token).ConfigureAwait(false);
-            decided = await DecidePlacementAsync(model, _lifetime.Token).ConfigureAwait(false);
+            _placeGate.Release();
         }
 
         var (placement, plan) = decided;
@@ -710,6 +799,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
                 MemoryLimitBytes = _limits is { } lim ? PerformanceModel.CapFor(lim.MemoryLimitBytes) : null,
             }, kind).ConfigureAwait(false);
             ks.LastPlan = plan;
+            ks.Reserved = null;
             ks.LoadedSince = _o.Time.GetUtcNow();
             if (ModelSlots.KindOf(kind) == ModelKinds.Chat)
             {
@@ -720,9 +810,12 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         }
         finally
         {
+            ks.Reserved = null; // a failed load gives its reservation back
             sup.StateChanged -= OnState;
         }
     }
+
+    private readonly SemaphoreSlim _placeGate = new(1, 1);
 
     /// <summary>App id the window's "Try it" runs under in the fair queue.</summary>
     public const string TryItAppId = "host.tryit";
@@ -1011,8 +1104,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
             throw new ApiException(ErrorCodes.InvalidRequest, "Send either messages or text.", "text");
         }
 
-        var slot = SlotFor(ModelKinds.Chat, body.Model);
-        var (model, sup) = Require(slot);
+        var (slot, model, sup) = ResolveSlot(ModelKinds.Chat, body.Model);
         using var deadline = DeadlineToken(ctx);
         await LoadForRequestAsync(ctx, slot, deadline.Token, null).ConfigureAwait(false);
         var tokens = await sup.CountTokensAsync(body, deadline.Token).ConfigureAwait(false);
@@ -1045,8 +1137,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         var body = ctx.ReadJson(AiHostJsonContext.Default.ChatCompletionRequest);
         RequestValidator.ValidateChat(body);
         await AutoLoadNamedModelAsync(ctx, ModelKinds.Chat, body.Model).ConfigureAwait(false);
-        var slot = SlotFor(ModelKinds.Chat, body.Model);
-        var (model, sup) = Require(slot);
+        var (slot, model, sup) = ResolveSlot(ModelKinds.Chat, body.Model);
         ApplyContextLimit(ctx, body, model);
         ctx.ResponseHeaders[HeaderNames.Model] = model.ModelId;
         using var deadline = DeadlineToken(ctx);
@@ -1071,6 +1162,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
             await using var lease = await AcquireAsync(ctx, slot, deadline.Token, null).ConfigureAwait(false);
             ctx.SetQueueWait(lease.QueueWait);
             await LoadForRequestAsync(ctx, slot, deadline.Token, null).ConfigureAwait(false);
+            EnsureStillRouted(slot, model, body.Model);
             activity?.StartGeneration();
             var result = await Generate(ctx, deadline, () => sup.ChatAsync(body, deadline.Token)).ConfigureAwait(false);
             activity?.AddTokens(result.Usage?.CompletionTokens ?? 0);
@@ -1084,6 +1176,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         await using (var lease = await AcquireAsync(ctx, slot, deadline.Token, pump).ConfigureAwait(false))
         {
             await LoadForRequestAsync(ctx, slot, deadline.Token, pump).ConfigureAwait(false);
+            EnsureStillRouted(slot, model, body.Model);
             await pump.StopAsync(new PortalProgressEvent { Event = ProgressEvents.Started }).ConfigureAwait(false);
             activity?.StartGeneration();
             long usageTokens = 0, streamed = 0;
@@ -1153,10 +1246,26 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
 
     private async Task LoadForRequestAsync(ApiContext ctx, string kind, CancellationToken ct, ProgressPump? pump)
     {
-        var (model, sup) = Require(kind);
+        ActiveModel model;
+        IEngineSupervisor sup;
+        try
+        {
+            (model, sup) = Require(kind);
+        }
+        catch (ApiException ex) when (ex.Code == ErrorCodes.NoModel && ModelSlots.IsSecond(kind))
+        {
+            throw SlotChanged(); // the device's model left slot 2 while this request waited
+        }
+
         if (IsLoaded(sup, model))
         {
             return;
+        }
+
+        // A request never starts a device's second engine again: once it has stopped, that model is gone.
+        if (ModelSlots.IsSecond(kind) && sup.State is EngineState.Stopped or EngineState.Failed)
+        {
+            throw SlotChanged();
         }
 
         var ks = _kinds[kind];
@@ -1201,6 +1310,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         public Task? Load;
         public string? LoadModelId;
         public volatile PlanResult? LastPlan;
+        public volatile PlanResult? Reserved;
         public double Progress;
         public DateTimeOffset? LoadedSince;
     }

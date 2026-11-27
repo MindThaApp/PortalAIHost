@@ -391,6 +391,95 @@ public sealed class SecondSlotTests : IAsyncLifetime
         Assert.Equal("pc-model", status.Models[ModelKinds.Chat].Id);
         Assert.False(status.Models[Second].KeepLoaded);
     }
+
+    [Fact]
+    public async Task AStoppedSecondSlotIsNotRoutedToAndNotRestartedByRequests()
+    {
+        await LoadPcModelAsync();
+        var client = await PairedAsync("Laptop", grant: true);
+        await CallAsync(client, HttpMethod.Post, Routes.DeviceModelLoad, Load("alpha"));
+        var loads = _host.Chat2!.LoadCount;
+        Assert.True(_remote.SetModelControl(client.DeviceId!, false)); // no auto-load: this test is about routing
+
+        await _host.Chat2.StopAsync(default); // idle stop or the PC's own load: the claim is cleaned up later
+        Assert.Equal(ModelKinds.Chat, _host.Runtime.SlotFor(ModelKinds.Chat, "alpha"));
+        var (status, _) = await ChatAsync(client, ChatBody("alpha"));
+        Assert.Equal(HttpStatusCode.OK, status);
+        Assert.Equal(loads, _host.Chat2.LoadCount);
+        Assert.Equal(EngineState.Stopped, _host.Chat2.State);
+        Assert.NotNull(_host.Chat.LastChatRequest);
+    }
+
+    [Fact]
+    public async Task AClearedSecondSlotFallsBackToTheFirstSlot()
+    {
+        await LoadPcModelAsync();
+        var client = await PairedAsync("Laptop", grant: true);
+        await CallAsync(client, HttpMethod.Post, Routes.DeviceModelLoad, Load("alpha"));
+        Assert.True(_remote.SetModelControl(client.DeviceId!, false));
+        await _host.Runtime.SetActiveAsync(Second, null, default);
+
+        var (status, _) = await ChatAsync(client, ChatBody("alpha"));
+        Assert.Equal(HttpStatusCode.OK, status);
+        Assert.NotNull(_host.Chat.LastChatRequest);
+    }
+
+    [Fact]
+    public async Task ASecondAutoLoadWithinAMinuteDoesNotSwapTheSecondSlot()
+    {
+        await LoadPcModelAsync();
+        var client = await PairedAsync("Laptop", grant: true);
+        var (s1, _) = await ChatAsync(client, ChatBody("alpha"));
+        Assert.Equal(HttpStatusCode.OK, s1);
+        Assert.Equal("alpha", _host.Runtime.GetActive(Second)!.ModelId);
+
+        var (s2, _) = await ChatAsync(client, ChatBody("beta"));
+        Assert.Equal(HttpStatusCode.OK, s2);
+        Assert.Equal("alpha", _host.Runtime.GetActive(Second)!.ModelId); // not swapped; "beta" is served by the PC's model as before
+        Assert.Equal("alpha", _host.Chat2!.Current!.ModelId);
+    }
+
+    [Fact]
+    public async Task ARequestQueuedForTheSecondSlotIsNeverServedByAnotherModelWhenTheSlotGoesAway()
+    {
+        await _host.DisposeAsync();
+        await _remote.DisposeAsync();
+        _http.Dispose();
+        await StartAsync(allowReplace: false, chat2: new FakeEngineOptions { TokenDelay = TimeSpan.FromMilliseconds(400) });
+        await LoadPcModelAsync();
+        var client = await PairedAsync("Laptop", grant: true);
+        await CallAsync(client, HttpMethod.Post, Routes.DeviceModelLoad, Load("alpha"));
+        var token = await TokenAsync(client);
+
+        var first = CallAsync(client, HttpMethod.Post, Routes.ChatCompletions, ChatBody("alpha"), token); // holds the one queue slot
+        for (var i = 0; i < 100 && _host.Chat2!.ActiveRequests == 0; i++)
+        {
+            await Task.Delay(10);
+        }
+
+        var queued = CallAsync(client, HttpMethod.Post, Routes.ChatCompletions, ChatBody("alpha"), token);
+        await Task.Delay(150);
+        await _remote.ModelControl.TakeBackAsync(ModelKinds.Chat, default);
+        await first;
+        var (status, body) = await queued;
+        Assert.NotEqual(HttpStatusCode.OK, status);
+        Assert.Equal("engine_restarting", body.GetProperty("error").GetProperty("code").GetString());
+        Assert.Null(_host.Chat.LastChatRequest); // the PC's own model never answered under the other name
+    }
+
+    [Fact]
+    public async Task TheOwnerPickingTheSecondSlotsActiveModelWithoutAClaimClearsItAndStopsItsEngine()
+    {
+        await LoadPcModelAsync();
+        await _host.Runtime.SetActiveAsync(Second,
+            new ActiveModel(ModelKinds.Chat, "alpha", "alpha", [Path.Combine(_host.RootPath, "models", "alpha.gguf")]), default);
+        await _host.Runtime.EnsureLoadedAsync(Second, default);
+
+        await _remote.ModelControl.OwnerChangedAsync(ModelKinds.Chat, default, "alpha");
+        Assert.Null(_host.Runtime.GetActive(Second));
+        Assert.Equal(EngineState.Stopped, _host.Chat2!.State);
+        Assert.Equal(EngineState.Ready, _host.Chat.State);
+    }
 }
 
 /// <summary>A device's second model follows the kind's idle time but is never kept loaded.</summary>
@@ -531,6 +620,7 @@ public sealed class SecondSlotMemoryTests
         var device = devices.Add("Laptop", [1, 2, 3]);
         Assert.True(devices.SetModelControl(device.Id, true));
         var control = new ModelControl(runtime, devices, host, () => false);
+        runtime.HasDeviceClaim = control.HasClaim;
 
         // The PC's model is not loaded yet (idle): the device's model takes the second engine and runs.
         await control.LoadAsync(device.Id, new DeviceLoadRequest { ModelId = "dev" }, default);
@@ -540,5 +630,117 @@ public sealed class SecondSlotMemoryTests
         await runtime.EnsureLoadedAsync(ModelKinds.Chat, default);
         Assert.Equal(EngineState.Ready, chat.State);
         Assert.Equal(EngineState.Stopped, chat2.State);
+    }
+    private sealed class Rig : IAsyncDisposable
+    {
+        public required AiHostRuntime Runtime { get; init; }
+        public required ModelControl Control { get; init; }
+        public required PairedDevice Device { get; init; }
+        public required FakeEngineSupervisor Chat { get; init; }
+        public required FakeEngineSupervisor Chat2 { get; init; }
+        public required Host Models { get; init; }
+        public required TestRoot Root { get; init; }
+
+        public async ValueTask DisposeAsync()
+        {
+            await Runtime.DisposeAsync();
+            Root.Dispose();
+        }
+    }
+
+    private static async Task<Rig> StartRigAsync(IEnumerable<CatalogueEntry> entries, FakeEngineOptions? chat = null, FakeEngineOptions? chat2 = null)
+    {
+        var root = new TestRoot();
+        var map = entries.ToDictionary(e => e.Id);
+        var c1 = new FakeEngineSupervisor(ModelKinds.Chat, chat);
+        var c2 = new FakeEngineSupervisor(ModelSlots.Second(ModelKinds.Chat), chat2);
+        var runtime = await AiHostRuntime.StartAsync(new AiHostRuntimeOptions
+        {
+            Registry = new Core.Auth.ClientRegistry(new() { DataDirectory = root.Path }, new TestKeyProtector()),
+            Scheduler = new FairScheduler(),
+            Supervisors = new Dictionary<string, IEngineSupervisor>
+            {
+                [ModelKinds.Chat] = c1,
+                [ModelKinds.Embedding] = new FakeEngineSupervisor(ModelKinds.Embedding),
+                [ModelSlots.Second(ModelKinds.Chat)] = c2,
+            },
+            Hardware = new SmallPc(),
+        });
+        var host = new Host(map);
+        var devices = new DeviceStore(root.Path);
+        var device = devices.Add("Laptop", [1, 2, 3]);
+        Assert.True(devices.SetModelControl(device.Id, true));
+        var control = new ModelControl(runtime, devices, host, () => false);
+        runtime.HasDeviceClaim = control.HasClaim;
+        return new Rig { Runtime = runtime, Control = control, Device = device, Chat = c1, Chat2 = c2, Models = host, Root = root };
+    }
+
+    [Fact]
+    public async Task AModelThatIsStillLoadingHoldsItsPlannedMemoryAgainstTheOtherSlot()
+    {
+        await using var rig = await StartRigAsync([Entry("pc-model", 16 * GiB), Entry("dev", 12 * GiB)],
+            chat: new FakeEngineOptions { LoadDelay = TimeSpan.FromMilliseconds(800) });
+        await rig.Runtime.SetActiveAsync(ModelKinds.Chat, (await rig.Models.ResolveAsync("pc-model", default))!, default);
+
+        var pcLoad = rig.Runtime.EnsureLoadedAsync(ModelKinds.Chat, default); // 16 GiB, still starting
+        for (var i = 0; i < 100 && rig.Chat.State is EngineState.Stopped; i++)
+        {
+            await Task.Delay(10);
+        }
+
+        Assert.NotEqual(EngineState.Ready, rig.Chat.State);
+        var refused = await Assert.ThrowsAsync<ApiException>(() =>
+            rig.Control.LoadAsync(rig.Device.Id, new DeviceLoadRequest { ModelId = "dev" }, default)); // 16 + 12 does not fit
+        Assert.Equal(ErrorCodes.InsufficientMemory, refused.Code);
+        await pcLoad;
+    }
+
+    [Fact]
+    public async Task ThePcsLoadDoesNotStopTheDeviceSlotWhenItWouldNotFitWithoutIt()
+    {
+        await using var rig = await StartRigAsync([Entry("pc-model", 30 * GiB), Entry("dev", 3 * GiB)]);
+        await rig.Runtime.SetActiveAsync(ModelKinds.Chat, (await rig.Models.ResolveAsync("pc-model", default))!, default);
+        await rig.Control.LoadAsync(rig.Device.Id, new DeviceLoadRequest { ModelId = "dev" }, default);
+        Assert.Equal(EngineState.Ready, rig.Chat2.State);
+
+        var ex = await Assert.ThrowsAsync<ApiException>(() => rig.Runtime.EnsureLoadedAsync(ModelKinds.Chat, default));
+        Assert.Equal(ErrorCodes.InsufficientMemory, ex.Code);
+        Assert.Equal(EngineState.Ready, rig.Chat2.State); // the device's model was not sacrificed for nothing
+    }
+
+    [Fact]
+    public async Task ADeviceLoadNeverStopsTheOtherSlotToMakeRoom()
+    {
+        await using var rig = await StartRigAsync([Entry("a", 12 * GiB), Entry("b", 12 * GiB), Entry("c", 16 * GiB)]);
+        await rig.Control.LoadAsync(rig.Device.Id, new DeviceLoadRequest { ModelId = "a" }, default); // slot 1: no PC model there
+        await rig.Control.LoadAsync(rig.Device.Id, new DeviceLoadRequest { ModelId = "b" }, default); // slot 2
+        Assert.Equal(EngineState.Ready, rig.Chat.State);
+        Assert.Equal(EngineState.Ready, rig.Chat2.State);
+
+        var ex = await Assert.ThrowsAsync<ApiException>(() =>
+            rig.Control.LoadAsync(rig.Device.Id, new DeviceLoadRequest { ModelId = "c" }, default));
+        Assert.Equal(ErrorCodes.InsufficientMemory, ex.Code);
+        Assert.Equal(EngineState.Ready, rig.Chat.State);
+        Assert.Equal(EngineState.Ready, rig.Chat2.State);
+    }
+
+    [Fact]
+    public async Task AnOwnerChangeToTheModelBeingLoadedIntoTheSecondSlotEndsTheDevicesLoad()
+    {
+        await using var rig = await StartRigAsync([Entry("pc-model", 3 * GiB), Entry("dev", 3 * GiB)],
+            chat2: new FakeEngineOptions { LoadDelay = TimeSpan.FromMilliseconds(800) });
+        await rig.Runtime.SetActiveAsync(ModelKinds.Chat, (await rig.Models.ResolveAsync("pc-model", default))!, default);
+        await rig.Runtime.EnsureLoadedAsync(ModelKinds.Chat, default);
+
+        var load = rig.Control.LoadAsync(rig.Device.Id, new DeviceLoadRequest { ModelId = "dev" }, default);
+        for (var i = 0; i < 100 && rig.Chat2.State is EngineState.Stopped; i++)
+        {
+            await Task.Delay(10);
+        }
+
+        await rig.Control.OwnerChangedAsync(ModelKinds.Chat, default, "dev");
+        var ex = await Assert.ThrowsAsync<ApiException>(() => load);
+        Assert.Equal(ErrorCodes.ModelConflict, ex.Code);
+        Assert.Empty(rig.Control.Loaded());
     }
 }

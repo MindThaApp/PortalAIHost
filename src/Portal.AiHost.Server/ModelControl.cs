@@ -62,6 +62,9 @@ public sealed class ModelControl
     private readonly Lock _lock = new();
     private readonly Dictionary<string, Entry> _loaded = new(StringComparer.Ordinal);
     private readonly HashSet<(string Device, string Model)> _displaced = [];
+
+    /// <summary>The model a device load is working on, per slot key, from before the planning until the load ends.</summary>
+    private readonly Dictionary<string, string> _pending = new(StringComparer.Ordinal);
     private readonly Dictionary<string, long> _epoch = new(StringComparer.Ordinal);
     private const int MaxDisplaced = 256;
     private readonly SemaphoreSlim _gate = new(1, 1);
@@ -85,6 +88,15 @@ public sealed class ModelControl
     public event Action? Changed;
 
     // ---- reading ---------------------------------------------------------------------------------
+
+    /// <summary>True while a device (not the PC) holds this slot key.</summary>
+    public bool HasClaim(string slotKey)
+    {
+        lock (_lock)
+        {
+            return _loaded.ContainsKey(slotKey);
+        }
+    }
 
     /// <summary>The models a device loaded that are still loaded, with the device's name.</summary>
     public IReadOnlyList<LoadedModelInfo> Loaded()
@@ -167,13 +179,26 @@ public sealed class ModelControl
             bool same;
             lock (_lock)
             {
-                same = _loaded.TryGetValue(second, out var held) && held.ModelId == newModelId;
+                // The entry, the model active in slot 2, or the model a device load is still planning for it.
+                same = (_loaded.TryGetValue(second, out var held) && held.ModelId == newModelId) ||
+                    _pending.GetValueOrDefault(second) == newModelId;
             }
 
-            if (same && Remove(second, displaced: true) is ({ } e2, var ep2))
+            same |= _runtime.GetActive(second)?.ModelId == newModelId;
+            if (same)
             {
-                await RestoreAsync(e2, ep2, stopEngine: true, ct).ConfigureAwait(false);
-                Changed?.Invoke();
+                // Counts slot 2's epoch whether or not an entry exists yet, so a device load in flight ends with owner_changed.
+                var (e2, ep2) = Remove(second, displaced: true);
+                if (e2 is not null)
+                {
+                    await RestoreAsync(e2, ep2, stopEngine: true, ct).ConfigureAwait(false); // engine stop: slot 2 only
+                    Changed?.Invoke();
+                }
+                else if (_runtime.GetActive(second)?.ModelId == newModelId)
+                {
+                    await _runtime.UnloadAsync(second, ct).ConfigureAwait(false); // engine stop: slot 2 only
+                    await _runtime.SetActiveAsync(second, null, ct).ConfigureAwait(false);
+                }
             }
         }
     }
@@ -392,6 +417,11 @@ public sealed class ModelControl
                 ? (held2 is not null && held2.DeviceId == deviceId && held2.ModelId == modelId ? second : first)
                 : ChooseSlot(deviceId, modelId, hasSecond, first, second, held1, held2, active1, active2);
             var isSecond = kind == second;
+            lock (_lock)
+            {
+                _pending[kind] = modelId;
+            }
+
             var epoch = isSecond ? epoch2 : epoch1;
             var active = isSecond ? active2 : active1;
             var engine = _runtime.EngineStateOf(kind);
@@ -523,6 +553,14 @@ public sealed class ModelControl
         }
         finally
         {
+            lock (_lock)
+            {
+                foreach (var key in _pending.Where(p => p.Value == modelId).Select(p => p.Key).ToList())
+                {
+                    _pending.Remove(key);
+                }
+            }
+
             _gate.Release();
         }
     }
@@ -690,7 +728,7 @@ public sealed class ModelControl
     /// Gives the PC's own choice for the kind back. The device's model leaves memory first when asked (memory only). The
     /// PC's model is looked up again (it may be gone), and nothing happens if the kind changed since <paramref name="epoch"/>.
     /// </summary>
-    private async Task RestoreAsync(Entry entry, long epoch, bool stopEngine, CancellationToken ct)
+    private async Task RestoreAsync(Entry entry, long epoch, bool stopEngine, CancellationToken ct, bool requireStopped = false)
     {
         if (stopEngine && _runtime.EngineStateOf(entry.Kind) is not (EngineState.Stopped or null) &&
             _runtime.GetActive(entry.Kind)?.ModelId == entry.ModelId && EpochOf(entry.Kind) == epoch)
@@ -703,7 +741,9 @@ public sealed class ModelControl
         lock (_lock)
         {
             // Only while nothing else changed this kind and the active model is still the device's own.
-            if (_epoch.GetValueOrDefault(entry.Kind) == epoch && _runtime.GetActive(entry.Kind)?.ModelId == entry.ModelId)
+            // Without a stop asked for, an engine that is running again (freshly started) is left alone.
+            if (_epoch.GetValueOrDefault(entry.Kind) == epoch && _runtime.GetActive(entry.Kind)?.ModelId == entry.ModelId &&
+                (stopEngine || !requireStopped || _runtime.EngineStateOf(entry.Kind) is EngineState.Stopped or EngineState.Failed or null))
             {
                 set = _runtime.SetActiveAsync(entry.Kind, previous, ct); // null when the PC's model is no longer installed
             }
@@ -731,7 +771,7 @@ public sealed class ModelControl
 
         foreach (var (e, epoch) in gone)
         {
-            await RestoreAsync(e, epoch, stopEngine: false, ct).ConfigureAwait(false);
+            await RestoreAsync(e, epoch, stopEngine: false, ct, requireStopped: true).ConfigureAwait(false);
         }
 
         if (gone.Count > 0)
