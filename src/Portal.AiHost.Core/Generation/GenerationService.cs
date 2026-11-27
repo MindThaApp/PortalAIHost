@@ -478,6 +478,8 @@ public sealed partial class GenerationService : IAsyncDisposable
         var ct = cts.Token;
         string? partial = null;
         var yielded = false;
+        Action? publish = null; // The final state: shown only after the job's own files are cleaned up.
+        var cancelledRun = false;
         try
         {
             var queued = new Progress<QueueEvent>(e =>
@@ -586,7 +588,7 @@ public sealed partial class GenerationService : IAsyncDisposable
             partial = await ConvertIfAskedAsync(job, partial, ct).ConfigureAwait(false);
             var final = _o.Output.Publish(partial, job.Kind, job.Id, job.CreatedAt);
             partial = null;
-            job.Update(j =>
+            publish = () => job.Update(j =>
             {
                 j.State = GenerationJobStates.Succeeded;
                 j.Stage = null;
@@ -598,7 +600,8 @@ public sealed partial class GenerationService : IAsyncDisposable
         catch (OperationCanceledException) when (ct.IsCancellationRequested)
         {
             var byHost = !job.Cancel.IsCancellationRequested;
-            job.Update(j =>
+            cancelledRun = true;
+            publish = () => job.Update(j =>
             {
                 j.State = GenerationJobStates.Cancelled;
                 j.FinishedAt = _o.Time.GetUtcNow();
@@ -607,16 +610,16 @@ public sealed partial class GenerationService : IAsyncDisposable
         }
         catch (ApiException e)
         {
-            Fail(job, e.Code, e.Message);
+            publish = () => Fail(job, e.Code, e.Message);
         }
         catch (EngineException e)
         {
-            Fail(job, e.ErrorCode, e.Message);
+            publish = () => Fail(job, e.ErrorCode, e.Message);
         }
         catch (Exception e) when (e is not OutOfMemoryException)
         {
             _o.Log?.Invoke("Generation job failed: " + e.GetType().Name);
-            Fail(job, ErrorCodes.InternalError, "The job failed on this PC.");
+            publish = () => Fail(job, ErrorCodes.InternalError, "The job failed on this PC.");
         }
         finally
         {
@@ -624,7 +627,7 @@ public sealed partial class GenerationService : IAsyncDisposable
             {
                 // Cancel or failure: only this job's own partial output goes. The marker first, so a crash in between
                 // leaves the sweep a clear answer (cancelled: delete; failed: keep in recovered).
-                var cancelled = job.SnapshotState() == GenerationJobStates.Cancelled;
+                var cancelled = cancelledRun || job.SnapshotState() == GenerationJobStates.Cancelled;
                 Guard(() => _o.Output.MarkState(job.WorkDir!,
                     cancelled ? GenerationOutputFolder.StateCancelled : GenerationOutputFolder.StateFailed));
                 Guard(() => _o.Output.DeletePartial(partial));
@@ -635,6 +638,7 @@ public sealed partial class GenerationService : IAsyncDisposable
                 Guard(() => _o.Output.CleanWorkFolder(work));
             }
 
+            publish?.Invoke();
             if (yielded)
             {
                 await ResumeDirectorQuietlyAsync().ConfigureAwait(false);
