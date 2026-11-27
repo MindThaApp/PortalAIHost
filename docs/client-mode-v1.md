@@ -497,7 +497,10 @@ access; the token is the device.
   decision 1.
 - **Priority:** default is the PC's own apps first; option `Equal`.
 - **Gaming mode:** refuse remote calls as busy while a full-screen game or heavy GPU use is detected. PC-wide switch,
-  default off.
+  default off. The PC counts as gaming when Windows reports a full-screen game, or when a process that is not the host
+  or llama-server keeps the GPU's 3D engine at or above 40% for 10 s (so windowed and borderless games count too). It
+  stops counting 30 s after the load ends. The GPU counters are sampled every 2 s off the UI thread; if they are
+  unavailable only the full-screen check is used.
 - **Limits and quiet hours:** requests and tokens per day, and a quiet-hours window, per device.
 - **Allowed models:** which of the PC's models this device may use, per device.
 - **Model control:** the grant and `Take back` are the ones in 4.7 and 5.1a. The card links to them and adds no

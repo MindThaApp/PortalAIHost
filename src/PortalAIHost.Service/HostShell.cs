@@ -377,7 +377,7 @@ public sealed class HostShell : IAsyncDisposable
             UseDefaultRelay = !_o.Paths.TestMode,
             RelayInitialDelay = _o.RemoteTest?.RelayInitialDelay,
             RelayMaxDelay = _o.RemoteTest?.RelayMaxDelay,
-            BusyDetector = _o.Paths.TestMode ? null : new Portal.AiHost.Platform.Windows.Usage.FullScreenGameDetector(),
+            BusyDetector = _o.Paths.TestMode ? null : new Portal.AiHost.Core.Remote.CompositeBusyDetector(new Portal.AiHost.Platform.Windows.Usage.FullScreenGameDetector(), new Portal.AiHost.Platform.Windows.Usage.GpuLoadDetector(log: line => System.Diagnostics.Trace.WriteLine("Portal AI Host: " + line))),
         });
         Remote.Changed += () => _ = PushRemoteChangedAsync();
         Remote.Alert += a => _ = PushDeviceAlertAsync(a);
