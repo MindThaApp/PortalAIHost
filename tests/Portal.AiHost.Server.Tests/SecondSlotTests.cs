@@ -458,7 +458,7 @@ public sealed class SecondSlotTests : IAsyncLifetime
         }
 
         var queued = CallAsync(client, HttpMethod.Post, Routes.ChatCompletions, ChatBody("alpha"), token);
-        await Task.Delay(150);
+        await StreamingTests.WaitUntil(() => _host.Scheduler.Snapshot().Waiting >= 1, 20000); // the second request is really queued
         await _remote.ModelControl.TakeBackAsync(ModelKinds.Chat, default);
         await first;
         var (status, body) = await queued;

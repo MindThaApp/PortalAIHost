@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Portal.AiHost.Contracts;
 using Portal.AiHost.Contracts.Control;
 using PortalAIHost.App.Services;
@@ -10,7 +11,8 @@ public class ClientModeUiTests
 {
     private static async Task WaitAsync(Func<bool> done)
     {
-        for (var i = 0; i < 200 && !done(); i++) await Task.Delay(10);
+        var deadline = Stopwatch.StartNew();
+        while (!done() && deadline.Elapsed < TimeSpan.FromSeconds(30)) await Task.Delay(10);
         Assert.True(done(), "timed out");
     }
 

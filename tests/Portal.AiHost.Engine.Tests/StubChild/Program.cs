@@ -6,6 +6,7 @@ using Portal.AiHost.Engine;
 // Test double for llama-server. Understands --host/--port/--api-key like the real thing, plus
 //   --load-ms N     /health answers 503 for N ms after start
 //   --crash-ms N    exit with code 3 N ms after start
+//   --crash-file P  exit with code 3 as soon as the file P exists (the test decides when)
 //   --exit-ms N     exit with code 4 N ms after start (used while loading)
 //   --pid-file P    write own pid to P
 // "host <exe>" mode: put <exe> (this same exe, stub mode) in a job object, print its pid, wait.
@@ -39,6 +40,7 @@ var key = Arg("--api-key", "");
 var loadMs = int.Parse(Arg("--load-ms", "0"));
 var crashMs = int.Parse(Arg("--crash-ms", "0"));
 var exitMs = int.Parse(Arg("--exit-ms", "0"));
+var crashFile = Arg("--crash-file", "");
 var pidFile = Arg("--pid-file", "");
 var started = Stopwatch.StartNew();
 if (pidFile.Length > 0)
@@ -49,6 +51,19 @@ if (pidFile.Length > 0)
 if (crashMs > 0)
 {
     _ = Task.Run(async () => { await Task.Delay(crashMs); Environment.Exit(3); });
+}
+
+if (crashFile.Length > 0)
+{
+    _ = Task.Run(async () =>
+    {
+        while (!File.Exists(crashFile))
+        {
+            await Task.Delay(10);
+        }
+
+        Environment.Exit(3);
+    });
 }
 
 if (exitMs > 0)

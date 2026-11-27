@@ -547,8 +547,13 @@ public sealed class ClientModeSwitchTests : IAsyncLifetime
         Assert.False(server.TryGetProperty("remote", out _));
 
         await _mode.SetModeAsync(HostModes.Client);
-        await ChatAsync(); // One answered request: the link is connected.
+        Assert.Equal(HttpStatusCode.OK, await ChatAsync()); // One answered request: the link is connected.
         var client = await StatusAsync();
+        for (var i = 0; i < 2000 && !(client.TryGetProperty("remote", out var seen) && seen.GetProperty("route").GetString() == "lan"); i++)
+        {
+            await Task.Delay(10); // the link records the round trip just after the answer is returned
+            client = await StatusAsync();
+        }
 
         Assert.True(client.TryGetProperty("mode", out var modeValue), client.GetRawText());
         Assert.Equal("client", modeValue.GetString());

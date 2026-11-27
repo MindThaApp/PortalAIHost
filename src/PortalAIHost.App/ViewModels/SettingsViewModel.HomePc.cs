@@ -92,10 +92,15 @@ public sealed partial class SettingsViewModel
         }
     }
 
+    // One command at a time: each answer is posted to the UI before the next command runs, so a slow answer
+    // can never overwrite the card with a value older than a later change.
+    private readonly SemaphoreSlim _homeCalls = new(1, 1);
+
     private async Task HomeCallAsync(Func<CancellationToken, Task<ClientModeStatus>> call)
     {
         HomeBusy = true;
         HomeMessage = "";
+        await _homeCalls.WaitAsync().ConfigureAwait(false);
         try
         {
             var status = await Task.Run(() => call(CancellationToken.None)).ConfigureAwait(false);
@@ -119,6 +124,7 @@ public sealed partial class SettingsViewModel
         }
         finally
         {
+            _homeCalls.Release();
             _ui.Post(() => HomeBusy = false);
             // Whatever the answer was, the card shows what the host has.
             _ = _shell.ClientLink.RefreshAsync();
