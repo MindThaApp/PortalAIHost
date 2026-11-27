@@ -198,11 +198,18 @@ public sealed partial class MainWindow : Window, IAppearanceApplier
         AppServices.Dialogs.Root = Root.XamlRoot;
         AppServices.FilePicker.WindowHandle = WinRT.Interop.WindowNative.GetWindowHandle(this);
         _shell.ApprovalPresenter = AppServices.Dialogs.ShowApprovalAsync;
+        _shell.ClientLink.FallbackPromptRequested += () => _ = ClientFlows.ShowFallbackPromptAsync();
         Nav.SelectedItem = Nav.MenuItems[0];
         AppServices.NavigateTo = SelectPage;
         await _shell.InitializeAsync();
         AppServices.Ui.Post(ApplyFirstRun);
         AppServices.Ui.Post(() => OpenStartPage());
+        AppServices.Ui.Post(() =>
+        {
+            if (!_shell.PairOnStart || _shell.ShowFirstRun) return;
+            _shell.PairOnStart = false;
+            _ = ClientFlows.PairHomePcAsync();
+        });
         await _shell.PumpApprovalsAsync();
     }
 

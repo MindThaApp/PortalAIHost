@@ -41,6 +41,9 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
     /// <summary>The link to the home PC: the status card, and which local-model blocks stay hidden in client mode.</summary>
     public ClientLinkViewModel Link => _shell.ClientLink;
 
+    /// <summary>For the device notice line.</summary>
+    public ShellViewModel Shell => _shell;
+
     private void OnLinkChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName is nameof(ClientLinkViewModel.HideLocalModel) or nameof(ClientLinkViewModel.IsClientMode)) Update();

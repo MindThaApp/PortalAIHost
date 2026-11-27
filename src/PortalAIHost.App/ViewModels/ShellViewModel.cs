@@ -66,6 +66,9 @@ public sealed partial class ShellViewModel : ObservableObject, IDisposable
     public IAppState State { get; }
     public IHostControl Host => _host;
 
+    /// <summary>The first-run window asked to open the pairing dialog as soon as the main window is ready.</summary>
+    public bool PairOnStart { get; set; }
+
     [ObservableProperty]
     private HostSnapshot _snapshot = HostSnapshot.NoHost;
 

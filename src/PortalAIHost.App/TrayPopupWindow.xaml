@@ -9,6 +9,8 @@
         <StackPanel Spacing="10" Padding="10">
             <TextBlock x:Name="HeaderText" Text="{x:Bind ViewModel.Header, Mode=OneWay}" Style="{StaticResource SubtitleTextBlockStyle}"
                        TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
+            <TextBlock Text="{x:Bind ViewModel.LinkLine, Mode=OneWay}" Visibility="{x:Bind ViewModel.HasLinkLine, Mode=OneWay}" TextWrapping="Wrap"
+                       Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" AutomationProperties.LiveSetting="Polite" />
             <Grid ColumnSpacing="10" RowSpacing="10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />

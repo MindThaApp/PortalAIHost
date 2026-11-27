@@ -736,4 +736,103 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="Vm_RemHostGone" xml:space="preserve"><value>The host is not running.</value></data>
   <data name="Vm_AppModelPcChoice" xml:space="preserve"><value>PC's choice</value></data>
   <data name="Vm_AppModelAutomation" xml:space="preserve"><value>PC model for {0}</value></data>
+  <data name="SettingsHomePcHeader.Text" xml:space="preserve"><value>Home PC</value></data>
+  <data name="SettingsHomePcHelp.Text" xml:space="preserve"><value>Use the AI on another PC of yours instead of running it on this one. Pair this laptop with the PC once; apps here then ask that PC.</value></data>
+  <data name="SettingsHomeMode.Header" xml:space="preserve"><value>Where the AI runs</value></data>
+  <data name="SettingsHomeMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Where the AI runs</value></data>
+  <data name="SettingsHomeFallback.Header" xml:space="preserve"><value>If the home PC is unreachable</value></data>
+  <data name="SettingsHomeFallback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>If the home PC is unreachable</value></data>
+  <data name="SettingsHomeRelayMode.Header" xml:space="preserve"><value>Connection away from home</value></data>
+  <data name="SettingsHomeRelayMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Connection away from home</value></data>
+  <data name="SettingsHomeUseRelay.Header" xml:space="preserve"><value>Use relay</value></data>
+  <data name="SettingsHomeUseRelay.OnContent" xml:space="preserve"><value>On</value></data>
+  <data name="SettingsHomeUseRelay.OffContent" xml:space="preserve"><value>Off</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Use relay</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Turns the relay on for this session only. It resets when the app closes.</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Pair PC</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Pair this laptop with a home PC from a pairing link</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Pair this laptop with a home PC from a pairing link</value></data>
+  <data name="SettingsHomePairText.Text" xml:space="preserve"><value>Pair PC</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Unpair</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Forget the paired PC. Models and downloads stay as they are.</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Forget the paired PC. Models and downloads stay as they are.</value></data>
+  <data name="SettingsHomeUnpairText.Text" xml:space="preserve"><value>Unpair</value></data>
+  <data name="SettingsNotifyDevices.Header" xml:space="preserve"><value>A device pairs or connects from away</value></data>
+  <data name="SettingsNotifyDevices.OnContent" xml:space="preserve"><value>On</value></data>
+  <data name="SettingsNotifyDevices.OffContent" xml:space="preserve"><value>Off</value></data>
+  <data name="SettingsNotifyDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>A device pairs or connects from away</value></data>
+  <data name="HomeClientEmpty.Text" xml:space="preserve"><value>The AI runs on your other PC. Models, memory use and warm-up are shown there.</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Change PC</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Open the Home PC settings to pair another PC</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Open the Home PC settings to pair another PC</value></data>
+  <data name="HomeChangePcText.Text" xml:space="preserve"><value>Change PC</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Run AI here</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Leave client mode and run the AI on this PC again. The pairing stays saved.</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Leave client mode and run the AI on this PC again. The pairing stays saved.</value></data>
+  <data name="HomeRunHereText.Text" xml:space="preserve"><value>Run AI here</value></data>
+  <data name="ModelsLocalNote.Text" xml:space="preserve"><value>Downloads on this page are for when this PC runs the AI.</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Use my home PC</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Skip the download and use the AI on another PC of yours. You will pair with it next.</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Skip the download and use the AI on another PC of yours. You will pair with it next.</value></data>
+  <data name="WelcomeHomePcText.Text" xml:space="preserve"><value>Use my home PC</value></data>
+  <data name="Vm_LinkConnectedLan" xml:space="preserve"><value>Connected - home network</value></data>
+  <data name="Vm_LinkConnectedRelay" xml:space="preserve"><value>Connected - via relay</value></data>
+  <data name="Vm_LinkConnecting" xml:space="preserve"><value>Connecting...</value></data>
+  <data name="Vm_LinkUnreachable" xml:space="preserve"><value>Not reachable</value></data>
+  <data name="Vm_LinkRevoked" xml:space="preserve"><value>This laptop was removed from the PC</value></data>
+  <data name="Vm_LinkRepair" xml:space="preserve"><value>Pair again</value></data>
+  <data name="Vm_LinkRtt" xml:space="preserve"><value>{0} - {1} ms</value></data>
+  <data name="Vm_LinkLastSeen" xml:space="preserve"><value>Last seen {0}</value></data>
+  <data name="Vm_LinkUsingLaptop" xml:space="preserve"><value>Using this laptop&apos;s model</value></data>
+  <data name="Vm_LinkUnreachableHelp" xml:space="preserve"><value>{0} cannot be reached. Check that it is on and on the same network, or turn on the relay.</value></data>
+  <data name="Vm_LinkRevokedHelp" xml:space="preserve"><value>{0} no longer lets this laptop in. Pair again to keep using it.</value></data>
+  <data name="Vm_LinkRepairHelp" xml:space="preserve"><value>The identity of {0} changed, so this laptop stopped trusting it. If you did not expect this, do not pair again. Otherwise unpair, then pair again.</value></data>
+  <data name="Vm_TrayLink" xml:space="preserve"><value>{0} - {1}</value></data>
+  <data name="Vm_DeviceAlertPaired" xml:space="preserve"><value>{0} was paired and can now use this PC&apos;s AI.</value></data>
+  <data name="Vm_DeviceAlertRelay" xml:space="preserve"><value>{0} connected through the relay from away.</value></data>
+  <data name="Vm_HomeModeThisPc" xml:space="preserve"><value>This PC</value></data>
+  <data name="Vm_HomeModeHomePc" xml:space="preserve"><value>Use my home PC</value></data>
+  <data name="Vm_HomeFallbackNone" xml:space="preserve"><value>None</value></data>
+  <data name="Vm_HomeFallbackLocal" xml:space="preserve"><value>Use this laptop&apos;s model</value></data>
+  <data name="Vm_HomeRelayAuto" xml:space="preserve"><value>Automatic</value></data>
+  <data name="Vm_HomeRelayManual" xml:space="preserve"><value>Manual</value></data>
+  <data name="Vm_HomeNeedsPair" xml:space="preserve"><value>Pair a PC first.</value></data>
+  <data name="Vm_UnpairTitle" xml:space="preserve"><value>Unpair this PC?</value></data>
+  <data name="Vm_UnpairBody" xml:space="preserve"><value>This laptop will forget {0} and stop using it. Models and downloads are not touched. You can pair again later.</value></data>
+  <data name="Vm_UnpairConfirm" xml:space="preserve"><value>Unpair</value></data>
+  <data name="Vm_UnpairCancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Vm_FallbackTitle" xml:space="preserve"><value>Your home PC is not reachable</value></data>
+  <data name="Vm_FallbackBody" xml:space="preserve"><value>{0} cannot be reached right now. While it is away, should this laptop answer with its own model? You can change this in Settings, under Home PC.</value></data>
+  <data name="Vm_FallbackLocal" xml:space="preserve"><value>Use this laptop&apos;s model</value></data>
+  <data name="Vm_FallbackNone" xml:space="preserve"><value>None</value></data>
+  <data name="Vm_PairTitle" xml:space="preserve"><value>Use my home PC</value></data>
+  <data name="Vm_PairIntro" xml:space="preserve"><value>On the other PC, open Settings and choose Pair a device, then copy the link. Paste it here.</value></data>
+  <data name="Vm_PairLinkPlaceholder" xml:space="preserve"><value>portalai://pair?...</value></data>
+  <data name="Vm_PairLinkName" xml:space="preserve"><value>Pairing link</value></data>
+  <data name="Vm_PairPaste" xml:space="preserve"><value>Paste link</value></data>
+  <data name="Vm_PairPasteTip" xml:space="preserve"><value>Paste the pairing link from the clipboard</value></data>
+  <data name="Vm_PairNext" xml:space="preserve"><value>Next</value></data>
+  <data name="Vm_PairConfirm" xml:space="preserve"><value>Pair</value></data>
+  <data name="Vm_PairBack" xml:space="preserve"><value>Back</value></data>
+  <data name="Vm_PairCancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Vm_PairWorking" xml:space="preserve"><value>Connecting to the PC...</value></data>
+  <data name="Vm_PairDeviceName" xml:space="preserve"><value>Name of this laptop</value></data>
+  <data name="Vm_PairConfirmPc" xml:space="preserve"><value>Pair with {0}?</value></data>
+  <data name="Vm_PairFingerprint" xml:space="preserve"><value>Fingerprint: {0}</value></data>
+  <data name="Vm_PairErr_invalid_input" xml:space="preserve"><value>The link is not valid. Copy it again from the other PC.</value></data>
+  <data name="Vm_PairErr_address_not_allowed" xml:space="preserve"><value>That address is not on your home network. Away from home, pair once at home first.</value></data>
+  <data name="Vm_PairErr_unreachable" xml:space="preserve"><value>Could not reach that address.</value></data>
+  <data name="Vm_PairErr_certificate_mismatch" xml:space="preserve"><value>This PC could not be verified.</value></data>
+  <data name="Vm_PairErr_host_proof_invalid" xml:space="preserve"><value>This PC could not be verified.</value></data>
+  <data name="Vm_PairErr_refused" xml:space="preserve"><value>That PC refused the pairing.</value></data>
+  <data name="Vm_PairErr_protocol_error" xml:space="preserve"><value>That PC sent an unexpected answer.</value></data>
+  <data name="Vm_PairErr_save_failed" xml:space="preserve"><value>The pairing worked, but it could not be saved on this PC.</value></data>
+  <data name="Vm_PairErr_already_paired" xml:space="preserve"><value>A PC is already paired. Unpair it in Settings first.</value></data>
+  <data name="Vm_PairErr_not_available" xml:space="preserve"><value>Pairing is not available on this install.</value></data>
+  <data name="Vm_PairErr_host" xml:space="preserve"><value>The app is not running.</value></data>
+  <data name="Vm_PairReason_expired" xml:space="preserve"><value>The code ran out. Ask for a new one.</value></data>
+  <data name="Vm_PairReason_code_voided" xml:space="preserve"><value>That code was used up by wrong tries. Ask for a new one.</value></data>
+  <data name="Vm_PairReason_no_offer" xml:space="preserve"><value>That PC is not waiting for a device. Open a new code on it.</value></data>
+  <data name="Vm_PairReason_too_many_devices" xml:space="preserve"><value>That PC already has 16 devices. Remove one first.</value></data>
+  <data name="Vm_PairReason_wrong_code" xml:space="preserve"><value>The code is not right.</value></data>
 </root>

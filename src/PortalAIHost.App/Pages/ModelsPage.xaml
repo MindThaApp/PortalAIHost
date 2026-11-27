@@ -167,6 +167,10 @@
 
             <StackPanel Spacing="8" Visibility="{x:Bind Remote.IsClientMode, Mode=OneWay}">
                 <TextBlock Text="{x:Bind Remote.Title, Mode=OneWay}" Style="{StaticResource SubtitleTextBlockStyle}" />
+                <TextBlock Text="{x:Bind Link.ChipText, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" AutomationProperties.LiveSetting="Polite" />
+                <InfoBar Severity="Informational" IsClosable="False" Message="{x:Bind Link.UsingLaptopText, Mode=OneWay}" IsOpen="{x:Bind Link.UsingLaptopModel, Mode=OneWay}" />
+                <InfoBar Severity="Warning" IsClosable="False" Message="{x:Bind Link.AttentionText, Mode=OneWay}" IsOpen="{x:Bind Link.NeedsAttention, Mode=OneWay}" />
+                <TextBlock x:Uid="ModelsLocalNote" TextWrapping="Wrap" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                 <InfoBar IsOpen="{x:Bind Remote.HasMessage, Mode=OneWay}" Severity="Warning" Message="{x:Bind Remote.Message, Mode=OneWay}" IsClosable="False" />
                 <ProgressRing IsActive="{x:Bind Remote.IsLoading, Mode=OneWay}" Visibility="{x:Bind Remote.IsLoading, Mode=OneWay}" HorizontalAlignment="Left" Width="28" Height="28" />
                 <TextBlock Text="{x:Bind Remote.EmptyText, Mode=OneWay}" Visibility="{x:Bind Remote.ShowEmpty, Mode=OneWay}" TextWrapping="Wrap" />

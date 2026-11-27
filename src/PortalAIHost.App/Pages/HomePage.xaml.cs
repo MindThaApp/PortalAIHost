@@ -31,6 +31,8 @@ public sealed partial class HomePage : Page
 
     private void OnOpenSettings(object sender, RoutedEventArgs e) => Go("settings", typeof(SettingsPage));
 
+    private void OnDeviceNoticeClosed(InfoBar sender, object args) => ViewModel.Shell.DeviceNotice = "";
+
     protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
         AppServices.MainVisibilityChanged += OnWindowVisible;
