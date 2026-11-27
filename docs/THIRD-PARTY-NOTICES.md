@@ -53,6 +53,8 @@ restrictions apply to the model and to what it generates, including its list of 
 ## llama.cpp
 
 Chat and embedding runtime (llama-server.exe) used by the host.
+The NVIDIA CUDA 12 builds of llama.cpp and stable-diffusion.cpp are downloaded on demand for NVIDIA cards and
+carry the same MIT licences; they use the NVIDIA CUDA runtime below.
 Licence: MIT License. Copyright the llama.cpp authors. https://github.com/ggml-org/llama.cpp
 
 ## libwebp and libwebm
@@ -80,3 +82,15 @@ Source code of this exact build: FFmpeg release n8.1.3, https://github.com/FFmpe
 the commits up to a8029b6528, listed in the FFmpeg repository history), with the build recipe and patches in
 https://github.com/BtbN/FFmpeg-Builds . H.264 video is encoded with the Windows Media Foundation encoder that Windows
 provides (h264_mf), not with a bundled encoder; AAC audio uses FFmpeg's own encoder.
+
+## NVIDIA CUDA runtime
+
+Downloaded on demand, only on PCs with an NVIDIA card and only after the user agrees; not part of the app package.
+The CUDA 12 builds of llama.cpp and stable-diffusion.cpp share one copy of the NVIDIA CUDA runtime libraries
+(cudart, cuBLAS and cuBLASLt, for example cudart64_12.dll, cublas64_12.dll and cublasLt64_12.dll), stored in
+engines\cudart12\ in the host's data folder. These files are redistributable under Attachment A of the NVIDIA CUDA
+Toolkit End User License Agreement and are distributed unmodified, in binary form only.
+Copyright (c) NVIDIA Corporation. All rights reserved. NVIDIA, CUDA and cuBLAS are trademarks of NVIDIA Corporation.
+Licence: NVIDIA CUDA Toolkit End User License Agreement, https://docs.nvidia.com/cuda/eula/index.html . By using
+these files you agree to the terms of that agreement; the files may not be extracted from the app for any other use,
+reverse engineered or modified. NVIDIA provides them "as is", without warranty of any kind.

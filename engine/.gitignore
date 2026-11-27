@@ -5,3 +5,4 @@
 !sdcpp.lock.json
 !voice.lock.json
 !ffmpeg.lock.json
+!cuda.lock.json

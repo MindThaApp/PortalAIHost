@@ -117,6 +117,27 @@ function Get-SdCppFolder([string]$flavour) {
     $dir
 }
 
+# Download-on-demand engine flavours (engine\*.lock.json files with a "flavours" list, today engine\cuda.lock.json).
+# They are not packed; build-msix writes their pins into engine\flavours.json, which the host trusts because it is
+# inside the signed package. An entry that still holds placeholders is listed with "placeholder": true and the host
+# refuses to install it.
+function Get-FlavourEntries([string]$arch) {
+    $list = @()
+    foreach ($lf in Get-ChildItem (Join-Path $repo 'engine') -Filter '*.lock.json') {
+        $l = Get-Content -Raw $lf.FullName | ConvertFrom-Json
+        if (-not $l.PSObject.Properties['flavours']) { continue }
+        foreach ($f in @($l.flavours)) {
+            if ("$($f.arch)" -ne $arch) { continue }
+            $raw = ConvertTo-Json -InputObject $f -Depth 8 -Compress
+            $placeholder = ($raw -match 'PLACEHOLDER') -or ("$($f.sha256)" -notmatch '^[0-9a-fA-F]{64}$') -or ([long]$f.size -le 0) -or (@($f.files).Count -eq 0)
+            if ($placeholder) { Write-Warning "Engine flavour $($f.id) ($($lf.Name)) still holds placeholders: listed, but the host will not install it." }
+            $f | Add-Member -NotePropertyName placeholder -NotePropertyValue ([bool]$placeholder) -Force
+            $list += $f
+        }
+    }
+    , $list
+}
+
 $out = Join-Path $repo "builds\msix\$Version"
 New-Item -ItemType Directory -Force $out | Out-Null
 $work = Join-Path ([IO.Path]::GetTempPath()) ('portalaihost-msix-' + [guid]::NewGuid().ToString('N'))
@@ -235,6 +256,14 @@ try {
             $summary += 'ffmpeg included'
         }
         elseif ($a -eq 'x64') { Write-Warning 'engine\ffmpeg is missing or does not match engine\ffmpeg.lock.json: this package has no MP4, join or MP3 features (run scripts\fetch-ffmpeg.ps1).' }
+
+        # engine\flavours.json: pins of the engine builds the host may download later (for example the CUDA 12 builds).
+        $flDest = Join-Path $layout 'engine'
+        New-Item -ItemType Directory -Force $flDest | Out-Null
+        $flEntries = Get-FlavourEntries $a
+        $flJson = ConvertTo-Json -InputObject ([ordered]@{ schema = 1; flavours = @($flEntries) }) -Depth 8
+        [IO.File]::WriteAllText((Join-Path $flDest 'flavours.json'), $flJson, [Text.UTF8Encoding]::new($false))
+        $summary += "engine flavour list: $(@($flEntries).Count) entries ($a)"
 
         # engine\sdcpp\<flavour>\ (x64 only), only when present; without it the job routes answer engine_missing.
         if ($a -eq 'x64') {
