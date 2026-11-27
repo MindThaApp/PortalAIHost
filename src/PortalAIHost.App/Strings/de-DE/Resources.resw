@@ -1,0 +1,989 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="NavHome.Content" xml:space="preserve"><value>Start</value></data>
+  <data name="NavHome.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Start</value></data>
+  <data name="NavModels.Content" xml:space="preserve"><value>Modelle</value></data>
+  <data name="NavModels.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Modelle</value></data>
+  <data name="NavApps.Content" xml:space="preserve"><value>Geräte und Apps</value></data>
+  <data name="NavApps.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Geräte und Apps</value></data>
+  <data name="NavTryIt.Content" xml:space="preserve"><value>Ausprobieren</value></data>
+  <data name="NavTryIt.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ausprobieren</value></data>
+  <data name="NavSettings.Content" xml:space="preserve"><value>Einstellungen</value></data>
+  <data name="NavSettings.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Einstellungen</value></data>
+  <data name="HomeTitle.Text" xml:space="preserve"><value>Start</value></data>
+  <data name="HomeSafeModeBar.Title" xml:space="preserve"><value>Abgesicherter Modus</value></data>
+  <data name="HomeStoreProblemBar.Title" xml:space="preserve"><value>Modellordner nicht verfügbar</value></data>
+  <data name="Vm_OldFolderBadge" xml:space="preserve"><value>Früherer Ordner</value></data>
+  <data name="Vm_OldFolderRow" xml:space="preserve"><value>In einem früheren Modellordner: {0}. Entfernen Sie ihn, um Speicherplatz freizugeben.</value></data>
+  <data name="HomeSafeModeBar.Message" xml:space="preserve"><value>Der Host wurde mehrmals unerwartet beendet und mit vorsichtigen Einstellungen gestartet. Ihre Apps funktionieren weiterhin. Wenn das weiterhin passiert, starten Sie den PC neu.</value></data>
+  <data name="HomeStartButton.Content" xml:space="preserve"><value>Portal AI Host starten</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Portal AI Host starten</value></data>
+  <data name="HomeUpgradeText.Text" xml:space="preserve"><value>Für Ihren PC ist ein besseres Modell verfügbar. Ihr aktuelles Modell bleibt aktiv, bis das neue bereit ist.</value></data>
+  <data name="HomeSeeModelsButton.Content" xml:space="preserve"><value>Modelle anzeigen</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Modelle anzeigen</value></data>
+  <data name="ModelsTitle.Text" xml:space="preserve"><value>Modelle</value></data>
+  <data name="ModelsExistingBar.Title" xml:space="preserve"><value>Vorhandene Kopie gefunden</value></data>
+  <data name="ModelsUpgradeBar.Title" xml:space="preserve"><value>Ein besseres Modell ist verfügbar</value></data>
+  <data name="ModelTooBig.Text" xml:space="preserve"><value>Dieses Modell ist möglicherweise zu groß für diesen PC.</value></data>
+  <data name="ModelDownload.Content" xml:space="preserve"><value>Herunterladen</value></data>
+  <data name="ModelPause.Content" xml:space="preserve"><value>Anhalten</value></data>
+  <data name="ModelResume.Content" xml:space="preserve"><value>Fortsetzen</value></data>
+  <data name="ModelCancel.Content" xml:space="preserve"><value>Beenden</value></data>
+  <data name="ModelUse.Content" xml:space="preserve"><value>Modell verwenden</value></data>
+  <data name="ModelRemove.Content" xml:space="preserve"><value>Entfernen</value></data>
+  <data name="ModelsCatalogueBar.Title" xml:space="preserve"><value>Modellliste nicht verfügbar</value></data>
+  <data name="ModelsCatalogueBar.Message" xml:space="preserve"><value>Der Host konnte keine vertrauenswürdige Modellliste laden, daher können derzeit keine neuen Modelle heruntergeladen werden. Auf diesem PC vorhandene Modelle funktionieren weiterhin.</value></data>
+  <data name="AppsTitle.Text" xml:space="preserve"><value>Geräte und Apps</value></data>
+  <data name="AppsWaitingHeader.Text" xml:space="preserve"><value>Warten auf Ihre Antwort</value></data>
+  <data name="AppsApprovedHeader.Text" xml:space="preserve"><value>Apps, die Ihren KI-Host verwenden dürfen</value></data>
+  <data name="AppsNone.Text" xml:space="preserve"><value>Bisher wurden keine Apps zugelassen. Wenn eine App den Host verwenden möchte, werden Sie hier gefragt.</value></data>
+  <data name="AppAllow.Content" xml:space="preserve"><value>Zulassen</value></data>
+  <data name="AppDeny.Content" xml:space="preserve"><value>Ablehnen</value></data>
+  <data name="Vm_AppTodayNone" xml:space="preserve"><value>Heute keine Anfragen</value></data>
+  <data name="Vm_AppToday1" xml:space="preserve"><value>{0} Anfrage heute</value></data>
+  <data name="Vm_AppToday" xml:space="preserve"><value>{0} Anfragen heute</value></data>
+  <data name="Vm_PriorityHigh" xml:space="preserve"><value>Hoch</value></data>
+  <data name="Vm_PriorityNormal" xml:space="preserve"><value>Normal</value></data>
+  <data name="Vm_PriorityLow" xml:space="preserve"><value>Niedrig</value></data>
+  <data name="Vm_AutoPriority" xml:space="preserve"><value>Priorität für {0}</value></data>
+  <data name="Vm_AppPausedBadge" xml:space="preserve"><value>Angehalten</value></data>
+  <data name="Vm_AppPausedHint" xml:space="preserve"><value>{0} ist angehalten. Neue Anfragen werden abgelehnt, bis Sie fortfahren. Der Zugriff bleibt erhalten.</value></data>
+  <data name="Vm_AppPause" xml:space="preserve"><value>Anhalten</value></data>
+  <data name="Vm_AppResume" xml:space="preserve"><value>Fortsetzen</value></data>
+  <data name="Vm_AutoPause" xml:space="preserve"><value>{0} anhalten</value></data>
+  <data name="Vm_AutoResume" xml:space="preserve"><value>{0} fortsetzen</value></data>
+  <data name="AppPriority.Header" xml:space="preserve"><value>Priorität</value></data>
+  <data name="AppRevoke.Content" xml:space="preserve"><value>Zugriff entfernen</value></data>
+  <data name="SettingsTitle.Text" xml:space="preserve"><value>Einstellungen</value></data>
+  <data name="SettingsStartWithWindows.Header" xml:space="preserve"><value>Mit Windows starten</value></data>
+  <data name="SettingsStartWithWindows.OnContent" xml:space="preserve"><value>Ein</value></data>
+  <data name="SettingsStartWithWindows.OffContent" xml:space="preserve"><value>Aus</value></data>
+  <data name="SettingsStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Mit Windows starten</value></data>
+  <data name="SettingsIdle.Header" xml:space="preserve"><value>Arbeitsspeicher im Leerlauf freigeben</value></data>
+  <data name="SettingsIdle.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Arbeitsspeicher im Leerlauf freigeben</value></data>
+  <data name="SettingsIdleHelp.Text" xml:space="preserve"><value>Das Modell wird beim nächsten Aufruf durch eine App wieder geladen. Bleibt es geladen, antwortet es schneller, belegt aber dauerhaft Arbeitsspeicher.</value></data>
+  <data name="SettingsFolder.Header" xml:space="preserve"><value>Ordner für heruntergeladene Modelle</value></data>
+  <data name="SettingsFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ordner für heruntergeladene Modelle</value></data>
+  <data name="TryItTitle.Text" xml:space="preserve"><value>Ausprobieren</value></data>
+  <data name="TryItIntro.Text" xml:space="preserve"><value>Stellen Sie dem Modell eine kurze Frage, um zu prüfen, ob es funktioniert, und wie schnell es antwortet. Eingaben hier werden nicht gespeichert. Drücken Sie Ctrl+Enter, um zu fragen.</value></data>
+  <data name="TryItPrompt.Header" xml:space="preserve"><value>Ihre Frage</value></data>
+  <data name="TryItPrompt.PlaceholderText" xml:space="preserve"><value>Zum Beispiel: Schreibe einen Satz über das Meer.</value></data>
+  <data name="TryItPrompt.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ihre Frage</value></data>
+  <data name="TryItSend.Content" xml:space="preserve"><value>Fragen</value></data>
+  <data name="TryItSend.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Fragen</value></data>
+  <data name="TryItStop.Content" xml:space="preserve"><value>Beenden</value></data>
+  <data name="TryItStop.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Beenden</value></data>
+  <data name="TryItReply.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Die Antwort</value></data>
+  <data name="WelcomeTitle.Text" xml:space="preserve"><value>Willkommen bei Portal AI Host</value></data>
+  <data name="WelcomeLead.Text" xml:space="preserve"><value>KI, die auf Ihrem PC bleibt</value></data>
+  <data name="WelcomeIntro.Text" xml:space="preserve"><value>Portal AI Host führt KI-Modelle für Ihre Portal-Apps auf diesem PC aus. Sie müssen nichts einrichten: Wir wählen ein Modell, das zu Ihrem PC passt.</value></data>
+  <data name="WelcomePoint1Title.Text" xml:space="preserve"><value>Läuft auf diesem PC</value></data>
+  <data name="WelcomePoint1Body.Text" xml:space="preserve"><value>Das Modell nutzt Ihre eigene Grafikkarte und Ihren eigenen Arbeitsspeicher und funktioniert daher auch ohne Internetverbindung.</value></data>
+  <data name="WelcomePoint2Title.Text" xml:space="preserve"><value>Bleibt privat</value></data>
+  <data name="WelcomePoint2Body.Text" xml:space="preserve"><value>Ihre Fragen und Dateien verlassen diesen PC nie.</value></data>
+  <data name="WelcomePoint3Title.Text" xml:space="preserve"><value>Für Ihre Portal-Apps gemacht</value></data>
+  <data name="WelcomePoint3Body.Text" xml:space="preserve"><value>Ihre Portal-Apps können damit schreiben, zusammenfassen und antworten, ohne zusätzliche Konten.</value></data>
+  <data name="WelcomeModelTitle.Text" xml:space="preserve"><value>Modell auswählen</value></data>
+  <data name="WelcomeModelIntro.Text" xml:space="preserve"><value>Ein Modell ist die KI, die die Arbeit erledigt. Dieses Modell passt unserer Meinung nach am besten zu Ihrem PC.</value></data>
+  <data name="WelcomeNoModel.Text" xml:space="preserve"><value>Derzeit konnten wir kein Modell finden, das zu diesem PC passt. Sie können später auf der Seite „Modelle“ erneut suchen.</value></data>
+  <data name="WelcomeDownload.Content" xml:space="preserve"><value>Herunterladen</value></data>
+  <data name="WelcomeDownload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Empfohlenes Modell herunterladen</value></data>
+  <data name="WelcomeChooseLater.Content" xml:space="preserve"><value>Später wählen</value></data>
+  <data name="WelcomeChooseLater.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Später wählen, Modell unter „Modelle“ auswählen</value></data>
+  <data name="WelcomeKeepGoing.Text" xml:space="preserve"><value>Sie können fortfahren. Der Download läuft im Hintergrund weiter.</value></data>
+  <data name="WelcomeRetry.Content" xml:space="preserve"><value>Erneut versuchen</value></data>
+  <data name="WelcomeRetry.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Erneut versuchen, Download neu starten</value></data>
+  <data name="WelcomeWhereTitle.Text" xml:space="preserve"><value>Sie finden es neben der Uhr</value></data>
+  <data name="WelcomeTrayTitle.Text" xml:space="preserve"><value>Suchen Sie das Symbol im Infobereich</value></data>
+  <data name="WelcomeTrayBody.Text" xml:space="preserve"><value>Portal AI Host wartet unauffällig im Infobereich, den kleinen Symbolen neben der Uhr. Klicken Sie auf das Symbol, um es zu öffnen. Wenn Sie es nicht sehen, klicken Sie auf den Pfeil, um ausgeblendete Symbole anzuzeigen.</value></data>
+  <data name="WelcomeAskTitle.Text" xml:space="preserve"><value>Apps fragen immer zuerst</value></data>
+  <data name="WelcomeAskBody.Text" xml:space="preserve"><value>Wenn eine Portal-App zum ersten Mal KI auf diesem PC verwenden möchte, werden Sie gefragt. Sie können ablehnen und den Zugriff jederzeit wieder entziehen.</value></data>
+  <data name="WelcomeStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Mit Windows starten, Portal AI Host bei der Anmeldung starten</value></data>
+  <data name="WelcomeSkip.Content" xml:space="preserve"><value>Vorerst überspringen</value></data>
+  <data name="WelcomeSkip.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Vorerst überspringen, Willkommensseite schließen</value></data>
+  <data name="WelcomeBack.Content" xml:space="preserve"><value>Zurück</value></data>
+  <data name="WelcomeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Zurück</value></data>
+  <data name="Vm_VerifiedShort" xml:space="preserve"><value>Verifizierte Portal-App</value></data>
+  <data name="Vm_ApprovalDetails" xml:space="preserve"><value>Details</value></data>
+  <data name="Vm_WelcomeRecommended" xml:space="preserve"><value>Empfohlen: Modell {0}</value></data>
+  <data name="Vm_WelcomeSmall" xml:space="preserve"><value>Klein</value></data>
+  <data name="Vm_WelcomeMedium" xml:space="preserve"><value>Mittel</value></data>
+  <data name="Vm_WelcomeLarge" xml:space="preserve"><value>Groß</value></data>
+  <data name="Vm_WelcomeDetail" xml:space="preserve"><value>{0}, {1}</value></data>
+  <data name="WelcomeLaterNote.Text" xml:space="preserve"><value>Sie können später unter „Modelle“ ein Modell auswählen.</value></data>
+  <data name="WelcomeStartRec.Content" xml:space="preserve"><value>Mit empfohlenen Einstellungen starten</value></data>
+  <data name="WelcomeStartRec.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Mit empfohlenen Einstellungen starten</value></data>
+  <data name="WelcomeWhereIntro.Text" xml:space="preserve"><value>Zwei Dinge, die Sie vor dem Start wissen sollten.</value></data>
+  <data name="WelcomeStartTitle.Text" xml:space="preserve"><value>Mit Windows starten</value></data>
+  <data name="WelcomeStartBody.Text" xml:space="preserve"><value>Hält Portal AI Host bei der Anmeldung im Infobereich bereit, damit Ihre Apps es sofort verwenden können.</value></data>
+  <data name="Vm_WelcomeRecommendedTip" xml:space="preserve"><value>Lädt das empfohlene Modell ({0}) im Hintergrund herunter, startet Portal AI Host weiterhin mit Windows und schließt dieses Fenster. Sie können alles später ändern.</value></data>
+  <data name="Vm_WelcomeRecommendedTipNoModel" xml:space="preserve"><value>Startet Portal AI Host weiterhin mit Windows und schließt dieses Fenster. Sie können alles später ändern.</value></data>
+  <data name="Vm_WelcomeTitle" xml:space="preserve"><value>Willkommen bei Portal AI Host</value></data>
+  <data name="Vm_WelcomeNext" xml:space="preserve"><value>Weiter</value></data>
+  <data name="Vm_WelcomeFinish" xml:space="preserve"><value>Los geht’s</value></data>
+  <data name="Vm_WelcomeSize" xml:space="preserve"><value>Downloadgröße: {0}</value></data>
+  <data name="Vm_AppTitle" xml:space="preserve"><value>Portal AI Host</value></data>
+  <data name="Vm_NoHostTitle" xml:space="preserve"><value>Portal AI Host wird nicht ausgeführt</value></data>
+  <data name="Vm_NoHostBody" xml:space="preserve"><value>Der Hilfsdienst, der Ihr KI-Modell ausführt, ist ausgeschaltet. Starten Sie ihn, damit Ihre Apps KI verwenden können.</value></data>
+  <data name="Vm_Starting" xml:space="preserve"><value>Wird gestartet...</value></data>
+  <data name="Vm_StartFailed" xml:space="preserve"><value>Der Host konnte nicht gestartet werden. Öffnen Sie Portal AI Host erneut über das Startmenü.</value></data>
+  <data name="Vm_StateReady" xml:space="preserve"><value>Bereit</value></data>
+  <data name="Vm_StateBusy" xml:space="preserve"><value>Antwortet gerade</value></data>
+  <data name="Vm_StateLoading" xml:space="preserve"><value>Modell wird vorbereitet</value></data>
+  <data name="Vm_StateIdle" xml:space="preserve"><value>Ruhemodus. Das Modell wird geladen, wenn eine App es anfordert.</value></data>
+  <data name="Vm_StateNoModel" xml:space="preserve"><value>Noch kein Modell</value></data>
+  <data name="Vm_StateDownloading" xml:space="preserve"><value>Modell wird heruntergeladen</value></data>
+  <data name="Vm_StateError" xml:space="preserve"><value>Es ist ein Fehler aufgetreten</value></data>
+  <data name="Vm_HostVersion" xml:space="preserve"><value>Hostversion {0}</value></data>
+  <data name="Vm_ModelNone" xml:space="preserve"><value>Noch kein Modell installiert</value></data>
+  <data name="Vm_ModelLoaded" xml:space="preserve"><value>{0} ist geladen und bereit</value></data>
+  <data name="Vm_ModelLoading" xml:space="preserve"><value>{0} wird geladen...</value></data>
+  <data name="Vm_ModelUnloaded" xml:space="preserve"><value>{0} ist installiert. Es wird geladen, wenn eine App es anfordert.</value></data>
+  <data name="Vm_QueueEmpty" xml:space="preserve"><value>Keine Anfragen in der Warteschlange</value></data>
+  <data name="Vm_QueueSome" xml:space="preserve"><value>{0} aktiv, {1} wartend</value></data>
+  <data name="Vm_QualityName" xml:space="preserve"><value>Qualität {0} von 5</value></data>
+  <data name="Vm_DownloadProgress" xml:space="preserve"><value>{0} von {1}</value></data>
+  <data name="Vm_DownloadEta" xml:space="preserve"><value>{0} von {1}, noch etwa {2} Min.</value></data>
+  <data name="Vm_Paused" xml:space="preserve"><value>Bei {0} % angehalten</value></data>
+  <data name="Vm_Verifying" xml:space="preserve"><value>Download wird geprüft...</value></data>
+  <data name="Vm_Queued" xml:space="preserve"><value>Wartet auf den Start...</value></data>
+  <data name="Vm_DownloadFailed" xml:space="preserve"><value>Der Download wurde nicht abgeschlossen. {0}</value></data>
+  <data name="Vm_DownloadDone" xml:space="preserve"><value>Download abgeschlossen.</value></data>
+  <data name="Vm_InUse" xml:space="preserve"><value>In Verwendung</value></data>
+  <data name="Vm_Installed" xml:space="preserve"><value>Installiert</value></data>
+  <data name="Vm_BestForYou" xml:space="preserve"><value>Optimal für Ihren PC</value></data>
+  <data name="Vm_StorageLine" xml:space="preserve"><value>Modelle belegen {2} in {0}. Auf diesem Laufwerk sind {1} frei.</value></data>
+  <data name="Vm_ExistingCopy" xml:space="preserve"><value>Eine Kopie von {0} befindet sich bereits auf diesem PC. Der Host verwendet sie, statt sie erneut herunterzuladen.</value></data>
+  <data name="Vm_UpgradeOffer" xml:space="preserve"><value>{0} passt besser. Ihr aktuelles Modell bleibt aktiv, bis das neue bereit ist.</value></data>
+  <data name="Vm_CancelDlTitle" xml:space="preserve"><value>Diesen Download beenden?</value></data>
+  <data name="Vm_CancelDlBody" xml:space="preserve"><value>Der bereits heruntergeladene Teil wird verworfen.</value></data>
+  <data name="Vm_CancelDlYes" xml:space="preserve"><value>Download beenden</value></data>
+  <data name="Vm_CancelDlKeep" xml:space="preserve"><value>Weiter herunterladen</value></data>
+  <data name="Vm_AutoDownload" xml:space="preserve"><value>{0} herunterladen</value></data>
+  <data name="Vm_AutoPause" xml:space="preserve"><value>{0} anhalten</value></data>
+  <data name="Vm_AutoResume" xml:space="preserve"><value>{0} fortsetzen</value></data>
+  <data name="Vm_AutoCancel" xml:space="preserve"><value>Download von {0} beenden</value></data>
+  <data name="Vm_AutoUse" xml:space="preserve"><value>{0} verwenden</value></data>
+  <data name="Vm_Added" xml:space="preserve"><value>{0} hinzugefügt</value></data>
+  <data name="Vm_LastUsed" xml:space="preserve"><value>Zuletzt verwendet {0}</value></data>
+  <data name="Vm_NeverUsed" xml:space="preserve"><value>Noch nicht verwendet</value></data>
+  <data name="Vm_AutoRevoke" xml:space="preserve"><value>Zugriff für {0} entfernen</value></data>
+  <data name="Vm_AutoAllow" xml:space="preserve"><value>{0} zulassen</value></data>
+  <data name="Vm_AutoDeny" xml:space="preserve"><value>{0} ablehnen</value></data>
+  <data name="Vm_RevokeTitle" xml:space="preserve"><value>Zugriff für {0} entfernen?</value></data>
+  <data name="Vm_RevokeBody" xml:space="preserve"><value>{0} funktioniert nicht mehr mit dem KI-Host, bis Sie es wieder zulassen.</value></data>
+  <data name="Vm_RevokeYes" xml:space="preserve"><value>Zugriff entfernen</value></data>
+  <data name="Vm_Cancel" xml:space="preserve"><value>Abbrechen</value></data>
+  <data name="Vm_Verified" xml:space="preserve"><value>Installierte App ({0}). Keine Portal-App.</value></data>
+  <data name="Vm_VerifiedPortal" xml:space="preserve"><value>Verifizierte Portal-App ({0})</value></data>
+  <data name="Vm_Unverified" xml:space="preserve"><value>Nicht verifiziert. Sie wird von {0} ausgeführt. Lassen Sie sie nur zu, wenn Sie sie selbst gestartet haben.</value></data>
+  <data name="Vm_ApprovalTitle" xml:space="preserve"><value>{0} die Verwendung von KI auf diesem PC erlauben?</value></data>
+  <data name="Vm_ApprovalBody" xml:space="preserve"><value>{0} möchte das KI-Modell auf diesem PC verwenden.</value></data>
+  <data name="Vm_ApprovalReason" xml:space="preserve"><value>Angegebener Grund: {0}</value></data>
+  <data name="Vm_Allow" xml:space="preserve"><value>Zulassen</value></data>
+  <data name="Vm_Deny" xml:space="preserve"><value>Nicht zulassen</value></data>
+  <data name="Vm_Later" xml:space="preserve"><value>Später entscheiden</value></data>
+  <data name="Vm_Idle_Keep" xml:space="preserve"><value>Modell geladen lassen</value></data>
+  <data name="Vm_Idle_5" xml:space="preserve"><value>Nach 5 Minuten</value></data>
+  <data name="Vm_Idle_10" xml:space="preserve"><value>Nach 10 Minuten</value></data>
+  <data name="Vm_Saved" xml:space="preserve"><value>Gespeichert</value></data>
+  <data name="Vm_SaveFailed" xml:space="preserve"><value>Speichern nicht möglich. Wird der Host ausgeführt?</value></data>
+  <data name="Vm_FolderTitle" xml:space="preserve"><value>Diesen Ordner für Modelle verwenden?</value></data>
+  <data name="Vm_FolderBody" xml:space="preserve"><value>Der Host verwendet {0} für Modelle. Bereits vorhandene Modelle werden nicht verschoben oder gelöscht.</value></data>
+  <data name="Vm_FolderYes" xml:space="preserve"><value>Ordner verwenden</value></data>
+  <data name="TryItClear.Content" xml:space="preserve"><value>Leeren</value></data>
+  <data name="TryItClear.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Unterhaltung leeren</value></data>
+  <data name="TryItSuggestLabel.Text" xml:space="preserve"><value>Unsicher, was Sie fragen sollen? Probieren Sie eines davon aus.</value></data>
+  <data name="HomeTryItButton.Content" xml:space="preserve"><value>Ausprobieren</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Modell mit einer Frage ausprobieren</value></data>
+  <data name="Vm_TrySuggest1" xml:space="preserve"><value>Schreibe einen freundlichen Satz über das Meer.</value></data>
+  <data name="Vm_TrySuggest2" xml:space="preserve"><value>Erkläre in zwei Sätzen, was ein Router macht.</value></data>
+  <data name="Vm_TrySuggest3" xml:space="preserve"><value>Nenne mir drei Namen für eine Katze.</value></data>
+  <data name="Vm_TryStats" xml:space="preserve"><value>Erste Wörter nach {0} s, dann {1} Token pro Sekunde.</value></data>
+  <data name="Vm_TryStatsShort" xml:space="preserve"><value>Erste Wörter nach {0} s.</value></data>
+  <data name="Vm_TryStatsStopped" xml:space="preserve"><value>Beendet. {0}</value></data>
+  <data name="TryItThinking.Header" xml:space="preserve"><value>Was das Modell zuerst überlegt hat</value></data>
+  <data name="Vm_TryWorking" xml:space="preserve"><value>Wird bearbeitet. Auf einem kleinen PC kann das eine Minute dauern.</value></data>
+  <data name="Vm_TryThinking" xml:space="preserve"><value>Das Modell überlegt...</value></data>
+  <data name="Vm_TryOnlyThinking" xml:space="preserve"><value>Das Modell hat sein gesamtes Zeitlimit zum Nachdenken verbraucht und keine Antwort gegeben. Stellen Sie eine kürzere Frage.</value></data>
+  <data name="Vm_TryEmpty" xml:space="preserve"><value>Das Modell hat eine leere Antwort gesendet. Fragen Sie erneut.</value></data>
+  <data name="Vm_TryFailed" xml:space="preserve"><value>Der Host konnte nicht antworten: {0}</value></data>
+  <data name="Vm_HwChecking" xml:space="preserve"><value>Ihr PC wird geprüft...</value></data>
+  <data name="Vm_HwUnknown" xml:space="preserve"><value>konnte nicht gelesen werden</value></data>
+  <data name="Vm_HwMemory" xml:space="preserve"><value>Arbeitsspeicher: {0}</value></data>
+  <data name="Vm_HwGraphics" xml:space="preserve"><value>Grafik: {0}</value></data>
+  <data name="Vm_HwCores" xml:space="preserve"><value>Prozessorkerne: {0}</value></data>
+  <data name="Vm_HwDisk" xml:space="preserve"><value>Freier Speicherplatz: {0}</value></data>
+  <data name="HomeWelcomeTitle.Text" xml:space="preserve"><value>Richten Sie Ihre private KI auf diesem PC ein</value></data>
+  <data name="HomeWelcomeBody.Text" xml:space="preserve"><value>Portal AI Host verwaltet ein KI-Modell auf diesem PC und stellt es Ihren Portal-Apps zur Verfügung, sodass nicht jede App eine eigene Kopie benötigt. Alles läuft hier: Ihre Eingaben verlassen diesen PC nie, und es ist kein Cloud-Konto erforderlich.</value></data>
+  <data name="HomeCatalogueBar.Title" xml:space="preserve"><value>Modellliste nicht verfügbar</value></data>
+  <data name="HomeCatalogueBar.Message" xml:space="preserve"><value>Der Host konnte keine vertrauenswürdige Modellliste laden, daher gibt es derzeit nichts zu empfehlen. Prüfen Sie Ihre Internetverbindung, und versuchen Sie es erneut.</value></data>
+  <data name="HomeTryAgainButton.Content" xml:space="preserve"><value>Erneut versuchen</value></data>
+  <data name="HomeRecommendedLabel.Text" xml:space="preserve"><value>EMPFOHLEN FÜR DIESEN PC</value></data>
+  <data name="HomeNoSpaceBar.Title" xml:space="preserve"><value>Nicht genügend Speicherplatz</value></data>
+  <data name="HomeChangeFolderButton.Content" xml:space="preserve"><value>Ordner in den Einstellungen ändern</value></data>
+  <data name="HomeDownloadButton.Content" xml:space="preserve"><value>Herunterladen</value></data>
+  <data name="HomeSeeAllModelsLink.Content" xml:space="preserve"><value>Alle Modelle anzeigen</value></data>
+  <data name="HomeSeeAllModelsLink2.Content" xml:space="preserve"><value>Alle Modelle anzeigen</value></data>
+  <data name="HomeActiveModelLabel.Text" xml:space="preserve"><value>AKTIVES MODELL</value></data>
+  <data name="HomeAppsLabel.Text" xml:space="preserve"><value>VERBUNDENE APPS</value></data>
+  <data name="HomeSeeAppsLink.Content" xml:space="preserve"><value>Geräte und Apps anzeigen</value></data>
+  <data name="HomeRequestsLabel.Text" xml:space="preserve"><value>ANFRAGEN</value></data>
+  <data name="Vm_HomeLoaded" xml:space="preserve"><value>Geladen und bereit</value></data>
+  <data name="Vm_HomeLoading" xml:space="preserve"><value>Wird vorbereitet...</value></data>
+  <data name="Vm_HomeUnloaded" xml:space="preserve"><value>Nicht geladen. Es wird geladen, wenn eine App es anfordert.</value></data>
+  <data name="Vm_HomeKeepLoaded" xml:space="preserve"><value>Bleibt geladen, damit Antworten schnell beginnen.</value></data>
+  <data name="Vm_HomeIdleUnload" xml:space="preserve"><value>Gibt Arbeitsspeicher frei, wenn {0} Minuten lang keine Anfragen eingehen.</value></data>
+  <data name="Vm_HomeApps" xml:space="preserve"><value>{0} Apps können dieses Modell verwenden</value></data>
+  <data name="Vm_HomeApps1" xml:space="preserve"><value>1 App kann dieses Modell verwenden</value></data>
+  <data name="Vm_HomeAppsNone" xml:space="preserve"><value>Noch keine Apps verbunden. Sie fragen beim ersten Mal um Ihre Erlaubnis.</value></data>
+  <data name="Vm_HomeNoSpace" xml:space="preserve"><value>Dieses Modell benötigt {0}, aber nur {1} sind frei. Geben Sie Speicherplatz frei, oder wählen Sie in den Einstellungen einen anderen Modellordner.</value></data>
+  <data name="Vm_NoGpu" xml:space="preserve"><value>keine gefunden</value></data>
+  <data name="Vm_HostMissing" xml:space="preserve"><value>Das Hostprogramm fehlt in dieser Installation. Installieren Sie Portal AI Host neu, um das Problem zu beheben.</value></data>
+  <data name="Vm_HostMissingTestRun" xml:space="preserve"><value>Dies ist ein Testlauf, und neben der App wurde kein Hostprogramm gefunden. Der installierte Host wird für einen Testlauf nicht gestartet.</value></data>
+  <data name="Vm_StartTimedOut" xml:space="preserve"><value>Der Host wurde gestartet, hat aber nicht rechtzeitig geantwortet. Warten Sie einen Moment, und versuchen Sie es dann erneut.</value></data>
+  <data name="Vm_HostExitTestRoot" xml:space="preserve"><value>Der Host hat den Start verweigert: Der Testdatenordner fehlt oder ist nicht als Testordner gekennzeichnet.</value></data>
+  <data name="Vm_HostExitStartFailed" xml:space="preserve"><value>Der Host konnte nicht gestartet werden. Starten Sie Ihren PC neu, und versuchen Sie es erneut. Wenn das Problem weiterhin besteht, installieren Sie Portal AI Host neu.</value></data>
+  <data name="Vm_HostExitOtherUser" xml:space="preserve"><value>Ein anderer Windows-Benutzer auf diesem PC führt Portal AI Host bereits aus. Bitten Sie ihn, es zu beenden, oder melden Sie sich als dieser Benutzer an.</value></data>
+  <data name="Vm_CatalogueUnavailable" xml:space="preserve"><value>Modellliste nicht verfügbar: Der Host konnte keine vertrauenswürdige Modellliste laden. Auf diesem PC vorhandene Modelle funktionieren weiterhin.</value></data>
+  <data name="Vm_RemoveTitle" xml:space="preserve"><value>Dieses Modell entfernen?</value></data>
+  <data name="Vm_RemoveBody" xml:space="preserve"><value>{0} wird von diesem PC entfernt. Es werden nur Dateien gelöscht, die der Host heruntergeladen hat; eine Modelldatei, die Sie selbst hinzugefügt haben, wird nur aus der Liste entfernt und bleibt am bisherigen Speicherort.</value></data>
+  <data name="Vm_RemoveYes" xml:space="preserve"><value>Entfernen</value></data>
+  <data name="Vm_AutoRemove" xml:space="preserve"><value>{0} entfernen</value></data>
+  <data name="Vm_FolderSavedNote" xml:space="preserve"><value>Gespeichert. Nach dem Neustart des Hosts werden neue Downloads in {1} gespeichert. Bereits heruntergeladene Modelle werden nicht verschoben oder gelöscht; sie verbleiben in {0} und bleiben auf der Seite „Modelle“ aufgeführt, sodass Sie sie dort entfernen können.</value></data>
+  <data name="Vm_FolderRefused" xml:space="preserve"><value>Die anderen Einstellungen wurden gespeichert, aber dieser Modellordner kann nicht verwendet werden: {0}</value></data>
+  <data name="Vm_Startup_Unavailable" xml:space="preserve"><value>„Mit Windows starten“ ist nur in der installierten App verfügbar.</value></data>
+  <data name="Vm_Startup_DisabledByUser" xml:space="preserve"><value>„Mit Windows starten“ wurde im Task-Manager deaktiviert. Aktivieren Sie es dort wieder (Autostart-Apps).</value></data>
+  <data name="Vm_Startup_Policy" xml:space="preserve"><value>„Mit Windows starten“ wird von Ihrer Organisation festgelegt.</value></data>
+  <data name="Vm_DefaultFolder" xml:space="preserve"><value>der Standardordner</value></data>
+  <data name="Vm_Publisher" xml:space="preserve"><value>Herausgeber: {0}</value></data>
+  <data name="Vm_PublisherUnknown" xml:space="preserve"><value>Herausgeber: unbekannt</value></data>
+  <data name="NavAbout.Content" xml:space="preserve"><value>Info</value></data>
+  <data name="NavAbout.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Info</value></data>
+  <data name="AppMenuButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>App-Menü</value></data>
+  <data name="Vm_AppMenuTip" xml:space="preserve"><value>App-Menü</value></data>
+  <data name="MenuSettings.Text" xml:space="preserve"><value>Einstellungen</value></data>
+  <data name="MenuShortcuts.Text" xml:space="preserve"><value>Tastenkombinationen</value></data>
+  <data name="MenuWhatsNew.Text" xml:space="preserve"><value>Neuerungen</value></data>
+  <data name="MenuAbout.Text" xml:space="preserve"><value>Info zu Portal AI Host</value></data>
+  <data name="Vm_ShortcutsTitle" xml:space="preserve"><value>Tastenkombinationen</value></data>
+  <data name="Vm_ShortcutsBody" xml:space="preserve"><value>Ctrl+1: Start
+Ctrl+2: Modelle
+Ctrl+3: Geräte und Apps
+Ctrl+4: Ausprobieren
+Ctrl+, : Einstellungen
+F1: Info
+Esc: Neuerungen oder einen Dialog schließen</value></data>
+  <data name="Vm_Close" xml:space="preserve"><value>Schließen</value></data>
+  <data name="SettingsGeneralHeader.Text" xml:space="preserve"><value>Allgemein</value></data>
+  <data name="SettingsResetGeneral.Content" xml:space="preserve"><value>Auf Standard zurücksetzen</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Allgemeine Einstellungen auf Standard zurücksetzen</value></data>
+  <data name="SettingsNotificationsHeader.Text" xml:space="preserve"><value>Benachrichtigungen</value></data>
+  <data name="SettingsResetNotifications.Content" xml:space="preserve"><value>Auf Standard zurücksetzen</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Auf Standard zurücksetzen, Benachrichtigungseinstellungen</value></data>
+  <data name="SettingsNotificationsHelp.Text" xml:space="preserve"><value>Kurze Meldungen von Windows, wenn etwas Ihre Aufmerksamkeit braucht und dieses Fenster geschlossen ist. Sie bleiben stumm, solange ein Vollbildprogramm im Vordergrund ist, und wiederholen sich höchstens alle paar Minuten.</value></data>
+  <data name="SettingsNotifyDownloads.Header" xml:space="preserve"><value>Ein Modelldownload wird abgeschlossen oder schlägt fehl</value></data>
+  <data name="SettingsNotifyDownloads.OnContent" xml:space="preserve"><value>Ein</value></data>
+  <data name="SettingsNotifyDownloads.OffContent" xml:space="preserve"><value>Aus</value></data>
+  <data name="SettingsNotifyDownloads.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Benachrichtigen, wenn ein Modelldownload abgeschlossen wird oder fehlschlägt</value></data>
+  <data name="SettingsNotifyApprovals.Header" xml:space="preserve"><value>Eine App bittet um Genehmigung</value></data>
+  <data name="SettingsNotifyApprovals.OnContent" xml:space="preserve"><value>Ein</value></data>
+  <data name="SettingsNotifyApprovals.OffContent" xml:space="preserve"><value>Aus</value></data>
+  <data name="SettingsNotifyApprovals.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Benachrichtigen, wenn eine App um Genehmigung bittet</value></data>
+  <data name="SettingsNotifyProblems.Header" xml:space="preserve"><value>Die KI-Engine wird beendet oder eine Prüfung schlägt fehl</value></data>
+  <data name="SettingsNotifyProblems.OnContent" xml:space="preserve"><value>Ein</value></data>
+  <data name="SettingsNotifyProblems.OffContent" xml:space="preserve"><value>Aus</value></data>
+  <data name="SettingsNotifyProblems.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Benachrichtigen, wenn die KI-Engine beendet wird oder eine Prüfung fehlschlägt</value></data>
+  <data name="SettingsPrivacyHeader.Text" xml:space="preserve"><value>Datenschutz</value></data>
+  <data name="SettingsResetPrivacy.Content" xml:space="preserve"><value>Auf Standard zurücksetzen</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Auf Standard zurücksetzen, Datenschutzeinstellungen</value></data>
+  <data name="SettingsCrashReports.Header" xml:space="preserve"><value>Absturzberichte senden</value></data>
+  <data name="SettingsCrashReports.OnContent" xml:space="preserve"><value>Ein</value></data>
+  <data name="SettingsCrashReports.OffContent" xml:space="preserve"><value>Aus</value></data>
+  <data name="SettingsCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Absturzberichte senden</value></data>
+  <data name="SettingsCrashReportsHelp.Text" xml:space="preserve"><value>Wenn Portal AI Host abstürzt, hilft uns ein kurzer Bericht, das Problem schnell zu beheben. Berichte enthalten nie Ihre Dateien oder Ihre Eingaben. Wenn Sie dies ausschalten, werden sie sofort nicht mehr gesendet.</value></data>
+  <data name="CrashWhatsSent.Content" xml:space="preserve"><value>Gesendete Daten</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Gesendete Daten, öffnet die Datenschutzseite</value></data>
+  <data name="WelcomeCrashReports.Content" xml:space="preserve"><value>Absturzberichte senden, damit wir Probleme schnell beheben können. Sie enthalten nie Ihre Dateien oder Ihre Eingaben.</value></data>
+  <data name="WelcomeCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Absturzberichte senden, damit wir Probleme schnell beheben können. Sie enthalten nie Ihre Dateien oder Ihre Eingaben.</value></data>
+  <data name="SettingsModelsHeader.Text" xml:space="preserve"><value>Modellordner</value></data>
+  <data name="SettingsResetFolder.Content" xml:space="preserve"><value>Auf Standard zurücksetzen</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Modellordner auf Standard zurücksetzen</value></data>
+  <data name="SettingsFolderHelp.Text" xml:space="preserve"><value>Wird übernommen, wenn Sie die Eingabetaste drücken oder das Feld verlassen. Lassen Sie es leer, um den Standardordner zu verwenden. Bereits vorhandene Modelle bleiben an ihrem Speicherort, sofern Sie sie nicht verschieben.</value></data>
+  <data name="SettingsAppearanceHeader.Text" xml:space="preserve"><value>Darstellung</value></data>
+  <data name="SettingsResetAppearance.Content" xml:space="preserve"><value>Auf Standard zurücksetzen</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Darstellung auf Standard zurücksetzen</value></data>
+  <data name="SettingsTheme.Header" xml:space="preserve"><value>Design</value></data>
+  <data name="SettingsTheme.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Design</value></data>
+  <data name="SettingsMaterial.Header" xml:space="preserve"><value>Fenstermaterial</value></data>
+  <data name="SettingsMaterial.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Fenstermaterial</value></data>
+  <data name="SettingsCorners.Header" xml:space="preserve"><value>Ecken</value></data>
+  <data name="SettingsCorners.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ecken</value></data>
+  <data name="SettingsDensity.Header" xml:space="preserve"><value>Dichte</value></data>
+  <data name="SettingsDensity.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Dichte</value></data>
+  <data name="SettingsTextSize.Header" xml:space="preserve"><value>Textgröße</value></data>
+  <data name="SettingsTextSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Textgröße</value></data>
+  <data name="SettingsMotion.Header" xml:space="preserve"><value>Animationen</value></data>
+  <data name="SettingsMotion.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Animationen</value></data>
+  <data name="SettingsAppearanceHelp.Text" xml:space="preserve"><value>Änderungen werden sofort übernommen. Der Windows-Kontrastmodus verwendet immer einfarbige Systemfarben, unabhängig von Ihrer Auswahl hier. Die Textgröße gilt zusätzlich zur Textskalierung von Windows.</value></data>
+  <data name="Vm_Theme_System" xml:space="preserve"><value>Windows-Einstellung verwenden (Standard)</value></data>
+  <data name="Vm_Theme_Light" xml:space="preserve"><value>Hell</value></data>
+  <data name="Vm_Theme_Dark" xml:space="preserve"><value>Dunkel</value></data>
+  <data name="Vm_Material_Mica" xml:space="preserve"><value>Mica (Standard)</value></data>
+  <data name="Vm_Material_Acrylic" xml:space="preserve"><value>Acryl</value></data>
+  <data name="Vm_Material_Solid" xml:space="preserve"><value>Einfarbig</value></data>
+  <data name="Vm_Corners_Rounded" xml:space="preserve"><value>Abgerundet (Standard)</value></data>
+  <data name="Vm_Corners_Square" xml:space="preserve"><value>Eckig</value></data>
+  <data name="Vm_Corners_ExtraRound" xml:space="preserve"><value>Stark abgerundet</value></data>
+  <data name="Vm_Density_Compact" xml:space="preserve"><value>Kompakt</value></data>
+  <data name="Vm_Density_Standard" xml:space="preserve"><value>Standard (Standard)</value></data>
+  <data name="Vm_Density_Comfortable" xml:space="preserve"><value>Großzügig</value></data>
+  <data name="Vm_Text_Normal" xml:space="preserve"><value>Normal (Standard)</value></data>
+  <data name="Vm_Text_Larger" xml:space="preserve"><value>Größer</value></data>
+  <data name="Vm_Text_Largest" xml:space="preserve"><value>Am größten</value></data>
+  <data name="Vm_Motion_Follow" xml:space="preserve"><value>Windows folgen (Standard)</value></data>
+  <data name="Vm_Motion_Reduced" xml:space="preserve"><value>Reduziert</value></data>
+  <data name="Vm_Motion_Off" xml:space="preserve"><value>Aus</value></data>
+  <data name="Vm_FolderNotFull" xml:space="preserve"><value>Geben Sie einen vollständigen Ordnerpfad ein, zum Beispiel D:\Models.</value></data>
+  <data name="AboutTitle.Text" xml:space="preserve"><value>Info zu Portal AI Host</value></data>
+  <data name="Vm_AboutVersion" xml:space="preserve"><value>Portal AI Host Version {0}</value></data>
+  <data name="Vm_AboutLicenceState" xml:space="preserve"><value>Kostenlos. Es ist kein Konto und kein Kauf erforderlich.</value></data>
+  <data name="Vm_AboutCopyText" xml:space="preserve"><value>Portal AI Host {0}</value></data>
+  <data name="Vm_AboutCopied" xml:space="preserve"><value>Version kopiert.</value></data>
+  <data name="AboutCopyVersion.Content" xml:space="preserve"><value>Version kopieren</value></data>
+  <data name="AboutWhatsNew.Content" xml:space="preserve"><value>Neuerungen</value></data>
+  <data name="AboutHelpHeader.Text" xml:space="preserve"><value>Hilfe und Datenschutz</value></data>
+  <data name="AboutFeedback.Content" xml:space="preserve"><value>Feedback senden oder Idee vorschlagen</value></data>
+  <data name="AboutPrivacy.Content" xml:space="preserve"><value>Datenschutzerklärung</value></data>
+  <data name="AboutDataFolder.Content" xml:space="preserve"><value>Datenordner öffnen</value></data>
+  <data name="AboutLicencesHeader.Text" xml:space="preserve"><value>Lizenzen</value></data>
+  <data name="Vm_ThirdParty" xml:space="preserve"><value>Portal AI Host enthält llama.cpp (MIT-Lizenz), das die KI-Modelle auf Ihrem PC ausführt. Modelle werden von Hugging Face unter ihren eigenen Lizenzen heruntergeladen (Apache 2.0, MIT oder CreativeML OpenRAIL-M, deren Nutzungsbeschränkungen gelten). Die Bild- und Videogenerierung verwendet stable-diffusion.cpp (MIT-Lizenz) und ggml (MIT-Lizenz). Videotools verwenden FFmpeg (LGPL 3.0 oder höher). Sprachfunktionen verwenden sherpa-onnx (Apache 2.0), Kokoro-Stimmen (Apache 2.0) und Pocket TTS von Kyutai (CC-BY 4.0, Namensnennung: Kyutai). Die App wurde mit dem Windows App SDK, .NET und der Community Toolkit MVVM Library erstellt, alle unter MIT-Lizenzen.</value></data>
+  <data name="AboutLlamaLink.Content" xml:space="preserve"><value>llama.cpp auf GitHub</value></data>
+  <data name="AboutLlamaExpander.Header" xml:space="preserve"><value>Lizenztext von llama.cpp</value></data>
+  <data name="Vm_LlamaLicence" xml:space="preserve"><value>MIT License
+
+Copyright (c) 2023-2026 The ggml authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</value></data>
+  <data name="Vm_WhatsNewHeading" xml:space="preserve"><value>Neuerungen in Portal AI Host {0}</value></data>
+  <data name="Vm_Wn1Title" xml:space="preserve"><value>Vielen Dank</value></data>
+  <data name="Vm_Wn1Body" xml:space="preserve"><value>Vielen Dank für Ihr Feedback und Ihre Meldungen. Sie haben dieses Update geprägt.</value></data>
+  <data name="Vm_Wn2Title" xml:space="preserve"><value>Video als MP4 und Zusammenfügen von Clips</value></data>
+  <data name="Vm_Wn2Body" xml:space="preserve"><value>Videoaufträge können jetzt eine MP4-Datei, ein Bild des letzten Frames und mehrere zu einem Video zusammengefügte Clips liefern.</value></data>
+  <data name="Vm_Wn3Title" xml:space="preserve"><value>Einstellungen für die Videoqualität</value></data>
+  <data name="Vm_Wn3Body" xml:space="preserve"><value>Legen Sie fest, wie Ihr PC MP4-Videos kodiert, zum Beispiel die Qualität und welcher Videoencoder verwendet wird.</value></data>
+  <data name="Vm_Wn4Title" xml:space="preserve"><value>Uploads für lokale Apps</value></data>
+  <data name="Vm_Wn4Body" xml:space="preserve"><value>Apps auf diesem PC können große Dateien jetzt direkt übergeben, statt sie in der Anfrage zu senden. Uploads werden nach einiger Zeit entfernt.</value></data>
+  <data name="Vm_Wn5Title" xml:space="preserve"><value>Die Karte „Heim-PC“ bleibt aktuell</value></data>
+  <data name="Vm_Wn5Body" xml:space="preserve"><value>Wenn Sie mehrere Einstellungen des Heim-PCs schnell hintereinander ändern, kann eine langsame Antwort keinen älteren Wert mehr anzeigen.</value></data>
+  <data name="Vm_Wn6Title" xml:space="preserve"><value>Besser in schmalen Fenstern</value></data>
+  <data name="Vm_Wn6Body" xml:space="preserve"><value>Das Seitenmenü wird eingeklappt, wenn das Fenster schmal ist, und die Links zum Zurücksetzen in den Einstellungen werden unter ihren Überschriften umbrochen.</value></data>
+  <data name="Vm_Wn7Title" xml:space="preserve"><value>Klarer für Sprachausgabe</value></data>
+  <data name="Vm_Wn7Body" xml:space="preserve"><value>Der Integritätsbereich auf der Startseite sowie Schaltflächen auf der Startseite und in den Einstellungen haben jetzt Namen und Hilfetexte für Sprachausgabe und QuickInfos.</value></data>
+  <data name="Vm_Wn8Title" xml:space="preserve"><value>Heim-PC vom Laptop aus nutzen</value></data>
+  <data name="Vm_Wn8Body" xml:space="preserve"><value>Koppeln Sie einen Laptop einmalig mit Ihrem Heim-PC. Apps auf dem Laptop nutzen dann die KI des Heim-PCs, zu Hause oder unterwegs, und greifen auf das eigene Modell des Laptops zurück, wenn Sie das möchten.</value></data>
+  <data name="Vm_Wn9Title" xml:space="preserve"><value>Geräte an diesem PC</value></data>
+  <data name="Vm_Wn9Body" xml:space="preserve"><value>Sehen Sie jeden gekoppelten Laptop auf einer eigenen Karte. Halten Sie ihn an, legen Sie Tageslimits und Ruhezeiten fest, wählen Sie, welche Modelle er verwenden darf, oder nehmen Sie ein von ihm geladenes Modell zurück.</value></data>
+  <data name="Vm_Wn10Title" xml:space="preserve"><value>Zwei Modelle gleichzeitig</value></data>
+  <data name="Vm_Wn10Body" xml:space="preserve"><value>Ein vertrauenswürdiger Laptop kann ein zweites Modell auf Ihrem PC geladen halten, zum Beispiel eines auf der Grafikkarte und eines im Arbeitsspeicher. Ihr eigenes Modell wird nie verdrängt.</value></data>
+  <data name="Vm_Wn11Title" xml:space="preserve"><value>Sichererer Umgang mit Geräten</value></data>
+  <data name="Vm_Wn11Body" xml:space="preserve"><value>Wenn Sie ein Gerät entfernen, wird alles beendet, was es noch angefordert hat. Beim Koppeln eines Laptops mit einem neuen Heim-PC besteht außerdem keine Gefahr mehr, dass das Zugriffstoken des alten PCs dorthin gesendet wird.</value></data>
+  <data name="Vm_Wn12Title" xml:space="preserve"><value>Spielmodus funktioniert auch in Spielen im Fenstermodus</value></data>
+  <data name="Vm_Wn12Body" xml:space="preserve"><value>Wenn Sie den Spielmodus einschalten, wird anderen Geräten mitgeteilt, dass Ihr PC beschäftigt ist, solange ein Spiel läuft, auch bei Spielen im Fenstermodus.</value></data>
+  <data name="Vm_Wn13Title" xml:space="preserve"><value>Relay-Zugriffsschlüssel</value></data>
+  <data name="Vm_Wn13Body" xml:space="preserve"><value>Nur mit Ihrem Schlüssel gekoppelte Geräte können diesen PC von unterwegs erreichen. Sie können jederzeit einen neuen Schlüssel erstellen.</value></data>
+  <data name="Vm_Wn14Title" xml:space="preserve"><value>Speicher auf einen Blick</value></data>
+  <data name="Vm_Wn14Body" xml:space="preserve"><value>Balken auf der Seite „Modelle“ zeigen, wie viel Arbeitsspeicher und Grafikspeicher die geladenen Modelle im Verhältnis zu Ihren Limits belegen.</value></data>
+  <data name="Vm_WnShowMe" xml:space="preserve"><value>Anzeigen</value></data>
+  <data name="Vm_WnShowMeName" xml:space="preserve"><value>Anzeigen: {0}</value></data>
+  <data name="WhatsNewDone.Content" xml:space="preserve"><value>Verstanden</value></data>
+  <data name="Vm_RevokedBar" xml:space="preserve"><value>Zugriff für {0} entfernt.</value></data>
+  <data name="Vm_AutoUndo" xml:space="preserve"><value>Entfernen des Zugriffs für {0} rückgängig machen</value></data>
+  <data name="AppsUndo.Content" xml:space="preserve"><value>Rückgängig</value></data>
+  <data name="Vm_RemoveFrees" xml:space="preserve"><value>Dadurch werden {0} freigegeben.</value></data>
+  <data name="Vm_StepOf" xml:space="preserve"><value>Schritt {0} von {1}</value></data>
+  <data name="Vm_LiveIdle" xml:space="preserve"><value>Im Moment wird nichts geschrieben</value></data>
+  <data name="Vm_LiveBusy" xml:space="preserve"><value>Eine Antwort wird gerade geschrieben</value></data>
+  <data name="Vm_LiveGenerating" xml:space="preserve"><value>{0} erhält eine Antwort</value></data>
+  <data name="Vm_LiveSpeed" xml:space="preserve"><value>Etwa {0} Wörter pro Sekunde</value></data>
+  <data name="Vm_LiveMemory" xml:space="preserve"><value>{0} von {1}</value></data>
+  <data name="Vm_LiveMemoryNoTotal" xml:space="preserve"><value>{0}</value></data>
+  <data name="Vm_LivePendingLoad" xml:space="preserve"><value>Wird geladen...</value></data>
+  <data name="Vm_LivePendingUnload" xml:space="preserve"><value>Wird entladen...</value></data>
+  <data name="Vm_LiveLoadFailed" xml:space="preserve"><value>Das Modell konnte nicht geladen werden. {0}</value></data>
+  <data name="Vm_LiveUnloadFailed" xml:space="preserve"><value>Das Modell konnte nicht entladen werden. {0}</value></data>
+  <data name="Vm_TodayNone" xml:space="preserve"><value>Heute noch keine Anfragen.</value></data>
+  <data name="Vm_TodayRow1" xml:space="preserve"><value>{0} Anfrage, zuletzt gesehen {1}</value></data>
+  <data name="Vm_TodayRow" xml:space="preserve"><value>{0} Anfragen, zuletzt gesehen {1}</value></data>
+  <data name="Vm_SeenNever" xml:space="preserve"><value>nie</value></data>
+  <data name="Vm_SeenNow" xml:space="preserve"><value>gerade eben</value></data>
+  <data name="Vm_SeenMinutes" xml:space="preserve"><value>vor {0} Min.</value></data>
+  <data name="Vm_SeenHours" xml:space="preserve"><value>vor {0} Std.</value></data>
+  <data name="HomeLiveTitle.Text" xml:space="preserve"><value>JETZT</value></data>
+  <data name="Vm_LiveRamName" xml:space="preserve"><value>Vom Modell belegter Arbeitsspeicher: {0}</value></data>
+  <data name="Vm_LiveVramName" xml:space="preserve"><value>Vom Modell belegter Grafikspeicher: {0}</value></data>
+  <data name="HomeRamLabel.Text" xml:space="preserve"><value>Vom Modell belegter Arbeitsspeicher</value></data>
+  <data name="HomeVramLabel.Text" xml:space="preserve"><value>Vom Modell belegter Grafikspeicher</value></data>
+  <data name="HomeUnloadButton.Content" xml:space="preserve"><value>Jetzt entladen</value></data>
+  <data name="HomeLoadButton.Content" xml:space="preserve"><value>Jetzt laden</value></data>
+  <data name="HomeActionErrorBar.Title" xml:space="preserve"><value>Das hat nicht funktioniert</value></data>
+  <data name="HomeTodayLabel.Text" xml:space="preserve"><value>HEUTE</value></data>
+  <data name="Vm_TrayReady" xml:space="preserve"><value>Bereit · {0} geladen</value></data>
+  <data name="Vm_TrayBusy" xml:space="preserve"><value>Beschäftigt · {0}</value></data>
+  <data name="Vm_TrayBusyOther" xml:space="preserve"><value>Beschäftigt</value></data>
+  <data name="Vm_TrayLoading" xml:space="preserve"><value>Wird geladen · {0}</value></data>
+  <data name="Vm_TrayIdle" xml:space="preserve"><value>Bereit · {0} wird bei Bedarf geladen</value></data>
+  <data name="Vm_TrayNoModel" xml:space="preserve"><value>Noch kein Modell</value></data>
+  <data name="Vm_TrayOff" xml:space="preserve"><value>Aus</value></data>
+  <data name="Vm_TrayLastNone" xml:space="preserve"><value>Heute keine Anfragen</value></data>
+  <data name="Vm_TrayLast" xml:space="preserve"><value>{0}, {1}</value></data>
+  <data name="TrayModelLabel.Text" xml:space="preserve"><value>Modell</value></data>
+  <data name="TrayMemoryLabel.Text" xml:space="preserve"><value>Arbeitsspeicher</value></data>
+  <data name="TrayLastLabel.Text" xml:space="preserve"><value>Letzte Anfrage</value></data>
+  <data name="TrayQueueLabel.Text" xml:space="preserve"><value>Warteschlange</value></data>
+  <data name="TrayOpenButton.Content" xml:space="preserve"><value>App öffnen</value></data>
+  <data name="TrayUnloadButton.Content" xml:space="preserve"><value>Modell entladen</value></data>
+  <data name="TrayWindowTitle" xml:space="preserve"><value>Status von Portal AI Host</value></data>
+  <data name="ModelsDownloadedHeader.Text" xml:space="preserve"><value>Heruntergeladen</value></data>
+  <data name="ModelsMoreHeader.Text" xml:space="preserve"><value>Modelle zum Hinzufügen</value></data>
+  <data name="ModelCheck.Content" xml:space="preserve"><value>Dateien prüfen</value></data>
+  <data name="ModelRedownload.Content" xml:space="preserve"><value>Erneut herunterladen</value></data>
+  <data name="ModelCancelCheck.Content" xml:space="preserve"><value>Prüfung beenden</value></data>
+  <data name="ModelDetails.Header" xml:space="preserve"><value>Details</value></data>
+  <data name="ModelsOpenFolder.Content" xml:space="preserve"><value>Ordner öffnen</value></data>
+  <data name="ModelsAddOwn.Content" xml:space="preserve"><value>Eigenes Modell hinzufügen...</value></data>
+  <data name="ModelsAddOwnHint.Text" xml:space="preserve"><value>Wählen Sie eine vorhandene .gguf-Datei aus. Der Host erstellt eine eigene Kopie im Modellordner. Ihre Originaldatei wird nicht geändert oder verschoben.</value></data>
+  <data name="Vm_UserAddedBadge" xml:space="preserve"><value>Von Ihnen hinzugefügt</value></data>
+  <data name="Vm_UserAddedReason" xml:space="preserve"><value>Eignung unbekannt: Der Host kann nicht feststellen, wie viel Arbeitsspeicher dieses Modell auf Ihrem PC benötigt. Probieren Sie es aus.</value></data>
+  <data name="Vm_RemoveUserBody" xml:space="preserve"><value>{0} wird aus dem Modellordner des Hosts entfernt. Dabei handelt es sich um die eigene Kopie des Hosts: Die von Ihnen ausgewählte Originaldatei bleibt unberührt.</value></data>
+  <data name="Vm_ImportRunning" xml:space="preserve"><value>Ihr Modell wird in den Modellordner kopiert, {0} %</value></data>
+  <data name="Vm_ImportDone" xml:space="preserve"><value>Ihr Modell wurde hinzugefügt.</value></data>
+  <data name="Vm_ImportCancelled" xml:space="preserve"><value>Das Hinzufügen des Modells wurde abgebrochen. Es wurde nichts beibehalten, und Ihre Originaldatei wurde nicht geändert.</value></data>
+  <data name="Vm_ImportFailed" xml:space="preserve"><value>Das Modell wurde nicht hinzugefügt. {0}</value></data>
+  <data name="ModelsMoveHint.Text" xml:space="preserve"><value>Um Ihre Modelle auf ein anderes Laufwerk zu verschieben, wählen Sie in den Einstellungen unter „Modellordner“ einen neuen Ordner aus.</value></data>
+  <data name="ModelsMoveCancel.Content" xml:space="preserve"><value>Abbrechen</value></data>
+  <data name="ModelsFreeUp.Content" xml:space="preserve"><value>Speicherplatz freigeben</value></data>
+  <data name="ModelsCleanupTitle.Text" xml:space="preserve"><value>Speicherplatz freigeben</value></data>
+  <data name="ModelsCleanupPartialHeader.Text" xml:space="preserve"><value>Unvollständige Downloads, die nicht fortgesetzt werden</value></data>
+  <data name="ModelsCleanupOldHeader.Text" xml:space="preserve"><value>Alte Kopien nach dem Verschieben Ihrer Modelle</value></data>
+  <data name="ModelsCleanupDamagedHeader.Text" xml:space="preserve"><value>Modelle, die bei einer Prüfung als beschädigt erkannt wurden</value></data>
+  <data name="ModelsCleanupClose.Content" xml:space="preserve"><value>Schließen</value></data>
+  <data name="ModelsCleanupHint.Text" xml:space="preserve"><value>Es werden nur Dateien aufgeführt, die diese App erstellt hat. Modelle, die Sie verwenden, und Dateien, die Sie selbst hinzugefügt haben, werden nie entfernt.</value></data>
+  <data name="Vm_CleanupButton" xml:space="preserve"><value>{0} freigeben</value></data>
+  <data name="Vm_CleanupNothing" xml:space="preserve"><value>Es gibt nichts freizugeben. Unvollständige Downloads, die Sie noch fortsetzen können, werden eine Woche lang aufbewahrt.</value></data>
+  <data name="Vm_CleanupRunning" xml:space="preserve"><value>Speicherplatz wird freigegeben...</value></data>
+  <data name="Vm_CleanupConfirmTitle" xml:space="preserve"><value>Diese Dateien entfernen?</value></data>
+  <data name="Vm_CleanupConfirmBody" xml:space="preserve"><value>Dadurch werden die folgenden Dateien dauerhaft entfernt:&#10;{0}&#10;Ihre anderen Modelle bleiben unberührt.</value></data>
+  <data name="Vm_CleanupDone" xml:space="preserve"><value>{0} freigegeben.</value></data>
+  <data name="Vm_CleanupDoneSkipped" xml:space="preserve"><value>{0} freigegeben. Einige Elemente wurden am bisherigen Ort belassen:&#10;{1}</value></data>
+  <data name="Vm_CleanupFailed" xml:space="preserve"><value>Speicherplatz wurde nicht freigegeben: {0}</value></data>
+  <data name="ModelsRemoveFailedBar.Title" xml:space="preserve"><value>Das Modell konnte nicht entfernt werden</value></data>
+  <data name="SettingsMoveButton.Content" xml:space="preserve"><value>Meine Modelle dorthin verschieben</value></data>
+  <data name="SettingsMoveCancel.Content" xml:space="preserve"><value>Verschieben abbrechen</value></data>
+  <data name="Vm_NeverUsed" xml:space="preserve"><value>Noch nicht verwendet</value></data>
+  <data name="Vm_UsedToday" xml:space="preserve"><value>Zuletzt heute verwendet</value></data>
+  <data name="Vm_UsedYesterday" xml:space="preserve"><value>Zuletzt gestern verwendet</value></data>
+  <data name="Vm_UsedDays" xml:space="preserve"><value>Zuletzt vor {0} Tagen verwendet</value></data>
+  <data name="Vm_UsedMonths" xml:space="preserve"><value>Zuletzt vor {0} Monaten verwendet</value></data>
+  <data name="Vm_GoodFor" xml:space="preserve"><value>Gut geeignet für: {0}</value></data>
+  <data name="Vm_Caveats" xml:space="preserve"><value>Zu beachten: {0}</value></data>
+  <data name="Vm_MemoryNeeded" xml:space="preserve"><value>Benötigt etwa {0} Arbeitsspeicher auf diesem PC.</value></data>
+  <data name="Vm_Licence" xml:space="preserve"><value>Lizenz: {0}</value></data>
+  <data name="Vm_RemoveActiveBody" xml:space="preserve"><value>{0} wird verwendet. Der Host entlädt es zuerst und entfernt es dann von diesem PC. Es werden nur Dateien gelöscht, die der Host heruntergeladen hat; eine Modelldatei, die Sie selbst hinzugefügt haben, wird nur aus der Liste entfernt und bleibt am bisherigen Speicherort.</value></data>
+  <data name="Vm_RemoveVerb" xml:space="preserve"><value>{0} ({1}) entfernen</value></data>
+  <data name="Vm_RemoveVerbNoSize" xml:space="preserve"><value>{0} entfernen</value></data>
+  <data name="Vm_AutoCheck" xml:space="preserve"><value>Dateien von {0} prüfen</value></data>
+  <data name="Vm_AutoRedownload" xml:space="preserve"><value>{0} erneut herunterladen</value></data>
+  <data name="Vm_Removing" xml:space="preserve"><value>Wird entfernt...</value></data>
+  <data name="Vm_RemovingBadge" xml:space="preserve"><value>Wird entfernt</value></data>
+  <data name="Vm_DamagedBadge" xml:space="preserve"><value>Beschädigt</value></data>
+  <data name="Vm_Checking" xml:space="preserve"><value>Dateien werden geprüft, {0} %</value></data>
+  <data name="Vm_CheckOk" xml:space="preserve"><value>Alle Dateien sind intakt.</value></data>
+  <data name="Vm_CheckDamaged" xml:space="preserve"><value>Beschädigt: {0} Es wurde nichts gelöscht.</value></data>
+  <data name="Vm_CheckFailed" xml:space="preserve"><value>Die Prüfung konnte nicht abgeschlossen werden: {0}</value></data>
+  <data name="Vm_SwitchTitle" xml:space="preserve"><value>Anderes Modell verwenden?</value></data>
+  <data name="Vm_SwitchBody" xml:space="preserve"><value>{0} wird verwendet. Danach zu {1} wechseln oder vorerst kein Modell verwenden?</value></data>
+  <data name="Vm_SwitchYes" xml:space="preserve"><value>Zu {0} wechseln</value></data>
+  <data name="Vm_SwitchNo" xml:space="preserve"><value>Vorerst kein Modell verwenden</value></data>
+  <data name="Vm_RemoveFailed" xml:space="preserve"><value>{0} wurde nicht entfernt und ist weiterhin vorhanden. {1}</value></data>
+  <data name="Vm_RedownloadTitle" xml:space="preserve"><value>Dieses Modell erneut herunterladen?</value></data>
+  <data name="Vm_RedownloadBody" xml:space="preserve"><value>{0} hat eine beschädigte Datei. Das Modell wird von diesem PC entfernt und erneut heruntergeladen. Es wird nichts anderes gelöscht.</value></data>
+  <data name="Vm_RedownloadActiveBody" xml:space="preserve"><value>{0} hat eine beschädigte Datei und wird verwendet. Der Host entlädt es, entfernt es von diesem PC und lädt es erneut herunter. Wählen Sie es nach Abschluss des Downloads erneut aus.</value></data>
+  <data name="Vm_RedownloadYes" xml:space="preserve"><value>{0} entfernen und erneut herunterladen</value></data>
+  <data name="Vm_MoveRunning" xml:space="preserve"><value>Ihre Modelle werden verschoben, {0} %</value></data>
+  <data name="Vm_MoveRemovingOld" xml:space="preserve"><value>Ihre Modelle befinden sich im neuen Ordner. Die alten Kopien werden entfernt.</value></data>
+  <data name="Vm_MoveDone" xml:space="preserve"><value>Ihre Modelle wurden verschoben.</value></data>
+  <data name="Vm_MoveCancelled" xml:space="preserve"><value>Das Verschieben wurde abgebrochen. Ihre Modelle befinden sich am bisherigen Ort.</value></data>
+  <data name="Vm_MoveFailed" xml:space="preserve"><value>Das Verschieben wurde nicht abgeschlossen. {0}</value></data>
+  <data name="Vm_MoveOffer" xml:space="preserve"><value>Ihre Modelle ({0}) auch in den neuen Ordner verschieben?</value></data>
+  <data name="Vm_MoveTitle" xml:space="preserve"><value>Modelle verschieben?</value></data>
+  <data name="Vm_MoveBody" xml:space="preserve"><value>Ihre Modelle werden nach {0} kopiert und geprüft, erst danach werden die alten Kopien entfernt. Das verwendete Modell wird währenddessen entladen. Dateien im alten Ordner, die nicht vom Host dorthin gelegt wurden, bleiben unberührt.</value></data>
+  <data name="Vm_MoveYes" xml:space="preserve"><value>Meine Modelle verschieben</value></data>
+  <data name="Vm_MoveSettingsRunning" xml:space="preserve"><value>Ihre Modelle werden verschoben, {0} %</value></data>
+  <data name="SettingsPerformanceHeader.Text" xml:space="preserve"><value>Leistung</value></data>
+  <data name="SettingsResetPerformance.Content" xml:space="preserve"><value>Auf Standard zurücksetzen</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Leistungseinstellungen auf Standard zurücksetzen</value></data>
+  <data name="SettingsPreset.Header" xml:space="preserve"><value>Leistung</value></data>
+  <data name="SettingsPreset.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Leistung</value></data>
+  <data name="SettingsMemory.Header" xml:space="preserve"><value>Maximaler Arbeitsspeicher für KI</value></data>
+  <data name="SettingsMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Maximaler Arbeitsspeicher für KI</value></data>
+  <data name="SettingsKeepFree.Header" xml:space="preserve"><value>Immer frei lassen</value></data>
+  <data name="SettingsKeepFree.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Immer frei lassen</value></data>
+  <data name="SettingsRunOn.Header" xml:space="preserve"><value>Ausführen auf</value></data>
+  <data name="SettingsRunOn.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ausführen auf</value></data>
+  <data name="SettingsGpuMemory.Header" xml:space="preserve"><value>Grafikspeicher für KI</value></data>
+  <data name="SettingsGpuMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Grafikspeicher für KI</value></data>
+  <data name="SettingsCores.Header" xml:space="preserve"><value>Prozessorkerne</value></data>
+  <data name="SettingsCores.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Prozessorkerne</value></data>
+  <data name="SettingsPriority.Header" xml:space="preserve"><value>Priorität</value></data>
+  <data name="SettingsPriority.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Priorität</value></data>
+  <data name="SettingsMemoryHelp.Text" xml:space="preserve"><value>Die KI verwendet nie mehr als diesen Wert. Ein niedrigerer Wert bedeutet ein kleineres Modell oder langsamere Antworten.</value></data>
+  <data name="SettingsKeepFreeHelp.Text" xml:space="preserve"><value>Arbeitsspeicher, der für Ihre anderen Programme frei bleibt.</value></data>
+  <data name="SettingsCoresHelp.Text" xml:space="preserve"><value>Weniger Kerne halten Ihren PC reaktionsfähig, während die KI arbeitet.</value></data>
+  <data name="Vm_Perf_Quiet" xml:space="preserve"><value>Leise</value></data>
+  <data name="Vm_Perf_Balanced" xml:space="preserve"><value>Ausgewogen</value></data>
+  <data name="Vm_Perf_Fast" xml:space="preserve"><value>Schnell</value></data>
+  <data name="Vm_Perf_Custom" xml:space="preserve"><value>Benutzerdefiniert</value></data>
+  <data name="Vm_Perf_Help_quiet" xml:space="preserve"><value>Etwa halbe Geschwindigkeit. Ihr PC bleibt reaktionsfähig.</value></data>
+  <data name="Vm_Perf_Help_balanced" xml:space="preserve"><value>Gute Geschwindigkeit, und Ihre anderen Programme haben Vorrang.</value></data>
+  <data name="Vm_Perf_Help_fast" xml:space="preserve"><value>Schnellste Antworten. Andere Programme können langsamer werden.</value></data>
+  <data name="Vm_Perf_Help_custom" xml:space="preserve"><value>Ihre eigenen Einstellungen.</value></data>
+  <data name="Vm_Perf_Run_Auto" xml:space="preserve"><value>Automatisch</value></data>
+  <data name="Vm_Perf_Run_Gpu" xml:space="preserve"><value>Grafikkarte</value></data>
+  <data name="Vm_Perf_Run_Cpu" xml:space="preserve"><value>Prozessor</value></data>
+  <data name="Vm_Perf_RunHelp_auto" xml:space="preserve"><value>Verwendet die Grafikkarte, wenn es hilft.</value></data>
+  <data name="Vm_Perf_RunHelp_gpu" xml:space="preserve"><value>Am schnellsten, wenn das Modell passt.</value></data>
+  <data name="Vm_Perf_RunHelp_cpu" xml:space="preserve"><value>Langsamer, lässt die Grafikkarte aber für Spiele frei.</value></data>
+  <data name="Vm_Perf_NoGpu" xml:space="preserve"><value>Nur Prozessor: Keine unterstützte Grafikkarte gefunden</value></data>
+  <data name="SettingsCeiling.Header" xml:space="preserve"><value>Maximale Prozessorauslastung</value></data>
+  <data name="SettingsCeiling.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Maximale Prozessorauslastung</value></data>
+  <data name="SettingsCeilingHelp.Text" xml:space="preserve"><value>Die KI beansprucht nie mehr als diesen Anteil Ihres Prozessors. Ein niedrigerer Wert hält Ihren PC flüssiger, bei langsameren Antworten.</value></data>
+  <data name="Vm_Perf_CeilingNone" xml:space="preserve"><value>Keine Begrenzung</value></data>
+  <data name="Vm_Perf_Percent" xml:space="preserve"><value>{0} %</value></data>
+  <data name="SettingsEaseOffHeader.Text" xml:space="preserve"><value>Zurückfahren, wenn</value></data>
+  <data name="SettingsEaseOffFullscreen.Content" xml:space="preserve"><value>Ein Spiel oder Vollbildprogramm ausgeführt wird</value></data>
+  <data name="SettingsEaseOffBattery.Content" xml:space="preserve"><value>Der PC im Akkubetrieb läuft</value></data>
+  <data name="SettingsEaseOffAppBusy.Content" xml:space="preserve"><value>Eine Portal-App mit Live-Aufgaben beschäftigt ist, z. B. Diktat</value></data>
+  <data name="SettingsEaseOffHelp.Text" xml:space="preserve"><value>Die KI läuft dann mit der niedrigsten Priorität, verwendet höchstens die Hälfte Ihres Prozessors und kehrt danach zum Normalbetrieb zurück.</value></data>
+  <data name="Vm_Perf_Prio_Low" xml:space="preserve"><value>Niedrig</value></data>
+  <data name="Vm_Perf_Prio_Normal" xml:space="preserve"><value>Normal</value></data>
+  <data name="Vm_Perf_PrioHelp_Low" xml:space="preserve"><value>Ihre eigene Arbeit hat immer Vorrang.</value></data>
+  <data name="Vm_Perf_PrioHelp_Normal" xml:space="preserve"><value>Schneller, kann aber andere Programme ausbremsen.</value></data>
+  <data name="Vm_Perf_Gb" xml:space="preserve"><value>{0} GB</value></data>
+  <data name="Vm_Perf_Cores" xml:space="preserve"><value>{0} von {1} Kernen</value></data>
+  <data name="Vm_Perf_MemoryRange" xml:space="preserve"><value>Von {0} GB bis {1} GB</value></data>
+  <data name="Vm_Perf_StopFull" xml:space="preserve"><value>{0} GB · reicht für {1} vollständig</value></data>
+  <data name="Vm_Perf_StopPartial" xml:space="preserve"><value>{0} GB · reicht für {1}, teilweise auf dem Prozessor</value></data>
+  <data name="Vm_Perf_StopCpu" xml:space="preserve"><value>{0} GB · reicht für {1} auf dem Prozessor</value></data>
+  <data name="Vm_Perf_StopNone" xml:space="preserve"><value>{0} GB · zu klein für die Modelle in der Liste</value></data>
+  <data name="Vm_Perf_Fit_Full" xml:space="preserve"><value>Läuft vollständig auf der Grafikkarte</value></data>
+  <data name="Vm_Perf_Fit_Partial" xml:space="preserve"><value>Teils auf der Grafikkarte, teils auf dem Prozessor: langsamer</value></data>
+  <data name="Vm_Perf_Fit_Cpu" xml:space="preserve"><value>Läuft auf dem Prozessor: am langsamsten</value></data>
+  <data name="Vm_Perf_Fit_Smaller" xml:space="preserve"><value>Zu wenig Speicher für {0}. Zu {1} wechseln?</value></data>
+  <data name="Vm_Perf_Fit_LittleMemory" xml:space="preserve"><value>Zu wenig Speicher für {0}.</value></data>
+  <data name="Vm_Perf_Fit_TooBig" xml:space="preserve"><value>Zu groß für diesen PC</value></data>
+  <data name="Vm_Perf_TheModel" xml:space="preserve"><value>Das Modell</value></data>
+  <data name="Vm_Perf_Applied" xml:space="preserve"><value>Übernommen. Die neuen Limits sind aktiv.</value></data>
+  <data name="Vm_Perf_Reloading" xml:space="preserve"><value>Übernommen. {0} wird mit den neuen Limits neu geladen.</value></data>
+  <data name="Vm_Perf_Unloaded" xml:space="preserve"><value>Übernommen. {0} passt nicht mehr und wurde entladen. Es bleibt auf dem Datenträger; wählen Sie auf der Seite „Modelle“ ein kleineres.</value></data>
+  <data name="HealthIconOk.AutomationProperties.Name" xml:space="preserve"><value>In Ordnung</value></data>
+  <data name="HealthIconWarn.AutomationProperties.Name" xml:space="preserve"><value>Erfordert Aufmerksamkeit</value></data>
+  <data name="HealthIconFail.AutomationProperties.Name" xml:space="preserve"><value>Problem</value></data>
+  <data name="HealthWordOk.Text" xml:space="preserve"><value>In Ordnung</value></data>
+  <data name="HealthWordWarn.Text" xml:space="preserve"><value>Erfordert Aufmerksamkeit</value></data>
+  <data name="HealthWordFail.Text" xml:space="preserve"><value>Problem</value></data>
+  <data name="HealthCheckAgainButton.Content" xml:space="preserve"><value>Erneut prüfen</value></data>
+  <data name="HealthFixErrorBar.Title" xml:space="preserve"><value>Das hat nicht funktioniert</value></data>
+  <data name="Vm_HealthAllGood" xml:space="preserve"><value>Alles in Ordnung</value></data>
+  <data name="Vm_HealthOne" xml:space="preserve"><value>1 Punkt erfordert Aufmerksamkeit</value></data>
+  <data name="Vm_HealthMany" xml:space="preserve"><value>{0} Punkte erfordern Aufmerksamkeit</value></data>
+  <data name="Vm_HealthFixLoad" xml:space="preserve"><value>Modell laden</value></data>
+  <data name="Vm_HealthFixRestart" xml:space="preserve"><value>Engine neu starten</value></data>
+  <data name="Vm_HealthFixCheckFiles" xml:space="preserve"><value>Dateien prüfen</value></data>
+  <data name="Vm_HealthFixPerformance" xml:space="preserve"><value>Leistungseinstellungen öffnen</value></data>
+  <data name="Vm_HealthFixModels" xml:space="preserve"><value>Modell auswählen</value></data>
+  <data name="Vm_HealthFixFailed" xml:space="preserve"><value>Das Problem konnte nicht behoben werden. {0}</value></data>
+  <data name="SettingsRemoteHeader.Text" xml:space="preserve"><value>Andere Geräte</value></data>
+  <data name="SettingsRemoteEnabled.Header" xml:space="preserve"><value>Anderen Geräten die Nutzung der KI dieses PCs erlauben</value></data>
+  <data name="SettingsRemoteEnabled.OnContent" xml:space="preserve"><value>Ein</value></data>
+  <data name="SettingsRemoteEnabled.OffContent" xml:space="preserve"><value>Aus</value></data>
+  <data name="SettingsRemoteEnabled.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Anderen Geräten die Nutzung der KI dieses PCs erlauben</value></data>
+  <data name="SettingsRemoteHelp.Text" xml:space="preserve"><value>Standardmäßig ausgeschaltet. Wenn aktiviert, können Ihr eigenes Smartphone, Ihr Laptop oder Tablet in diesem Heimnetzwerk anfragen, die KI dieses PCs zu verwenden. Ein Gerät muss zuvor mit einem Code gekoppelt werden, und jede App darauf benötigt weiterhin Ihre Genehmigung. Sie können ein Gerät jederzeit entfernen.</value></data>
+  <data name="SettingsPairDevice.Content" xml:space="preserve"><value>Gerät koppeln</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Gerät koppeln</value></data>
+  <data name="SettingsPairingSteps.Text" xml:space="preserve"><value>Öffnen Sie auf dem anderen Gerät die Portal-App, wählen Sie die Verbindung mit einem PC, und scannen Sie dann diesen Code oder geben Sie die Buchstaben und Zahlen ein. Es prüft, ob es mit diesem PC spricht, bevor es etwas sendet. Der Code funktioniert einmalig und 5 Minuten lang.</value></data>
+  <data name="SettingsPairingQr.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>QR-Code zum Koppeln</value></data>
+  <data name="SettingsPairingCancel.Content" xml:space="preserve"><value>Kopplung abbrechen</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Kopplung abbrechen</value></data>
+  <data name="SettingsDevicesHeader.Text" xml:space="preserve"><value>Gekoppelte Geräte</value></data>
+  <data name="SettingsNoDevices.Text" xml:space="preserve"><value>Es ist noch kein Gerät gekoppelt.</value></data>
+  <data name="SettingsRemoveDevice.Content" xml:space="preserve"><value>Entfernen</value></data>
+  <data name="SettingsDeviceModelControl.Header" xml:space="preserve"><value>Modellsteuerung</value></data>
+  <data name="SettingsDeviceModelControl.OnContent" xml:space="preserve"><value>Ein</value></data>
+  <data name="SettingsDeviceModelControl.OffContent" xml:space="preserve"><value>Aus</value></data>
+  <data name="SettingsDeviceModelControl.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Erlaubt diesem Gerät, Modelle zu laden und zu entladen und auszuwählen, welches Modell jede seiner Apps verwendet</value></data>
+  <data name="SettingsDeviceModelControl.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Erlaubt diesem Gerät, Modelle zu laden und zu entladen und auszuwählen, welches Modell jede seiner Apps verwendet</value></data>
+  <data name="SettingsTakeBackLabel.Text" xml:space="preserve"><value>Zurücknehmen</value></data>
+  <data name="SettingsTakeBack.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Entlädt das Modell, das dieses Gerät geladen hat. Die eigene Auswahl dieses PCs kehrt zurück. Es werden keine Modelldateien angetastet.</value></data>
+  <data name="SettingsTakeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Entlädt das Modell, das dieses Gerät geladen hat. Die eigene Auswahl dieses PCs kehrt zurück. Es werden keine Modelldateien angetastet.</value></data>
+  <data name="SettingsAllowReplace.Header" xml:space="preserve"><value>Geräte dürfen Modelle ersetzen</value></data>
+  <data name="SettingsAllowReplace.OnContent" xml:space="preserve"><value>Ein</value></data>
+  <data name="SettingsAllowReplace.OffContent" xml:space="preserve"><value>Aus</value></data>
+  <data name="SettingsAllowReplace.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Geräte dürfen Modelle ersetzen</value></data>
+  <data name="SettingsAllowReplaceHelp.Text" xml:space="preserve"><value>Betrifft nur Geräte mit Modellsteuerung. Aus: Ein Gerät kann kein Modell entladen, das Ihre eigenen Apps verwenden. Ein: Es kann das, und Ihre Apps laden ihr Modell bei der nächsten Anfrage erneut.</value></data>
+  <data name="Vm_AutoModelControl" xml:space="preserve"><value>Modellsteuerung für {0}</value></data>
+  <data name="Vm_AutoTakeBack" xml:space="preserve"><value>Von {0} geladenes Modell zurücknehmen</value></data>
+  <data name="Vm_LoadedBy" xml:space="preserve"><value>Geladen von {0}: {1} ({2})</value></data>
+  <data name="Vm_PlacementAuto" xml:space="preserve"><value>automatische Zuweisung</value></data>
+  <data name="Vm_PlacementGpu" xml:space="preserve"><value>Grafikkarte</value></data>
+  <data name="Vm_PlacementCpu" xml:space="preserve"><value>Systemspeicher</value></data>
+  <data name="Vm_PlacementCpuOnly" xml:space="preserve"><value>nur Prozessor</value></data>
+  <data name="SettingsRemoteRelay.Header" xml:space="preserve"><value>Diesen PC auch von unterwegs erreichen</value></data>
+  <data name="SettingsRemoteRelay.OnContent" xml:space="preserve"><value>Ein</value></data>
+  <data name="SettingsRemoteRelay.OffContent" xml:space="preserve"><value>Aus</value></data>
+  <data name="SettingsRemoteRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Diesen PC auch von unterwegs erreichen</value></data>
+  <data name="SettingsRelayAdmission.Header" xml:space="preserve"><value>Relay-Zugriffsschlüssel</value></data>
+  <data name="SettingsRelayAdmission.OnContent" xml:space="preserve"><value>Ein</value></data>
+  <data name="SettingsRelayAdmission.OffContent" xml:space="preserve"><value>Aus</value></data>
+  <data name="SettingsRelayAdmission.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Relay-Zugriffsschlüssel</value></data>
+  <data name="SettingsRelayAdmissionHelp.Text" xml:space="preserve"><value>Nur Geräte, die mit dem Schlüssel im Kopplungscode gekoppelt wurden, können diesen PC über das Relay erreichen. Schalten Sie dies vor dem Koppeln ein: Früher gekoppelte Geräte müssen erneut gekoppelt werden, um das Relay zu verwenden. Das Relay muss auf dem neuesten Stand sein.</value></data>
+  <data name="SettingsRotateRelayKeyText.Text" xml:space="preserve"><value>Neuer Schlüssel</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Erstellt einen neuen Relay-Zugriffsschlüssel. Jedes gekoppelte Gerät muss erneut gekoppelt werden, um das Relay zu verwenden. Das Entfernen eines Geräts ändert den Schlüssel nicht. Tun Sie dies daher, nachdem Sie ein Gerät entfernt haben, dem Sie nicht vertrauen.</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Erstellt einen neuen Relay-Zugriffsschlüssel. Jedes gekoppelte Gerät muss erneut gekoppelt werden, um das Relay zu verwenden. Das Entfernen eines Geräts ändert den Schlüssel nicht. Tun Sie dies daher, nachdem Sie ein Gerät entfernt haben, dem Sie nicht vertrauen.</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Neuer Schlüssel</value></data>
+  <data name="Vm_RotateKeyTitle" xml:space="preserve"><value>Neuen Relay-Zugriffsschlüssel erstellen?</value></data>
+  <data name="Vm_RotateKeyBody" xml:space="preserve"><value>Jedes gekoppelte Gerät muss erneut gekoppelt werden, um diesen PC über das Relay zu verwenden. Zu Hause ändert sich nichts.</value></data>
+  <data name="Vm_RotateKeyConfirm" xml:space="preserve"><value>Neuen Schlüssel erstellen</value></data>
+  <data name="SettingsRemoteRelayHelp.Text" xml:space="preserve"><value>Dieser PC stellt eine ausgehende Verbindung zu einem kleinen Relay her, sodass ein gekoppeltes Gerät ihn von überall erreichen kann. Das Relay leitet nur verschlüsselte Bytes weiter, die es nicht lesen kann, und jedes Gerät muss weiterhin gekoppelt sein und jede Anfrage signieren.</value></data>
+  <data name="Vm_RelayAway" xml:space="preserve"><value>Von unterwegs erreichbar</value></data>
+  <data name="Vm_RelayHomeOnly" xml:space="preserve"><value>Nur im Heimnetzwerk</value></data>
+  <data name="Vm_RelayUnreachable" xml:space="preserve"><value>Relay nicht erreichbar</value></data>
+  <data name="Vm_RelayConnecting" xml:space="preserve"><value>Verbindung mit dem Relay wird hergestellt...</value></data>
+  <data name="Vm_RemoteAddress" xml:space="preserve"><value>Dieser PC ist unter {0}, Port {1}, erreichbar.</value></data>
+  <data name="Vm_RemoteLastSeen" xml:space="preserve"><value>Zuletzt verwendet {0}</value></data>
+  <data name="Vm_RemoteNeverSeen" xml:space="preserve"><value>Noch nicht verwendet</value></data>
+  <data name="Vm_AutoRemoveDevice" xml:space="preserve"><value>{0} entfernen</value></data>
+  <data name="Vm_PairingExpires" xml:space="preserve"><value>Der Code ist bis {0} gültig.</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Link kopieren</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Senden Sie dies an den anderen PC. Es funktioniert 5 Minuten lang und für ein Gerät.</value></data>
+  <data name="SettingsPairingCopyLinkText.Text" xml:space="preserve"><value>Link kopieren</value></data>
+  <data name="Vm_PairingAddress" xml:space="preserve"><value>Adresse: {0}:{1}</value></data>
+  <data name="Vm_PairingFingerprint" xml:space="preserve"><value>Zertifikatsprüfung: {0}</value></data>
+  <data name="Vm_RemoveDeviceTitle" xml:space="preserve"><value>{0} entfernen?</value></data>
+  <data name="Vm_RemoveDeviceBody" xml:space="preserve"><value>{0} verliert sofort den Zugriff auf die KI dieses PCs. Die Apps darauf funktionieren nicht mehr, bis Sie das Gerät erneut koppeln.</value></data>
+  <data name="Vm_RemoveDeviceConfirm" xml:space="preserve"><value>Gerät entfernen</value></data>
+  <data name="Vm_AppOnDevice" xml:space="preserve"><value>{0} auf {1}</value></data>
+  <data name="NavDevices.Content" xml:space="preserve"><value>Geräte dieses PCs</value></data>
+  <data name="NavDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Geräte dieses PCs</value></data>
+  <data name="DevicesTitle.Text" xml:space="preserve"><value>Geräte an diesem PC</value></data>
+  <data name="DevicesGamingTitle.Text" xml:space="preserve"><value>Spielmodus</value></data>
+  <data name="DevicesGamingText.Text" xml:space="preserve"><value>Während ein Vollbildspiel läuft, wird Aufrufen von anderen Geräten mitgeteilt, dass dieser PC beschäftigt ist. Standardmäßig ausgeschaltet.</value></data>
+  <data name="DevicesGaming.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Spielmodus</value></data>
+  <data name="DevicesNone.Text" xml:space="preserve"><value>Es ist noch kein Gerät gekoppelt. Koppeln Sie eines in den Einstellungen unter „Andere Geräte“.</value></data>
+  <data name="DevicesForgetLabel.Text" xml:space="preserve"><value>Entfernen</value></data>
+  <data name="DevicesForget.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Entfernt dieses Gerät. Sein Zugriff endet sofort, und sein Nutzungsverlauf wird gelöscht. Modelle werden nicht angetastet.</value></data>
+  <data name="DevicesForget.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Entfernt dieses Gerät. Sein Zugriff endet sofort, und sein Nutzungsverlauf wird gelöscht. Modelle werden nicht angetastet.</value></data>
+  <data name="DevicesTakeBackLabel.Text" xml:space="preserve"><value>Zurücknehmen</value></data>
+  <data name="DevicesTakeBack.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Entlädt das Modell, das dieses Gerät geladen hat. Die eigene Auswahl dieses PCs kehrt zurück. Es werden keine Modelldateien angetastet.</value></data>
+  <data name="DevicesTakeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Entlädt das Modell, das dieses Gerät geladen hat. Die eigene Auswahl dieses PCs kehrt zurück. Es werden keine Modelldateien angetastet.</value></data>
+  <data name="DevicesRenameLabel.Text" xml:space="preserve"><value>Umbenennen</value></data>
+  <data name="DevicesRename.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Ändert den für dieses Gerät angezeigten Namen</value></data>
+  <data name="DevicesRename.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Ändert den für dieses Gerät angezeigten Namen</value></data>
+  <data name="DevicesNewName.Header" xml:space="preserve"><value>Gerätename</value></data>
+  <data name="DevicesRenameSave.Content" xml:space="preserve"><value>Umbenennen</value></data>
+  <data name="DevicesLimitsLabel.Text" xml:space="preserve"><value>Limits</value></data>
+  <data name="DevicesLimits.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Priorität, Tageslimits, Ruhezeiten und die Modelle, die dieses Gerät verwenden darf</value></data>
+  <data name="DevicesLimits.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Priorität, Tageslimits, Ruhezeiten und die Modelle, die dieses Gerät verwenden darf</value></data>
+  <data name="DevicesPriorityEqual.Header" xml:space="preserve"><value>Gleiche Priorität wie die Apps dieses PCs</value></data>
+  <data name="DevicesPriorityEqual.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Aus: Die eigenen Apps dieses PCs haben Vorrang. Ein: Dieses Gerät wartet in derselben Schlange.</value></data>
+  <data name="DevicesRequestLimit.Header" xml:space="preserve"><value>Anfragen pro Tag</value></data>
+  <data name="DevicesTokenLimit.Header" xml:space="preserve"><value>Token pro Tag</value></data>
+  <data name="DevicesQuiet.Header" xml:space="preserve"><value>Ruhezeiten</value></data>
+  <data name="DevicesQuiet.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Das Gerät erhält zwischen diesen Zeiten keine Antworten (Uhrzeit dieses PCs)</value></data>
+  <data name="DevicesQuietFrom.Header" xml:space="preserve"><value>Von</value></data>
+  <data name="DevicesQuietTo.Header" xml:space="preserve"><value>Bis</value></data>
+  <data name="DevicesModelsHeader.Text" xml:space="preserve"><value>Modelle, die dieses Gerät verwenden darf</value></data>
+  <data name="DevicesSaveLabel.Text" xml:space="preserve"><value>Speichern</value></data>
+  <data name="DevicesSave.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Diese Einstellungen für dieses Gerät speichern</value></data>
+  <data name="DevicesSave.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Diese Einstellungen für dieses Gerät speichern</value></data>
+  <data name="Vm_DevOnline" xml:space="preserve"><value>Online</value></data>
+  <data name="Vm_DevIdle" xml:space="preserve"><value>Inaktiv</value></data>
+  <data name="Vm_DevOffline" xml:space="preserve"><value>Offline</value></data>
+  <data name="Vm_DevRouteLan" xml:space="preserve"><value>Heimnetzwerk</value></data>
+  <data name="Vm_DevRouteRelay" xml:space="preserve"><value>Relay (unterwegs)</value></data>
+  <data name="Vm_DevRouteNone" xml:space="preserve"><value>Noch keine Route</value></data>
+  <data name="Vm_DevRunning" xml:space="preserve"><value>Läuft gerade: {0}</value></data>
+  <data name="Vm_DevRunningQueued" xml:space="preserve"><value>Läuft gerade: {0}, wartend: {1}</value></data>
+  <data name="Vm_DevToday" xml:space="preserve"><value>Heute: {0} Anfragen, {1} Token</value></data>
+  <data name="Vm_DevBar" xml:space="preserve"><value>{0} Anfragen, vor {1} Tagen</value></data>
+  <data name="Vm_DevModel" xml:space="preserve"><value>Modell: {0}</value></data>
+  <data name="Vm_DevModelNone" xml:space="preserve"><value>Noch kein Aufruf</value></data>
+  <data name="Vm_DevLoadedByPc" xml:space="preserve"><value>{0}, geladen von diesem PC</value></data>
+  <data name="Vm_DevLoadedByDevice" xml:space="preserve"><value>{1}, geladen von {0}</value></data>
+  <data name="Vm_DevSpeed" xml:space="preserve"><value>Geschwindigkeit: {0} Token/s, {1} ms bis zum ersten Byte</value></data>
+  <data name="Vm_DevSpeedNone" xml:space="preserve"><value>Geschwindigkeit: noch nicht gemessen</value></data>
+  <data name="Vm_DevPause" xml:space="preserve"><value>Anhalten</value></data>
+  <data name="Vm_DevResume" xml:space="preserve"><value>Fortsetzen</value></data>
+  <data name="Vm_DevPauseTip" xml:space="preserve"><value>Hält dieses Gerät an. Seine Aufrufe erhalten eine Antwort „angehalten“, und der Laptop verwendet seinen eigenen Fallback.</value></data>
+  <data name="Vm_DevResumeTip" xml:space="preserve"><value>Dieses Gerät diesen PC wieder verwenden lassen</value></data>
+  <data name="Vm_DevAppPauseTip" xml:space="preserve"><value>Nur diese App auf diesem Gerät anhalten</value></data>
+  <data name="Vm_DevAppResumeTip" xml:space="preserve"><value>Diese App diesen PC wieder verwenden lassen</value></data>
+  <data name="Vm_DevGamingBusy" xml:space="preserve"><value>Ein Spiel läuft: Geräten wird mitgeteilt, dass dieser PC beschäftigt ist.</value></data>
+  <data name="Vm_AutoDevPause" xml:space="preserve"><value>{0} anhalten</value></data>
+  <data name="Vm_AutoDevResume" xml:space="preserve"><value>{0} fortsetzen</value></data>
+  <data name="Vm_AutoDevAppPause" xml:space="preserve"><value>{0} auf {1} anhalten</value></data>
+  <data name="Vm_AutoDevAppResume" xml:space="preserve"><value>{0} auf {1} fortsetzen</value></data>
+  <data name="Vm_AutoDevRename" xml:space="preserve"><value>{0} umbenennen</value></data>
+  <data name="RemoteModelLoadLabel.Text" xml:space="preserve"><value>Laden</value></data>
+  <data name="RemoteModelUnloadLabel.Text" xml:space="preserve"><value>Entladen</value></data>
+  <data name="RemoteModelLoad.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Lädt dieses Modell auf den PC. Es bleibt dort geladen, bis Sie es entladen oder der PC-Besitzer es ändert.</value></data>
+  <data name="RemoteModelLoad.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Lädt dieses Modell auf den PC. Es bleibt dort geladen, bis Sie es entladen oder der PC-Besitzer es ändert.</value></data>
+  <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Entlädt das Modell, das dieser Laptop auf den PC geladen hat. Es werden keine Modelldateien angetastet.</value></data>
+  <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Entlädt das Modell, das dieser Laptop auf den PC geladen hat. Es werden keine Modelldateien angetastet.</value></data>
+  <data name="RemoteModelPlacement.Header" xml:space="preserve"><value>Ausführen auf</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Wo der PC dieses Modell ausführt: vom PC entschieden, auf seiner Grafikkarte, im Systemspeicher oder nur auf dem Prozessor mit einer Threadbegrenzung (halbe Kernanzahl). Die eigenen Limits des PCs gelten weiterhin.</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Wo der PC dieses Modell ausführt: vom PC entschieden, auf seiner Grafikkarte, im Systemspeicher oder nur auf dem Prozessor mit einer Threadbegrenzung (halbe Kernanzahl). Die eigenen Limits des PCs gelten weiterhin.</value></data>
+  <data name="RemoteModelTooBig.Text" xml:space="preserve"><value>Zu groß für den PC</value></data>
+  <data name="SettingsAppModelsHeader.Text" xml:space="preserve"><value>PC-Modell für jede App</value></data>
+  <data name="SettingsAppModelsHelp.Text" xml:space="preserve"><value>Wählen Sie, welches der PC-Modelle jede App auf diesem Laptop verwendet. „Auswahl des PCs“ überlässt die Entscheidung dem PC.</value></data>
+  <data name="Vm_RemTitle" xml:space="preserve"><value>Modelle auf {0}</value></data>
+  <data name="Vm_RemAskOwner" xml:space="preserve"><value>Bitten Sie den Besitzer von {0}, die Modellsteuerung für diesen Laptop einzuschalten.</value></data>
+  <data name="Vm_RemPlacementAuto" xml:space="preserve"><value>Automatisch</value></data>
+  <data name="Vm_RemPlacementGpu" xml:space="preserve"><value>Grafikkarte</value></data>
+  <data name="Vm_RemPlacementCpu" xml:space="preserve"><value>Systemspeicher</value></data>
+  <data name="Vm_RemPlacementCpuOnly" xml:space="preserve"><value>Nur Prozessor</value></data>
+  <data name="Vm_RemStateLoaded" xml:space="preserve"><value>Geladen</value></data>
+  <data name="Vm_RemStateLoading" xml:space="preserve"><value>Wird geladen</value></data>
+  <data name="Vm_RemByLaptop" xml:space="preserve"><value>Von diesem Laptop geladen</value></data>
+  <data name="Vm_RemByPc" xml:space="preserve"><value>Vom PC geladen</value></data>
+  <data name="Vm_RemByOther" xml:space="preserve"><value>Von einem anderen Gerät geladen</value></data>
+  <data name="Vm_RemAutoLoad" xml:space="preserve"><value>{0} auf den PC laden</value></data>
+  <data name="Vm_RemAutoUnload" xml:space="preserve"><value>{0} vom PC entladen</value></data>
+  <data name="Vm_RemHostGone" xml:space="preserve"><value>Der Host wird nicht ausgeführt.</value></data>
+  <data name="Vm_AppModelPcChoice" xml:space="preserve"><value>Auswahl des PCs</value></data>
+  <data name="Vm_AppModelAutomation" xml:space="preserve"><value>PC-Modell für {0}</value></data>
+  <data name="SettingsHomePcHeader.Text" xml:space="preserve"><value>Heim-PC</value></data>
+  <data name="SettingsHomePcHelp.Text" xml:space="preserve"><value>Verwenden Sie die KI auf einem anderen PC von Ihnen, statt sie auf diesem auszuführen. Koppeln Sie diesen Laptop einmalig mit dem PC; Apps hier fragen dann diesen PC.</value></data>
+  <data name="SettingsHomeMode.Header" xml:space="preserve"><value>Wo die KI läuft</value></data>
+  <data name="SettingsHomeMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Wo die KI läuft</value></data>
+  <data name="SettingsHomeFallback.Header" xml:space="preserve"><value>Wenn der Heim-PC nicht erreichbar ist</value></data>
+  <data name="SettingsHomeFallback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Wenn der Heim-PC nicht erreichbar ist</value></data>
+  <data name="SettingsHomeRelayMode.Header" xml:space="preserve"><value>Verbindung von unterwegs</value></data>
+  <data name="SettingsHomeRelayMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Verbindung von unterwegs</value></data>
+  <data name="SettingsHomeUseRelay.Header" xml:space="preserve"><value>Relay verwenden</value></data>
+  <data name="SettingsHomeUseRelay.OnContent" xml:space="preserve"><value>Ein</value></data>
+  <data name="SettingsHomeUseRelay.OffContent" xml:space="preserve"><value>Aus</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Relay verwenden</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Schaltet das Relay nur für diese Sitzung ein. Es wird zurückgesetzt, wenn die App geschlossen wird.</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>PC koppeln</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Diesen Laptop über einen Kopplungslink mit einem Heim-PC koppeln</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Diesen Laptop über einen Kopplungslink mit einem Heim-PC koppeln</value></data>
+  <data name="SettingsHomePairText.Text" xml:space="preserve"><value>PC koppeln</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Kopplung aufheben</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Den gekoppelten PC vergessen. Modelle und Downloads bleiben unverändert.</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Den gekoppelten PC vergessen. Modelle und Downloads bleiben unverändert.</value></data>
+  <data name="SettingsHomeUnpairText.Text" xml:space="preserve"><value>Kopplung aufheben</value></data>
+  <data name="SettingsNotifyDevices.Header" xml:space="preserve"><value>Ein Gerät koppelt sich oder verbindet sich von unterwegs</value></data>
+  <data name="SettingsNotifyDevices.OnContent" xml:space="preserve"><value>Ein</value></data>
+  <data name="SettingsNotifyDevices.OffContent" xml:space="preserve"><value>Aus</value></data>
+  <data name="SettingsNotifyDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ein Gerät koppelt sich oder verbindet sich von unterwegs</value></data>
+  <data name="HomeClientEmpty.Text" xml:space="preserve"><value>Die KI läuft auf Ihrem anderen PC. Modelle, Speichernutzung und Aufwärmphase werden dort angezeigt.</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>PC wechseln</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Die Einstellungen für den Heim-PC öffnen, um einen anderen PC zu koppeln</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Die Einstellungen für den Heim-PC öffnen, um einen anderen PC zu koppeln</value></data>
+  <data name="HomeChangePcText.Text" xml:space="preserve"><value>PC wechseln</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>KI hier ausführen</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Den Clientmodus verlassen und die KI wieder auf diesem PC ausführen. Die Kopplung bleibt gespeichert.</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Den Clientmodus verlassen und die KI wieder auf diesem PC ausführen. Die Kopplung bleibt gespeichert.</value></data>
+  <data name="HomeRunHereText.Text" xml:space="preserve"><value>KI hier ausführen</value></data>
+  <data name="ModelsLocalNote.Text" xml:space="preserve"><value>Downloads auf dieser Seite gelten für den Fall, dass dieser PC die KI ausführt.</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Meinen Heim-PC verwenden</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Den Download überspringen und die KI auf einem anderen PC von Ihnen verwenden. Als Nächstes koppeln Sie sich damit.</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Den Download überspringen und die KI auf einem anderen PC von Ihnen verwenden. Als Nächstes koppeln Sie sich damit.</value></data>
+  <data name="WelcomeHomePcText.Text" xml:space="preserve"><value>Meinen Heim-PC verwenden</value></data>
+  <data name="Vm_LinkConnectedLan" xml:space="preserve"><value>Verbunden - Heimnetzwerk</value></data>
+  <data name="Vm_LinkConnectedRelay" xml:space="preserve"><value>Verbunden - über Relay</value></data>
+  <data name="Vm_LinkConnecting" xml:space="preserve"><value>Verbindung wird hergestellt...</value></data>
+  <data name="Vm_LinkUnreachable" xml:space="preserve"><value>Nicht erreichbar</value></data>
+  <data name="Vm_LinkRevoked" xml:space="preserve"><value>Dieser Laptop wurde vom PC entfernt</value></data>
+  <data name="Vm_LinkRepair" xml:space="preserve"><value>Erneut koppeln</value></data>
+  <data name="Vm_LinkRtt" xml:space="preserve"><value>{0} - {1} ms</value></data>
+  <data name="Vm_LinkLastSeen" xml:space="preserve"><value>Zuletzt gesehen {0}</value></data>
+  <data name="Vm_LinkUsingLaptop" xml:space="preserve"><value>Modell dieses Laptops wird verwendet</value></data>
+  <data name="Vm_LinkUnreachableHelp" xml:space="preserve"><value>{0} ist nicht erreichbar. Prüfen Sie, ob er eingeschaltet und im selben Netzwerk ist, oder schalten Sie das Relay ein.</value></data>
+  <data name="Vm_LinkRevokedHelp" xml:space="preserve"><value>{0} lässt diesen Laptop nicht mehr zu. Koppeln Sie erneut, um ihn weiter zu verwenden.</value></data>
+  <data name="Vm_LinkRepairHelp" xml:space="preserve"><value>Die Identität von {0} hat sich geändert, daher vertraut dieser Laptop ihm nicht mehr. Wenn Sie das nicht erwartet haben, koppeln Sie nicht erneut. Andernfalls heben Sie die Kopplung auf und koppeln Sie dann erneut.</value></data>
+  <data name="Vm_TrayLink" xml:space="preserve"><value>{0} - {1}</value></data>
+  <data name="Vm_DeviceAlertPaired" xml:space="preserve"><value>{0} wurde gekoppelt und kann jetzt die KI dieses PCs verwenden.</value></data>
+  <data name="Vm_DeviceAlertRelay" xml:space="preserve"><value>{0} hat sich von unterwegs über das Relay verbunden.</value></data>
+  <data name="Vm_HomeModeThisPc" xml:space="preserve"><value>Dieser PC</value></data>
+  <data name="Vm_HomeModeHomePc" xml:space="preserve"><value>Meinen Heim-PC verwenden</value></data>
+  <data name="Vm_HomeFallbackNone" xml:space="preserve"><value>Keines</value></data>
+  <data name="Vm_HomeFallbackLocal" xml:space="preserve"><value>Modell dieses Laptops verwenden</value></data>
+  <data name="Vm_HomeRelayAuto" xml:space="preserve"><value>Automatisch</value></data>
+  <data name="Vm_HomeRelayManual" xml:space="preserve"><value>Manuell</value></data>
+  <data name="Vm_HomeNeedsPair" xml:space="preserve"><value>Koppeln Sie zuerst einen PC.</value></data>
+  <data name="Vm_UnpairTitle" xml:space="preserve"><value>Kopplung mit diesem PC aufheben?</value></data>
+  <data name="Vm_UnpairBody" xml:space="preserve"><value>Dieser Laptop vergisst {0} und verwendet ihn nicht mehr. Modelle und Downloads bleiben unberührt. Sie können später erneut koppeln.</value></data>
+  <data name="Vm_UnpairConfirm" xml:space="preserve"><value>Kopplung aufheben</value></data>
+  <data name="Vm_UnpairCancel" xml:space="preserve"><value>Abbrechen</value></data>
+  <data name="Vm_FallbackTitle" xml:space="preserve"><value>Ihr Heim-PC ist nicht erreichbar</value></data>
+  <data name="Vm_FallbackBody" xml:space="preserve"><value>{0} ist derzeit nicht erreichbar. Soll dieser Laptop in der Zwischenzeit mit seinem eigenen Modell antworten? Sie können das in den Einstellungen unter „Heim-PC“ ändern.</value></data>
+  <data name="Vm_FallbackLocal" xml:space="preserve"><value>Modell dieses Laptops verwenden</value></data>
+  <data name="Vm_FallbackNone" xml:space="preserve"><value>Keines</value></data>
+  <data name="Vm_PairTitle" xml:space="preserve"><value>Meinen Heim-PC verwenden</value></data>
+  <data name="Vm_PairIntro" xml:space="preserve"><value>Öffnen Sie auf dem anderen PC die Einstellungen, wählen Sie „Gerät koppeln“, und kopieren Sie den Link. Fügen Sie ihn hier ein.</value></data>
+  <data name="Vm_PairLinkPlaceholder" xml:space="preserve"><value>portalai://pair?...</value></data>
+  <data name="Vm_PairLinkName" xml:space="preserve"><value>Kopplungslink</value></data>
+  <data name="Vm_PairPaste" xml:space="preserve"><value>Link einfügen</value></data>
+  <data name="Vm_PairPasteTip" xml:space="preserve"><value>Kopplungslink aus der Zwischenablage einfügen</value></data>
+  <data name="Vm_PairNext" xml:space="preserve"><value>Weiter</value></data>
+  <data name="Vm_PairConfirm" xml:space="preserve"><value>Koppeln</value></data>
+  <data name="Vm_PairBack" xml:space="preserve"><value>Zurück</value></data>
+  <data name="Vm_PairCancel" xml:space="preserve"><value>Abbrechen</value></data>
+  <data name="Vm_PairWorking" xml:space="preserve"><value>Verbindung mit dem PC wird hergestellt...</value></data>
+  <data name="Vm_PairDeviceName" xml:space="preserve"><value>Name dieses Laptops</value></data>
+  <data name="Vm_PairConfirmPc" xml:space="preserve"><value>Mit {0} koppeln?</value></data>
+  <data name="Vm_PairFingerprint" xml:space="preserve"><value>Fingerabdruck: {0}</value></data>
+  <data name="Vm_PairErr_invalid_input" xml:space="preserve"><value>Der Link ist ungültig. Kopieren Sie ihn erneut vom anderen PC.</value></data>
+  <data name="Vm_PairErr_address_not_allowed" xml:space="preserve"><value>Diese Adresse gehört nicht zu Ihrem Heimnetzwerk. Koppeln Sie von unterwegs aus zuerst einmal zu Hause.</value></data>
+  <data name="Vm_PairErr_unreachable" xml:space="preserve"><value>Diese Adresse konnte nicht erreicht werden.</value></data>
+  <data name="Vm_PairErr_certificate_mismatch" xml:space="preserve"><value>Dieser PC konnte nicht verifiziert werden.</value></data>
+  <data name="Vm_PairErr_host_proof_invalid" xml:space="preserve"><value>Dieser PC konnte nicht verifiziert werden.</value></data>
+  <data name="Vm_PairErr_refused" xml:space="preserve"><value>Dieser PC hat die Kopplung abgelehnt.</value></data>
+  <data name="Vm_PairErr_protocol_error" xml:space="preserve"><value>Dieser PC hat eine unerwartete Antwort gesendet.</value></data>
+  <data name="Vm_PairErr_save_failed" xml:space="preserve"><value>Die Kopplung war erfolgreich, konnte aber auf diesem PC nicht gespeichert werden.</value></data>
+  <data name="Vm_PairErr_already_paired" xml:space="preserve"><value>Es ist bereits ein PC gekoppelt. Heben Sie die Kopplung zuerst in den Einstellungen auf.</value></data>
+  <data name="Vm_PairErr_not_available" xml:space="preserve"><value>Das Koppeln ist in dieser Installation nicht verfügbar.</value></data>
+  <data name="Vm_PairErr_host" xml:space="preserve"><value>Die App wird nicht ausgeführt.</value></data>
+  <data name="Vm_PairReason_expired" xml:space="preserve"><value>Der Code ist abgelaufen. Fordern Sie einen neuen an.</value></data>
+  <data name="Vm_PairReason_code_voided" xml:space="preserve"><value>Dieser Code wurde durch falsche Eingaben verbraucht. Fordern Sie einen neuen an.</value></data>
+  <data name="Vm_PairReason_no_offer" xml:space="preserve"><value>Dieser PC wartet auf kein Gerät. Öffnen Sie dort einen neuen Code.</value></data>
+  <data name="Vm_PairReason_too_many_devices" xml:space="preserve"><value>Dieser PC hat bereits 16 Geräte. Entfernen Sie zuerst eines.</value></data>
+  <data name="Vm_PairReason_wrong_code" xml:space="preserve"><value>Der Code ist nicht korrekt.</value></data>
+  <data name="ModelsMemoryTitle.Text" xml:space="preserve"><value>Speicherbudget</value></data>
+  <data name="ModelsMemoryTitle.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Was die geladenen und gerade ladenden Modelle voraussichtlich belegen, im Verhältnis zum RAM-Limit und zum Grafikkartenspeicher. Ein Modell, das nicht passen würde, wird abgelehnt.</value></data>
+  <data name="Vm_MemRam" xml:space="preserve"><value>RAM</value></data>
+  <data name="Vm_MemVram" xml:space="preserve"><value>Grafikspeicher</value></data>
+  <data name="Vm_MemLine" xml:space="preserve"><value>{0}: {1} belegt, {2} beim Laden reserviert, {3} frei von {4}</value></data>
+  <data name="UpdateBar.Title" xml:space="preserve"><value>Update verfügbar</value></data>
+  <data name="UpdateBar.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Eine neuere Version von Portal AI Host steht im Microsoft Store bereit</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Aktualisieren</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Die Seite im Microsoft Store öffnen, um Portal AI Host zu aktualisieren</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Die Seite im Microsoft Store öffnen, um Portal AI Host zu aktualisieren</value></data>
+  <data name="UpdateButtonText.Text" xml:space="preserve"><value>Aktualisieren</value></data>
+  <data name="Vm_ComingSoon" xml:space="preserve"><value>Demnächst verfügbar</value></data>
+  <data name="Vm_VramBoth" xml:space="preserve"><value>Benötigt {0} GB Grafikspeicher mit CPU-Auslagerung; empfohlen sind {1} GB.</value></data>
+  <data name="Vm_VramMin" xml:space="preserve"><value>Benötigt {0} GB Grafikspeicher mit CPU-Auslagerung.</value></data>
+  <data name="Vm_VramRec" xml:space="preserve"><value>{0} GB Grafikspeicher empfohlen.</value></data>
+  <data name="Vm_GroupCount" xml:space="preserve"><value>{0} Modelle</value></data>
+  <data name="Vm_ShowAll" xml:space="preserve"><value>Alle {0} anzeigen</value></data>
+  <data name="Vm_ShowFewer" xml:space="preserve"><value>Weniger anzeigen</value></data>
+  <data name="Vm_CatAllTip" xml:space="preserve"><value>Modelle aller Arten anzeigen</value></data>
+  <data name="Vm_CatChip_all" xml:space="preserve"><value>Alle</value></data>
+  <data name="Vm_CatChip_chat" xml:space="preserve"><value>Chat</value></data>
+  <data name="Vm_CatChip_coding" xml:space="preserve"><value>Programmieren</value></data>
+  <data name="Vm_CatChip_reasoning" xml:space="preserve"><value>Schlussfolgern</value></data>
+  <data name="Vm_CatChip_vision" xml:space="preserve"><value>Bildverständnis</value></data>
+  <data name="Vm_CatChip_search" xml:space="preserve"><value>Suche</value></data>
+  <data name="Vm_CatChip_image" xml:space="preserve"><value>Bilder</value></data>
+  <data name="Vm_CatChip_video" xml:space="preserve"><value>Video</value></data>
+  <data name="Vm_CatChip_speech" xml:space="preserve"><value>Sprache</value></data>
+  <data name="Vm_CatChip_other" xml:space="preserve"><value>Andere</value></data>
+  <data name="Vm_Cat_chat" xml:space="preserve"><value>Chat &amp; Schreiben</value></data>
+  <data name="Vm_Cat_coding" xml:space="preserve"><value>Programmieren</value></data>
+  <data name="Vm_Cat_reasoning" xml:space="preserve"><value>Schlussfolgern</value></data>
+  <data name="Vm_Cat_vision" xml:space="preserve"><value>Bilder verstehen</value></data>
+  <data name="Vm_Cat_search" xml:space="preserve"><value>Suche &amp; Embeddings</value></data>
+  <data name="Vm_Cat_image" xml:space="preserve"><value>Bildgenerierung</value></data>
+  <data name="Vm_Cat_video" xml:space="preserve"><value>Videogenerierung</value></data>
+  <data name="Vm_Cat_speech" xml:space="preserve"><value>Sprache</value></data>
+  <data name="Vm_Cat_other" xml:space="preserve"><value>Andere Modelle</value></data>
+  <data name="ModelsSearch.PlaceholderText" xml:space="preserve"><value>Modelle suchen</value></data>
+  <data name="ModelsSearch.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Modelle suchen</value></data>
+  <data name="ModelsNoMatches.Text" xml:space="preserve"><value>Keine Modelle gefunden. Löschen Sie die Suche, oder wählen Sie „Alle“.</value></data>
+  <data name="HomeSeeAppsLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Anzeigen, welche Apps mit diesem Host verbunden sind</value></data>
+  <data name="HomeSeeAppsLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Anzeigen, welche Apps mit diesem Host verbunden sind</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Den Kopplungslink in die Zwischenablage kopieren</value></data>
+  <data name="HomeLoadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Das Modell in den Arbeitsspeicher laden, damit es schneller antwortet</value></data>
+  <data name="HomeLoadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Das Modell in den Arbeitsspeicher laden, damit es schneller antwortet</value></data>
+  <data name="SettingsNotifyDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Eine Benachrichtigung anzeigen, wenn sich ein Gerät koppelt oder verbindet</value></data>
+  <data name="SettingsCorners.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Wie rund die Ecken sind</value></data>
+  <data name="HomeChangeFolderButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Die Einstellungen öffnen, um einen Ordner mit mehr freiem Speicherplatz auszuwählen</value></data>
+  <data name="HomeChangeFolderButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Die Einstellungen öffnen, um einen Ordner mit mehr freiem Speicherplatz auszuwählen</value></data>
+  <data name="SettingsMoveButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Die Modelle in den ausgewählten Ordner verschieben. Dateien werden kopiert und geprüft, bevor die alten entfernt werden.</value></data>
+  <data name="SettingsMoveButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Die Modelle in den ausgewählten Ordner verschieben. Dateien werden kopiert und geprüft, bevor die alten entfernt werden.</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Kopplung abbrechen</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Kopplung abbrechen</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Die Integritätsprüfungen ein- oder ausblenden</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Die Integritätsprüfungen ein- oder ausblenden</value></data>
+  <data name="SettingsMaterial.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Der Hintergrundstil des Fensters</value></data>
+  <data name="HomeDownloadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Das empfohlene Modell herunterladen</value></data>
+  <data name="HomeDownloadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Das empfohlene Modell herunterladen</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Genau sehen, was ein Absturzbericht enthält</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Genau sehen, was ein Absturzbericht enthält</value></data>
+  <data name="SettingsEaseOffFullscreen.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Arbeitsspeicher freigeben, während eine Vollbild-App oder ein Spiel läuft</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Die Seite „Modelle“ öffnen, um bessere Modelle zu sehen</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Die Seite „Modelle“ öffnen, um bessere Modelle zu sehen</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Die Leistungseinstellungen auf Standard zurücksetzen</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Die Leistungseinstellungen auf Standard zurücksetzen</value></data>
+  <data name="SettingsEaseOffBattery.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Arbeitsspeicher freigeben, während der PC im Akkubetrieb läuft</value></data>
+  <data name="SettingsPreset.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Ein vorgefertigtes Verhältnis von Geschwindigkeit und Speichernutzung wählen</value></data>
+  <data name="SettingsRemoteRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Gekoppelten Geräten erlauben, diesen PC von außerhalb Ihres Heimnetzwerks zu erreichen</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Einen Code zum Koppeln eines neuen Geräts erstellen</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Einen Code zum Koppeln eines neuen Geräts erstellen</value></data>
+  <data name="SettingsCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Absturzberichte senden, um Probleme beheben zu helfen</value></data>
+  <data name="SettingsAllowReplace.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Einem Gerät erlauben, eine bestehende Kopplung zu ersetzen</value></data>
+  <data name="SettingsMotion.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Wie viele Animationen verwendet werden</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Zum Standardmodellordner zurückkehren</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Zum Standardmodellordner zurückkehren</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Erlauben, den Heim-PC über das Relay zu erreichen, wenn Sie unterwegs sind</value></data>
+  <data name="HomeTryAgainButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Erneut versuchen, die Modellliste zu laden</value></data>
+  <data name="HomeTryAgainButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Erneut versuchen, die Modellliste zu laden</value></data>
+  <data name="SettingsStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Portal AI Host starten, wenn Sie sich bei Windows anmelden</value></data>
+  <data name="SettingsHomeMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Wählen, ob dieser PC Modelle selbst ausführt oder Ihren Heim-PC verwendet</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Den Host starten, damit Apps ihn verwenden können</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Den Host starten, damit Apps ihn verwenden können</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Die allgemeinen Einstellungen auf Standard zurücksetzen</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Die allgemeinen Einstellungen auf Standard zurücksetzen</value></data>
+  <data name="SettingsHomeFallback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Was zu tun ist, wenn der Heim-PC nicht erreichbar ist</value></data>
+  <data name="SettingsDensity.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Wie viel Platz zwischen den Elementen ist</value></data>
+  <data name="SettingsTextSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Wie groß der Text ist</value></data>
+  <data name="SettingsIdle.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Wie lange der Host ohne Anfragen wartet, bevor er den Modellspeicher freigibt</value></data>
+  <data name="SettingsEaseOffAppBusy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Arbeitsspeicher freigeben, während eine andere App stark ausgelastet ist</value></data>
+  <data name="SettingsRemoveDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Dieses Gerät entfernen. Es muss erneut gekoppelt werden, um sich zu verbinden.</value></data>
+  <data name="SettingsRemoveDevice.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Dieses Gerät entfernen. Es muss erneut gekoppelt werden, um sich zu verbinden.</value></data>
+  <data name="SettingsMoveCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Das Verschieben der Modelle beenden</value></data>
+  <data name="SettingsMoveCancel.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Das Verschieben der Modelle beenden</value></data>
+  <data name="SettingsNotifyDownloads.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Eine Benachrichtigung anzeigen, wenn ein Download abgeschlossen wird oder fehlschlägt</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Die Datenschutzeinstellungen auf Standard zurücksetzen</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Die Datenschutzeinstellungen auf Standard zurücksetzen</value></data>
+  <data name="HealthCheckAgainButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Die Integritätsprüfungen erneut ausführen</value></data>
+  <data name="HealthCheckAgainButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Die Integritätsprüfungen erneut ausführen</value></data>
+  <data name="SettingsMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Wie viel Arbeitsspeicher Modelle verwenden dürfen</value></data>
+  <data name="SettingsTheme.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hell, dunkel oder Windows folgen</value></data>
+  <data name="SettingsRemoteEnabled.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Ihren anderen Geräten erlauben, diesen PC zu verwenden</value></data>
+  <data name="SettingsNotifyProblems.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Eine Benachrichtigung anzeigen, wenn etwas Ihre Aufmerksamkeit erfordert</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Die Chatseite öffnen, um das aktive Modell auszuprobieren</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Die Chatseite öffnen, um das aktive Modell auszuprobieren</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Die Benachrichtigungseinstellungen auf Standard zurücksetzen</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Die Benachrichtigungseinstellungen auf Standard zurücksetzen</value></data>
+  <data name="SettingsRelayAdmission.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Verlangen, dass das Relay Geräte prüft, bevor sie sich verbinden</value></data>
+  <data name="HomeUnloadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Den vom Modell belegten Arbeitsspeicher freigeben. Die Modelldatei bleibt auf dem Datenträger.</value></data>
+  <data name="HomeUnloadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Den vom Modell belegten Arbeitsspeicher freigeben. Die Modelldatei bleibt auf dem Datenträger.</value></data>
+  <data name="HomeSeeAllModelsLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Alle herunterladbaren Modelle durchsuchen</value></data>
+  <data name="HomeSeeAllModelsLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Alle herunterladbaren Modelle durchsuchen</value></data>
+  <data name="SettingsNotifyApprovals.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Eine Benachrichtigung anzeigen, wenn eine App um Erlaubnis bittet</value></data>
+  <data name="SettingsHomeRelayMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Wählen, wann das Relay verwendet wird, um den Heim-PC zu erreichen</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Die Darstellungseinstellungen auf Standard zurücksetzen</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Die Darstellungseinstellungen auf Standard zurücksetzen</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Integritätsprüfungen</value></data>
+</root>
