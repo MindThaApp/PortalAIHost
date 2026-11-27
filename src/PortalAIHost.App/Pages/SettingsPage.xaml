@@ -12,9 +12,10 @@
                 Message="{x:Bind ViewModel.Message, Mode=OneWay}"
                 IsClosable="False" />
 
-            <Grid>
-                <TextBlock x:Uid="SettingsGeneralHeader" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center" />
-                <HyperlinkButton x:Uid="SettingsResetGeneral" Command="{x:Bind ViewModel.ResetGeneralCommand}" HorizontalAlignment="Right" />
+            <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                <TextBlock x:Uid="SettingsGeneralHeader" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center" TextWrapping="Wrap" />
+                <HyperlinkButton x:Uid="SettingsResetGeneral" Command="{x:Bind ViewModel.ResetGeneralCommand}" Grid.Column="1" VerticalAlignment="Center" />
             </Grid>
             <Border Style="{StaticResource CardBorder}">
                 <StackPanel Spacing="16">
@@ -33,9 +34,10 @@
                 </StackPanel>
             </Border>
 
-            <Grid x:Name="PerformanceHeader">
-                <TextBlock x:Uid="SettingsPerformanceHeader" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center" />
-                <HyperlinkButton x:Uid="SettingsResetPerformance" Command="{x:Bind ViewModel.ResetPerformanceCommand}" HorizontalAlignment="Right" />
+            <Grid x:Name="PerformanceHeader" ColumnSpacing="12">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                <TextBlock x:Uid="SettingsPerformanceHeader" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center" TextWrapping="Wrap" />
+                <HyperlinkButton x:Uid="SettingsResetPerformance" Command="{x:Bind ViewModel.ResetPerformanceCommand}" Grid.Column="1" VerticalAlignment="Center" />
             </Grid>
             <Border Style="{StaticResource CardBorder}">
                 <ContentControl IsEnabled="{x:Bind ViewModel.PerformanceAvailable, Mode=OneWay}" HorizontalContentAlignment="Stretch">
@@ -146,9 +148,10 @@
                 </ContentControl>
             </Border>
 
-            <Grid>
-                <TextBlock x:Uid="SettingsNotificationsHeader" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center" />
-                <HyperlinkButton x:Uid="SettingsResetNotifications" Command="{x:Bind ViewModel.ResetNotificationsCommand}" HorizontalAlignment="Right" />
+            <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                <TextBlock x:Uid="SettingsNotificationsHeader" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center" TextWrapping="Wrap" />
+                <HyperlinkButton x:Uid="SettingsResetNotifications" Command="{x:Bind ViewModel.ResetNotificationsCommand}" Grid.Column="1" VerticalAlignment="Center" />
             </Grid>
             <Border Style="{StaticResource CardBorder}">
                 <StackPanel Spacing="16">
@@ -269,9 +272,10 @@
                 </StackPanel>
             </Border>
 
-            <Grid>
-                <TextBlock x:Uid="SettingsPrivacyHeader" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center" />
-                <HyperlinkButton x:Uid="SettingsResetPrivacy" Command="{x:Bind ViewModel.ResetPrivacyCommand}" HorizontalAlignment="Right" />
+            <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                <TextBlock x:Uid="SettingsPrivacyHeader" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center" TextWrapping="Wrap" />
+                <HyperlinkButton x:Uid="SettingsResetPrivacy" Command="{x:Bind ViewModel.ResetPrivacyCommand}" Grid.Column="1" VerticalAlignment="Center" />
             </Grid>
             <Border Style="{StaticResource CardBorder}">
                 <StackPanel Spacing="8">
@@ -281,9 +285,10 @@
                 </StackPanel>
             </Border>
 
-            <Grid>
-                <TextBlock x:Uid="SettingsModelsHeader" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center" />
-                <HyperlinkButton x:Uid="SettingsResetFolder" Command="{x:Bind ViewModel.ResetFolderCommand}" HorizontalAlignment="Right" />
+            <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                <TextBlock x:Uid="SettingsModelsHeader" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center" TextWrapping="Wrap" />
+                <HyperlinkButton x:Uid="SettingsResetFolder" Command="{x:Bind ViewModel.ResetFolderCommand}" Grid.Column="1" VerticalAlignment="Center" />
             </Grid>
             <Border Style="{StaticResource CardBorder}">
                 <StackPanel Spacing="8">
@@ -331,9 +336,10 @@
                 </Border>
             </StackPanel>
 
-            <Grid>
-                <TextBlock x:Uid="SettingsAppearanceHeader" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center" />
-                <HyperlinkButton x:Uid="SettingsResetAppearance" Command="{x:Bind ViewModel.ResetAppearanceCommand}" HorizontalAlignment="Right" />
+            <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                <TextBlock x:Uid="SettingsAppearanceHeader" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center" TextWrapping="Wrap" />
+                <HyperlinkButton x:Uid="SettingsResetAppearance" Command="{x:Bind ViewModel.ResetAppearanceCommand}" Grid.Column="1" VerticalAlignment="Center" />
             </Grid>
             <Border Style="{StaticResource CardBorder}">
                 <StackPanel Spacing="16">
