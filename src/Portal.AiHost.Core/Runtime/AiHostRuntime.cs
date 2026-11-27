@@ -90,7 +90,7 @@ public sealed class AiHostRuntimeOptions
     /// <summary>Facts for GET /host/health that only the hosting process knows (engine files, free disk, damaged marks).</summary>
     public HealthSources? Health { get; init; }
 
-    /// <summary>Voice library and speech jobs (api-v1 section 10). Null: this host has no voice feature and the routes do not exist.</summary>
+    /// <summary>Voice library and speech jobs (api-v1 section 6, Voice). Null: this host has no voice feature and the routes do not exist.</summary>
     public Portal.AiHost.Core.Voice.VoiceService? Voice { get; init; }
 }
 

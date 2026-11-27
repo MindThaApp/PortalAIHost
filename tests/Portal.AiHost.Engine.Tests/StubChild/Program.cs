@@ -122,6 +122,40 @@ async Task Handle(HttpListenerContext ctx)
         {
             await Write(ctx, "{\"prompt\":\"a b c\"}");
         }
+        else if (path == "/v1/speech")
+        {
+            // Voice helper stand-in: a 0.1 s mono 24 kHz tone, or a 500 for text that says FAIL.
+            if (body.Contains("FAIL", StringComparison.Ordinal))
+            {
+                ctx.Response.StatusCode = 500;
+                await Write(ctx, "{}");
+                return;
+            }
+
+            const int rate = 24000;
+            var n = rate / 10;
+            var wav = new byte[44 + n * 2];
+            Encoding.ASCII.GetBytes("RIFF").CopyTo(wav, 0);
+            BitConverter.GetBytes(36 + n * 2).CopyTo(wav, 4);
+            Encoding.ASCII.GetBytes("WAVEfmt ").CopyTo(wav, 8);
+            BitConverter.GetBytes(16).CopyTo(wav, 16);
+            BitConverter.GetBytes((short)1).CopyTo(wav, 20);
+            BitConverter.GetBytes((short)1).CopyTo(wav, 22);
+            BitConverter.GetBytes(rate).CopyTo(wav, 24);
+            BitConverter.GetBytes(rate * 2).CopyTo(wav, 28);
+            BitConverter.GetBytes((short)2).CopyTo(wav, 32);
+            BitConverter.GetBytes((short)16).CopyTo(wav, 34);
+            Encoding.ASCII.GetBytes("data").CopyTo(wav, 36);
+            BitConverter.GetBytes(n * 2).CopyTo(wav, 40);
+            for (var i = 0; i < n; i++)
+            {
+                BitConverter.GetBytes((short)(Math.Sin(i * 0.06) * 7000)).CopyTo(wav, 44 + i * 2);
+            }
+
+            ctx.Response.ContentType = "audio/wav";
+            await ctx.Response.OutputStream.WriteAsync(wav);
+            ctx.Response.Close();
+        }
         else if (path == "/tokenize")
         {
             await Write(ctx, "{\"tokens\":[1,2,3]}");

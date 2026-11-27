@@ -201,6 +201,10 @@ and may be localised later. Each code always comes with the same `type` (OpenAI-
 | 503 | `auth_unavailable` | `unavailable` | yes | The host cannot read its token store right now (for example a locked file). Your token is not lost: keep it and retry shortly. |
 | 503 | `remote_unreachable` | `unavailable` | yes | Client mode only: the PC that runs the AI cannot be reached now. `details.reason` is `offline`, `relay_host_offline`, `relay_busy`, `relay_admission`, `clock`, `refused`, `cert_changed`, `paused`, `quiet_hours`, `gaming_busy` or `limit_reached`; `retry_after_ms` follows the reconnect backoff. Use your own built-in AI meanwhile. |
 | 504 | `deadline_exceeded` | `timeout` | no | `details.phase` is `queued`, `loading` or `generating`. |
+| 400 | `consent_required` | `invalid_request_error` | no | Creating a voice needs `consent`: `own_voice` or `permission`. |
+| 400 | `unsupported_audio` | `invalid_request_error` | no | The voice sample is not a readable MP3 or WAV file (or this host cannot read MP3 yet). |
+| 404 | `voice_not_found` | `not_found_error` | no | No voice with that id. |
+| 409 | `voice_in_use` | `conflict_error` | no | A speech job that is queued or running uses the voice. Cancel it or wait, then remove the voice. |
 | 500 | `engine_error` | `server_error` | once | The engine failed unexpectedly. Retry at most once, then fall back. |
 | 500 | `internal_error` | `server_error` | once | Unexpected host error. Retry at most once, then fall back. |
 
@@ -304,12 +308,22 @@ the host re-plans memory; the revision number tells you when.
     "default_deadline_ms": { "interactive": 120000, "batch": 1800000 },
     "max_deadline_ms": 3600000
   },
-  "endpoints": ["chat.completions", "embeddings", "models", "tokenize", "warmup", "performance", "ease-off", "health"]
+  "endpoints": ["chat.completions", "embeddings", "models", "tokenize", "warmup", "performance", "ease-off", "health",
+                "voices", "speech"],
+  "voice": { "cloning": true, "speech": true, "formats": ["wav"], "sample_formats": ["wav", "mp3"],
+             "max_sample_seconds": 60, "max_text_chars": 20000 }
 }
 ```
 `endpoints` lists `"performance"` on hosts that have `GET /host/performance` (1.0.2 and later) and `"ease-off"` on
 hosts that have `POST /host/ease-off` (1.0.3 and later), and `"health"` on hosts that have `GET /host/health`
 (1.0.3 and later). Check for them before calling; older hosts do not list them.
+
+`voice` appears on hosts that have the voice feature (section 6, Voice) and is absent on older hosts. `cloning` is
+true when a voice can be made from a sample, `speech` when text can be read aloud with any voice. Both are `false` (and
+`formats` is empty, with `reason: "no_model"`) while the voice engine or its models are not installed, so check them
+before showing voice controls. `formats` lists the audio formats a speech job can produce: **WAV only for now. MP3
+output is not offered**; it may be added later, and will then appear in this list, so never assume it.
+`sample_formats` lists what a voice sample may be (`wav`, plus `mp3` when the host can decode it).
 
 **How to use the fields:**
 - `context_tokens` is the usable context **per request** right now. It grows on machines with more memory (up to
@@ -508,6 +522,56 @@ infinite for streams.
 - **Response:** OpenAI shape. Vectors are L2-normalised.
 - **Store `model` with your vectors.** Vectors from different models must never be compared. Re-embed when
   `X-Portal-Model` differs from the stored id.
+
+### Voice: cloning and text to speech (host 1.1)
+
+Make a voice once from a short recording, then read any text with it. The library of voices lives in the host and is
+shared by every Portal app on this PC and by paired devices, so a voice made in Voice Portal can be used by AI
+Portal or Studio Portal. All routes need a token; paired devices sign requests as everywhere else. If the
+`voice` capability says `speech: false` the jobs are refused with `503 no_model`.
+
+**Consent.** Cloning a voice needs a statement of whose voice it is. `consent` is required and must be `own_voice`
+(the person using this PC) or `permission` (the speaker agreed). The host stores it with the voice. Apps must ask the
+user, never fill it in silently, and must not clone a voice without the speaker's permission.
+
+**`POST /host/voices`** creates a voice. Body (JSON, so at most `max_request_bytes`, about 3 MB of audio):
+`{ "name": "Anna", "consent": "own_voice", "sample_base64": "...", "sample_format": "wav" }`. The sample is an MP3 or WAV
+file of 3 to 60 seconds of speech (10 to 30 seconds is best); `sample_format` is optional. For long WAV files send
+mono 24 kHz, or MP3. The host stores its own converted copy (mono, 24 kHz, 16 bit) under a new unique id and never
+keeps or changes the original. Answer `201`: `{ "id": "vc_...", "name", "consent", "created_at", "created_by",
+"duration_ms", "sample_rate" }`.
+
+**`GET /host/voices`** answers `{ "voices": [ ... ], "builtin": [ { "id": "af_heart", "name": "Heart (US, female)",
+"language": "en-US" } ] }`. The built-in voices are fixed voices that need no sample (empty when that model is not
+installed).
+
+**`PATCH /host/voices/{id}`** with `{ "name": "New name" }` renames a voice. **`DELETE /host/voices/{id}`** removes it
+(`204`). Both are allowed for the app that made the voice and for apps on the host PC; a paired device can change only its
+own voices (`403 access_denied` otherwise).
+
+**`POST /host/speech/jobs`** starts reading. Body: `{ "voice_id": "vc_..." | "builtin_voice": "af_heart", "text": "...",
+"speed": 1.0, "format": "wav" }`. Send exactly one of `voice_id` and `builtin_voice`. `speed` is 0.5 to 2.0 (default 1);
+`text` is at most `max_text_chars`. Answer `202` with the job: `{ "id": "sp_...", "status": "queued", "progress": 0,
+"created_at" }`. Jobs run one at a time; each app may have 8 waiting (`429 queue_full`).
+
+**`GET /host/speech/jobs/{id}`** returns `status` (`queued`, `running`, `completed`, `failed`, `cancelled`), `progress`
+(0 to 1), `queue_position` while queued, and when completed `result`: `{ "format": "wav", "file_name", "bytes",
+"duration_ms", "sample_rate", "path" }`. `path` is the file on the host PC and is set only for apps on that PC; every app
+can fetch the audio itself with **`GET /host/speech/jobs/{id}/audio`** (`audio/wav`). A failed job has
+`error: { "code", "message" }`. Jobs are visible only to the app that made them.
+
+**`DELETE /host/speech/jobs/{id}`** cancels a queued or running job and returns it with status `cancelled`; a finished
+job is returned unchanged. The result file is never deleted by the host.
+
+Result files are written to the host's own output folder under a unique name (`speech-<time>-<job id>.wav`) and never
+overwrite another file. Every file the host makes carries a WAV `LIST/INFO` comment `Made with Portal` (and software
+`Portal AI Host`); keep it when you pass the audio on, and tell listeners that the voice is generated.
+
+**Output formats.** WAV (16-bit mono, 24 kHz) only. MP3 output is not offered yet; the capability's `formats` list will say
+when it is.
+
+Client library: `GetVoiceCapabilitiesAsync`, `ListVoicesAsync`, `CreateVoiceAsync`, `RenameVoiceAsync`, `DeleteVoiceAsync`,
+`StartSpeechAsync`, `GetSpeechJobAsync`, `CancelSpeechAsync`, `DownloadSpeechAsync` and `SpeakAsync` (start, poll, download).
 
 ## 7. Building a chat UI on the API
 

@@ -78,6 +78,7 @@ public sealed class TestHost : IAsyncDisposable
     public ClientRegistry Registry { get; private set; } = null!;
     public FairScheduler Scheduler { get; private set; } = null!;
     public AiHostRuntime Runtime { get; private set; } = null!;
+    public Portal.AiHost.Core.Voice.VoiceService? Voice { get; private set; }
     public AiHostServer Server { get; private set; } = null!;
     public SameUserResolver Resolver { get; } = new();
     public HttpClient Http { get; private set; } = null!;
@@ -86,9 +87,10 @@ public sealed class TestHost : IAsyncDisposable
 
     public static async Task<TestHost> StartAsync(FakeEngineOptions? chat = null, int maxRequestBytes = ApiLimits.MaxRequestBytes,
         bool withModels = true, int parallelSlots = 1, HostSettings? settings = null, IEaseOffSensors? sensors = null,
-        bool secondSlot = false, FakeEngineOptions? chat2 = null)
+        bool secondSlot = false, FakeEngineOptions? chat2 = null, Portal.AiHost.Core.Voice.VoiceService? voice = null)
     {
         var host = new TestHost();
+        host.Voice = voice;
         host.Chat = new FakeEngineSupervisor(ModelKinds.Chat, chat);
         host.Embed = new FakeEngineSupervisor(ModelKinds.Embedding);
         if (secondSlot)
@@ -111,6 +113,7 @@ public sealed class TestHost : IAsyncDisposable
             Pipeline = new() { MaxRequestBytes = maxRequestBytes },
             Settings = settings is null ? null : () => settings,
             EaseOffSensors = sensors,
+            Voice = voice,
         });
         if (settings is not null)
         {
@@ -171,6 +174,11 @@ public sealed class TestHost : IAsyncDisposable
         Http.Dispose();
         await Server.DisposeAsync();
         await Runtime.DisposeAsync();
+        if (Voice is not null)
+        {
+            await Voice.DisposeAsync();
+        }
+
         Registry.Dispose();
         Scheduler.Dispose();
         _root.Dispose();

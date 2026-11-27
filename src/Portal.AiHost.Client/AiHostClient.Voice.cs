@@ -4,7 +4,7 @@ using Portal.AiHost.Contracts;
 
 namespace Portal.AiHost.Client;
 
-/// <summary>Voice library and speech jobs (api-v1 section 10). None of these calls has a fallback.</summary>
+/// <summary>Voice library and speech jobs (api-v1 section 6, Voice). None of these calls has a fallback.</summary>
 public sealed partial class AiHostClient
 {
     private static readonly TimeSpan DefaultSpeechPoll = TimeSpan.FromMilliseconds(500);

@@ -224,7 +224,7 @@ public static class Routes
     public const string Embeddings = "/v1/embeddings";
     public const string AudioTranscriptions = "/v1/audio/transcriptions";
 
-    // Voice library and speech jobs (api-v1 section 10).
+    // Voice library and speech jobs (api-v1 section 6, Voice).
     public const string Voices = "/host/voices";
     public const string VoiceById = "/host/voices/{id}";
     public const string SpeechJobs = "/host/speech/jobs";
