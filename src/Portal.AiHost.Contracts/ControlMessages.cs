@@ -648,6 +648,12 @@ public sealed class HostSettings
     /// <summary>auto, gpu or cpu.</summary>
     public string Backend { get; set; } = "auto";
 
+    /// <summary>Override for the chat engine: auto, cuda, vulkan or cpu. A choice that cannot load falls back; this value is never rewritten.</summary>
+    public string ChatBackend { get; set; } = "auto";
+
+    /// <summary>Override for the image and video engine: auto, cuda, vulkan or cpu.</summary>
+    public string GenerationBackend { get; set; } = "auto";
+
     /// <summary>Folder chosen for models; the host keeps them in its own "Portal AI Host Models" subfolder there.</summary>
     public string? ModelsFolder { get; set; }
 
