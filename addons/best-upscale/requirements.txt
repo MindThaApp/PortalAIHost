@@ -1,0 +1,8 @@
+# Pinned for the optional Best quality add-on (NVIDIA CUDA 12.8 line). Installed by the Host only after the user agrees.
+--extra-index-url https://download.pytorch.org/whl/cu128
+torch==PLACEHOLDER_PIN
+torchvision==PLACEHOLDER_PIN
+numpy==PLACEHOLDER_PIN
+pillow==PLACEHOLDER_PIN
+safetensors==PLACEHOLDER_PIN
+huggingface_hub==PLACEHOLDER_PIN
