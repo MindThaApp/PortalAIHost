@@ -58,7 +58,7 @@ Counts: S items 7, M items 12, L items 2.
 
 ## Can be built tonight in about 20 minutes
 
-Each item touches its own files, so parallel agents can take one each.
+Each item touches its own files, so several people can take one each at the same time.
 
 1. **What's new 1.0.3.0 correction**: remove the MP4 video and relay key claims or mark them "coming later".
    Files: the What's new text source only (the What's new page strings and `docs/store` release notes), not
