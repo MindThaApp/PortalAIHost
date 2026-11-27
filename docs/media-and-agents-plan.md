@@ -139,6 +139,18 @@ Reasoning:
 | Wan 2.2 5B | Medium | Better quality, image-to-video capable | Needs offload on 8 GB |
 | Wan 14B class | Large | High-end quality | Heavy offload on 8 GB; slow; shown with a warning |
 
+In `catalogue/catalogue-gen.json` today (signed on its own, `available: false` until the engine lands): `wan2.1-t2v-1.3b`
+(three pinned parts: diffusion model, VAE, text encoder) and the image model `sd-1.5`.
+
+To add after measurement (no verified single-file builds pinned yet, so not in the catalogue):
+
+- Wan 2.2 TI2V 5B (Apache-2.0): about 12 GB graphics memory with CPU offload, 24 GB recommended.
+- LTX-Video 2B distilled (OpenRAIL-M): about 8 GB with CPU offload, 12 GB recommended.
+- Wan 2.1 T2V 14B, high-end (Apache-2.0): about 16 GB with CPU offload, 24 GB recommended.
+- Wan 2.2 T2V A14B, high-end (Apache-2.0): about 24 GB with CPU offload, 48 GB recommended.
+
+The figures are estimates until measured on the engine.
+
 Each catalogue entry records files, quantisation, minimum RAM and VRAM, whether image-to-video is supported, maximum
 frames, licence and a speed note per hardware class. Image-to-video support is required for the chaining in section
 5.2; a model without it can still make single clips.

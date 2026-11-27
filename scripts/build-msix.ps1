@@ -161,6 +161,10 @@ try {
             $catDest = Join-Path $layout 'catalogue'
             New-Item -ItemType Directory -Force $catDest | Out-Null
             Copy-Item (Join-Path $catSrc 'catalogue.json'), (Join-Path $catSrc 'catalogue.json.sig') $catDest
+            # The image and video list is optional and signed on its own; a host without it just has no such models.
+            if ((Test-Path (Join-Path $catSrc 'catalogue-gen.json')) -and (Test-Path (Join-Path $catSrc 'catalogue-gen.json.sig'))) {
+                Copy-Item (Join-Path $catSrc 'catalogue-gen.json'), (Join-Path $catSrc 'catalogue-gen.json.sig') $catDest
+            }
         }
         elseif ($Store -and -not $PlaceholderIdentity) { throw 'Store build: catalogue\catalogue.json.sig is missing (sign the model list first).' }
         else { Write-Warning 'catalogue\catalogue.json.sig is missing: this package has no model list (downloads off).' }

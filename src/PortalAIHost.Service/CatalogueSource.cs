@@ -48,13 +48,49 @@ internal static class CatalogueSource
                 return null;
             }
 
-            var result = new CatalogueVerifier(trustedKeys)
-                .Check(File.ReadAllBytes(json), File.ReadAllText(json + ".sig"), 0, null, HostVersion());
-            return result.IsUsable ? result.Catalogue?.Models : null;
+            var verifier = new CatalogueVerifier(trustedKeys);
+            var result = verifier.Check(File.ReadAllBytes(json), File.ReadAllText(json + ".sig"), 0, null, HostVersion());
+            if (!result.IsUsable || result.Catalogue is null)
+            {
+                return null;
+            }
+
+            return WithGenerationList(result.Catalogue.Models, Path.Combine(baseDirectory, "catalogue", GenerationFileName), verifier);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or FormatException)
         {
             return null;
+        }
+    }
+
+    /// <summary>The image and video list, signed on its own so a problem with it never costs the main list.</summary>
+    public const string GenerationFileName = "catalogue-gen.json";
+
+    /// <summary>
+    /// Adds the entries of catalogue-gen.json (own signature) to the main list. A missing, unreadable, badly signed or
+    /// invalid file adds nothing; the main list is returned as it is. Entries whose id the main list already has are skipped.
+    /// </summary>
+    private static IReadOnlyList<CatalogueEntry> WithGenerationList(List<CatalogueEntry> main, string path, CatalogueVerifier verifier)
+    {
+        try
+        {
+            if (!File.Exists(path) || !File.Exists(path + ".sig"))
+            {
+                return main;
+            }
+
+            var gen = verifier.Check(File.ReadAllBytes(path), File.ReadAllText(path + ".sig"), 0, null, HostVersion());
+            if (!gen.IsUsable || gen.Catalogue is null)
+            {
+                return main;
+            }
+
+            var ids = main.Select(e => e.Id).ToHashSet(StringComparer.Ordinal);
+            return [.. main, .. gen.Catalogue.Models.Where(e => ids.Add(e.Id))];
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or FormatException)
+        {
+            return main;
         }
     }
 

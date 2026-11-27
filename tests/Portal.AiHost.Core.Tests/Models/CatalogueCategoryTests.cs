@@ -8,6 +8,11 @@ public class CatalogueCategoryTests
 {
     private static ModelCatalogue Shipped() => CatalogueValidator.Parse(TestData.SeedCatalogueBytes()).Catalogue!;
 
+    private static ModelCatalogue Gen() => CatalogueValidator.Parse(TestData.GenCatalogueBytes()).Catalogue!;
+
+    /// <summary>Main list plus the generation list, as a new host sees it.</summary>
+    private static ModelCatalogue All() => new() { CatalogueVersion = 1, Models = [.. Shipped().Models, .. Gen().Models] };
+
     private static ModelCatalogue ParseWith(Func<string, string> edit)
     {
         var json = edit(Encoding.UTF8.GetString(TestData.SeedCatalogueBytes()));
@@ -19,7 +24,7 @@ public class CatalogueCategoryTests
     [Fact]
     public void Every_shipped_entry_names_a_known_category()
     {
-        Assert.All(Shipped().Models, m =>
+        Assert.All(All().Models, m =>
         {
             Assert.False(string.IsNullOrEmpty(m.Category), m.Id);
             Assert.Contains(m.Category!, ModelCategories.Ordered);
@@ -29,7 +34,7 @@ public class CatalogueCategoryTests
     [Fact]
     public void Category_is_read_from_the_entry()
     {
-        var c = Shipped();
+        var c = All();
         Assert.Equal(ModelCategories.Search, c.Models.Single(m => m.Id == "nomic-embed-text-v1.5-q8").EffectiveCategory);
         Assert.Equal(ModelCategories.Reasoning, c.Models.Single(m => m.Id == "gpt-oss-20b").EffectiveCategory);
         Assert.Equal(ModelCategories.Video, c.Models.Single(m => m.Id == "wan2.1-t2v-1.3b").EffectiveCategory);
@@ -40,11 +45,10 @@ public class CatalogueCategoryTests
     {
         var c = ParseWith(s => s.Replace("\"category\": \"search\",", "", StringComparison.Ordinal)
                                 .Replace("\"category\": \"chat\",", "", StringComparison.Ordinal)
-                                .Replace("\"category\": \"video\",", "", StringComparison.Ordinal));
+                                );
         Assert.Null(c.Models.First(m => m.Kind == "chat" && m.Category is null).Category);
         Assert.Equal(ModelCategories.Chat, c.Models.First(m => m.Id == "qwen3-8b-q4km").EffectiveCategory);
         Assert.Equal(ModelCategories.Search, c.Models.First(m => m.Kind == "embedding").EffectiveCategory);
-        Assert.Equal(ModelCategories.Video, c.Models.First(m => m.Kind == "video").EffectiveCategory);
     }
 
     [Fact]
@@ -68,7 +72,7 @@ public class CatalogueCategoryTests
     [Fact]
     public void Video_and_image_entries_are_listed_but_never_downloadable()
     {
-        var media = Shipped().Models.Where(m => m.Kind is "video" or "image").ToList();
+        var media = Gen().Models.Where(m => m.Kind is "video" or "image").ToList();
         Assert.Equal(["sd-1.5", "wan2.1-t2v-1.3b"], media.Select(m => m.Id).Order(StringComparer.Ordinal));
         Assert.All(media, m =>
         {
@@ -85,18 +89,18 @@ public class CatalogueCategoryTests
     [Fact]
     public void The_video_model_has_three_pinned_parts_with_roles_from_two_repos()
     {
-        var wan = Shipped().Models.Single(m => m.Id == "wan2.1-t2v-1.3b");
+        var wan = Gen().Models.Single(m => m.Id == "wan2.1-t2v-1.3b");
         Assert.Equal(["diffusion_model", "vae", "text_encoder"], wan.Files.Select(f => f.Role));
         Assert.Equal(6_747_264_190, wan.TotalBytes);
         Assert.Equal("city96/umt5-xxl-encoder-gguf", wan.Files[2].HfRepo);
         Assert.All(wan.Files, f => Assert.True(f.HasPinnedSource));
-        Assert.Equal(4, Shipped().Models.Single(m => m.Id == "sd-1.5").MinVramGb);
+        Assert.Equal(4, Gen().Models.Single(m => m.Id == "sd-1.5").MinVramGb);
     }
 
     [Fact]
     public void A_file_from_another_repo_needs_a_pinned_commit_and_a_matching_url()
     {
-        var json = Encoding.UTF8.GetString(TestData.SeedCatalogueBytes())
+        var json = Encoding.UTF8.GetString(TestData.GenCatalogueBytes())
             .Replace("b535255bee98c2b0a59ea7c0ae2dcd0c6657b3b7\",", "PLACEHOLDER-NOPE\",", StringComparison.Ordinal);
         var (catalogue, errors) = CatalogueValidator.Parse(Encoding.UTF8.GetBytes(json));
         Assert.Null(catalogue);
@@ -117,13 +121,42 @@ public class CatalogueCategoryTests
     [Fact]
     public void Available_defaults_to_true_and_the_field_round_trips()
     {
-        var c = Shipped();
+        var c = All();
         Assert.True(c.Models.Single(m => m.Id == "qwen3-8b-q4km").Available);
         var again = CatalogueValidator.Parse(Encoding.UTF8.GetBytes(CatalogueValidator.Serialize(c))).Catalogue!;
         Assert.Equal(c.Models.Count, again.Models.Count);
+        Assert.Equal(["image", "video"], again.Models.Where(m => !m.Available).Select(m => m.Category!).Order(StringComparer.Ordinal));
         Assert.Equal("video", again.Models.Single(m => m.Id == "wan2.1-t2v-1.3b").Category);
         Assert.False(again.Models.Single(m => m.Id == "wan2.1-t2v-1.3b").Available);
         Assert.Equal(8, again.Models.Single(m => m.Id == "wan2.1-t2v-1.3b").MinVramGb);
         Assert.Equal("text_encoder", again.Models.Single(m => m.Id == "wan2.1-t2v-1.3b").Files[2].Role);
+    }
+
+    [Fact]
+    public void The_main_list_has_no_generation_entries_and_keeps_to_what_host_1_0_0_knows()
+    {
+        var text = Encoding.UTF8.GetString(TestData.SeedCatalogueBytes());
+        Assert.All(Shipped().Models, m => Assert.True(m.Kind is "chat" or "embedding" && m.Available));
+        Assert.DoesNotContain("safetensors", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"available\"", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"role\"", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("PLACEHOLDER", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void The_main_list_passes_the_validator_of_the_shipped_host_1_0_0()
+    {
+        // Host 1.0.0 is in the Store. If the published list ever fails its rules, that host refuses the whole list.
+        var (catalogue, errors) = LegacyHost.CatalogueValidator.Parse(TestData.SeedCatalogueBytes());
+        Assert.Empty(errors);
+        Assert.NotNull(catalogue);
+        Assert.Equal(Shipped().Models.Count, catalogue.Models.Count);
+    }
+
+    [Fact]
+    public void The_generation_list_is_for_new_hosts_only_and_the_old_validator_would_reject_it()
+    {
+        var (catalogue, _) = LegacyHost.CatalogueValidator.Parse(TestData.GenCatalogueBytes());
+        Assert.Null(catalogue);
     }
 }

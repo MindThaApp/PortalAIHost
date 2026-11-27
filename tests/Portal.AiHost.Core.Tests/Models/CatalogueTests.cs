@@ -17,7 +17,7 @@ public class CatalogueTests
 
     private static byte[] WithVersion(long version) =>
         Encoding.UTF8.GetBytes(Encoding.UTF8.GetString(TestData.SeedCatalogueBytes())
-            .Replace("\"catalogue_version\": 2,", $"\"catalogue_version\": {version},", StringComparison.Ordinal));
+            .Replace("\"catalogue_version\": 3,", $"\"catalogue_version\": {version},", StringComparison.Ordinal));
 
     [Fact]
     public void SeedCatalogueIsValid()
