@@ -17,6 +17,7 @@ public sealed partial class GenerationOutputFolder
     public const string WorkFolderName = ".work";
     public const string PartialStem = "output";
     public const string PreviewName = "preview.png";
+    public const string ConvertingName = "converting.mp4";
     public const string InitStem = "init";
 
     /// <summary>The job's state marker in its work folder: one of the <c>State*</c> words.</summary>
@@ -35,7 +36,7 @@ public sealed partial class GenerationOutputFolder
     /// <summary>The engine failed: an output here may or may not be usable, so a sweep keeps it.</summary>
     public const string StateFailed = "failed";
 
-    private static readonly string[] OwnedExtensions = [".png", ".avi", ".jpg"];
+    private static readonly string[] OwnedExtensions = [".png", ".avi", ".mp4", ".jpg"];
 
     [GeneratedRegex("^gen_[0-9a-f]{16,64}$", RegexOptions.CultureInvariant)]
     private static partial Regex JobIdPattern();
@@ -76,6 +77,9 @@ public sealed partial class GenerationOutputFolder
     public static string PartialPath(string workDir, string extension) => Path.Combine(workDir, PartialStem + extension);
 
     public static string PreviewPath(string workDir) => Path.Combine(workDir, PreviewName);
+
+    /// <summary>The MP4 the converter is still writing. Not a partial output: a crash leaves the finished AVI to the sweep, never a half file.</summary>
+    public static string ConvertingPath(string workDir) => Path.Combine(workDir, ConvertingName);
 
     /// <summary>Records the job's state in its work folder (atomic replace of the host's own marker file).</summary>
     public void MarkState(string workDir, string state)
@@ -153,6 +157,7 @@ public sealed partial class GenerationOutputFolder
     {
         RequireWorkDir(workDir);
         TryDelete(PreviewPath(workDir));
+        TryDelete(ConvertingPath(workDir));
         foreach (var ext in OwnedExtensions)
         {
             TryDelete(Path.Combine(workDir, InitStem + ext));
@@ -219,7 +224,7 @@ public sealed partial class GenerationOutputFolder
                 {
                     if (state == StateFinished && info.Length > 0)
                     {
-                        published.Add(Publish(partial, ext == ".avi" ? "video" : "image", jobId, info.LastWriteTimeUtc));
+                        published.Add(Publish(partial, ext is ".avi" or ".mp4" ? "video" : "image", jobId, info.LastWriteTimeUtc));
                     }
                     else if (state is StateRunning or StateCancelled)
                     {

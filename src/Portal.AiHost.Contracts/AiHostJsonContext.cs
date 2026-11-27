@@ -110,6 +110,7 @@ namespace Portal.AiHost.Contracts;
 [JsonSerializable(typeof(GenerationJob))]
 [JsonSerializable(typeof(GenerationJobList))]
 [JsonSerializable(typeof(GenerationAvailability))]
+[JsonSerializable(typeof(VideoJoinRequest))]
 [JsonSerializable(typeof(TrayPopupEvent))]
 public sealed partial class AiHostJsonContext : JsonSerializerContext
 {

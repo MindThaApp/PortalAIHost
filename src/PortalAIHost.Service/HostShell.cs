@@ -89,6 +89,9 @@ public sealed class HostShellOptions
 
     /// <summary>The image and video engine (stable-diffusion.cpp); null leaves the job routes answering engine_missing.</summary>
     public IGenerationEngine? GenerationEngine { get; init; }
+
+    /// <summary>ffmpeg tools (MP4 output, last picture, joins); null or not installed leaves those features off.</summary>
+    public IMediaTools? MediaTools { get; init; }
 }
 
 /// <summary>Test hooks for the LAN listener.</summary>
@@ -1079,6 +1082,8 @@ public sealed class HostShell : IAsyncDisposable
             Engine = _o.GenerationEngine ?? new MissingGenerationEngine(),
             Models = new ShellGenerationModels(this, id => _notes?.DamagedReason(id)),
             Output = output,
+            Media = _o.MediaTools,
+            SpeechAudio = (appId, jobId) => _voice?.Jobs.ReadResult(appId, jobId),
             Log = line => System.Diagnostics.Trace.WriteLine("Portal AI Host: " + line),
         });
         service.MapRoutes(Runtime.Pipeline);

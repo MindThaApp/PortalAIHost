@@ -367,3 +367,37 @@ public sealed class FfmpegIntegrationTests : IDisposable
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => Runner().ExtractLastFramePngAsync(avi, cancelled.Token));
     }
 }
+
+public sealed class FfmpegAudioDecoderTests
+{
+    [Fact]
+    public void Mp3IsOfferedOnlyWhileFfmpegIsInstalled()
+    {
+        var dir = Path.Combine(Path.GetTempPath(), "portalaihost-decoder-test-" + Guid.NewGuid().ToString("N"));
+        var exe = Path.Combine(dir, "ffmpeg.exe");
+        try
+        {
+            Assert.Empty(new FfmpegAudioDecoder(exe).Formats);
+            Directory.CreateDirectory(dir);
+            File.WriteAllText(exe, "stand-in");
+            Assert.Equal([VoiceSampleFormats.Mp3], new FfmpegAudioDecoder(exe).Formats);
+        }
+        finally
+        {
+            if (File.Exists(exe))
+            {
+                File.Delete(exe); // The stand-in this test made.
+            }
+
+            if (Directory.Exists(dir))
+            {
+                Directory.Delete(dir); // Empty folder this test made.
+            }
+        }
+    }
+
+    [Fact]
+    public async Task AMissingFfmpegRefusesToDecode() =>
+        await Assert.ThrowsAsync<InvalidOperationException>(() => new FfmpegAudioDecoder(Path.Combine(Path.GetTempPath(), "nope", "ffmpeg.exe"))
+            .DecodeToWavAsync([1, 2, 3], VoiceSampleFormats.Mp3, TestContext.Current.CancellationToken));
+}

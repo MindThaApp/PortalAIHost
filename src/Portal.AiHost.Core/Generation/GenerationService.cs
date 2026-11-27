@@ -41,6 +41,12 @@ public sealed class GenerationServiceOptions
     public required IGenerationModelSource Models { get; init; }
     public required GenerationOutputFolder Output { get; init; }
 
+    /// <summary>ffmpeg tools (MP4 output, last picture, joins). Null: those features are off.</summary>
+    public IMediaTools? Media { get; init; }
+
+    /// <summary>The WAV bytes of a finished speech job of the app (the soundtrack of a join), or null. Null delegate: no speech source.</summary>
+    public Func<string, string, byte[]?>? SpeechAudio { get; init; }
+
     /// <summary>Paired device: holds Model control now. Null: the runtime's own check.</summary>
     public Func<string, bool>? DeviceGranted { get; init; }
 
@@ -109,6 +115,8 @@ public sealed partial class GenerationService : IAsyncDisposable
         {
             Image = image,
             Video = video,
+            VideoContainers = VideoContainersNow(video),
+            VideoJoins = MediaAvailable,
             Queued = states.Count(s => s == GenerationJobStates.Queued),
             Running = states.Count(s => s == GenerationJobStates.Running),
         };
@@ -196,6 +204,7 @@ public sealed partial class GenerationService : IAsyncDisposable
             });
             pipeline.Map("GET", root + "/{id}/result", c => WriteResultAsync(c, kind));
             pipeline.Map("GET", root + "/{id}/preview", c => WritePreviewAsync(c, kind));
+            MapMediaRoutes(pipeline, kind, root);
         }
     }
 
@@ -216,6 +225,8 @@ public sealed partial class GenerationService : IAsyncDisposable
 
         var video = kind == ModelKinds.Video;
         ValidateShape(request, video);
+        ValidateContainer(request, video);
+        CheckContainer(request);
 
         var check = _o.Engine.Check();
         if (!check.Present)
@@ -376,7 +387,7 @@ public sealed partial class GenerationService : IAsyncDisposable
 
     /// <summary>Request values, then the catalogue's defaults, then the engine's per-family defaults.</summary>
     internal sealed record JobSettings(string Prompt, string? NegativePrompt, int Width, int Height, int Steps, long Seed,
-        double CfgScale, string? Sampler, double? FlowShift, int Frames, int Fps, double? Strength);
+        double CfgScale, string? Sampler, double? FlowShift, int Frames, int Fps, double? Strength, string Container = GenerationContainers.Avi);
 
     private static JobSettings Resolve(GenerationJobRequest r, GenerationModel model, string family, bool video)
     {
@@ -398,7 +409,7 @@ public sealed partial class GenerationService : IAsyncDisposable
         var seed = r.Seed is { } s && s >= 0 ? s : RandomNumberGenerator.GetInt32(int.MaxValue);
         return new JobSettings(r.Prompt, r.NegativePrompt, width, height, r.Steps ?? g?.DefaultSteps ?? d.Steps, seed,
             r.CfgScale ?? g?.DefaultCfgScale ?? d.CfgScale, r.Sampler ?? g?.Sampler ?? d.Sampler, g?.FlowShift ?? d.FlowShift,
-            frames, r.Fps ?? g?.Fps ?? d.Fps, r.Strength);
+            frames, r.Fps ?? g?.Fps ?? d.Fps, r.Strength, r.Container ?? GenerationContainers.Avi);
     }
 
     /// <summary>Defaults per family (kept here so the host does not depend on one engine's adapter for them).</summary>
@@ -572,6 +583,7 @@ public sealed partial class GenerationService : IAsyncDisposable
 
             // From here the output is complete: a crash before the move leaves it to the start sweep to publish.
             _o.Output.MarkState(job.WorkDir!, GenerationOutputFolder.StateFinished);
+            partial = await ConvertIfAskedAsync(job, partial, ct).ConfigureAwait(false);
             var final = _o.Output.Publish(partial, job.Kind, job.Id, job.CreatedAt);
             partial = null;
             job.Update(j =>
@@ -754,6 +766,7 @@ public sealed partial class GenerationService : IAsyncDisposable
     private static string ContentTypeOf(string path) => Path.GetExtension(path).ToLowerInvariant() switch
     {
         ".avi" => "video/x-msvideo",
+        ".mp4" => "video/mp4",
         ".jpg" => "image/jpeg",
         _ => "image/png",
     };
@@ -804,7 +817,7 @@ public sealed partial class GenerationService : IAsyncDisposable
         }
 
         await _lifetime.CancelAsync().ConfigureAwait(false);
-        var running = _jobs.Values.Select(j => j.Task).Where(t => t is not null).Select(t => t!).ToArray();
+        var running = _jobs.Values.Select(j => j.Task).Where(t => t is not null).Select(t => t!).Concat(RunningJoinTasks()).ToArray();
         await Task.WhenAny(Task.WhenAll(running), Task.Delay(_o.CancelWait)).ConfigureAwait(false);
         _lifetime.Dispose();
     }

@@ -72,6 +72,12 @@ internal static class Program
                 Catalogue = catalogue,
                 CreateDownloader = store => new ModelDownloader(Http.Value, store, options: null, sleep: new PowerRequestSleepBlocker()),
                 HostVersion = typeof(Program).Assembly.GetName().Version?.ToString(3) ?? "1.0.0",
+                // engine\ffmpeg\ffmpeg.exe beside the host, present only when scripts\fetch-ffmpeg.ps1 put it in the package.
+                MediaTools = new FfmpegRunner(new FfmpegRunnerOptions
+                {
+                    ExePath = Path.Combine(AppContext.BaseDirectory, "engine", "ffmpeg", "ffmpeg.exe"),
+                    Log = line => Trace.WriteLine("Portal AI Host: " + line),
+                }),
                 // engine\sdcpp\<flavour>\sd-cli.exe beside the host, present only when scripts\fetch-sdcpp.ps1 put it in the package.
                 GenerationEngine = new SdCppEngine(new SdCppEngineOptions
                 {
