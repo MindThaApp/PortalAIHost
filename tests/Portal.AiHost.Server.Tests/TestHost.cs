@@ -86,7 +86,7 @@ public sealed class TestHost : IAsyncDisposable
 
     public static async Task<TestHost> StartAsync(FakeEngineOptions? chat = null, int maxRequestBytes = ApiLimits.MaxRequestBytes,
         bool withModels = true, int parallelSlots = 1, HostSettings? settings = null, IEaseOffSensors? sensors = null,
-        bool secondSlot = false, FakeEngineOptions? chat2 = null)
+        bool secondSlot = false, FakeEngineOptions? chat2 = null, IHardwareProbe? hardware = null)
     {
         var host = new TestHost();
         host.Chat = new FakeEngineSupervisor(ModelKinds.Chat, chat);
@@ -111,6 +111,7 @@ public sealed class TestHost : IAsyncDisposable
             Pipeline = new() { MaxRequestBytes = maxRequestBytes },
             Settings = settings is null ? null : () => settings,
             EaseOffSensors = sensors,
+            Hardware = hardware,
         });
         if (settings is not null)
         {
