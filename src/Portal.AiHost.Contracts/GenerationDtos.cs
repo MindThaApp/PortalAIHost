@@ -172,6 +172,66 @@ public sealed class GenerationAvailability
 
     /// <summary>Jobs running now (at most one).</summary>
     public int Running { get; init; }
+
+    /// <summary>Why a kind is or is not available (additive; older hosts leave it out). The booleans above stay as they were.</summary>
+    public GenerationDetail? Detail { get; init; }
+}
+
+/// <summary>Values of <see cref="GenerationDetail"/>. The set is open: clients ignore values they do not know.</summary>
+public static class GenerationDetailStates
+{
+    /// <summary>Engine and a model are installed and no job is running.</summary>
+    public const string Ready = "ready";
+
+    /// <summary>Engine and a model are installed and a job is running now; new jobs wait in the queue.</summary>
+    public const string Busy = "busy";
+
+    /// <summary>The engine is installed but no usable model of this kind is.</summary>
+    public const string NoModel = "no_model";
+
+    /// <summary>The image and video engine is not installed on this PC.</summary>
+    public const string NoEngine = "no_engine";
+}
+
+/// <summary><c>generation.detail</c>: one state per kind, see <see cref="GenerationDetailStates"/>.</summary>
+public sealed class GenerationDetail
+{
+    public string Image { get; init; } = GenerationDetailStates.NoEngine;
+    public string Video { get; init; } = GenerationDetailStates.NoEngine;
+}
+
+/// <summary>GET /host/image/models and /host/video/models: the installed models of that kind.</summary>
+public sealed class GenerationModelList
+{
+    public string Object { get; set; } = "list";
+    public List<GenerationModelInfo> Data { get; set; } = [];
+}
+
+/// <summary>One installed image or video model.</summary>
+public sealed class GenerationModelInfo
+{
+    /// <summary>Pass this as <c>model</c> when creating a job.</summary>
+    public string Id { get; set; } = "";
+    public string DisplayName { get; set; } = "";
+
+    /// <summary>Category id (see ModelCategories): image or video.</summary>
+    public string Category { get; set; } = "";
+    public string Kind { get; set; } = "";
+
+    /// <summary>Family the engine runs, for example sd1.5, sdxl, flux or wan.</summary>
+    public string Family { get; set; } = "";
+
+    /// <summary>Total size of the model's files on disk.</summary>
+    public long SizeBytes { get; set; }
+
+    /// <summary>True when a job with this model's default settings fits this PC's memory budget now (ignoring other jobs).</summary>
+    public bool FitsThisPc { get; set; }
+
+    /// <summary>True when the engine can run this model. A model that is not runnable is listed but jobs with it are refused.</summary>
+    public bool Runnable { get; set; }
+
+    /// <summary>True for the model a job uses when it names none.</summary>
+    public bool Default { get; set; }
 }
 
 /// <summary>GET /host/{kind}/jobs: the calling app's jobs of that kind, newest first.</summary>

@@ -549,6 +549,26 @@ must allow the model; the device's pause, quiet hours, gaming mode and daily req
 the counts cover every app on this host. Capabilities then also list the endpoints `image.jobs` and `video.jobs`.
 Older hosts leave `generation` out.
 
+`generation.detail` (additive; older hosts leave it out) says why a kind is or is not available:
+`"detail": { "image": "ready", "video": "no_model" }`. Values per kind (an open set, ignore unknown ones):
+`ready` (engine and a model installed, no job running), `busy` (a job is running now; new jobs still queue),
+`no_model` (engine installed, no usable model of that kind) and `no_engine` (the image and video engine is not
+installed; both kinds then show `no_engine`). The `image` and `video` booleans keep their meaning: true for `ready` and `busy`.
+
+**Installed models.** `GET /host/image/models` and `GET /host/video/models` (token needed, same rules as the jobs
+routes) list the installed models of that kind, the default first. Read-only:
+
+```json
+{ "object": "list", "data": [
+  { "id": "sd-1.5-q8", "display_name": "Stable Diffusion 1.5", "category": "image", "kind": "image", "family": "sd1.5",
+    "size_bytes": 2147483648, "fits_this_pc": true, "runnable": true, "default": true } ] }
+```
+
+`id` is what a job's `model` takes. `size_bytes` is the total size of the model's files. `fits_this_pc` is true when a
+job with the model's default settings fits this PC's memory budget now (the plan a job uses, not counting other image
+or video jobs). `runnable` is false when the engine cannot run the model's family (jobs with it are refused).
+`default` marks the model a job uses when it names none. An empty `data` means no model of that kind is installed.
+
 `{kind}` is `image` or `video`. A job belongs to the app and device that created it: any other caller gets
 `404 not_found`. The host remembers the last 200 finished jobs until it quits; their files stay on disk.
 

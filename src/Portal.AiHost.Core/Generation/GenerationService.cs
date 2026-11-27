@@ -75,7 +75,7 @@ public sealed partial class GenerationService : IAsyncDisposable
     private readonly CancellationTokenSource _lifetime = new();
     private int _disposed;
 
-    private int _availableBits; // 1: image, 2: video
+    private int _availableBits; // 1: image, 2: video, 4: engine installed
     private long _availableAt = long.MinValue;
     private int _refreshing;
 
@@ -103,14 +103,19 @@ public sealed partial class GenerationService : IAsyncDisposable
         }
 
         var bits = Volatile.Read(ref _availableBits);
-        var (image, video) = ((bits & 1) != 0, (bits & 2) != 0);
+        var (image, video, engine) = ((bits & 1) != 0, (bits & 2) != 0, (bits & 4) != 0);
         var states = _jobs.Values.Select(j => j.SnapshotState()).ToList();
+        var running = states.Count(s => s == GenerationJobStates.Running);
+        string Detail(bool ready) => !engine ? GenerationDetailStates.NoEngine
+            : !ready ? GenerationDetailStates.NoModel
+            : running > 0 ? GenerationDetailStates.Busy : GenerationDetailStates.Ready;
         return new GenerationAvailability
         {
             Image = image,
             Video = video,
             Queued = states.Count(s => s == GenerationJobStates.Queued),
-            Running = states.Count(s => s == GenerationJobStates.Running),
+            Running = running,
+            Detail = new GenerationDetail { Image = Detail(image), Video = Detail(video) },
         };
     }
 
@@ -127,7 +132,7 @@ public sealed partial class GenerationService : IAsyncDisposable
             var present = _o.Engine.Check().Present;
             var image = present && await HasModelAsync(ModelKinds.Image).ConfigureAwait(false);
             var video = present && await HasModelAsync(ModelKinds.Video).ConfigureAwait(false);
-            var next = (image ? 1 : 0) | (video ? 2 : 0);
+            var next = (image ? 1 : 0) | (video ? 2 : 0) | (present ? 4 : 0);
             if (Interlocked.Exchange(ref _availableBits, next) != next)
             {
                 _o.Runtime.NoteGenerationChanged();
@@ -187,6 +192,12 @@ public sealed partial class GenerationService : IAsyncDisposable
                 await c.WriteJsonAsync(202, job, json.GenerationJob).ConfigureAwait(false);
             });
             pipeline.Map("GET", root, c => c.WriteJsonAsync(200, List(kind, Owner(c)), json.GenerationJobList));
+            pipeline.Map("GET", "/host/" + kind + "/models", async c =>
+            {
+                _ = Owner(c);
+                await c.WriteJsonAsync(200, await ListModelsAsync(kind, c.Aborted).ConfigureAwait(false), json.GenerationModelList)
+                    .ConfigureAwait(false);
+            });
             pipeline.Map("GET", root + "/{id}", c =>
                 c.WriteJsonAsync(200, Get(kind, Owner(c), c.RouteValues["id"]), json.GenerationJob));
             pipeline.Map("DELETE", root + "/{id}", async c =>
@@ -296,6 +307,54 @@ public sealed partial class GenerationService : IAsyncDisposable
         job.Task = Task.Run(() => RunAsync(job));
         Raise(job);
         return job.Snapshot(Routes.JobsFor(kind)!);
+    }
+
+    /// <summary>
+    /// The installed models of a kind with their size and whether a job with the model's default settings fits this PC's
+    /// memory now (the same plan a job runs, ignoring other image and video jobs). Read-only.
+    /// </summary>
+    public async Task<GenerationModelList> ListModelsAsync(string kind, CancellationToken ct)
+    {
+        var present = _o.Engine.Check();
+        var video = kind == ModelKinds.Video;
+        var list = new GenerationModelList();
+        foreach (var m in await _o.Models.ListAsync(kind, ct).ConfigureAwait(false))
+        {
+            var family = GenerationFamilies.Normalize(m.Entry?.Family ?? m.Family, m.Id + " " + m.DisplayName);
+            var runnable = family is not null && _o.Engine.SupportsFamily(family, kind);
+            var fits = false;
+            if (runnable && present.Present)
+            {
+                try
+                {
+                    var s = Resolve(new GenerationJobRequest { Prompt = "-" }, m, family!, video);
+                    var needs = Needs(m, family!, video, s);
+                    var plan = await _o.Runtime.PlanGenerationAsync(needs, present.GpuBuild, (long)s.Width * s.Height, ct,
+                        ignoreGenerationJobs: true, minVramBytes: MinVram(m),
+                        ignoreSlot: video && _o.Runtime.DirectorCanYield ? ModelSlots.Second(ModelKinds.Chat) : null).ConfigureAwait(false);
+                    fits = plan.Fits;
+                }
+                catch (ApiException)
+                {
+                    fits = false;
+                }
+            }
+
+            list.Data.Add(new GenerationModelInfo
+            {
+                Id = m.Id,
+                DisplayName = m.DisplayName,
+                Category = m.Entry?.EffectiveCategory ?? ModelCategories.FromKind(kind),
+                Kind = kind,
+                Family = family ?? m.Family,
+                SizeBytes = m.Components.Sum(c => c.Bytes),
+                FitsThisPc = fits,
+                Runnable = runnable,
+                Default = list.Data.Count == 0,
+            });
+        }
+
+        return list;
     }
 
     /// <summary>The catalogue's min_vram_gb in bytes, or 0 when the entry gives none.</summary>
