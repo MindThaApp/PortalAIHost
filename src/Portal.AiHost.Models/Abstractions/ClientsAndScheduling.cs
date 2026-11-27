@@ -244,6 +244,12 @@ public sealed record ApiRequest
         new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
     public ReadOnlyMemory<byte> Body { get; init; }
+
+    /// <summary>
+    /// The unread body for a route that streams it (uploads, local transport only). Null on every other transport and
+    /// route; then <see cref="Body"/> holds what was read.
+    /// </summary>
+    public Stream? BodyStream { get; init; }
     public ClientPrincipal? Principal { get; init; }
     public CallerIdentity? Caller { get; init; }
 }

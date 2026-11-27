@@ -52,11 +52,11 @@ public sealed class ApiPipeline
     /// Adds a route. A template segment "{name}" matches one segment of [A-Za-z0-9_-], at most 64 characters.
     /// Routes need a valid token unless <paramref name="requiresAuth"/> is false.
     /// </summary>
-    public void Map(string method, string template, ApiHandler handler, bool requiresAuth = true)
+    public void Map(string method, string template, ApiHandler handler, bool requiresAuth = true, bool rawBody = false)
     {
         ArgumentNullException.ThrowIfNull(handler);
         _routes.RemoveAll(r => r.Method == method && r.Template == template);
-        _routes.Add(new Route(method, template, template.Split('/'), handler, requiresAuth, Disabled: false));
+        _routes.Add(new Route(method, template, template.Split('/'), handler, requiresAuth, Disabled: false, RawBody: rawBody));
     }
 
     /// <summary>A route that exists in the API but is switched off here (404 feature_disabled).</summary>
@@ -64,7 +64,7 @@ public sealed class ApiPipeline
     {
         _routes.RemoveAll(r => r.Method == method && r.Template == template);
         _routes.Add(new Route(method, template, template.Split('/'), static _ => Task.CompletedTask,
-            RequiresAuth: false, Disabled: true));
+            RequiresAuth: false, Disabled: true, RawBody: false));
     }
 
     public async Task HandleAsync(ApiRequest request, IResponseSink sink)
@@ -129,7 +129,7 @@ public sealed class ApiPipeline
 
         context.RouteValues = values;
 
-        if (request.Method is "POST" or "PUT" or "PATCH")
+        if (request.Method is "POST" or "PUT" or "PATCH" && !route.RawBody)
         {
             request.Headers.TryGetValue("Content-Type", out var contentType);
             if (!RequestValidator.IsJsonContentType(contentType))
@@ -361,5 +361,5 @@ public sealed class ApiPipeline
     }
 
     private sealed record Route(
-        string Method, string Template, string[] Segments, ApiHandler Handler, bool RequiresAuth, bool Disabled);
+        string Method, string Template, string[] Segments, ApiHandler Handler, bool RequiresAuth, bool Disabled, bool RawBody);
 }

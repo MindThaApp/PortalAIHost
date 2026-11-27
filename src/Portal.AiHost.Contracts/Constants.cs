@@ -258,6 +258,8 @@ public static class EndpointNames
 
     /// <summary>Listed while ffmpeg is installed (GET /host/media/encoders and the <c>encode</c> object).</summary>
     public const string MediaEncoders = "media.encoders";
+    /// <summary>Listed while uploads work (POST /host/uploads; this PC's own apps only in v1).</summary>
+    public const string Uploads = "uploads";
     public const string Voices = "voices";
     public const string Speech = "speech";
 }
@@ -297,6 +299,8 @@ public static class Routes
 
     /// <summary>GET: the encoders that passed the test encode on this PC.</summary>
     public const string MediaEncoders = "/host/media/encoders";
+    // Uploads (api-v1.md): POST a raw body, GET /{id} the record, DELETE /{id}. Local apps only in v1.
+    public const string Uploads = "/host/uploads";
 
     /// <summary>The job collection route of a generation kind (image or video), or null for any other kind.</summary>
     public static string? JobsFor(string kind) => kind switch

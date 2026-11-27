@@ -197,6 +197,28 @@ public sealed class AiHostServer : IAsyncDisposable
             return;
         }
 
+        if (IsUploadPost(request))
+        {
+            // An upload is streamed to disk by its route: no buffering, and Kestrel's own body cap is lifted for this one
+            // request (the upload service enforces its own limit while it reads). Only this loopback listener does so.
+            var cap = http.Features.Get<Microsoft.AspNetCore.Http.Features.IHttpMaxRequestBodySizeFeature>();
+            if (cap is { IsReadOnly: false })
+            {
+                cap.MaxRequestBodySize = null;
+            }
+
+            await _runtime.Pipeline.HandleAsync(new ApiRequest
+            {
+                Method = request.Method,
+                Path = request.Path.Value!,
+                Query = ReadQuery(request),
+                Headers = ReadHeaders(request),
+                BodyStream = request.Body,
+                Caller = ResolveCaller(http),
+            }, new KestrelResponseSink(http)).ConfigureAwait(false);
+            return;
+        }
+
         RequestGuard.BodyResult result;
         byte[] body;
         try
@@ -240,6 +262,10 @@ public sealed class AiHostServer : IAsyncDisposable
         };
         await _runtime.Pipeline.HandleAsync(apiRequest, new KestrelResponseSink(http)).ConfigureAwait(false);
     }
+
+    private static bool IsUploadPost(HttpRequest request) =>
+        HttpMethods.IsPost(request.Method) && request.Path.HasValue &&
+        string.Equals(request.Path.Value!.TrimEnd('/'), Routes.Uploads, StringComparison.Ordinal);
 
     private static readonly object CallerKey = new();
 

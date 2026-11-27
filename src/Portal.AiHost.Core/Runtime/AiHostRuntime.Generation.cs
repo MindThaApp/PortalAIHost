@@ -19,6 +19,9 @@ public sealed partial class AiHostRuntime
     /// <summary>The generation section of status and capabilities (set by the generation service; null: none).</summary>
     public Func<Contracts.GenerationAvailability?>? GenerationInfo { get; set; }
 
+    /// <summary>Largest upload this host takes (set by the upload service); 0 while uploads are off.</summary>
+    public long UploadMaxBytes { get; set; }
+
     /// <summary>True once the host started quitting.</summary>
     public bool IsStopping => _stopping;
 

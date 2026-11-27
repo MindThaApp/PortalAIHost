@@ -261,6 +261,9 @@ public sealed class EmbeddingModelInfo
 public sealed class CapabilityLimits
 {
     public int MaxRequestBytes { get; set; } = ApiLimits.MaxRequestBytes;
+
+    /// <summary>Largest body of POST /host/uploads. Present while uploads work (additive).</summary>
+    public long? MaxUploadBytes { get; set; }
     public int MaxQueuedPerApp { get; set; } = ApiLimits.MaxQueuedPerApp;
     public DeadlineDefaults DefaultDeadlineMs { get; set; } = new();
     public int MaxDeadlineMs { get; set; } = ApiLimits.MaxDeadlineMs;
