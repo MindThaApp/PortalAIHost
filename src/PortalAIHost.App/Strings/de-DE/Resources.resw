@@ -164,8 +164,6 @@
   <data name="Vm_CancelDlYes" xml:space="preserve"><value>Download beenden</value></data>
   <data name="Vm_CancelDlKeep" xml:space="preserve"><value>Weiter herunterladen</value></data>
   <data name="Vm_AutoDownload" xml:space="preserve"><value>{0} herunterladen</value></data>
-  <data name="Vm_AutoPause" xml:space="preserve"><value>{0} anhalten</value></data>
-  <data name="Vm_AutoResume" xml:space="preserve"><value>{0} fortsetzen</value></data>
   <data name="Vm_AutoCancel" xml:space="preserve"><value>Download von {0} beenden</value></data>
   <data name="Vm_AutoUse" xml:space="preserve"><value>{0} verwenden</value></data>
   <data name="Vm_Added" xml:space="preserve"><value>{0} hinzugefügt</value></data>
@@ -488,7 +486,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="ModelsRemoveFailedBar.Title" xml:space="preserve"><value>Das Modell konnte nicht entfernt werden</value></data>
   <data name="SettingsMoveButton.Content" xml:space="preserve"><value>Meine Modelle dorthin verschieben</value></data>
   <data name="SettingsMoveCancel.Content" xml:space="preserve"><value>Verschieben abbrechen</value></data>
-  <data name="Vm_NeverUsed" xml:space="preserve"><value>Noch nicht verwendet</value></data>
   <data name="Vm_UsedToday" xml:space="preserve"><value>Zuletzt heute verwendet</value></data>
   <data name="Vm_UsedYesterday" xml:space="preserve"><value>Zuletzt gestern verwendet</value></data>
   <data name="Vm_UsedDays" xml:space="preserve"><value>Zuletzt vor {0} Tagen verwendet</value></data>
@@ -699,7 +696,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="DevicesRename.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Ändert den für dieses Gerät angezeigten Namen</value></data>
   <data name="DevicesNewName.Header" xml:space="preserve"><value>Gerätename</value></data>
   <data name="DevicesRenameSave.Content" xml:space="preserve"><value>Umbenennen</value></data>
-  <data name="DevicesLimitsLabel.Text" xml:space="preserve"><value>Limits</value></data>
+  <data name="DevicesLimitsLabel.Text" xml:space="preserve"><value>Grenzwerte</value></data>
   <data name="DevicesLimits.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Priorität, Tageslimits, Ruhezeiten und die Modelle, die dieses Gerät verwenden darf</value></data>
   <data name="DevicesLimits.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Priorität, Tageslimits, Ruhezeiten und die Modelle, die dieses Gerät verwenden darf</value></data>
   <data name="DevicesPriorityEqual.Header" xml:space="preserve"><value>Gleiche Priorität wie die Apps dieses PCs</value></data>
