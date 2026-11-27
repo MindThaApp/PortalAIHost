@@ -5,6 +5,19 @@ own machines. This guide explains every part of the app, what its settings do, a
 
 Places where a picture belongs are marked `[screenshot: ...]`.
 
+## What the Store version includes
+
+- Download and run chat and text models on your PC, with a memory budget and placement (graphics card, memory or processor).
+- Share them with Portal apps on this PC, with a permission prompt for each app.
+- Pair other devices on your home network and use this PC's models from a laptop.
+- Devices page: pause a device, daily limits, quiet hours, which models each may use, gaming mode.
+- Two models at once for a trusted device.
+- Notifications, crash reports (on by default, can be turned off) and your data kept on your own machines.
+
+**Not in this version:** image and video generation, a voice helper, and MP4 video or clip joining. Those need extra
+components that are not part of the Store package. The relay access key (section 13) stays off until the relay service is
+updated; the home network works without it.
+
 ## Contents
 
 1. [Quick start](#1-quick-start)

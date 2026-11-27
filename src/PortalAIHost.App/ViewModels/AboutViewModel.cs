@@ -52,8 +52,6 @@ public sealed class WhatsNewViewModel
         Cards = new[]
         {
             Card(s, "Vm_Wn1", ""),
-            Card(s, "Vm_Wn2", ""),
-            Card(s, "Vm_Wn3", "settings"),
             Card(s, "Vm_Wn4", ""),
             Card(s, "Vm_Wn5", "settings"),
             Card(s, "Vm_Wn6", ""),
@@ -63,7 +61,6 @@ public sealed class WhatsNewViewModel
             Card(s, "Vm_Wn10", "models"),
             Card(s, "Vm_Wn11", ""),
             Card(s, "Vm_Wn12", "devices"),
-            Card(s, "Vm_Wn13", "settings"),
             Card(s, "Vm_Wn14", "models"),
         };
     }
