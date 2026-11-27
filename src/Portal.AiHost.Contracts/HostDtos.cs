@@ -183,6 +183,9 @@ public sealed class HostCapabilities
 
     /// <summary>Image and video jobs: what can run here and how many jobs are queued or running. Null on older hosts.</summary>
     public GenerationAvailability? Generation { get; set; }
+
+    /// <summary>GPUs, the flavour each engine runs on and which flavours are installed. Null on older hosts.</summary>
+    public HardwareCapabilities? Hardware { get; set; }
 }
 
 public sealed class ChatCapabilities

@@ -19,6 +19,13 @@ public sealed class EngineSupervisorOptions
     /// <summary>Chooses the executable for a spec. The bool is true when CPU is forced (Vulkan marked bad).</summary>
     public required Func<EngineLaunchSpec, bool, EngineBinary> ResolveBinary { get; init; }
 
+    /// <summary>Optional per-flavour bad marks; a Vulkan failure is recorded here with <see cref="EngineTag"/> and <see cref="DriverVersion"/>.</summary>
+    public Hardware.FlavourMarks? Marks { get; init; }
+
+    public string? EngineTag { get; init; }
+
+    public Func<string?>? DriverVersion { get; init; }
+
     public TimeSpan HealthPollInterval { get; init; } = TimeSpan.FromMilliseconds(500);
 
     /// <summary>Load timeout; null means 60 s plus 10 s per GB of model files.</summary>
@@ -308,6 +315,7 @@ public sealed class EngineSupervisor : IEngineSupervisor, IEngineProcess
             _forceCpu = true;
         }
 
+        _o.Marks?.Mark(RuntimeProbe.Vulkan, _o.EngineTag, _o.DriverVersion?.Invoke(), message);
         BackendFallback?.Invoke(this, message);
     }
 

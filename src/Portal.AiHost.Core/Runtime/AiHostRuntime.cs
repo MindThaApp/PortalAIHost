@@ -455,6 +455,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         return new HostCapabilities
         {
             Generation = generation,
+            Hardware = BuildHardwareCapabilities(deviceId is not null),
             CapabilitiesRevision = CapabilitiesRevision,
             ModelControl = deviceId is null ? null : DeviceModelControl?.Invoke(deviceId) ?? false,
             Chat = chat is null || chatSup is null

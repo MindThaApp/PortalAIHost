@@ -19,6 +19,7 @@ public sealed record VulkanProbeResult(bool Ok, string? DeviceName, long TotalMi
 public static partial class RuntimeProbe
 {
     public const string Vulkan = "vulkan";
+    public const string Cuda = "cuda";
     public const string Cpu = "cpu";
     public const string ExeName = "llama-server.exe";
 
@@ -130,22 +131,23 @@ public static partial class RuntimeProbe
         var arch = architecture ?? RuntimeInformation.ProcessArchitecture;
         var cpuFolder = arch == Architecture.Arm64 && Directory.Exists(Path.Combine(engineRoot, "cpu-arm64")) ? "cpu-arm64" : Cpu;
         var cpu = new EngineBinary(Cpu, Path.Combine(engineRoot, cpuFolder, ExeName));
-        if (preference == BackendPreference.Cpu || arch != Architecture.X64 || vulkanMarkedBad)
+        var marks = new Hardware.FlavourMarks();
+        if (vulkanMarkedBad)
         {
-            return cpu;
+            marks.Mark(Vulkan, null, null);
         }
 
-        var vulkanExe = Path.Combine(engineRoot, Vulkan, ExeName);
-        if (!File.Exists(vulkanExe))
+        // No NVML result and no CUDA devices: CUDA is skipped, so the answer is the same Vulkan-then-CPU choice as before.
+        var choice = Hardware.BackendSelector.Choose(new Hardware.BackendRequest
         {
-            return cpu;
-        }
-
-        if (vulkanProbe is { Ok: true, TotalMiB: > 0 })
-        {
-            return new EngineBinary(Vulkan, vulkanExe);
-        }
-
-        return cpu;
+            Preference = preference == BackendPreference.Cpu ? Hardware.BackendOverride.Cpu : Hardware.BackendOverride.Auto,
+            Architecture = arch,
+            IsInstalled = f => File.Exists(Path.Combine(engineRoot, f, ExeName)),
+            VulkanProbe = vulkanProbe,
+            Marks = marks,
+        });
+        return choice.First.Flavour == Vulkan
+            ? new EngineBinary(Vulkan, Path.Combine(engineRoot, Vulkan, ExeName))
+            : cpu;
     }
 }
