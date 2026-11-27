@@ -355,8 +355,14 @@ without waking the room. A ping does **not** count as activity for the 2-minute 
 In the Windows host the local connections go to an internal listener on `127.0.0.1` and a random port. It uses the same
 certificate and the same request handler as the LAN listener, but accepts loopback sources because every connection on
 it comes from the bridge. The LAN listener itself still refuses loopback. Nothing is exposed beyond this PC: the
-internal listener is not reachable from the network, and a program on this PC that finds it still cannot do anything
-without a paired device's signature.
+internal listener is not reachable from the network.
+
+A program on this PC that finds the internal port gets nothing either. The bridge writes a one-time token, 32 random
+bytes, as the first bytes of every local connection, before the TLS handshake. The listener keeps the tokens it
+issued, compares what it reads against all of them in constant time, and removes a token the moment it is used. A
+token is also dropped 5 seconds after it was issued, and at most 64 are outstanding at once. A connection that sends no
+token within 3 seconds, a wrong, reused or expired one, or anything else that is not a token is closed at once
+without a reply. The tokens live only in this process's memory.
 
 ### 10.4 Limits (constants of the relay, `relay/src/protocol.ts`)
 

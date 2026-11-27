@@ -24,6 +24,9 @@ public sealed class RelayBridgeOptions
     /// <summary>The internal loopback listener each stream is piped to (<see cref="LanServer.BridgeEndPoint"/>).</summary>
     public required IPEndPoint LocalTarget { get; init; }
 
+    /// <summary>Issues the one-time token written before each local connection's TLS bytes. Null: none is sent (tests with a plain echo target).</summary>
+    public BridgeTokens? Tokens { get; init; }
+
     public TimeSpan InitialDelay { get; init; } = TimeSpan.FromSeconds(2);
 
     /// <summary>A link must stay up this long before the reconnect delay starts over (stops a flapping link from hammering the relay).</summary>
@@ -410,6 +413,14 @@ public sealed class RelayBridge : IAsyncDisposable
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct, pipe.Token);
             await tcp.ConnectAsync(_o.LocalTarget, cts.Token).ConfigureAwait(false);
             await using var net = tcp.GetStream();
+            if (_o.Tokens is { } tokens)
+            {
+                // First bytes on the connection: proves to the internal listener that the bridge opened it.
+                var token = tokens.Issue();
+                await net.WriteAsync(token, cts.Token).ConfigureAwait(false);
+                System.Security.Cryptography.CryptographicOperations.ZeroMemory(token);
+            }
+
             var down = Task.Run(async () =>
             {
                 await foreach (var chunk in pipe.Reader.ReadAllAsync(cts.Token).ConfigureAwait(false))

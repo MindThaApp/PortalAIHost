@@ -199,6 +199,10 @@ public sealed class RemoteAccess : IAsyncDisposable
 
     public bool Listening => _server is not null;
 
+    /// <summary>The internal bridge listener and its token source (tests only).</summary>
+    internal (System.Net.IPEndPoint EndPoint, BridgeTokens Tokens)? BridgeForTests =>
+        _server is { BridgeEndPoint: { } ep } s ? (ep, s.BridgeTokens) : null;
+
     /// <summary>The port in use, or the configured one while not listening.</summary>
     public int Port => _server?.Port ?? EffectivePort(_settings);
 
@@ -274,6 +278,7 @@ public sealed class RemoteAccess : IAsyncDisposable
                     Url = new Uri(url),
                     Certificate = _certificate,
                     LocalTarget = target,
+                    Tokens = _server.BridgeTokens,
                     InitialDelay = _o.RelayInitialDelay ?? TimeSpan.FromSeconds(2),
                     MaxDelay = _o.RelayMaxDelay ?? TimeSpan.FromMinutes(5),
                 });

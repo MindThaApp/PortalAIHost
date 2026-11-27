@@ -74,6 +74,7 @@ public sealed class LanServer : IAsyncDisposable
         _pairing = pairing;
         _verifier = verifier;
         _options = options;
+        BridgeTokens = new BridgeTokens(options.Time);
     }
 
     public int Port { get; private set; }
@@ -84,6 +85,11 @@ public sealed class LanServer : IAsyncDisposable
     private ListenOptions? _bridgeListen;
 
     private const string BridgeItem = "portal.bridge";
+
+    /// <summary>Tokens the relay bridge must present on the internal endpoint (docs/remote-v1.md section 10.3).</summary>
+    public BridgeTokens BridgeTokens { get; }
+
+    private static readonly TimeSpan BridgeTokenWait = TimeSpan.FromSeconds(3);
 
     public static async Task<LanServer> StartAsync(AiHostRuntime runtime, PairingService pairing,
         DeviceRequestVerifier verifier, DeviceSessions sessions, LanServerOptions options, CancellationToken ct = default)
@@ -181,10 +187,18 @@ public sealed class LanServer : IAsyncDisposable
                 {
                     _bridgeListen = listen;
                     listen.Protocols = HttpProtocols.Http1;
-                    listen.Use(next => context =>
+                    listen.Use(next => async context =>
                     {
+                        // Only the bridge knows a token: it writes one before the TLS handshake. Anything else is closed
+                        // at once, with no reply.
+                        if (!await BridgeTokens.ReadAndConsumeAsync(context.Transport.Input, BridgeTokenWait, context.ConnectionClosed).ConfigureAwait(false))
+                        {
+                            context.Abort();
+                            return;
+                        }
+
                         context.Items[BridgeItem] = true;
-                        return next(context);
+                        await next(context).ConfigureAwait(false);
                     });
                     listen.UseHttps(_options.Certificate);
                 });
