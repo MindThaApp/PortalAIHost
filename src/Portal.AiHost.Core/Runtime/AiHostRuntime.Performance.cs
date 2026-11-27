@@ -128,7 +128,13 @@ public sealed partial class AiHostRuntime
                     continue;
                 }
 
-                await sup.StopAsync(ct).ConfigureAwait(false);
+                await sup.StopAsync(ct).ConfigureAwait(false); // engine stop: memory only
+                if (ModelSlots.IsSecond(kind))
+                {
+                    unloaded.Add(kind); // a device's second model is not restarted behind the device's back
+                    continue;
+                }
+
                 _ = ReloadQuietlyAsync(kind);
                 reloaded.Add(kind);
             }
@@ -288,7 +294,7 @@ public sealed partial class AiHostRuntime
             return;
         }
 
-        var placement = Supervisor(ModelKinds.Chat)?.Current?.Placement;
+        var placement = Supervisor(model.Kind)?.Current?.Placement ?? Supervisor(ModelKinds.Chat)?.Current?.Placement;
         var slots = Math.Max(1, placement?.ParallelSlots ?? model.ParallelSlots);
         var perSlot = Math.Max(1, (placement?.ContextTokens ?? model.ContextTokens) / slots);
         var effective = Math.Clamp(asked, Math.Min(MinRequestContextTokens, perSlot), perSlot);
