@@ -90,6 +90,8 @@ public sealed class LanServer : IAsyncDisposable
     public BridgeTokens BridgeTokens { get; }
 
     private static readonly TimeSpan BridgeTokenWait = TimeSpan.FromSeconds(3);
+    private const int MaxBridgeWaiting = 16;
+    private int _bridgeWaiting;
 
     public static async Task<LanServer> StartAsync(AiHostRuntime runtime, PairingService pairing,
         DeviceRequestVerifier verifier, DeviceSessions sessions, LanServerOptions options, CancellationToken ct = default)
@@ -191,7 +193,25 @@ public sealed class LanServer : IAsyncDisposable
                     {
                         // Only the bridge knows a token: it writes one before the TLS handshake. Anything else is closed
                         // at once, with no reply.
-                        if (!await BridgeTokens.ReadAndConsumeAsync(context.Transport.Input, BridgeTokenWait, context.ConnectionClosed).ConfigureAwait(false))
+                        // At most 16 connections may wait for their token at once; more are dropped without waiting.
+                        if (Interlocked.Increment(ref _bridgeWaiting) > MaxBridgeWaiting)
+                        {
+                            Interlocked.Decrement(ref _bridgeWaiting);
+                            context.Abort();
+                            return;
+                        }
+
+                        bool ok;
+                        try
+                        {
+                            ok = await BridgeTokens.ReadAndConsumeAsync(context.Transport.Input, BridgeTokenWait, context.ConnectionClosed).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            Interlocked.Decrement(ref _bridgeWaiting);
+                        }
+
+                        if (!ok)
                         {
                             context.Abort();
                             return;

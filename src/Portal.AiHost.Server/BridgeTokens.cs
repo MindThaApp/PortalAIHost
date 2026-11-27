@@ -32,7 +32,7 @@ public sealed class BridgeTokens
         lock (_gate)
         {
             Purge(now);
-            if (_issued.Count >= MaxOutstanding) _issued.RemoveAt(0);
+            if (_issued.Count >= MaxOutstanding) Remove(0);
             _issued.Add(((byte[])token.Clone(), now + (long)(Lifetime.TotalSeconds * _time.TimestampFrequency)));
         }
 
@@ -55,12 +55,25 @@ public sealed class BridgeTokens
             }
 
             if (hit < 0) return false;
-            _issued.RemoveAt(hit);
+            Remove(hit);
             return true;
         }
     }
 
-    private void Purge(long now) => _issued.RemoveAll(t => t.Expires <= now);
+    // Best effort only: it clears the copy this list holds. Copies the runtime made while the bytes travelled are not tracked.
+    private void Remove(int index)
+    {
+        CryptographicOperations.ZeroMemory(_issued[index].Token);
+        _issued.RemoveAt(index);
+    }
+
+    private void Purge(long now)
+    {
+        for (var i = _issued.Count - 1; i >= 0; i--)
+        {
+            if (_issued[i].Expires <= now) Remove(i);
+        }
+    }
 
     /// <summary>
     /// Reads the first 32 bytes of a connection and checks them. Waits at most <paramref name="wait"/>; on any failure

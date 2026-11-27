@@ -414,5 +414,21 @@ by default (setting `remote.relay_admission`); a host that does not publish one 
   TLS. A relay that is compromised can therefore replay the token, but gains nothing it did not have: it could always
   open streams for the room id, and the host still demands a device signature on every request. The goal is only
   to stop strangers from using up a host's stream and budget slots.
-- **Rotating.** Delete `remote-admission.bin` in the host's data folder while the host is stopped; the next start makes
-  a new token and devices pair again.
+- **Rotating.** Settings has a "Relay access key" switch and a "New key" button (control message
+  `remote.relay_key_rotate`). Rotating makes a new token, keeps the old file next to it as `remote-admission.bin.bad`
+  (`.bad2`, ...), republishes the hash and ends the relay access of every device paired with the old token; they must
+  pair again. The home network is not affected. **Forgetting a device does not rotate the key**: a removed device
+  still holds the token and could keep opening streams through the relay (it cannot do anything without a paired
+  device's signature, but it can use up slots). Rotate after removing a device you do not trust.
+- **A key that cannot be used.** The host never makes a new token silently and never overwrites the old file. If the file
+  is definitely damaged (or the wrong size), it is copied to a unique `.bad` name, a new token is made and the host
+  shows "devices must pair again to use the relay". If opening it fails in a way that may be temporary (the key
+  protector cannot answer now), nothing changes: **the relay stays off** (never an open room), the pairing code offers
+  no relay, the home network keeps working, and the host tries again at the next start or settings change.
+- **Order of deployment.** The relay must be updated before any host turns the key on: an older relay cannot verify
+  a hello that carries `adm` and closes with 4401. The host says so ("the relay may need updating") and the switch can
+  be turned off again.
+- **Pairing link size.** The QR code holds at most 213 bytes. With the default relay address and a key the host
+  shortens, then drops, the `n` (name) field to fit; "Copy link" always carries every field.
+- **Internal listener.** At most 16 connections may wait for their token on the internal listener at once; further ones
+  are dropped at once.

@@ -629,6 +629,18 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="SettingsRemoteRelay.OnContent" xml:space="preserve"><value>On</value></data>
   <data name="SettingsRemoteRelay.OffContent" xml:space="preserve"><value>Off</value></data>
   <data name="SettingsRemoteRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Also reach this PC away from home</value></data>
+  <data name="SettingsRelayAdmission.Header" xml:space="preserve"><value>Relay access key</value></data>
+  <data name="SettingsRelayAdmission.OnContent" xml:space="preserve"><value>On</value></data>
+  <data name="SettingsRelayAdmission.OffContent" xml:space="preserve"><value>Off</value></data>
+  <data name="SettingsRelayAdmission.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Relay access key</value></data>
+  <data name="SettingsRelayAdmissionHelp.Text" xml:space="preserve"><value>Only devices paired with the key in the pairing code can reach this PC through the relay. Turn it on before pairing: devices paired earlier must pair again to use the relay. The relay must be up to date.</value></data>
+  <data name="SettingsRotateRelayKeyText.Text" xml:space="preserve"><value>New key</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Make a new relay access key. Every paired device must pair again to use the relay. Removing a device does not change the key, so do this after removing a device you do not trust.</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Make a new relay access key. Every paired device must pair again to use the relay. Removing a device does not change the key, so do this after removing a device you do not trust.</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>New key</value></data>
+  <data name="Vm_RotateKeyTitle" xml:space="preserve"><value>Make a new relay access key?</value></data>
+  <data name="Vm_RotateKeyBody" xml:space="preserve"><value>Every paired device must pair again to use this PC through the relay. At home nothing changes.</value></data>
+  <data name="Vm_RotateKeyConfirm" xml:space="preserve"><value>Make new key</value></data>
   <data name="SettingsRemoteRelayHelp.Text" xml:space="preserve"><value>This PC connects out to a small relay, so a paired device can reach it from anywhere. The relay only passes along scrambled bytes it cannot read, and each device still has to be paired and sign every request.</value></data>
   <data name="Vm_RelayAway" xml:space="preserve"><value>Reachable away from home</value></data>
   <data name="Vm_RelayHomeOnly" xml:space="preserve"><value>Home network only</value></data>

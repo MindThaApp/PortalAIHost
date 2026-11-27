@@ -338,6 +338,11 @@ internal sealed class ControlHandler(HostShell shell)
                 shell.Remote.CancelPairing();
                 return ControlPipe.Ok(id);
 
+            case ControlTypes.RemoteRotateRelayKey:
+                return await shell.Remote.RotateRelayKeyAsync(ct).ConfigureAwait(false)
+                    ? ControlPipe.Ok(id)
+                    : ControlPipe.Error(id, ErrorCodes.InternalError, "The new relay access key could not be saved. Nothing was changed.");
+
             case ControlTypes.RemoteRemoveDevice:
                 if (!shell.Remote.RemoveDevice(Payload(r, AiHostJsonContext.Default.RemoveDeviceCommand)!.DeviceId))
                 {

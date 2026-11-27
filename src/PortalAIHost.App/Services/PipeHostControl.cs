@@ -265,6 +265,9 @@ public sealed class PipeHostControl : IHostControl, IAsyncDisposable
     public async Task CancelPairingAsync(CancellationToken ct = default) =>
         await CallAsync(ControlTypes.RemotePairCancel, null, ct).ConfigureAwait(false);
 
+    public async Task RotateRelayKeyAsync(CancellationToken ct = default) =>
+        await CallAsync(ControlTypes.RemoteRotateRelayKey, null, ct).ConfigureAwait(false);
+
     public Task RemoveDeviceAsync(string deviceId, CancellationToken ct = default) =>
         SendAsync(ControlTypes.RemoteRemoveDevice, new RemoveDeviceCommand { DeviceId = deviceId },
             AiHostJsonContext.Default.RemoveDeviceCommand, ct);

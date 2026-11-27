@@ -160,6 +160,9 @@ public sealed class PairingOfferInfo
 
     /// <summary>portalai://pair?h=...&amp;p=...&amp;f=...&amp;c=...&amp;n=...[&amp;r=...]</summary>
     public string QrText { get; set; } = "";
+
+    /// <summary>The same link with nothing left out (the QR text may omit the PC's name to fit). Used by "Copy link"; empty from older hosts.</summary>
+    public string LinkText { get; set; } = "";
     public string HostName { get; set; } = "";
     public string Address { get; set; } = "";
     public int Port { get; set; }
@@ -192,6 +195,9 @@ public sealed class RemoteStatus
 
     /// <summary>"Devices may replace models" as saved.</summary>
     public bool AllowReplaceModels { get; set; }
+
+    /// <summary>"Relay access key" as saved (<see cref="RemoteSettings.RelayAdmission"/>).</summary>
+    public bool RelayAdmission { get; set; }
 
     /// <summary>Gaming mode is on and a game or heavy GPU use is detected right now.</summary>
     public bool GamingBusy { get; set; }

@@ -77,6 +77,8 @@ public sealed class RemoteAccess : IAsyncDisposable
     private RelayBridge? _bridge;
     private string? _bridgeUrl;
     private bool _bridgeAdmission;
+    private bool _relayBlocked; // the relay access key is wanted but cannot be opened now: the relay stays off (fail closed)
+    private string? _admissionNotice; // sticky: the key was damaged and replaced, so devices must pair again
     private byte[]? _admission;
     private PairingService? _pairing;
     private DeviceRequestVerifier? _verifier;
@@ -258,13 +260,23 @@ public sealed class RemoteAccess : IAsyncDisposable
             }
 
             var wantAdmission = wantRelay && settings.RelayAdmission;
-            if (wantAdmission && _admission is null && !TryLoadAdmission())
+            _relayBlocked = false;
+            if (wantAdmission && _admission is null)
             {
-                wantAdmission = false;
-                _problem = "The relay access key could not be saved, so the relay stays open to anyone who knows this PC's id.";
+                switch (LoadAdmission())
+                {
+                    case AdmissionLoad.Replaced:
+                        _admissionNotice = "The relay access key was damaged and has been replaced. Devices must pair again to use the relay; the home network is not affected.";
+                        break;
+                    case AdmissionLoad.Failed:
+                        // Never fall back to an open room: the relay stays off until the key can be opened (tried again at the next start or change).
+                        _relayBlocked = true;
+                        _problem = "The relay access key cannot be opened right now, so this PC is not offered through the relay. The home network still works.";
+                        break;
+                }
             }
 
-            if (_bridge is not null && (!wantRelay || url is null || url != _bridgeUrl || wantAdmission != _bridgeAdmission))
+            if (_bridge is not null && (!wantRelay || _relayBlocked || url is null || url != _bridgeUrl || wantAdmission != _bridgeAdmission))
             {
                 await StopBridgeAsync().ConfigureAwait(false);
             }
@@ -280,7 +292,7 @@ public sealed class RemoteAccess : IAsyncDisposable
                 await StartServerAsync(port, wantRelay, ct).ConfigureAwait(false);
             }
 
-            if (wantRelay && _bridge is null && _server?.BridgeEndPoint is { } target && url is not null && _certificate is not null)
+            if (wantRelay && !_relayBlocked && _bridge is null && _server?.BridgeEndPoint is { } target && url is not null && _certificate is not null)
             {
                 _bridgeUrl = url;
                 _bridgeAdmission = wantAdmission;
@@ -324,41 +336,107 @@ public sealed class RemoteAccess : IAsyncDisposable
         return ok ? uri.GetLeftPart(UriPartial.Authority) : null;
     }
 
+    private enum AdmissionLoad { Loaded, Created, Replaced, Failed }
+
+    private string AdmissionPath => Path.Combine(_o.DataDirectory, "remote-admission.bin");
+
     /// <summary>
     /// The relay admission token (32 random bytes) lives in <c>remote-admission.bin</c> next to the certificate, protected
-    /// like the certificate key. It is created once and reused so devices paired with it keep working across restarts.
+    /// like the certificate key. It is made once and reused so devices paired with it keep working across restarts.
+    /// A token is never replaced silently: a file that is definitely damaged (or the wrong size) is first copied to a
+    /// unique <c>.bad</c> name, then removed, and the owner is told that devices must pair again. A failure that may be
+    /// temporary (the key protector cannot answer now) changes nothing and reports <see cref="AdmissionLoad.Failed"/>.
     /// </summary>
-    private bool TryLoadAdmission()
+    private AdmissionLoad LoadAdmission()
     {
-        var path = Path.Combine(_o.DataDirectory, "remote-admission.bin");
+        var path = AdmissionPath;
         try
         {
-            if (File.Exists(path))
+            var existed = File.Exists(path);
+            if (existed)
             {
+                byte[]? plain = null;
                 try
                 {
-                    var plain = _o.KeyProtector.Unprotect(File.ReadAllBytes(path));
-                    if (plain.Length == RelayProtocol.AdmissionTokenBytes)
-                    {
-                        _admission = plain;
-                        return true;
-                    }
+                    plain = _o.KeyProtector.Unprotect(File.ReadAllBytes(path));
                 }
                 catch (HostKeyDamagedException)
                 {
-                    // Unreadable: replaced below. Devices that held the old token pair again.
+                    // Definitely unreadable: replaced below, after the old file is kept as .bad.
                 }
+
+                if (plain is { Length: RelayProtocol.AdmissionTokenBytes })
+                {
+                    _admission = plain;
+                    return AdmissionLoad.Loaded;
+                }
+
+                MoveAside(path);
             }
 
             var token = RelayProtocol.NewAdmissionToken();
             Portal.AiHost.Core.Settings.AtomicFile.WriteAllBytes(path, _o.KeyProtector.Protect(token));
             _admission = token;
-            return true;
+            return existed ? AdmissionLoad.Replaced : AdmissionLoad.Created;
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or System.Security.Cryptography.CryptographicException)
         {
-            return false;
+            return AdmissionLoad.Failed;
         }
+    }
+
+    /// <summary>Copies the file to the first free <c>name.bad</c>, <c>name.bad2</c>, ..., checks the copy, then removes the original (this host's own file).</summary>
+    private static string MoveAside(string path)
+    {
+        var bad = path + ".bad";
+        for (var n = 2; File.Exists(bad); n++) bad = path + ".bad" + n;
+        File.Copy(path, bad, overwrite: false);
+        if (new FileInfo(bad).Length != new FileInfo(path).Length) throw new IOException("The backup copy is incomplete.");
+        File.Delete(path);
+        return bad;
+    }
+
+    /// <summary>
+    /// Makes a new relay admission token. The old file is kept as <c>.bad</c>. Devices paired with the old token can no
+    /// longer use the relay and must pair again; the home network is not affected. False when it could not be saved
+    /// (nothing changed then).
+    /// </summary>
+    public async Task<bool> RotateRelayKeyAsync(CancellationToken ct = default)
+    {
+        await _applyGate.WaitAsync(ct).ConfigureAwait(false);
+        try
+        {
+            if (_disposed) return false;
+            try
+            {
+                var path = AdmissionPath;
+                if (File.Exists(path)) File.Copy(path, FreeBadName(path), overwrite: false); // keep the old key; the file itself is replaced atomically below
+                var token = RelayProtocol.NewAdmissionToken();
+                Portal.AiHost.Core.Settings.AtomicFile.WriteAllBytes(path, _o.KeyProtector.Protect(token));
+                _admission = token;
+                _admissionNotice = null;
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or System.Security.Cryptography.CryptographicException)
+            {
+                return false;
+            }
+
+            if (_bridge is not null && _bridgeAdmission) await StopBridgeAsync().ConfigureAwait(false);
+        }
+        finally
+        {
+            _applyGate.Release();
+        }
+
+        await ApplyAsync(_settings, ct).ConfigureAwait(false); // restarts the bridge with the new hash
+        return true;
+    }
+
+    private static string FreeBadName(string path)
+    {
+        var bad = path + ".bad";
+        for (var n = 2; File.Exists(bad); n++) bad = path + ".bad" + n;
+        return bad;
     }
 
     private async Task StopBridgeAsync()
@@ -422,7 +500,16 @@ public sealed class RemoteAccess : IAsyncDisposable
         }
     }
 
-    public string? Problem => _problem;
+    public string? Problem => _problem ?? _admissionNotice ?? AdmissionRefusedNotice();
+
+    /// <summary>
+    /// A relay that was not updated yet cannot verify a hello that carries the access key hash, so it answers 4401. Say that
+    /// plainly instead of leaving the relay silently "unreachable".
+    /// </summary>
+    private string? AdmissionRefusedNotice() =>
+        _bridgeAdmission && _bridge is { RefusedWith: 4401 }
+            ? "The relay did not accept this PC with the relay access key on. The relay may need updating first. Turn the relay access key off to use the relay as before."
+            : null;
 
     /// <summary>Opens a pairing code. Throws <see cref="InvalidOperationException"/> when other devices are off.</summary>
     public PairingOfferInfo StartPairing()
@@ -446,6 +533,7 @@ public sealed class RemoteAccess : IAsyncDisposable
             Port = _server.Port,
             Fingerprint = fingerprint,
             QrText = RemoteNetwork.QrText(address, _server.Port, fingerprint, PairingCrypto.Normalize(offer.Code)!, ShortName(_hostName), PairingRelayUrl(), PairingAdmission()),
+            LinkText = RemoteNetwork.LinkText(address, _server.Port, fingerprint, PairingCrypto.Normalize(offer.Code)!, ShortName(_hostName), PairingRelayUrl(), PairingAdmission()),
         };
     }
 
@@ -476,7 +564,8 @@ public sealed class RemoteAccess : IAsyncDisposable
             Enabled = _settings.Enabled,
             Listening = _server is not null,
             Port = Port,
-            Problem = _problem,
+            Problem = Problem,
+            RelayAdmission = _settings.RelayAdmission,
             HostName = _hostName,
             Addresses = addresses,
             Fingerprint = fingerprint,
@@ -505,12 +594,14 @@ public sealed class RemoteAccess : IAsyncDisposable
                 Fingerprint = fingerprint ?? "",
                 QrText = RemoteNetwork.QrText(addresses.FirstOrDefault() ?? "", _server.Port, fingerprint ?? "",
                     PairingCrypto.Normalize(offer.Code)!, ShortName(_hostName), PairingRelayUrl(), PairingAdmission()),
+                LinkText = RemoteNetwork.LinkText(addresses.FirstOrDefault() ?? "", _server.Port, fingerprint ?? "",
+                    PairingCrypto.Normalize(offer.Code)!, ShortName(_hostName), PairingRelayUrl(), PairingAdmission()),
             },
         };
     }
 
     /// <summary>The relay address that goes into the pairing QR code: null while the relay is off or has no usable address.</summary>
-    private string? PairingRelayUrl() => _settings.Enabled && _settings.Relay ? RelayUrl(_settings, _o.UseDefaultRelay) : null;
+    private string? PairingRelayUrl() => _settings.Enabled && _settings.Relay && !_relayBlocked ? RelayUrl(_settings, _o.UseDefaultRelay) : null;
 
     /// <summary>The admission token for the pairing link: only while the relay publishes its hash (null otherwise).</summary>
     private string? PairingAdmission() =>

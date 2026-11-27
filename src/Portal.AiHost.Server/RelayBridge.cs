@@ -94,6 +94,11 @@ public sealed class RelayBridge : IAsyncDisposable
 
     public event Action? StateChanged;
 
+    /// <summary>The close code of the relay's last refusal of this host (4401 or 4409), cleared once a link reaches ready.</summary>
+    public int? RefusedWith => _refusedWith;
+
+    private int? _refusedWith;
+
     /// <summary>Streams currently open.</summary>
     public int StreamCount => _streams.Count;
 
@@ -124,8 +129,9 @@ public sealed class RelayBridge : IAsyncDisposable
             {
                 break;
             }
-            catch (RelayRefusedException)
+            catch (RelayRefusedException refused)
             {
+                _refusedWith = refused.Code;
                 // Replaced by another copy of this host, or refused: do not fight over the room.
                 wait = _o.MaxDelay;
             }
@@ -217,6 +223,7 @@ public sealed class RelayBridge : IAsyncDisposable
                 throw new TimeoutException("The relay did not accept this host in time.");
             }
 
+            _refusedWith = null;
             SetState(RelayStates.Connected);
             onReady();
             var lastHeard = Environment.TickCount64;
@@ -427,7 +434,7 @@ public sealed class RelayBridge : IAsyncDisposable
                 // First bytes on the connection: proves to the internal listener that the bridge opened it.
                 var token = tokens.Issue();
                 await net.WriteAsync(token, cts.Token).ConfigureAwait(false);
-                System.Security.Cryptography.CryptographicOperations.ZeroMemory(token);
+                System.Security.Cryptography.CryptographicOperations.ZeroMemory(token); // best effort: only this array
             }
 
             var down = Task.Run(async () =>

@@ -614,6 +614,7 @@ public sealed class FakeHostControl : IHostControl, IDisposable
                 Fingerprint = "fake-fingerprint",
                 Devices = [.. Devices],
                 AllowReplaceModels = _settings.Remote.AllowReplaceModels,
+                RelayAdmission = _settings.Remote.RelayAdmission,
                 LoadedModels = [.. LoadedModels],
                 Pairing = _settings.Remote.Enabled ? Pairing : null,
                 Relay = _settings.Remote.Enabled && _settings.Remote.Relay ? RelayStates.Connected : RelayStates.Off,
@@ -646,6 +647,13 @@ public sealed class FakeHostControl : IHostControl, IDisposable
     {
         Require();
         lock (_gate) Pairing = null;
+        RemoteChanged?.Invoke();
+        return Task.CompletedTask;
+    }
+
+    public Task RotateRelayKeyAsync(CancellationToken ct = default)
+    {
+        Require();
         RemoteChanged?.Invoke();
         return Task.CompletedTask;
     }
