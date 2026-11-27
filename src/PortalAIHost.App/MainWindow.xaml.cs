@@ -13,6 +13,9 @@ public sealed partial class MainWindow : Window, IAppearanceApplier
     private readonly Windows.UI.ViewManagement.UISettings _uiSettings = new();
     private readonly Windows.UI.ViewManagement.AccessibilitySettings _access = new();
     private bool _firstRunShown;
+    private readonly CancellationTokenSource _updateCts = new();
+    private bool _updateStarted;
+    private string? _updateVersion;
     private AppearancePrefs _prefs = AppearancePrefs.Default;
 
     public MainWindow()
@@ -29,7 +32,11 @@ public sealed partial class MainWindow : Window, IAppearanceApplier
         Root.SizeChanged += (_, _) => UpdateCaptionRegions();
         AppMenuButton.SizeChanged += (_, _) => UpdateCaptionRegions();
         AppServices.Appearance = this;
-        VisibilityChanged += (_, e) => AppServices.MainVisibilityChanged?.Invoke(e.Visible);
+        VisibilityChanged += (_, e) =>
+        {
+            AppServices.MainVisibilityChanged?.Invoke(e.Visible);
+            if (e.Visible) StartUpdateCheck();
+        };
         Apply(AppOptions.WithOverrides(_shell.State.Appearance));
         // Windows high contrast can change while the window is open: switch materials and caption colours with it.
         // (AccessibilitySettings.HighContrastChanged cannot be subscribed to in an unpackaged run; UISettings can.)
@@ -41,6 +48,7 @@ public sealed partial class MainWindow : Window, IAppearanceApplier
             // A removal of app access still waiting out its undo time is sent now, so it is never lost.
             try { Task.Run(_shell.FlushAsync).Wait(TimeSpan.FromSeconds(3)); }
             catch (AggregateException) { }
+            _updateCts.Cancel();
             _shell.Dispose();
         };
         AppWindow.Resize(new Windows.Graphics.SizeInt32(1100, 760));
@@ -51,6 +59,47 @@ public sealed partial class MainWindow : Window, IAppearanceApplier
         {
             if (e.PropertyName == nameof(ShellViewModel.ShowFirstRun)) ApplyFirstRun();
         };
+    }
+
+    /// <summary>
+    /// After the window was first shown, waits a few seconds, then asks the Store for an update off the UI thread. Once per session,
+    /// and a no-op outside a packaged install (see UpdateNudgeGate).
+    /// </summary>
+    private void StartUpdateCheck()
+    {
+        if (_updateStarted || _shell.ShowFirstRun) return;
+        _updateStarted = true;
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await Task.Delay(TimeSpan.FromSeconds(8), _updateCts.Token).ConfigureAwait(false);
+                var version = await AppServices.UpdateNudge.CheckAsync(_updateCts.Token).ConfigureAwait(false);
+                if (version is null) return;
+                AppServices.Ui.Post(() =>
+                {
+                    _updateVersion = version;
+                    UpdateBar.IsOpen = true;
+                });
+            }
+            catch (OperationCanceledException)
+            {
+            }
+        });
+    }
+
+    private void OnUpdateClick(object sender, RoutedEventArgs e)
+    {
+        StoreUpdateSource.OpenStorePage();
+        UpdateBar.IsOpen = false;
+    }
+
+    /// <summary>Closing the bar (the X or Update) keeps this version quiet; a newer version shows again.</summary>
+    private void OnUpdateBarClosed(Microsoft.UI.Xaml.Controls.InfoBar sender, Microsoft.UI.Xaml.Controls.InfoBarClosedEventArgs args)
+    {
+        if (_updateVersion is not { } version) return;
+        _updateVersion = null;
+        _ = Task.Run(() => AppServices.UpdateNudge.Dismiss(version));
     }
 
     /// <summary>Makes the caption buttons match the app theme (and follow it when it changes).</summary>

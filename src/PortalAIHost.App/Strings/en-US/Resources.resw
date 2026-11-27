@@ -866,4 +866,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="Vm_MemRam" xml:space="preserve"><value>RAM</value></data>
   <data name="Vm_MemVram" xml:space="preserve"><value>Graphics memory</value></data>
   <data name="Vm_MemLine" xml:space="preserve"><value>{0}: {1} used, {2} reserved while loading, {3} free of {4}</value></data>
+  <data name="UpdateBar.Title" xml:space="preserve"><value>Update available</value></data>
+  <data name="UpdateBar.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>A newer version of Portal AI Host is ready in the Microsoft Store</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Update</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Open the Microsoft Store page to update Portal AI Host</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Open the Microsoft Store page to update Portal AI Host</value></data>
+  <data name="UpdateButtonText.Text" xml:space="preserve"><value>Update</value></data>
 </root>

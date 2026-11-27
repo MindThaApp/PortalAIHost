@@ -28,5 +28,8 @@
     <Compile Include="../../src/PortalAIHost.App/Services/TrayPopupArgs.cs" Link="App/Services/TrayPopupArgs.cs" />
     <Compile Include="../../src/PortalAIHost.App/Services/PageArgs.cs" Link="App/Services/PageArgs.cs" />
     <Compile Include="../../src/PortalAIHost.App/Services/TrayPlacement.cs" Link="App/Services/TrayPlacement.cs" />
+    <Compile Include="..\..\src\PortalAIHost.App\Services\UpdateNudge.cs" Link="App\Services\UpdateNudge.cs" />
+    <Compile Include="..\..\src\PortalAIHost.App\Services\UpdateNudgeStore.cs" Link="App\Services\UpdateNudgeStore.cs" />
+    <Compile Include="..\..\src\Portal.AiHost.Core\Settings\AtomicFile.cs" Link="App\Services\AtomicFile.cs" />
   </ItemGroup>
 </Project>
