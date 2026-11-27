@@ -89,6 +89,9 @@ public sealed class AiHostRuntimeOptions
 
     /// <summary>Facts for GET /host/health that only the hosting process knows (engine files, free disk, damaged marks).</summary>
     public HealthSources? Health { get; init; }
+
+    /// <summary>Voice library and speech jobs (api-v1 section 10). Null: this host has no voice feature and the routes do not exist.</summary>
+    public Portal.AiHost.Core.Voice.VoiceService? Voice { get; init; }
 }
 
 /// <summary>
@@ -503,7 +506,9 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
                 EndpointNames.ChatCompletions, EndpointNames.Embeddings, EndpointNames.Models,
                 EndpointNames.Tokenize, EndpointNames.Warmup, EndpointNames.Performance,
                 EndpointNames.EaseOff, EndpointNames.Health,
+                .. _o.Voice is null ? Array.Empty<string>() : new[] { EndpointNames.Voices, EndpointNames.Speech },
             ],
+            Voice = _o.Voice?.Capabilities(),
         };
     }
 
@@ -994,6 +999,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         p.Map("POST", Routes.Tokenize, ctx => Tracked(ctx, c => Backend.HandleAsync(InferenceRoute.Tokenize, c)));
         p.Map("POST", Routes.ChatCompletions, ctx => Tracked(ctx, c => Backend.HandleAsync(InferenceRoute.ChatCompletions, c)));
         p.Map("POST", Routes.Embeddings, ctx => Tracked(ctx, c => Backend.HandleAsync(InferenceRoute.Embeddings, c)));
+        _o.Voice?.MapRoutes(p);
     }
 
     private async Task Tracked(ApiContext ctx, Func<ApiContext, Task> handler)
