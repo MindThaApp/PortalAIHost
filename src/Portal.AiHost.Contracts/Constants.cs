@@ -252,6 +252,9 @@ public static class EndpointNames
 
     /// <summary>Listed while a video model can run (POST /host/video/jobs).</summary>
     public const string VideoJobs = "video.jobs";
+
+    /// <summary>Listed while ffmpeg is installed and a video model can run (POST /host/video/joins).</summary>
+    public const string VideoJoins = "video.joins";
     public const string Voices = "voices";
     public const string Speech = "speech";
 }
@@ -284,6 +287,10 @@ public static class Routes
     // GET /{id}/result and /{id}/preview return the file.
     public const string ImageJobs = "/host/image/jobs";
     public const string VideoJobs = "/host/video/jobs";
+
+    // Joins: POST creates, GET /{id}, DELETE /{id}, GET /{id}/result like a job; GET /host/video/jobs/{id}/last-frame
+    // (and /host/video/joins/{id}/last-frame) returns the last picture as PNG.
+    public const string VideoJoins = "/host/video/joins";
 
     /// <summary>The job collection route of a generation kind (image or video), or null for any other kind.</summary>
     public static string? JobsFor(string kind) => kind switch

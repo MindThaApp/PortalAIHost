@@ -215,8 +215,8 @@ public sealed class VoiceEngineClient : ISpeechEngine
 }
 
 /// <summary>
-/// Reads MP3 samples through ffmpeg, over pipes only: bytes in on stdin, a 24 kHz mono WAV out on stdout. No file is
-/// written or deleted.
+/// Reads MP3 (and other) samples through ffmpeg, over pipes only: bytes in on stdin, a 24 kHz mono WAV out on stdout.
+/// No file is written or deleted. The process runs in its own job object and is killed on cancel or timeout.
 /// </summary>
 public sealed class FfmpegAudioDecoder : IAudioDecoder
 {
@@ -233,13 +233,7 @@ public sealed class FfmpegAudioDecoder : IAudioDecoder
 
     public IReadOnlyList<string> Formats => File.Exists(_exePath) ? [VoiceSampleFormats.Mp3] : [];
 
-    public static IReadOnlyList<string> BuildArgs(int sampleRate) =>
-    [
-        "-hide_banner", "-loglevel", "error", "-nostdin",
-        "-i", "pipe:0",
-        "-vn", "-ac", "1", "-ar", sampleRate.ToString(CultureInfo.InvariantCulture),
-        "-c:a", "pcm_s16le", "-f", "wav", "pipe:1",
-    ];
+    public static IReadOnlyList<string> BuildArgs(int sampleRate) => FfmpegArgs.DecodeToWav(sampleRate);
 
     public async Task<byte[]> DecodeToWavAsync(byte[] input, string format, CancellationToken ct)
     {
@@ -248,57 +242,14 @@ public sealed class FfmpegAudioDecoder : IAudioDecoder
             throw new InvalidOperationException("This format cannot be decoded here.");
         }
 
-        var psi = new ProcessStartInfo(_exePath)
+        var output = new MemoryStream();
+        var code = await FfmpegProcess.RunAsync(_exePath, BuildArgs(_sampleRate), input, output, null, _timeout, null,
+            TimeSpan.FromSeconds(5), ct).ConfigureAwait(false);
+        if (code != 0 || output.Length == 0)
         {
-            RedirectStandardInput = true,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-            CreateNoWindow = true,
-        };
-        foreach (var a in BuildArgs(_sampleRate))
-        {
-            psi.ArgumentList.Add(a);
+            throw new InvalidOperationException("ffmpeg could not read the file.");
         }
 
-        using var process = Process.Start(psi) ?? throw new InvalidOperationException("ffmpeg did not start.");
-        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(ct);
-        timeout.CancelAfter(_timeout);
-        try
-        {
-            var output = new MemoryStream();
-            var copyOut = process.StandardOutput.BaseStream.CopyToAsync(output, timeout.Token);
-            var drainErr = process.StandardError.BaseStream.CopyToAsync(Stream.Null, timeout.Token);
-            try
-            {
-                await process.StandardInput.BaseStream.WriteAsync(input, timeout.Token).ConfigureAwait(false);
-                process.StandardInput.Close();
-            }
-            catch (IOException)
-            {
-                // ffmpeg stopped reading (damaged file): its exit code says so below.
-            }
-
-            await Task.WhenAll(copyOut, drainErr).ConfigureAwait(false);
-            await process.WaitForExitAsync(timeout.Token).ConfigureAwait(false);
-            if (process.ExitCode != 0 || output.Length == 0)
-            {
-                throw new InvalidOperationException("ffmpeg could not read the file.");
-            }
-
-            return output.ToArray();
-        }
-        catch (OperationCanceledException)
-        {
-            try
-            {
-                process.Kill(entireProcessTree: true); // The process this method started.
-            }
-            catch (InvalidOperationException)
-            {
-            }
-
-            throw;
-        }
+        return output.ToArray();
     }
 }

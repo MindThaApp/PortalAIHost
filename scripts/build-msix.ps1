@@ -99,6 +99,8 @@ function Test-EngineFolder([string]$flavour) {
 # a build that matches engine\sdcpp.lock.json. Returns the folder, or $null (with a warning when it does not match).
 $sdLockPath = Join-Path $repo 'engine\sdcpp.lock.json'
 $sdLock = if (Test-Path $sdLockPath) { Get-Content -Raw $sdLockPath | ConvertFrom-Json } else { $null }
+$ffLockPath = Join-Path $repo 'engine\ffmpeg.lock.json'
+$ffLock = if (Test-Path $ffLockPath) { Get-Content -Raw $ffLockPath | ConvertFrom-Json } else { $null }
 function Get-SdCppFolder([string]$flavour) {
     $dir = Join-Path $repo "engine\sdcpp\$flavour"
     if (-not $sdLock -or -not (Test-Path $dir)) { return $null }
@@ -209,6 +211,20 @@ try {
             Remove-Item (Join-Path $voiceDest '.engine-fetch') -Force -ErrorAction SilentlyContinue
         }
         elseif ($a -eq 'x64') { Write-Warning 'engine\voice\portal-voice-server.exe is missing: this package has no voice feature (run scripts\build-voice.ps1).' }
+
+        # engine\ffmpeg\ (fetched by scripts\fetch-ffmpeg.ps1; x64 only): MP4 conversion, last-frame pictures, joins, MP3 samples.
+        # Without it those features report themselves off.
+        $ffDir = Join-Path $repo 'engine\ffmpeg'
+        $ffMarker = Join-Path $ffDir '.engine-fetch'
+        $ffBuild = if ($ffLock) { $ffLock.builds | Where-Object { $_.flavour -eq 'x64' } } else { $null }
+        if ($a -eq 'x64' -and $ffBuild -and (Test-Path $ffMarker) -and (Get-Content -Raw $ffMarker).Trim() -eq "$($ffLock.tag) $($ffBuild.sha256)" -and (Test-Path (Join-Path $ffDir 'ffmpeg.exe'))) {
+            $ffDest = Join-Path $layout 'engine\ffmpeg'
+            New-Item -ItemType Directory -Force $ffDest | Out-Null
+            Copy-Item (Join-Path $ffDir '*') $ffDest -Recurse -Force
+            Remove-Item (Join-Path $ffDest '.engine-fetch') -Force -ErrorAction SilentlyContinue
+            $summary += 'ffmpeg included'
+        }
+        elseif ($a -eq 'x64') { Write-Warning 'engine\ffmpeg is missing or does not match engine\ffmpeg.lock.json: this package has no MP4, join or MP3 features (run scripts\fetch-ffmpeg.ps1).' }
 
         # engine\sdcpp\<flavour>\ (x64 only), only when present; without it the job routes answer engine_missing.
         if ($a -eq 'x64') {

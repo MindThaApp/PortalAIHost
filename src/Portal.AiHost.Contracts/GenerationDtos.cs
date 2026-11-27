@@ -24,6 +24,7 @@ public static class GenerationStages
     public const string Sampling = "sampling";
     public const string Decoding = "decoding";
     public const string Saving = "saving";
+    public const string Converting = "converting";
 }
 
 /// <summary>Limits of the job routes (api-v1.md).</summary>
@@ -85,6 +86,12 @@ public sealed class GenerationJobRequest
 
     /// <summary>Image to image: how much of the start picture is replaced, 0 to 1.</summary>
     public double? Strength { get; set; }
+
+    /// <summary>
+    /// Video only: the file type of the finished clip, <c>avi</c> (the default, motion JPEG) or <c>mp4</c> (H.264, plays
+    /// everywhere). <c>mp4</c> needs ffmpeg on the host (see <see cref="GenerationAvailability.VideoContainers"/>).
+    /// </summary>
+    public string? Container { get; set; }
 }
 
 /// <summary>Where the work runs, as planned against the memory left on this PC.</summary>
@@ -175,6 +182,12 @@ public sealed class GenerationAvailability
 
     /// <summary>Why a kind is or is not available (additive; older hosts leave it out). The booleans above stay as they were.</summary>
     public GenerationDetail? Detail { get; init; }
+
+    /// <summary>Video file types a job may ask for in <c>container</c>. Present while a video model can run.</summary>
+    public List<string>? VideoContainers { get; init; }
+
+    /// <summary>True when POST /host/video/joins is available (ffmpeg is installed and a video model can run).</summary>
+    public bool VideoJoins { get; init; }
 }
 
 /// <summary>Values of <see cref="GenerationDetail"/>. The set is open: clients ignore values they do not know.</summary>
@@ -239,4 +252,71 @@ public sealed class GenerationJobList
 {
     public string Object { get; set; } = "list";
     public List<GenerationJob> Data { get; set; } = [];
+}
+
+/// <summary>Values of <see cref="GenerationJobRequest.Container"/>.</summary>
+public static class GenerationContainers
+{
+    public const string Avi = "avi";
+    public const string Mp4 = "mp4";
+}
+
+/// <summary>Limits of POST /host/video/joins (api-v1.md).</summary>
+public static class VideoJoinLimits
+{
+    public const int MaxClips = 20;
+    public const int MaxAudioTracks = 4;
+    public const double MaxCrossfadeSeconds = 5;
+
+    /// <summary>Joins one app may have queued or running at once.</summary>
+    public const int MaxOpenJoinsPerApp = 2;
+}
+
+/// <summary>The change after one clip of a join: <c>cut</c>, or <c>crossfade</c> of <c>seconds</c>.</summary>
+public sealed class VideoJoinTransition
+{
+    /// <summary><c>cut</c> (default) or <c>crossfade</c>.</summary>
+    public string Kind { get; set; } = "cut";
+
+    /// <summary>Crossfade length in seconds (0.05 to 5, and at most half of the shorter clip). Default 0.5.</summary>
+    public double? Seconds { get; set; }
+}
+
+/// <summary>
+/// One soundtrack of a join. Exactly one source: a finished speech job of this app (<c>speech_job</c>) or the audio
+/// bytes themselves (<c>data_base64</c>, WAV or MP3, small: the request is limited in size).
+/// </summary>
+public sealed class VideoJoinAudio
+{
+    public string? SpeechJob { get; set; }
+    public string? DataBase64 { get; set; }
+
+    /// <summary><c>music</c> (default) or <c>voice</c>.</summary>
+    public string? Role { get; set; }
+
+    /// <summary>0 to 2, default 1.</summary>
+    public double? Volume { get; set; }
+
+    /// <summary>Seconds into the video where the track starts, default 0.</summary>
+    public double? StartSeconds { get; set; }
+}
+
+/// <summary>POST /host/video/joins.</summary>
+public sealed class VideoJoinRequest
+{
+    /// <summary>
+    /// The clips in order, 1 to 20. Each is the id of a finished video job of this app, or the file name of a clip in
+    /// the host's own video folder (a name only, no folders). Never a path.
+    /// </summary>
+    public List<string> Clips { get; set; } = [];
+
+    /// <summary>
+    /// Omitted: cuts. One entry: used between every two clips. Otherwise one entry per gap (clips minus one).
+    /// </summary>
+    public List<VideoJoinTransition>? Transitions { get; set; }
+
+    public List<VideoJoinAudio>? Audio { get; set; }
+
+    /// <summary>With both music and voice tracks: the music sinks while the voice speaks.</summary>
+    public bool? Duck { get; set; }
 }

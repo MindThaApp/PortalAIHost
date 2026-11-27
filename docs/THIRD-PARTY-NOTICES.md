@@ -59,3 +59,18 @@ and libwebm.txt. https://chromium.googlesource.com/webm/libwebp
 
 Text encoder by Google (umt5-xxl), in the GGUF conversion by city96. Downloaded by the user, not bundled.
 Licence: Apache License 2.0. https://huggingface.co/google/umt5-xxl , https://huggingface.co/city96/umt5-xxl-encoder-gguf
+
+## FFmpeg
+
+Video and audio tools (ffmpeg.exe, ffprobe.exe and the FFmpeg shared libraries in engine\ffmpeg) used for MP4 output,
+last-frame pictures, joining clips and reading MP3 voice samples. Credit: the FFmpeg developers, https://ffmpeg.org .
+Licence: GNU Lesser General Public License version 3 or later (LGPL-3.0-or-later); the build is configured with
+--enable-version3 and without GPL-only or non-free components (no libx264). The licence text ships as
+engine\ffmpeg\LICENSE.txt. The libraries are shared (DLLs next to the programs), so they can be replaced by a build
+of the same FFmpeg version.
+Build: BtbN/FFmpeg-Builds, release autobuild-2026-11-27-12-42 (ffmpeg-n8.1.3-41-ga8029b6528-win64-lgpl-shared-8.1.zip),
+https://github.com/BtbN/FFmpeg-Builds/releases/tag/autobuild-2026-11-27-12-42 .
+Source code of this exact build: FFmpeg release n8.1.3, https://github.com/FFmpeg/FFmpeg/tree/n8.1.3 (the build adds
+the commits up to a8029b6528, listed in the FFmpeg repository history), with the build recipe and patches in
+https://github.com/BtbN/FFmpeg-Builds . H.264 video is encoded with the Windows Media Foundation encoder that Windows
+provides (h264_mf), not with a bundled encoder; AAC audio uses FFmpeg's own encoder.
