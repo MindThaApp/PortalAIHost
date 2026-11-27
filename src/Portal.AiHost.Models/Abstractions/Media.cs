@@ -51,4 +51,7 @@ public interface IMediaTools
 
     /// <summary>The length of a media file in seconds, or null when it cannot be read.</summary>
     Task<double?> ProbeDurationAsync(string path, CancellationToken ct);
+
+    /// <summary>The picture size of a video file, or null when it cannot be read.</summary>
+    Task<(int Width, int Height)?> ProbeSizeAsync(string path, CancellationToken ct);
 }

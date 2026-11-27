@@ -46,6 +46,8 @@ internal sealed class FakeMediaTools : IMediaTools
     }
 
     public Task<double?> ProbeDurationAsync(string path, CancellationToken ct) => Task.FromResult<double?>(2);
+
+    public Task<(int Width, int Height)?> ProbeSizeAsync(string path, CancellationToken ct) => Task.FromResult<(int Width, int Height)?>((640, 360));
 }
 
 /// <summary>MP4 output, last pictures and joins of video jobs (docs/api-v1.md), with a fake engine and fake ffmpeg.</summary>
@@ -334,6 +336,8 @@ public sealed class GenerationMediaTests : IAsyncLifetime
 
         var result = job.GetProperty("result");
         Assert.Equal("video/mp4", result.GetProperty("content_type").GetString());
+        Assert.Equal(640, result.GetProperty("width").GetInt32());
+        Assert.Equal(360, result.GetProperty("height").GetInt32());
         var after = Directory.GetFiles(folder).ToDictionary(f => f, File.ReadAllText);
         var added = Assert.Single(after.Keys.Except(before.Keys));
         Assert.Equal("joined 3", after[added]);

@@ -400,11 +400,14 @@ public sealed partial class GenerationService
             var progress = new SyncProgress<double>(p => job.Update(j => j.Fraction = Math.Max(j.Fraction, p)));
             await media.JoinAsync(new MediaJoinPlan(job.Clips, job.Transitions, job.Audio, job.Duck), partial, progress, ct)
                 .ConfigureAwait(false);
+            var size = await media.ProbeSizeAsync(partial, ct).ConfigureAwait(false);
             _o.Output.MarkState(job.WorkDir!, GenerationOutputFolder.StateFinished);
             var final = _o.Output.Publish(partial, ModelKinds.Video, job.Id, job.CreatedAt);
             partial = null;
             job.Update(j =>
             {
+                j.Width = size?.Width ?? 0;
+                j.Height = size?.Height ?? 0;
                 j.State = GenerationJobStates.Succeeded;
                 j.Stage = null;
                 j.Fraction = 1;
@@ -516,6 +519,8 @@ public sealed partial class GenerationService
         public List<string> Clips { get; } = clips;
         public List<MediaTransition> Transitions { get; } = transitions;
         public List<MediaAudioTrack> Audio { get; } = [];
+        public int Width { get; set; }
+        public int Height { get; set; }
         public bool Duck { get; } = duck;
         public CancellationTokenSource Cancel { get; } = new();
         public Task? Task { get; set; }
@@ -595,6 +600,8 @@ public sealed partial class GenerationService
                         ContentType = "video/mp4",
                         FileName = Path.GetFileName(path),
                         Bytes = bytes,
+                        Width = Width,
+                        Height = Height,
                     } : null,
                     Error = Error,
                 };

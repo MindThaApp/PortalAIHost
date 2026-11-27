@@ -660,7 +660,7 @@ it these features report off and nothing else changes: `generation.video_contain
   padded to the video's length and fades out over its last half second.
 - The result is a **new, uniquely named file** in `generated\videos`; no input clip is changed, moved or deleted. A
   join does not wait in the generation queue: one join runs at a time on the processor, at most 2 are open per app.
-  `result.width` and `result.height` are 0 for a join.
+  `result.width` and `result.height` are the picture size of the joined file.
 - Errors at `POST`: `503 engine_missing` (no ffmpeg), `400 invalid_request`, `404 not_found`, `429 queue_full`, and for
   paired devices `403 model_control_required`.
 - MP3 voice samples: when ffmpeg is installed, `voice.sample_formats` includes `"mp3"` and `POST /host/voices` decodes

@@ -86,6 +86,9 @@ public sealed class FfmpegRunner : IMediaTools
     public async Task<double?> ProbeDurationAsync(string path, CancellationToken ct) =>
         (await ProbeAsync(path, ct).ConfigureAwait(false))?.DurationSeconds;
 
+    public async Task<(int Width, int Height)?> ProbeSizeAsync(string path, CancellationToken ct) =>
+        await ProbeAsync(path, ct).ConfigureAwait(false) is { } info ? (info.Width, info.Height) : null;
+
     public async Task ConvertToMp4Async(string inputPath, string outputPath, IProgress<double>? progress, CancellationToken ct)
     {
         RequireAvailable();
