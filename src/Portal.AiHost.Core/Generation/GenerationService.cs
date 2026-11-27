@@ -497,7 +497,7 @@ public sealed partial class GenerationService : IAsyncDisposable
         {
             Fail(job, e.ErrorCode, e.Message);
         }
-        catch (Exception e) when (e is IOException or UnauthorizedAccessException or InvalidOperationException or ArgumentException)
+        catch (Exception e) when (e is not OutOfMemoryException)
         {
             _o.Log?.Invoke("Generation job failed: " + e.GetType().Name);
             Fail(job, ErrorCodes.InternalError, "The job failed on this PC.");
