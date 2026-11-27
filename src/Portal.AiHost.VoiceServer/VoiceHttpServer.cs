@@ -17,6 +17,9 @@ public sealed class VoiceHttpServer : IDisposable
     private readonly SemaphoreSlim _one = new(1, 1);
     private readonly CancellationTokenSource _stop = new();
     private readonly TextWriter _log;
+    private static readonly TimeSpan QueueTimeout = TimeSpan.FromSeconds(60);
+    private static readonly TimeSpan SynthesisTimeout = TimeSpan.FromMinutes(10);
+    private static readonly TimeSpan BodyTimeout = TimeSpan.FromSeconds(10);
     private Task? _loop;
 
     public VoiceHttpServer(int port, string apiKey, ISpeechSynthesizer synth, TextWriter log)
@@ -37,6 +40,12 @@ public sealed class VoiceHttpServer : IDisposable
     {
         await _stop.CancelAsync().ConfigureAwait(false);
         _listener.Close();
+        // Wait for the request in flight (it stops at the next chunk) before the caller disposes the synthesizer.
+        if (await _one.WaitAsync(TimeSpan.FromSeconds(30)).ConfigureAwait(false))
+        {
+            _one.Release();
+        }
+
         if (_loop is not null)
         {
             try
@@ -113,17 +122,32 @@ public sealed class VoiceHttpServer : IDisposable
         SpeechRequest request;
         try
         {
-            request = SpeechRequest.Parse(await ReadBodyAsync(ctx.Request).ConfigureAwait(false));
+            request = SpeechRequest.Parse(await ReadBodyAsync(ctx.Request, _stop.Token).ConfigureAwait(false));
         }
         catch (FormatException e)
         {
             await JsonAsync(ctx, 400, e.Message).ConfigureAwait(false);
             return;
         }
+        catch (OperationCanceledException)
+        {
+            await JsonAsync(ctx, 408, "request body timed out").ConfigureAwait(false);
+            return;
+        }
+
+        if (request.OutPath is { } early && LocalPath.CheckNewFile(early) is { } why)
+        {
+            await JsonAsync(ctx, 409, "out_path: " + why).ConfigureAwait(false);
+            return;
+        }
 
         try
         {
-            await _one.WaitAsync(_stop.Token).ConfigureAwait(false);
+            if (!await _one.WaitAsync(QueueTimeout, _stop.Token).ConfigureAwait(false))
+            {
+                await JsonAsync(ctx, 503, "busy").ConfigureAwait(false);
+                return;
+            }
         }
         catch (OperationCanceledException)
         {
@@ -135,7 +159,9 @@ public sealed class VoiceHttpServer : IDisposable
         var sw = System.Diagnostics.Stopwatch.StartNew();
         try
         {
-            result = await Task.Run(() => _synth.Synthesize(request, (d, t) => _log.WriteLine($"progress {d}/{t}"), _stop.Token)).ConfigureAwait(false);
+            using var limit = CancellationTokenSource.CreateLinkedTokenSource(_stop.Token);
+            limit.CancelAfter(SynthesisTimeout);
+            result = await Task.Run(() => _synth.Synthesize(request, (d, t) => _log.WriteLine($"progress {d}/{t}"), limit.Token)).ConfigureAwait(false);
         }
         catch (SpeechException e)
         {
@@ -188,12 +214,15 @@ public sealed class VoiceHttpServer : IDisposable
         return CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(h[7..]), Encoding.UTF8.GetBytes(_apiKey));
     }
 
-    private static async Task<byte[]> ReadBodyAsync(HttpListenerRequest r)
+    private static async Task<byte[]> ReadBodyAsync(HttpListenerRequest r, CancellationToken stop)
     {
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(stop);
+        timeout.CancelAfter(BodyTimeout);
+        var ct = timeout.Token;
         using var ms = new MemoryStream();
         var buf = new byte[8192];
         int n;
-        while ((n = await r.InputStream.ReadAsync(buf).ConfigureAwait(false)) > 0)
+        while ((n = await r.InputStream.ReadAsync(buf, ct).ConfigureAwait(false)) > 0)
         {
             ms.Write(buf, 0, n);
             if (ms.Length > SpeechRequest.MaxBodyBytes)

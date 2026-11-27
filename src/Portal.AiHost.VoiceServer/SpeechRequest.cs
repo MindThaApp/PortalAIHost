@@ -11,7 +11,7 @@ public enum VoiceKind
 /// <summary>One /v1/speech request: { text, speed, format, voice, out_path? }.</summary>
 public sealed record SpeechRequest(string Text, float Speed, VoiceKind Kind, string? VoiceId, string? SamplePath, string? OutPath)
 {
-    public const int MaxTextChars = 20000;
+    public const int MaxTextChars = 5000;
     public const int MaxBodyBytes = 256 * 1024;
 
     public static SpeechRequest Parse(ReadOnlySpan<byte> body)
@@ -73,6 +73,11 @@ public sealed record SpeechRequest(string Text, float Speed, VoiceKind Kind, str
                 outPath = o.GetString();
             }
 
+            if (outPath is not null && LocalPath.Check(outPath) is { } outReason)
+            {
+                throw new FormatException("out_path: " + outReason);
+            }
+
             switch (kind)
             {
                 case "builtin":
@@ -88,6 +93,11 @@ public sealed record SpeechRequest(string Text, float Speed, VoiceKind Kind, str
                     if (string.IsNullOrWhiteSpace(sample))
                     {
                         throw new FormatException("voice.sample_path is missing.");
+                    }
+
+                    if (LocalPath.Check(sample) is { } sampleReason)
+                    {
+                        throw new FormatException("sample_path: " + sampleReason);
                     }
 
                     return new SpeechRequest(text, speed, VoiceKind.Clone, null, sample, outPath);

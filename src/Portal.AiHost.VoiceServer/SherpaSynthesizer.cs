@@ -13,6 +13,7 @@ public sealed class SherpaSynthesizer : ISpeechSynthesizer
     private const int MaxSampleBytes = 20 * 1024 * 1024;
     private const double MaxSampleSeconds = 30;
     private const double GapSeconds = 0.12;
+    private static readonly TimeSpan SampleReadTimeout = TimeSpan.FromSeconds(15);
 
     /// <summary>Kokoro multi-lang v1.0 speaker order.</summary>
     public static readonly IReadOnlyList<string> KokoroVoices =
@@ -52,7 +53,7 @@ public sealed class SherpaSynthesizer : ISpeechSynthesizer
         }
         else
         {
-            reference = ReadSample(request.SamplePath!);
+            reference = ReadSample(request.SamplePath!, ct);
         }
 
         var chunks = TextChunker.Split(request.Text);
@@ -120,20 +121,43 @@ public sealed class SherpaSynthesizer : ISpeechSynthesizer
         return sid >= 0 ? sid : throw new SpeechException("Unknown built-in voice.", 404);
     }
 
-    /// <summary>Reads the clone sample (read-only), converts it to mono 24 kHz floats.</summary>
-    private static float[] ReadSample(string path)
+    /// <summary>Reads the clone sample (read-only, shared), converts it to mono 24 kHz floats.</summary>
+    private static float[] ReadSample(string path, CancellationToken ct)
     {
         byte[] bytes;
         try
         {
-            using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            var info = new FileInfo(path);
+            if (!info.Exists || (info.Attributes & (FileAttributes.ReparsePoint | FileAttributes.Device | FileAttributes.Directory)) != 0)
+            {
+                throw new SpeechException("The voice sample is not a regular file.");
+            }
+
+            using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
             if (fs.Length is 0 or > MaxSampleBytes)
             {
                 throw new SpeechException("The voice sample is empty or too large.");
             }
 
             bytes = new byte[fs.Length];
-            fs.ReadExactly(bytes);
+            var deadline = System.Diagnostics.Stopwatch.StartNew();
+            var read = 0;
+            while (read < bytes.Length)
+            {
+                ct.ThrowIfCancellationRequested();
+                if (deadline.Elapsed > SampleReadTimeout)
+                {
+                    throw new SpeechException("Reading the voice sample took too long.");
+                }
+
+                var n = fs.Read(bytes, read, Math.Min(bytes.Length - read, 256 * 1024));
+                if (n == 0)
+                {
+                    throw new SpeechException("The voice sample changed while it was read.");
+                }
+
+                read += n;
+            }
         }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException or ArgumentException or NotSupportedException)
         {
