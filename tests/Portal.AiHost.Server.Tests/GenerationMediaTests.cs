@@ -236,7 +236,7 @@ public sealed class GenerationMediaTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task JoinsOnlyTakeTheCallersJobsOrPlainNamesFromTheHostFolder()
+    public async Task JoinsOnlyTakeTheCallersFinishedJobIds()
     {
         var token = await _host.GetTokenAsync();
         var mine = await VideoJobAsync(token);
@@ -244,6 +244,7 @@ public sealed class GenerationMediaTests : IAsyncLifetime
         var theirs = await VideoJobAsync(other);
         var outside = Path.Combine(_host.RootPath, "secret.mp4");
         await File.WriteAllTextAsync(outside, "not the host's");
+        var existingName = Path.GetFileName(Directory.GetFiles(_output.FinishedFolder(ModelKinds.Video)).First());
 
         foreach (var (clip, status, code) in new[]
         {
@@ -253,7 +254,8 @@ public sealed class GenerationMediaTests : IAsyncLifetime
             ("C:secret.mp4", HttpStatusCode.BadRequest, ErrorCodes.InvalidRequest),                       // drive-relative
             ("\\\\\\\\server\\\\share\\\\a.mp4", HttpStatusCode.BadRequest, ErrorCodes.InvalidRequest),  // a share
             ("https://example.com/a.mp4", HttpStatusCode.BadRequest, ErrorCodes.InvalidRequest),
-            ("secret.mp4", HttpStatusCode.NotFound, ErrorCodes.NotFound),                                   // a name that is not in the host folder
+            ("secret.mp4", HttpStatusCode.BadRequest, ErrorCodes.InvalidRequest),                           // a bare file name
+            (existingName, HttpStatusCode.BadRequest, ErrorCodes.InvalidRequest),                           // even the name of a real clip in the host folder
             (theirs, HttpStatusCode.NotFound, ErrorCodes.NotFound),                                         // another app's job
             ("gen_00000000000000000000000000000000", HttpStatusCode.NotFound, ErrorCodes.NotFound),
         })
@@ -306,10 +308,9 @@ public sealed class GenerationMediaTests : IAsyncLifetime
         var b = await VideoJobAsync(token);
         var folder = _output.FinishedFolder(ModelKinds.Video);
         var before = Directory.GetFiles(folder).ToDictionary(f => f, File.ReadAllText);
-        var fileName = Path.GetFileName(before.Keys.First());
 
         var body = $$"""
-            { "clips": ["{{a}}", "{{fileName}}", "{{b}}"],
+            { "clips": ["{{a}}", "{{a}}", "{{b}}"],
               "transitions": [{ "kind": "crossfade", "seconds": 0.4 }, { "kind": "cut" }],
               "audio": [{ "speech_job": "speech_ok", "role": "voice", "start_seconds": 1 }, { "data_base64": "UklGRg==", "volume": 0.5 }],
               "duck": true }
@@ -344,7 +345,7 @@ public sealed class GenerationMediaTests : IAsyncLifetime
         using var frame = await _host.Http.SendAsync(_host.Authed(HttpMethod.Get, $"{Routes.VideoJoins}/{id}/last-frame", token));
         Assert.Equal(HttpStatusCode.OK, frame.StatusCode);
 
-        // The join's result is itself a clip for the next join, by id or by name.
+        // The join's result is itself a clip for the next join, by id.
         var (s2, again) = await SendAsync(HttpMethod.Post, Routes.VideoJoins, token, $$"""{ "clips": ["{{id}}", "{{a}}"] }""");
         Assert.Equal(HttpStatusCode.Accepted, s2);
         await WaitAsync(token, Routes.VideoJoins, again.GetProperty("id").GetString()!, GenerationJobStates.Succeeded);

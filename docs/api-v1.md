@@ -640,17 +640,16 @@ it these features report off and nothing else changes: `generation.video_contain
 | `GET /host/video/joins/{id}/result`, `GET /host/video/joins/{id}/last-frame` | The MP4 (`video/mp4`) and its last picture. |
 
 ```json
-{ "clips": ["gen_6f1c2a9e4b7d4c0f9a51d3e8b2c47a10", "20261127-203000-gen_0a1b2c3d4e5f60718293a4b5c6d7e8f9.mp4"],
+{ "clips": ["gen_6f1c2a9e4b7d4c0f9a51d3e8b2c47a10", "gen_0a1b2c3d4e5f60718293a4b5c6d7e8f9"],
   "transitions": [{ "kind": "crossfade", "seconds": 0.5 }],
   "audio": [{ "speech_job": "speech_...", "role": "voice", "volume": 1, "start_seconds": 0.5 },
             { "data_base64": "UklGR...", "role": "music", "volume": 0.6 }],
   "duck": true }
 ```
 
-- `clips` (1-20, in order): each is the **id of a finished video job** of this app (or of a finished join), or the
-  **file name** of a clip in the host's own video folder (`generated\videos`, a plain name such as the `file_name`
-  of an earlier result, never a path, folder, drive or URL). Anything else is `400 invalid_request`; an unknown id,
-  another app's job or a missing file is `404 not_found`. `param` names the entry (`clips[1]`).
+- `clips` (1-20, in order): each is the **id of a finished video job** of this app (or of a finished join). A file
+  name, path, folder, drive or URL is `400 invalid_request`; an unknown id, another app's job or a job without a
+  result is `404 not_found`. `param` names the entry (`clips[1]`).
 - `transitions`: omitted means cuts. One entry is used between every two clips; otherwise give one per gap (clips
   minus one). `kind` is `cut` or `crossfade`; a crossfade has `seconds` (0.05-5, default 0.5) and is limited to half
   of the shorter clip. Clips are fitted into the size and frame rate of the first clip without stretching.

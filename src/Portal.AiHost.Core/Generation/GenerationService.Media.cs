@@ -29,10 +29,6 @@ public sealed partial class GenerationService
     [GeneratedRegex("^gen_[0-9a-f]{16,64}$", RegexOptions.CultureInvariant)]
     private static partial Regex JobIdText();
 
-    /// <summary>A clip file name in the host's own video folder: one name, no folder, letters, digits and a few marks.</summary>
-    [GeneratedRegex(@"^[A-Za-z0-9][A-Za-z0-9 ._()\-]{0,127}\.(mp4|avi)$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase)]
-    private static partial Regex ClipFileName();
-
     // ---- MP4 output of a video job ----------------------------------------------------------------
 
     /// <summary>
@@ -197,39 +193,20 @@ public sealed partial class GenerationService
             : _joins.TryGetValue(jobId, out var join) && Mine(join, owner) ? join.ResultPathIfSucceeded() : null;
 
     /// <summary>
-    /// Turns a clip reference into the file of the host's own video folder. A job id must be a finished job of the
-    /// caller; a file name must be one plain name of a file that sits directly in the finished video folder.
-    /// Anything else (a path, a drive, a folder, an id of another app) is refused and nothing is read.
+    /// Turns a clip reference into the file of one of the caller's finished video jobs (or joins). Only a job id is
+    /// accepted: a file name, a path, a drive, a folder or the id of another app is refused and nothing is read.
     /// </summary>
     internal string ResolveClip((string AppId, string DeviceId) owner, string reference, int index)
     {
         var param = $"clips[{index.ToString(CultureInfo.InvariantCulture)}]";
         var text = reference?.Trim() ?? "";
-        string? path;
-        if (IsJobId(text))
+        if (!IsJobId(text))
         {
-            path = FinishedClipOf(owner, text);
-            if (path is null)
-            {
-                throw new ApiException(ErrorCodes.NotFound, "No finished video job with that id.", param);
-            }
-        }
-        else if (ClipFileName().IsMatch(text) && !text.Contains("..", StringComparison.Ordinal))
-        {
-            var folder = Path.GetFullPath(_o.Output.FinishedFolder(ModelKinds.Video));
-            path = Path.GetFullPath(Path.Combine(folder, text));
-            if (!string.Equals(Path.GetDirectoryName(path), folder.TrimEnd(Path.DirectorySeparatorChar), StringComparison.OrdinalIgnoreCase) ||
-                !File.Exists(path) || (File.GetAttributes(path) & FileAttributes.ReparsePoint) != 0)
-            {
-                throw new ApiException(ErrorCodes.NotFound, "No such clip in the host's video folder.", param);
-            }
-        }
-        else
-        {
-            throw new ApiException(ErrorCodes.InvalidRequest,
-                "A clip is the id of a finished video job or the file name of a clip in the host's video folder, never a path.", param);
+            throw new ApiException(ErrorCodes.InvalidRequest, "A clip is the id of a finished video job of this app.", param);
         }
 
+        var path = FinishedClipOf(owner, text)
+            ?? throw new ApiException(ErrorCodes.NotFound, "No finished video job with that id.", param);
         return File.Exists(path) ? path : throw new ApiException(ErrorCodes.NotFound, "The clip file is no longer on this PC.", param);
     }
 
