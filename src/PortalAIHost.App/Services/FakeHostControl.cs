@@ -1,5 +1,4 @@
 using Portal.AiHost.Contracts;
-using Portal.AiHost.Core.Remote.Client;
 using Portal.AiHost.Contracts.Control;
 
 namespace PortalAIHost.App.Services;
@@ -779,7 +778,7 @@ public sealed class FakeHostControl : IHostControl, IDisposable
     /// <summary>Link state while in client mode: connecting, connected, unreachable, revoked, fingerprint_changed, stopped.</summary>
     public string ClientLinkState { get; set; } = "connected";
 
-    public string ClientRoute { get; set; } = RemoteRoutes.Lan;
+    public string ClientRoute { get; set; } = "lan";
 
     public int? ClientRtt { get; set; } = 12;
 
@@ -809,6 +808,9 @@ public sealed class FakeHostControl : IHostControl, IDisposable
     /// <summary>Makes the next client.* call throw like a host that went away.</summary>
     public bool ClientStatusFails { get; set; }
 
+    /// <summary>How many times the window read the client status.</summary>
+    public int StatusReads { get; private set; }
+
     public ClientModeStatus ClientStatusNow()
     {
         lock (_gate)
@@ -820,7 +822,7 @@ public sealed class FakeHostControl : IHostControl, IDisposable
                 Paired = link || SavedPairing,
                 PcName = link || SavedPairing ? ClientPcName : null,
                 State = link ? ClientLinkState : null,
-                Route = link ? (ClientLinkState == "connected" ? ClientRoute : RemoteRoutes.Down) : null,
+                Route = link ? (ClientLinkState == "connected" ? ClientRoute : "down") : null,
                 RttMs = link && ClientLinkState == "connected" ? ClientRtt : null,
                 ClientFallback = ClientFallbackValue,
                 FallbackUnset = FallbackUnset,
@@ -838,6 +840,7 @@ public sealed class FakeHostControl : IHostControl, IDisposable
     {
         Require();
         if (ClientStatusFails) throw new HostUnavailableException();
+        lock (_gate) StatusReads++;
         return Task.FromResult(ClientStatusNow());
     }
 

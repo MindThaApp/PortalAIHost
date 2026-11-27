@@ -2,7 +2,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Portal.AiHost.Contracts;
 using Portal.AiHost.Contracts.Control;
-using Portal.AiHost.Core.Remote.Client;
 using PortalAIHost.App.Services;
 
 namespace PortalAIHost.App.ViewModels;
@@ -126,7 +125,7 @@ public sealed partial class ClientLinkViewModel : ObservableObject, IDisposable
         Kind = kind;
         ChipText = kind switch
         {
-            ClientLinkKind.Connected => _s.Get(status.Route == RemoteRoutes.Relay ? "Vm_LinkConnectedRelay" : "Vm_LinkConnectedLan"),
+            ClientLinkKind.Connected => _s.Get(status.Route == "relay" ? "Vm_LinkConnectedRelay" : "Vm_LinkConnectedLan"),
             ClientLinkKind.Connecting => _s.Get("Vm_LinkConnecting"),
             ClientLinkKind.Unreachable => _s.Get("Vm_LinkUnreachable"),
             ClientLinkKind.Revoked => _s.Get("Vm_LinkRevoked"),

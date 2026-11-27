@@ -129,6 +129,35 @@ public class PipeHostControlTests
     }
 
     [Fact]
+    public async Task A_device_alert_push_reaches_the_window_and_client_calls_use_the_new_messages()
+    {
+        var ch = new ScriptedChannel();
+        ch.Answers[ControlTypes.GetStatus] = _ => ScriptedChannel.Ok(Status(), AiHostJsonContext.Default.ControlStatus);
+        ch.Answers[ControlTypes.ClientPair] = _ => ScriptedChannel.Ok(new PairResult { Ok = true, PcName = "Desk PC" }, AiHostJsonContext.Default.PairResult);
+        ch.Answers[ControlTypes.ClientUnpair] = _ => ScriptedChannel.Ok(new ClientModeStatus(), AiHostJsonContext.Default.ClientModeStatus);
+        ch.Answers[ControlTypes.ClientPromptShown] = _ => ScriptedChannel.Ok(new ClientModeStatus(), AiHostJsonContext.Default.ClientModeStatus);
+        ch.Answers[ControlTypes.ClientSetFallback] = _ => ScriptedChannel.Ok(new ClientModeStatus(), AiHostJsonContext.Default.ClientModeStatus);
+        var factory = new ScriptedFactory();
+        factory.Next.Enqueue(ch);
+        await using var host = new PipeHostControl(factory);
+        await host.GetStatusAsync();
+        DeviceAlert? alert = null;
+        host.DeviceAlerted += a => alert = a;
+        ch.Push(ControlTypes.EventDeviceAlert, JsonSerializer.SerializeToElement(
+            new DeviceAlert { Kind = "paired", DeviceId = "d1", DeviceName = "Den" }, AiHostJsonContext.Default.DeviceAlert));
+        Assert.Equal("Den", alert!.DeviceName);
+
+        var paired = await host.PairClientAsync(new PairCommand { Link = "portalai://pair?x", DeviceName = "Me" });
+        Assert.True(paired.Ok);
+        await host.UnpairClientAsync();
+        await host.MarkFallbackPromptShownAsync();
+        await host.SetClientFallbackAsync(ClientFallbackModes.Local);
+        Assert.Contains(ch.Sent, s => s.Type == ControlTypes.ClientPair && s.Payload!.Value.GetProperty("device_name").GetString() == "Me");
+        Assert.Contains(ch.Sent, s => s.Type == ControlTypes.ClientUnpair);
+        Assert.Contains(ch.Sent, s => s.Type == ControlTypes.ClientSetFallback && s.Payload!.Value.GetProperty("fallback").GetString() == "local");
+    }
+
+    [Fact]
     public async Task Model_listing_carries_folder_space_existing_copy_upgrade_and_catalogue_state()
     {
         var ch = new ScriptedChannel();
