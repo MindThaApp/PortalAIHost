@@ -5,7 +5,11 @@ using PortalAIHost.App.Services;
 namespace PortalAIHost.App.ViewModels;
 
 /// <summary>One highlight card on the What's new page.</summary>
-public sealed record WhatsNewCard(string Title, string Body, string ShowMeText, string Page, string ShowMeName);
+public sealed record WhatsNewCard(string Title, string Body, string ShowMeText, string Page, string ShowMeName)
+{
+    /// <summary>Thank-you and fix cards have no page to show.</summary>
+    public bool HasLink => Page.Length > 0;
+}
 
 /// <summary>About page: version, licence state in words, licences, and where to send feedback.</summary>
 public sealed partial class AboutViewModel : ObservableObject
@@ -47,10 +51,16 @@ public sealed class WhatsNewViewModel
         Heading = s.Format("Vm_WhatsNewHeading", Links.WhatsNewVersion);
         Cards = new[]
         {
-            Card(s, "Vm_Wn1", "home"),
-            Card(s, "Vm_Wn2", "home"),
-            Card(s, "Vm_Wn3", "settings"),
-            Card(s, "Vm_Wn4", "settings"),
+            Card(s, "Vm_Wn1", ""),
+            Card(s, "Vm_Wn2", ""),
+            Card(s, "Vm_Wn3", ""),
+            Card(s, "Vm_Wn4", ""),
+            Card(s, "Vm_Wn5", "settings"),
+            Card(s, "Vm_Wn6", "devices"),
+            Card(s, "Vm_Wn7", "models"),
+            Card(s, "Vm_Wn8", "devices"),
+            Card(s, "Vm_Wn9", "settings"),
+            Card(s, "Vm_Wn10", "models"),
         };
     }
 
