@@ -24,6 +24,15 @@ public sealed class RelayBridgeOptions
     /// <summary>The internal loopback listener each stream is piped to (<see cref="LanServer.BridgeEndPoint"/>).</summary>
     public required IPEndPoint LocalTarget { get; init; }
 
+    /// <summary>Issues the one-time token written before each local connection's TLS bytes. Null: none is sent (tests with a plain echo target).</summary>
+    public BridgeTokens? Tokens { get; init; }
+
+    /// <summary>
+    /// The relay admission token (32 bytes). When set, the hello publishes only its SHA-256 and the relay then lets in
+    /// only devices that present the token. Null: the room stays open, as before.
+    /// </summary>
+    public byte[]? AdmissionToken { get; init; }
+
     public TimeSpan InitialDelay { get; init; } = TimeSpan.FromSeconds(2);
 
     /// <summary>A link must stay up this long before the reconnect delay starts over (stops a flapping link from hammering the relay).</summary>
@@ -85,6 +94,11 @@ public sealed class RelayBridge : IAsyncDisposable
 
     public event Action? StateChanged;
 
+    /// <summary>The close code of the relay's last refusal of this host (4401 or 4409), cleared once a link reaches ready.</summary>
+    public int? RefusedWith => _refusedWith;
+
+    private int? _refusedWith;
+
     /// <summary>Streams currently open.</summary>
     public int StreamCount => _streams.Count;
 
@@ -115,8 +129,9 @@ public sealed class RelayBridge : IAsyncDisposable
             {
                 break;
             }
-            catch (RelayRefusedException)
+            catch (RelayRefusedException refused)
             {
+                _refusedWith = refused.Code;
                 // Replaced by another copy of this host, or refused: do not fight over the room.
                 wait = _o.MaxDelay;
             }
@@ -208,6 +223,7 @@ public sealed class RelayBridge : IAsyncDisposable
                 throw new TimeoutException("The relay did not accept this host in time.");
             }
 
+            _refusedWith = null;
             SetState(RelayStates.Connected);
             onReady();
             var lastHeard = Environment.TickCount64;
@@ -258,17 +274,20 @@ public sealed class RelayBridge : IAsyncDisposable
         }
 
         byte[] sig;
+        var admissionHash = _o.AdmissionToken is { Length: RelayProtocol.AdmissionTokenBytes } at ? RelayProtocol.AdmissionHash(at) : [];
         using (var key = _o.Certificate.GetECDsaPrivateKey() ?? throw new InvalidOperationException("The certificate has no ECDSA key."))
         {
-            sig = RelayProtocol.SignHostProof(key, RoomId, nonce);
+            sig = RelayProtocol.SignHostProof(key, RoomId, nonce, admissionHash);
         }
 
-        var hello = JsonSerializer.SerializeToUtf8Bytes(new Dictionary<string, string>
+        var fields = new Dictionary<string, string>
         {
             ["t"] = "hello",
             ["cert"] = RemoteCodec.Encode(_o.Certificate.RawData),
             ["sig"] = RemoteCodec.Encode(sig),
-        }, RelayJson.Default.DictionaryStringString);
+        };
+        if (admissionHash.Length > 0) fields["adm"] = RemoteCodec.Encode(admissionHash);
+        var hello = JsonSerializer.SerializeToUtf8Bytes(fields, RelayJson.Default.DictionaryStringString);
         await SendAsync(ws, hello, WebSocketMessageType.Text, ct).ConfigureAwait(false);
 
         var answer = await ReceiveMessageAsync(ws, buffer, ct).ConfigureAwait(false);
@@ -410,6 +429,14 @@ public sealed class RelayBridge : IAsyncDisposable
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct, pipe.Token);
             await tcp.ConnectAsync(_o.LocalTarget, cts.Token).ConfigureAwait(false);
             await using var net = tcp.GetStream();
+            if (_o.Tokens is { } tokens)
+            {
+                // First bytes on the connection: proves to the internal listener that the bridge opened it.
+                var token = tokens.Issue();
+                await net.WriteAsync(token, cts.Token).ConfigureAwait(false);
+                System.Security.Cryptography.CryptographicOperations.ZeroMemory(token); // best effort: only this array
+            }
+
             var down = Task.Run(async () =>
             {
                 await foreach (var chunk in pipe.Reader.ReadAllAsync(cts.Token).ConfigureAwait(false))

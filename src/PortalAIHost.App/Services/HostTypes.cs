@@ -151,6 +151,9 @@ public interface IHostControl
 
     Task CancelPairingAsync(CancellationToken ct = default);
 
+    /// <summary>Makes a new relay access key. Devices paired with the old one must pair again to use the relay.</summary>
+    Task RotateRelayKeyAsync(CancellationToken ct = default);
+
     /// <summary>Removes a paired device; its access stops at once.</summary>
     Task RemoveDeviceAsync(string deviceId, CancellationToken ct = default);
 

@@ -33,6 +33,7 @@ public sealed class RelayException(string reason, int? retryAfterMs, string mess
     {
         4404 or 4410 => new RelayException(RemoteLinkReasons.RelayHostOffline, null, $"The PC left the relay ({code})."),
         4429 => new RelayException(RemoteLinkReasons.RelayBusy, BudgetRetryMs, "The relay budget of this PC is used up (4429)."),
+        4403 => new RelayException(RemoteLinkReasons.RelayAdmission, null, "The relay wants an access key this device does not have (4403)."),
         _ => null,
     };
 }
@@ -229,9 +230,12 @@ public sealed class RelayConnector : IRemoteConnector
     private readonly Uri _relay;
     private readonly string _room;
     private readonly TimeSpan _connectTimeout;
+    private readonly string? _admission;
 
-    public RelayConnector(Uri relayUrl, ReadOnlySpan<byte> fingerprint, TimeSpan? connectTimeout = null)
+    /// <param name="admission">The PC's relay admission token from the pairing link (32 bytes), sent in a request header; empty when the PC asked for none.</param>
+    public RelayConnector(Uri relayUrl, ReadOnlySpan<byte> fingerprint, TimeSpan? connectTimeout = null, ReadOnlySpan<byte> admission = default)
     {
+        _admission = admission.Length == RelayProtocol.AdmissionTokenBytes ? RemoteCodec.Encode(admission) : null;
         _relay = relayUrl ?? throw new ArgumentNullException(nameof(relayUrl));
         _room = RelayProtocol.RoomId(fingerprint);
         _connectTimeout = connectTimeout ?? LinkConnectTimeout;
@@ -265,6 +269,12 @@ public sealed class RelayConnector : IRemoteConnector
         var token = limit.Token;
         var ws = new ClientWebSocket();
         ws.Options.CollectHttpResponseDetails = true;
+        if (_admission is not null)
+        {
+            // A header, never the URL: query strings end up in logs.
+            ws.Options.SetRequestHeader(RelayProtocol.AdmissionHeader, _admission);
+        }
+
         RelayWebSocketStream? stream = null;
         try
         {

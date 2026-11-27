@@ -11,12 +11,15 @@ public sealed partial class ModelsPage : Page
     {
         ViewModel = new ModelsViewModel(AppServices.Shell, AppServices.Ui, AppServices.Strings, AppServices.Dialogs, AppServices.Folders, picker: AppServices.FilePicker);
         Remote = new RemoteModelsViewModel(AppServices.Shell, AppServices.Ui, AppServices.Strings);
+        Budget = new MemoryBudgetViewModel(AppServices.Shell, AppServices.Ui, AppServices.Strings);
         InitializeComponent();
     }
 
     public ModelsViewModel ViewModel { get; }
 
     public RemoteModelsViewModel Remote { get; }
+
+    public MemoryBudgetViewModel Budget { get; }
 
     public ClientLinkViewModel Link => AppServices.Shell.ClientLink;
 
@@ -29,6 +32,7 @@ public sealed partial class ModelsPage : Page
     protected override void OnNavigatedFrom(NavigationEventArgs e)
     {
         Remote.Dispose();
+        Budget.Dispose();
         ViewModel.Dispose();
     }
 }

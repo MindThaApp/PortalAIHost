@@ -330,11 +330,11 @@ public class RoundTripTests
         RoundTrip("""{ "kind": "chat", "state": "ready", "progress": 1 }""", Ctx.EngineStateEvent);
         RoundTrip("""
             { "mode": "server", "fallback_prompt_shown": false, "relay_mode": "auto", "start_with_windows": true, "backend": "auto", "max_memory_percent": 80, "preset": "balanced", "compute": "auto", "priority": "low", "cpu_ceiling_percent": 100, "ease_off": ["fullscreen", "battery", "app_busy"], "prevent_sleep_while_downloading": true, "send_crash_reports": true,
-              "remote": { "enabled": false, "port": 48123, "relay": true, "allow_replace_models": false, "gaming_mode": false },
+              "remote": { "enabled": false, "port": 48123, "relay": true, "relay_admission": false, "allow_replace_models": false, "gaming_mode": false },
               "kinds": { "chat": { "keep_loaded": false, "idle_unload_seconds": 600 } } }
             """, Ctx.HostSettings);
-        RoundTrip("""{ "enabled": true, "listening": true, "port": 48123, "host_name": "Desk PC", "addresses": ["192.168.1.20"], "devices": [ { "device_id": "dev_a", "name": "Laptop", "created_at": "2026-11-24T10:00:00+00:00", "model_control": false, "paused": false, "paused_apps": [], "priority_equal": false, "allowed_models": [], "status": "offline", "apps": [] } ], "relay": "off", "allow_replace_models": false, "gaming_busy": false, "loaded_models": [] }""", Ctx.RemoteStatus);
-        RoundTrip("""{ "code": "042917", "expires_at": "2026-11-24T10:05:00+00:00", "qr_text": "portalai://pair?h=1", "host_name": "Desk PC", "address": "192.168.1.20", "port": 48123, "fingerprint": "abc" }""", Ctx.PairingOfferInfo);
+        RoundTrip("""{ "enabled": true, "listening": true, "port": 48123, "host_name": "Desk PC", "addresses": ["192.168.1.20"], "devices": [ { "device_id": "dev_a", "name": "Laptop", "created_at": "2026-11-24T10:00:00+00:00", "model_control": false, "paused": false, "paused_apps": [], "priority_equal": false, "allowed_models": [], "status": "offline", "apps": [] } ], "relay": "off", "allow_replace_models": false, "relay_admission": false, "gaming_busy": false, "loaded_models": [] }""", Ctx.RemoteStatus);
+        RoundTrip("""{ "code": "042917", "expires_at": "2026-11-24T10:05:00+00:00", "qr_text": "portalai://pair?h=1", "link_text": "", "host_name": "Desk PC", "address": "192.168.1.20", "port": 48123, "fingerprint": "abc" }""", Ctx.PairingOfferInfo);
         RoundTrip("""{ "client_nonce": "a", "device_name": "Laptop", "device_public_key": "b", "mac": "c" }""", Ctx.PairStartRequest);
         RoundTrip("""{ "host_nonce": "a", "fingerprint": "b", "host_name": "Desk PC", "mac": "c" }""", Ctx.PairStartResponse);
         RoundTrip("""{ "host_nonce": "a", "mac": "c" }""", Ctx.PairFinishRequest);

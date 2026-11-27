@@ -34,7 +34,7 @@ public sealed partial class SettingsPage : Page
     /// <summary>Copies the pairing link (the text of the QR code). Never throws: a busy clipboard is retried, then ignored.</summary>
     private void OnCopyPairingLink(object sender, RoutedEventArgs e)
     {
-        var text = ViewModel.PairingQrText;
+        var text = ViewModel.PairingLinkText;
         if (text.Length == 0) return;
         for (var attempt = 0; attempt < 3; attempt++)
         {

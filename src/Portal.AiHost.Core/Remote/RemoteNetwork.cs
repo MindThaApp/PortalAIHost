@@ -84,10 +84,34 @@ public static class RemoteNetwork
     /// address, or null when the relay is off (no <c>r</c> field: LAN only).
     /// </summary>
     public static string QrText(string address, int port, string fingerprint, string code, string hostName,
-        string? relayUrl = null) =>
+        string? relayUrl = null, string? relayAdmission = null)
+    {
+        // The QR code holds 213 bytes. The PC's name is the only optional, cosmetic field, so it is shortened first and
+        // then dropped; everything else (including the relay and its access key) is kept. "Copy link" uses LinkText,
+        // which always carries everything.
+        var name = hostName;
+        while (true)
+        {
+            var text = LinkText(address, port, fingerprint, code, name, relayUrl, relayAdmission);
+            if (System.Text.Encoding.UTF8.GetByteCount(text) <= QrMaxBytes || name.Length == 0)
+            {
+                return text;
+            }
+
+            name = name[..Math.Max(0, name.Length - 2)];
+        }
+    }
+
+    /// <summary>The largest text the QR encoder takes (version 10, level M, byte mode).</summary>
+    public const int QrMaxBytes = 213;
+
+    /// <summary>The full pairing link, with nothing left out (for "Copy link").</summary>
+    public static string LinkText(string address, int port, string fingerprint, string code, string hostName,
+        string? relayUrl = null, string? relayAdmission = null) =>
         $"{RemoteApi.PairingScheme}://pair?h={Uri.EscapeDataString(address)}&p={port}&f={fingerprint}&c={code}" +
-        $"&n={Uri.EscapeDataString(hostName)}" +
-        (string.IsNullOrEmpty(relayUrl) ? "" : $"&r={EscapeRelay(relayUrl)}");
+        (hostName.Length == 0 ? "" : $"&n={Uri.EscapeDataString(hostName)}") +
+        (string.IsNullOrEmpty(relayUrl) ? "" : $"&r={EscapeRelay(relayUrl)}") +
+        (string.IsNullOrEmpty(relayUrl) || string.IsNullOrEmpty(relayAdmission) ? "" : $"&a={relayAdmission}");
 
     // ':' and '/' are legal in a query value; keeping them readable saves 4 characters, which the QR code's
     // 213-byte limit (version 10) can use for a long custom relay address.

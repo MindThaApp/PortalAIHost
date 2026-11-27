@@ -39,6 +39,7 @@ public sealed class ClientStateStore
     public const string RemoteFile = "remote.json";
     public const string KeyFile = "device.key";
     public const string TokenFile = "token.dat";
+    public const string RelayAdmissionFile = "relay-admission.dat";
 
     private readonly ISecretProtector _protector;
     private readonly object _gate = new();
@@ -59,6 +60,8 @@ public sealed class ClientStateStore
 
     private string TokenPath => Path.Combine(Directory, TokenFile);
 
+    private string AdmissionPath => Path.Combine(Directory, RelayAdmissionFile);
+
     public bool IsPaired
     {
         get
@@ -74,10 +77,11 @@ public sealed class ClientStateStore
     /// Stores a finished pairing: the protected key first, then <c>remote.json</c> (which marks the pairing as done). If
     /// the second write fails, the first is undone, so a failed save leaves the previous state (or nothing).
     /// </summary>
-    public void SavePairing(ClientRemote remote, ReadOnlySpan<byte> devicePrivateKeyPkcs8)
+    public void SavePairing(ClientRemote remote, ReadOnlySpan<byte> devicePrivateKeyPkcs8, ReadOnlySpan<byte> relayAdmission = default)
     {
         ArgumentNullException.ThrowIfNull(remote);
         var protectedKey = _protector.Protect(devicePrivateKeyPkcs8.ToArray());
+        var protectedAdmission = relayAdmission.IsEmpty ? null : _protector.Protect(relayAdmission.ToArray());
         lock (_gate)
         {
             // A token from a previously paired PC must never be sent to the new one. Removed first, so a failure
@@ -85,6 +89,17 @@ public sealed class ClientStateStore
             if (File.Exists(TokenPath))
             {
                 File.Delete(TokenPath);
+            }
+
+            // The relay admission token belongs to one pairing: the old one goes, the new one (if any) is stored.
+            if (File.Exists(AdmissionPath))
+            {
+                File.Delete(AdmissionPath);
+            }
+
+            if (protectedAdmission is not null)
+            {
+                AtomicFile.WriteAllBytes(AdmissionPath, protectedAdmission);
             }
 
             var previousKey = File.Exists(KeyPath) ? File.ReadAllBytes(KeyPath) : null;
@@ -164,6 +179,34 @@ public sealed class ClientStateStore
         }
     }
 
+    /// <summary>The relay admission token saved with the pairing (32 bytes), or null when the PC asked for none.</summary>
+    public byte[]? LoadRelayAdmission()
+    {
+        try
+        {
+            lock (_gate)
+            {
+                if (!File.Exists(AdmissionPath))
+                {
+                    return null;
+                }
+
+                var plain = _protector.Unprotect(File.ReadAllBytes(AdmissionPath));
+                if (plain.Length == RelayProtocol.AdmissionTokenBytes)
+                {
+                    return plain;
+                }
+
+                CryptographicOperations.ZeroMemory(plain);
+                return null;
+            }
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or CryptographicException)
+        {
+            return null;
+        }
+    }
+
     /// <summary>Stores the host's own access token for the PC (protected).</summary>
     public void SaveToken(string token)
     {
@@ -204,14 +247,14 @@ public sealed class ClientStateStore
     }
 
     /// <summary>
-    /// "Forget this PC": deletes exactly <c>remote.json</c>, <c>device.key</c> and <c>token.dat</c> in the client folder,
+    /// "Forget this PC": deletes exactly <c>remote.json</c>, <c>device.key</c>, <c>token.dat</c> and <c>relay-admission.dat</c> in the client folder,
     /// nothing else (no recursive delete, no other file or folder).
     /// </summary>
     public void Forget()
     {
         lock (_gate)
         {
-            foreach (var path in new[] { RemotePath, KeyPath, TokenPath })
+            foreach (var path in new[] { RemotePath, KeyPath, TokenPath, AdmissionPath })
             {
                 File.Delete(path); // No-op when the file does not exist.
             }

@@ -18,6 +18,8 @@ public static class AppServices
     public static IFolderOpener Folders { get; } = new ExplorerFolderOpener();
     public static WinUiModelFilePicker FilePicker { get; } = new();
     public static ShellViewModel Shell { get; private set; } = null!;
+    /// <summary>Decides whether the "update available" bar shows. A no-op outside a packaged install.</summary>
+    public static UpdateNudgeService UpdateNudge { get; private set; } = new(new NoUpdateSource(), new NoDismissState(), enabled: false);
     /// <summary>Opens a page by name (home, models, apps, tryit, settings) and moves the menu selection. Set by the window.</summary>
     public static Action<string>? NavigateTo { get; set; }
 
@@ -57,6 +59,8 @@ public static class AppServices
             if (AppOptions.StateFolder is { Length: > 0 } custom) stateFolder = custom;
         }
         IAppState state = AppOptions.SkipFirstRun ? new FixedAppState(true) : new AppStateStore(stateFolder);
+        UpdateNudge = new UpdateNudgeService(new StoreUpdateSource(), new UpdateNudgeStore(stateFolder),
+            UpdateNudgeGate.IsEnabled(IsPackaged(), AppOptions.Fake is not null, AppOptions.SkipFirstRun, AppOptions.StateFolder is { Length: > 0 }, AppOptions.OffScreen || AppOptions.ShotDir is { Length: > 0 }));
         Shell = new ShellViewModel(Host, launcher, Ui, Strings, state)
         {
             CrashReportsApplier = CrashReporting.SetEnabled,
@@ -64,6 +68,18 @@ public static class AppServices
         // Not for fake or check runs, which never send anything.
         if (AppOptions.Fake is null && !AppOptions.SkipFirstRun)
             CrashReporting.Start("app", typeof(AppServices).Assembly.GetName().Version?.ToString(3) ?? "1.0.0", state.SendCrashReports);
+    }
+
+    private static bool IsPackaged()
+    {
+        try
+        {
+            return Windows.ApplicationModel.Package.Current is not null;
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or System.Runtime.InteropServices.COMException)
+        {
+            return false;
+        }
     }
 
     /// <summary>Packaged installs register portal-ai-host:start; unpackaged runs have nothing to launch.</summary>
@@ -78,6 +94,17 @@ public static class AppServices
         {
             return false;
         }
+    }
+
+    private sealed class NoUpdateSource : IUpdateSource
+    {
+        public Task<UpdateQueryResult> QueryAsync(CancellationToken ct) => Task.FromResult(UpdateQueryResult.NoUpdate);
+    }
+
+    private sealed class NoDismissState : IUpdateNudgeState
+    {
+        public string? DismissedVersion => null;
+        public void SaveDismissed(string version) { }
     }
 
     private sealed class FixedAppState : IAppState

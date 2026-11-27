@@ -42,6 +42,11 @@ internal sealed class FakeRelay : IAsyncDisposable
     /// <summary>The next host that connects is refused with this close code (host proof failed).</summary>
     public int? RefuseHostWith { get; set; }
 
+    /// <summary>The admission hash the connected host published in its hello (null: an open room). Devices must then present a matching token.</summary>
+    public byte[]? PublishedAdmission => _admission;
+
+    private byte[]? _admission;
+
     private string? _challengeOverride;
     private string? _afterReady;
     private int _stopReading;
@@ -61,6 +66,11 @@ internal sealed class FakeRelay : IAsyncDisposable
     public bool HasHost => _host is { State: WebSocketState.Open };
 
     public int DeviceCount => _devices.Count;
+
+    private int _admissionRefusals;
+
+    /// <summary>Devices closed with 4403 for a missing or wrong admission token.</summary>
+    public int AdmissionRefusals => Volatile.Read(ref _admissionRefusals);
 
     private int _deviceAttempts;
     private int _maxDeviceFrame;
@@ -140,7 +150,7 @@ internal sealed class FakeRelay : IAsyncDisposable
 
         await SendTextAsync(ws, JsonSerializer.Serialize(new { t = "challenge", v = 1, room, nonce = RemoteCodec.Encode(nonce) }));
         var hello = await ReceiveAsync(ws, buffer);
-        if (RefuseHostWith is { } code || !Proves(hello.Text, room, nonce))
+        if (RefuseHostWith is { } code || !Proves(hello.Text, room, nonce, out var admission))
         {
             await ws.CloseOutputAsync((WebSocketCloseStatus)(RefuseHostWith ?? 4401), "auth", CancellationToken.None);
             return;
@@ -154,6 +164,7 @@ internal sealed class FakeRelay : IAsyncDisposable
 
         foreach (var d in _devices.Values) _ = CloseQuietly(d, (WebSocketCloseStatus)4410);
         Room = room;
+        _admission = admission;
         await SendTextAsync(ws, """{"t":"ready","v":1}""");
         _hostReady.TrySetResult();
         if (Interlocked.Exchange(ref _afterReady, null) is { } extra) await SendTextAsync(ws, extra);
@@ -198,8 +209,9 @@ internal sealed class FakeRelay : IAsyncDisposable
         }
     }
 
-    private static bool Proves(string? helloText, string room, byte[] nonce)
+    private static bool Proves(string? helloText, string room, byte[] nonce, out byte[]? admission)
     {
+        admission = null;
         try
         {
             using var doc = JsonDocument.Parse(helloText ?? "");
@@ -211,10 +223,16 @@ internal sealed class FakeRelay : IAsyncDisposable
                 return false;
             }
 
+            if (root.TryGetProperty("adm", out var admText))
+            {
+                if (!RemoteCodec.TryDecode(admText.GetString(), 32, out var adm) || adm.Length != 32) return false;
+                admission = adm;
+            }
+
             if (RelayProtocol.RoomId(SHA256.HashData(der)) != room) return false;
             using var cert = X509CertificateLoader.LoadCertificate(der);
             using var key = cert.GetECDsaPublicKey() ?? throw new CryptographicException();
-            return key.VerifyData(RelayProtocol.HostProofMessage(room, nonce), sig, HashAlgorithmName.SHA256,
+            return key.VerifyData(RelayProtocol.HostProofMessage(room, nonce, admission), sig, HashAlgorithmName.SHA256,
                 DSASignatureFormat.IeeeP1363FixedFieldConcatenation);
         }
         catch (Exception ex) when (ex is JsonException or KeyNotFoundException or CryptographicException or InvalidOperationException)
@@ -246,7 +264,21 @@ internal sealed class FakeRelay : IAsyncDisposable
         }
 
         var id = Interlocked.Increment(ref _next);
+        var required = _admission;
+        var admitted = required is null;
+        if (required is not null && RemoteCodec.TryDecode(ctx.Request.Headers[RelayProtocol.AdmissionHeader].ToString(), 64, out var presented))
+        {
+            admitted = CryptographicOperations.FixedTimeEquals(RelayProtocol.AdmissionHash(presented), required);
+        }
+
         using var ws = await ctx.WebSockets.AcceptWebSocketAsync();
+        if (!admitted)
+        {
+            Interlocked.Increment(ref _admissionRefusals);
+            await CloseQuietly(ws, (WebSocketCloseStatus)4403);
+            return;
+        }
+
         if (CloseDevicesWith is { } closeWith)
         {
             await CloseQuietly(ws, (WebSocketCloseStatus)closeWith);

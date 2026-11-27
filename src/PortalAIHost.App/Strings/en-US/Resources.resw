@@ -374,14 +374,26 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</value></data>
   <data name="Vm_WhatsNewHeading" xml:space="preserve"><value>What's new in Portal AI Host {0}</value></data>
-  <data name="Vm_Wn1Title" xml:space="preserve"><value>See what's happening</value></data>
-  <data name="Vm_Wn1Body" xml:space="preserve"><value>Home now shows which app is using AI right now, how fast it answers, how much memory the model uses, and how often each app asked today. Unload or load the model with one click.</value></data>
-  <data name="Vm_Wn2Title" xml:space="preserve"><value>A quick look from the tray</value></data>
-  <data name="Vm_Wn2Body" xml:space="preserve"><value>Click the tray icon to see whether the AI is ready, which model is loaded and the last request, without opening the window.</value></data>
-  <data name="Vm_Wn3Title" xml:space="preserve"><value>Crash reports help us fix problems</value></data>
-  <data name="Vm_Wn3Body" xml:space="preserve"><value>If something goes wrong, a short report tells us where it happened. It never includes what you type, file names or your name. Turn it off in Settings under Privacy.</value></data>
-  <data name="Vm_Wn4Title" xml:space="preserve"><value>Smoother and steadier</value></data>
-  <data name="Vm_Wn4Body" xml:space="preserve"><value>Calmer animations, a safer model folder that only Portal AI Host can change, and many small fixes.</value></data>
+  <data name="Vm_Wn1Title" xml:space="preserve"><value>Thank you</value></data>
+  <data name="Vm_Wn1Body" xml:space="preserve"><value>Thank you for your feedback and reports. They shaped this update.</value></data>
+  <data name="Vm_Wn2Title" xml:space="preserve"><value>The tray pop-up no longer crashes</value></data>
+  <data name="Vm_Wn2Body" xml:space="preserve"><value>The small status window from the tray icon could crash the first time it opened. That is fixed.</value></data>
+  <data name="Vm_Wn3Title" xml:space="preserve"><value>Removing a device stops it at once</value></data>
+  <data name="Vm_Wn3Body" xml:space="preserve"><value>When you remove a device, anything it was still asking for now stops straight away.</value></data>
+  <data name="Vm_Wn4Title" xml:space="preserve"><value>Pairing a new PC is safer</value></data>
+  <data name="Vm_Wn4Body" xml:space="preserve"><value>A laptop paired with a new home PC no longer risks sending the old PC's access token to it.</value></data>
+  <data name="Vm_Wn5Title" xml:space="preserve"><value>Use your home PC from a laptop</value></data>
+  <data name="Vm_Wn5Body" xml:space="preserve"><value>Pair a laptop with your home PC once. Apps on the laptop then use the home PC's AI, at home or away, and fall back to the laptop's own model if you choose.</value></data>
+  <data name="Vm_Wn6Title" xml:space="preserve"><value>Devices on this PC</value></data>
+  <data name="Vm_Wn6Body" xml:space="preserve"><value>See each paired laptop on its own card. Pause it, set daily limits and quiet hours, choose which models it may use, or take back a model it loaded.</value></data>
+  <data name="Vm_Wn7Title" xml:space="preserve"><value>Two models at once</value></data>
+  <data name="Vm_Wn7Body" xml:space="preserve"><value>A laptop you trust can keep a second model loaded on your PC, for example one on the graphics card and one in memory. Your own model is never pushed out.</value></data>
+  <data name="Vm_Wn8Title" xml:space="preserve"><value>Gaming mode works in windowed games</value></data>
+  <data name="Vm_Wn8Body" xml:space="preserve"><value>Turn on gaming mode and other devices are told your PC is busy while a game runs, including games in a window.</value></data>
+  <data name="Vm_Wn9Title" xml:space="preserve"><value>Relay access key</value></data>
+  <data name="Vm_Wn9Body" xml:space="preserve"><value>Only devices paired with your key can reach this PC away from home. Make a new key at any time.</value></data>
+  <data name="Vm_Wn10Title" xml:space="preserve"><value>See your memory at a glance</value></data>
+  <data name="Vm_Wn10Body" xml:space="preserve"><value>Bars on the Models page show how much memory and graphics memory the loaded models use, against your limits.</value></data>
   <data name="Vm_WnShowMe" xml:space="preserve"><value>Show me</value></data>
   <data name="Vm_WnShowMeName" xml:space="preserve"><value>Show me: {0}</value></data>
   <data name="WhatsNewDone.Content" xml:space="preserve"><value>Got it</value></data>
@@ -625,10 +637,23 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="Vm_PlacementAuto" xml:space="preserve"><value>automatic placement</value></data>
   <data name="Vm_PlacementGpu" xml:space="preserve"><value>graphics card</value></data>
   <data name="Vm_PlacementCpu" xml:space="preserve"><value>system memory</value></data>
+  <data name="Vm_PlacementCpuOnly" xml:space="preserve"><value>processor only</value></data>
   <data name="SettingsRemoteRelay.Header" xml:space="preserve"><value>Also reach this PC away from home</value></data>
   <data name="SettingsRemoteRelay.OnContent" xml:space="preserve"><value>On</value></data>
   <data name="SettingsRemoteRelay.OffContent" xml:space="preserve"><value>Off</value></data>
   <data name="SettingsRemoteRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Also reach this PC away from home</value></data>
+  <data name="SettingsRelayAdmission.Header" xml:space="preserve"><value>Relay access key</value></data>
+  <data name="SettingsRelayAdmission.OnContent" xml:space="preserve"><value>On</value></data>
+  <data name="SettingsRelayAdmission.OffContent" xml:space="preserve"><value>Off</value></data>
+  <data name="SettingsRelayAdmission.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Relay access key</value></data>
+  <data name="SettingsRelayAdmissionHelp.Text" xml:space="preserve"><value>Only devices paired with the key in the pairing code can reach this PC through the relay. Turn it on before pairing: devices paired earlier must pair again to use the relay. The relay must be up to date.</value></data>
+  <data name="SettingsRotateRelayKeyText.Text" xml:space="preserve"><value>New key</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Make a new relay access key. Every paired device must pair again to use the relay. Removing a device does not change the key, so do this after removing a device you do not trust.</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Make a new relay access key. Every paired device must pair again to use the relay. Removing a device does not change the key, so do this after removing a device you do not trust.</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>New key</value></data>
+  <data name="Vm_RotateKeyTitle" xml:space="preserve"><value>Make a new relay access key?</value></data>
+  <data name="Vm_RotateKeyBody" xml:space="preserve"><value>Every paired device must pair again to use this PC through the relay. At home nothing changes.</value></data>
+  <data name="Vm_RotateKeyConfirm" xml:space="preserve"><value>Make new key</value></data>
   <data name="SettingsRemoteRelayHelp.Text" xml:space="preserve"><value>This PC connects out to a small relay, so a paired device can reach it from anywhere. The relay only passes along scrambled bytes it cannot read, and each device still has to be paired and sign every request.</value></data>
   <data name="Vm_RelayAway" xml:space="preserve"><value>Reachable away from home</value></data>
   <data name="Vm_RelayHomeOnly" xml:space="preserve"><value>Home network only</value></data>
@@ -716,8 +741,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Unload the model this laptop loaded on the PC. No model file is touched.</value></data>
   <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Unload the model this laptop loaded on the PC. No model file is touched.</value></data>
   <data name="RemoteModelPlacement.Header" xml:space="preserve"><value>Run on</value></data>
-  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Where the PC runs this model: decided by the PC, on its graphics card, or in system memory. The PC's own limits still apply.</value></data>
-  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Where the PC runs this model: decided by the PC, on its graphics card, or in system memory. The PC's own limits still apply.</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Where the PC runs this model: decided by the PC, on its graphics card, in system memory, or on the processor only with a thread cap (half the cores). The PC's own limits still apply.</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Where the PC runs this model: decided by the PC, on its graphics card, in system memory, or on the processor only with a thread cap (half the cores). The PC's own limits still apply.</value></data>
   <data name="RemoteModelTooBig.Text" xml:space="preserve"><value>Too big for the PC</value></data>
   <data name="SettingsAppModelsHeader.Text" xml:space="preserve"><value>PC model for each app</value></data>
   <data name="SettingsAppModelsHelp.Text" xml:space="preserve"><value>Choose which of the PC's models each app on this laptop uses. PC's choice leaves it to the PC.</value></data>
@@ -726,6 +751,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="Vm_RemPlacementAuto" xml:space="preserve"><value>Automatic</value></data>
   <data name="Vm_RemPlacementGpu" xml:space="preserve"><value>Graphics card</value></data>
   <data name="Vm_RemPlacementCpu" xml:space="preserve"><value>System memory</value></data>
+  <data name="Vm_RemPlacementCpuOnly" xml:space="preserve"><value>Processor only</value></data>
   <data name="Vm_RemStateLoaded" xml:space="preserve"><value>Loaded</value></data>
   <data name="Vm_RemStateLoading" xml:space="preserve"><value>Loading</value></data>
   <data name="Vm_RemByLaptop" xml:space="preserve"><value>Loaded by this laptop</value></data>
@@ -835,4 +861,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="Vm_PairReason_no_offer" xml:space="preserve"><value>That PC is not waiting for a device. Open a new code on it.</value></data>
   <data name="Vm_PairReason_too_many_devices" xml:space="preserve"><value>That PC already has 16 devices. Remove one first.</value></data>
   <data name="Vm_PairReason_wrong_code" xml:space="preserve"><value>The code is not right.</value></data>
+  <data name="ModelsMemoryTitle.Text" xml:space="preserve"><value>Memory budget</value></data>
+  <data name="ModelsMemoryTitle.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>What the loaded and loading models are planned to use, against the RAM limit and the graphics card memory. A model that would not fit is refused.</value></data>
+  <data name="Vm_MemRam" xml:space="preserve"><value>RAM</value></data>
+  <data name="Vm_MemVram" xml:space="preserve"><value>Graphics memory</value></data>
+  <data name="Vm_MemLine" xml:space="preserve"><value>{0}: {1} used, {2} reserved while loading, {3} free of {4}</value></data>
+  <data name="UpdateBar.Title" xml:space="preserve"><value>Update available</value></data>
+  <data name="UpdateBar.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>A newer version of Portal AI Host is ready in the Microsoft Store</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Update</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Open the Microsoft Store page to update Portal AI Host</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Open the Microsoft Store page to update Portal AI Host</value></data>
+  <data name="UpdateButtonText.Text" xml:space="preserve"><value>Update</value></data>
 </root>

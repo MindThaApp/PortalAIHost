@@ -25,6 +25,8 @@ public sealed partial class SettingsViewModel
     [ObservableProperty] private bool _remoteEnabled;
     [ObservableProperty] private bool _remoteRelay = true;
     [ObservableProperty] private bool _allowReplaceModels;
+    [ObservableProperty] private bool _relayAdmission;
+    [ObservableProperty] private string _pairingLinkText = "";
     [ObservableProperty] private string _relayStatusText = "";
     [ObservableProperty] private bool _hasRemoteProblem;
     [ObservableProperty] private string _remoteProblem = "";
@@ -52,6 +54,34 @@ public sealed partial class SettingsViewModel
     {
         if (_loading) return;
         _ = SetRemoteEnabledAsync();
+    }
+
+    partial void OnRelayAdmissionChanged(bool value)
+    {
+        if (_loading) return;
+        _ = SetRemoteEnabledAsync();
+    }
+
+    /// <summary>Asks first: devices paired with the old key lose the relay (not the home network) until they pair again.</summary>
+    [RelayCommand]
+    private async Task RotateRelayKeyAsync()
+    {
+        var sure = await _dialogs.ConfirmAsync(_s.Get("Vm_RotateKeyTitle"), _s.Get("Vm_RotateKeyBody"),
+            _s.Get("Vm_RotateKeyConfirm"), _s.Get("Vm_Cancel")).ConfigureAwait(false);
+        if (!sure) return;
+        try
+        {
+            await _shell.Host.RotateRelayKeyAsync().ConfigureAwait(false);
+            await RefreshRemoteAsync().ConfigureAwait(false);
+        }
+        catch (HostUnavailableException)
+        {
+            _ui.Post(() => Say(_s.Get("Vm_NoHostTitle"), MessageError));
+        }
+        catch (HostRequestException ex)
+        {
+            _ui.Post(() => Say(ex.Message, MessageError));
+        }
     }
 
     partial void OnAllowReplaceModelsChanged(bool value)
@@ -87,6 +117,7 @@ public sealed partial class SettingsViewModel
         _loading = true;
         RemoteEnabled = status.Enabled;
         AllowReplaceModels = status.AllowReplaceModels;
+        RelayAdmission = status.RelayAdmission;
         _loading = wasLoading;
 
         RelayStatusText = !status.Enabled ? "" : status.Relay switch
@@ -110,7 +141,7 @@ public sealed partial class SettingsViewModel
             Devices.Add(new DeviceRow(d.DeviceId, d.Name, seen, _s.Format("Vm_AutoRemoveDevice", d.Name),
                 d.ModelControl, _s.Format("Vm_AutoModelControl", d.Name),
                 loaded is null ? "" : _s.Format("Vm_LoadedBy", d.Name, loaded.DisplayName,
-                    loaded.Placement switch { "gpu" => _s.Get("Vm_PlacementGpu"), "cpu" => _s.Get("Vm_PlacementCpu"), _ => _s.Get("Vm_PlacementAuto") }),
+                    loaded.Placement switch { "gpu" => _s.Get("Vm_PlacementGpu"), "cpu" => _s.Get("Vm_PlacementCpu"), "cpu_only" => _s.Get("Vm_PlacementCpuOnly"), _ => _s.Get("Vm_PlacementAuto") }),
                 loaded?.Kind ?? "chat", _s.Format("Vm_AutoTakeBack", d.Name)));
         }
 
@@ -125,6 +156,7 @@ public sealed partial class SettingsViewModel
             PairingOpen = false;
             PairingCode = "";
             PairingQrText = "";
+            PairingLinkText = "";
         }
     }
 
@@ -133,6 +165,7 @@ public sealed partial class SettingsViewModel
         _pairingExpires = offer.ExpiresAt;
         PairingCode = offer.Code;
         PairingQrText = offer.QrText;
+        PairingLinkText = offer.LinkText.Length > 0 ? offer.LinkText : offer.QrText;
         PairingAddressText = _s.Format("Vm_PairingAddress", offer.Address, offer.Port);
         PairingExpiryText = _s.Format("Vm_PairingExpires", offer.ExpiresAt.LocalDateTime.ToString("t"));
         PairingFingerprintText = _s.Format("Vm_PairingFingerprint", Short(offer.Fingerprint));

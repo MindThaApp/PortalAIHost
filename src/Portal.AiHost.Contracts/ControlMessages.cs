@@ -99,6 +99,12 @@ public static class ControlTypes
     /// <summary>Removes a paired device and revokes its tokens at once. Payload <see cref="RemoveDeviceCommand"/>.</summary>
     public const string RemoteRemoveDevice = "remote.device_remove";
 
+    /// <summary>
+    /// Makes a new relay access key (the old file is kept as .bad). Devices paired with the old key must pair again to use
+    /// the relay. Answers ok, or an error when the key could not be saved.
+    /// </summary>
+    public const string RemoteRotateRelayKey = "remote.relay_key_rotate";
+
     /// <summary>Turns Model control on or off for a paired device (takes effect at once). Payload <see cref="SetModelControlCommand"/>; answers <see cref="RemoteStatus"/>.</summary>
     public const string RemoteSetModelControl = "remote.model_control";
 

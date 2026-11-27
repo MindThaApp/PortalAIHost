@@ -74,6 +74,7 @@ public sealed class LanServer : IAsyncDisposable
         _pairing = pairing;
         _verifier = verifier;
         _options = options;
+        BridgeTokens = new BridgeTokens(options.Time);
     }
 
     public int Port { get; private set; }
@@ -84,6 +85,13 @@ public sealed class LanServer : IAsyncDisposable
     private ListenOptions? _bridgeListen;
 
     private const string BridgeItem = "portal.bridge";
+
+    /// <summary>Tokens the relay bridge must present on the internal endpoint (docs/remote-v1.md section 10.3).</summary>
+    public BridgeTokens BridgeTokens { get; }
+
+    private static readonly TimeSpan BridgeTokenWait = TimeSpan.FromSeconds(3);
+    private const int MaxBridgeWaiting = 16;
+    private int _bridgeWaiting;
 
     public static async Task<LanServer> StartAsync(AiHostRuntime runtime, PairingService pairing,
         DeviceRequestVerifier verifier, DeviceSessions sessions, LanServerOptions options, CancellationToken ct = default)
@@ -181,10 +189,36 @@ public sealed class LanServer : IAsyncDisposable
                 {
                     _bridgeListen = listen;
                     listen.Protocols = HttpProtocols.Http1;
-                    listen.Use(next => context =>
+                    listen.Use(next => async context =>
                     {
+                        // Only the bridge knows a token: it writes one before the TLS handshake. Anything else is closed
+                        // at once, with no reply.
+                        // At most 16 connections may wait for their token at once; more are dropped without waiting.
+                        if (Interlocked.Increment(ref _bridgeWaiting) > MaxBridgeWaiting)
+                        {
+                            Interlocked.Decrement(ref _bridgeWaiting);
+                            context.Abort();
+                            return;
+                        }
+
+                        bool ok;
+                        try
+                        {
+                            ok = await BridgeTokens.ReadAndConsumeAsync(context.Transport.Input, BridgeTokenWait, context.ConnectionClosed).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            Interlocked.Decrement(ref _bridgeWaiting);
+                        }
+
+                        if (!ok)
+                        {
+                            context.Abort();
+                            return;
+                        }
+
                         context.Items[BridgeItem] = true;
-                        return next(context);
+                        await next(context).ConfigureAwait(false);
                     });
                     listen.UseHttps(_options.Certificate);
                 });

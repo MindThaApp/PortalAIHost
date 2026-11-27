@@ -1,6 +1,8 @@
 import { DurableObject } from "cloudflare:workers";
 import { spkiFromCertificate } from "./der";
 import {
+  ADMISSION_HEADER,
+  admissionHash,
   fromBase64Url,
   hostProofMessage,
   limitsFor,
@@ -22,6 +24,8 @@ const Close = {
   Replaced: 4409,
   HostGone: 4410,
   Budget: 4429,
+  /** The room's host asks for an admission token and the device sent none, or a wrong one. */
+  Admission: 4403,
 } as const;
 
 interface Attachment {
@@ -29,6 +33,7 @@ interface Attachment {
   authed: boolean;
   room: string;
   nonce?: string; // host, until proven (base64url)
+  adm?: string; // host, once proven: base64url SHA-256 of the admission token devices must present (absent: open room)
   since: number;
   last: number;
   stream?: number; // device
@@ -62,7 +67,7 @@ export class Room extends DurableObject<Env> {
     const [, , role, roomId] = new URL(request.url).pathname.split("/");
     const ip = request.headers.get("CF-Connecting-IP") ?? "unknown";
     if (role === "host") return this.acceptHost(roomId!, ip);
-    if (role === "device") return this.acceptDevice(roomId!, ip);
+    if (role === "device") return this.acceptDevice(roomId!, ip, request);
     return new Response(null, { status: 404 });
   }
 
@@ -98,8 +103,18 @@ export class Room extends DurableObject<Env> {
     return this.accepted(pair[0]);
   }
 
-  private acceptDevice(room: string, ip: string): Response {
-    if (!this.host()) return this.refuse(503, "host_offline");
+  private async acceptDevice(room: string, ip: string, request: Request): Promise<Response> {
+    const host = this.host();
+    if (!host) return this.refuse(503, "host_offline");
+    const adm = this.att(host).adm;
+    if (adm && !(await this.admitted(adm, request.headers.get(ADMISSION_HEADER)))) {
+      // Refused before anything reaches the host: no stream, no "open". The socket is accepted only to carry the code.
+      const refused = new WebSocketPair();
+      refused[1].accept();
+      refused[1].close(Close.Admission, "admission");
+      return new Response(null, { status: 101, webSocket: refused[0] });
+    }
+
     const devices = this.ctx.getWebSockets("device");
     if (devices.length >= this.limits.MAX_STREAMS_PER_ROOM) return this.refuse(429, "too_many_streams");
     if (devices.filter((w) => this.att(w).ip === ip).length >= this.limits.MAX_STREAMS_PER_IP) {
@@ -118,6 +133,16 @@ export class Room extends DurableObject<Env> {
     this.sendHost({ t: "open", s: stream });
     server.send(JSON.stringify({ t: "open" }));
     return this.accepted(pair[0]);
+  }
+
+  /** Constant-time check of a presented admission token against the hash the host published. */
+  private async admitted(published: string, presented: string | null): Promise<boolean> {
+    const want = fromBase64Url(published, 32);
+    const token = presented ? fromBase64Url(presented, 64) : null;
+    if (!want || want.length !== 32) return false;
+    // Always hash something, so a missing token costs the same as a wrong one.
+    const got = await admissionHash(token ?? new Uint8Array(0));
+    return token !== null && token.length >= 16 && crypto.subtle.timingSafeEqual(got, want);
   }
 
   private accepted(client: WebSocket): Response {
@@ -177,7 +202,7 @@ export class Room extends DurableObject<Env> {
   private async handleHello(ws: WebSocket, a: Attachment, message: string | ArrayBuffer): Promise<void> {
     const fail = () => this.closeSocket(ws, Close.Auth, "auth");
     if (typeof message !== "string" || message.length > 4096) return fail();
-    let hello: { t?: unknown; cert?: unknown; sig?: unknown };
+    let hello: { t?: unknown; cert?: unknown; sig?: unknown; adm?: unknown };
     try {
       hello = JSON.parse(message);
     } catch {
@@ -188,7 +213,14 @@ export class Room extends DurableObject<Env> {
     const der = fromBase64Url(hello.cert, this.limits.MAX_CERT_BYTES);
     const sig = fromBase64Url(hello.sig, 64);
     const nonce = a.nonce ? fromBase64Url(a.nonce, 32) : null;
-    if (!der || !sig || sig.length !== 64 || !nonce || !(await this.proves(der, sig, nonce, a.room))) return fail();
+    // An optional admission hash (exactly 32 bytes) joins the signed bytes, so only the certificate's owner can set it.
+    let adm: Uint8Array | undefined;
+    if (hello.adm !== undefined) {
+      adm = typeof hello.adm === "string" ? (fromBase64Url(hello.adm, 32) ?? undefined) : undefined;
+      if (!adm || adm.length !== 32) return fail();
+    }
+
+    if (!der || !sig || sig.length !== 64 || !nonce || !(await this.proves(der, sig, nonce, a.room, adm))) return fail();
 
     // Proven. A newer verified host replaces the older one, and the streams that belonged to the older one end.
     for (const other of this.ctx.getWebSockets("host")) {
@@ -203,18 +235,19 @@ export class Room extends DurableObject<Env> {
     for (const d of this.ctx.getWebSockets("device")) this.closeSocket(d, Close.HostGone, "host_changed");
     a.authed = true;
     a.nonce = undefined;
+    a.adm = adm ? toBase64Url(adm) : undefined;
     ws.serializeAttachment(a);
     ws.send(JSON.stringify({ t: "ready", v: 1, limits: this.publicLimits() }));
   }
 
   /** The room id must be the hash of the certificate, and the host must hold that certificate's private key. */
-  private async proves(der: Uint8Array, sig: Uint8Array, nonce: Uint8Array, roomId: string): Promise<boolean> {
+  private async proves(der: Uint8Array, sig: Uint8Array, nonce: Uint8Array, roomId: string, adm?: Uint8Array): Promise<boolean> {
     try {
       if ((await roomIdForCertificate(der)) !== roomId) return false;
       const spki = spkiFromCertificate(der);
       if (!spki) return false;
       const key = await crypto.subtle.importKey("spki", spki, { name: "ECDSA", namedCurve: "P-256" }, false, ["verify"]);
-      return await crypto.subtle.verify({ name: "ECDSA", hash: "SHA-256" }, key, sig, hostProofMessage(roomId, nonce));
+      return await crypto.subtle.verify({ name: "ECDSA", hash: "SHA-256" }, key, sig, hostProofMessage(roomId, nonce, adm));
     } catch {
       return false;
     }

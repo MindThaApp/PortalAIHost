@@ -614,6 +614,7 @@ public sealed class FakeHostControl : IHostControl, IDisposable
                 Fingerprint = "fake-fingerprint",
                 Devices = [.. Devices],
                 AllowReplaceModels = _settings.Remote.AllowReplaceModels,
+                RelayAdmission = _settings.Remote.RelayAdmission,
                 LoadedModels = [.. LoadedModels],
                 Pairing = _settings.Remote.Enabled ? Pairing : null,
                 Relay = _settings.Remote.Enabled && _settings.Remote.Relay ? RelayStates.Connected : RelayStates.Off,
@@ -646,6 +647,13 @@ public sealed class FakeHostControl : IHostControl, IDisposable
     {
         Require();
         lock (_gate) Pairing = null;
+        RemoteChanged?.Invoke();
+        return Task.CompletedTask;
+    }
+
+    public Task RotateRelayKeyAsync(CancellationToken ct = default)
+    {
+        Require();
         RemoteChanged?.Invoke();
         return Task.CompletedTask;
     }
@@ -1180,6 +1188,12 @@ public sealed class FakeHostControl : IHostControl, IDisposable
                 },
                 UpgradeAvailable = Scenario is FakeScenario.Loaded or FakeScenario.SafeMode,
                 Usage = loaded ? Usage : null,
+                Memory = loaded ? new MemoryBudgetStatus
+                {
+                    RamLimitBytes = 51L << 30, RamPlannedBytes = 19L << 30, RamFreeBytes = 32L << 30,
+                    VramTotalBytes = 8L << 30, VramPlannedBytes = 5L << 30, VramFreeBytes = 3L << 30,
+                    Engines = [new EngineMemoryStatus { Slot = "chat", RamBytes = 19L << 30, VramBytes = 5L << 30 }],
+                } : null,
             };
             return new HostSnapshot(true, status, _safeMode);
         }

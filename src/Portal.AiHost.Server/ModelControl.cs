@@ -319,7 +319,7 @@ public sealed class ModelControl
         var placement = request.Placement ?? DevicePlacements.Auto;
         if (string.IsNullOrEmpty(request.ModelId) || !DevicePlacements.IsValid(placement))
         {
-            throw new ApiException(ErrorCodes.InvalidRequest, "model_id is required and placement must be auto, gpu or cpu.");
+            throw new ApiException(ErrorCodes.InvalidRequest, "model_id is required and placement must be auto, gpu, cpu or cpu_only.");
         }
 
         var over = placement == DevicePlacements.Auto ? null : new PlacementOverride(placement, null, null, null);
@@ -333,11 +333,16 @@ public sealed class ModelControl
             request.GpuMemoryLimitBytes is <= 0 || request.MemoryLimitBytes is <= 0 || request.CpuThreads is <= 0)
         {
             throw new ApiException(ErrorCodes.InvalidRequest,
-                "model_id is required; compute must be auto, gpu or cpu; limits must be positive.");
+                "model_id is required; compute must be auto, gpu, cpu or cpu_only; limits must be positive.");
         }
 
         // Never more threads than this PC has (the PC's own limit is applied on top when it sets one).
         var threads = request.CpuThreads is { } t ? Math.Min(t, Environment.ProcessorCount) : (int?)null;
+        if (threads is null && request.Compute == DevicePlacements.CpuOnly)
+        {
+            threads = AiHostRuntime.CpuOnlyThreads(Environment.ProcessorCount); // the preset's default cap, adjustable by sending cpu_threads
+        }
+
         var over = new PlacementOverride(request.Compute, request.GpuMemoryLimitBytes, request.MemoryLimitBytes, threads);
         await ReplaceAsync(deviceId, request.ModelId, request.Compute, over, requireOwn: true, ct).ConfigureAwait(false);
         request.CpuThreads = threads;
