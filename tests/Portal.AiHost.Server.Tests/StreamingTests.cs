@@ -30,7 +30,13 @@ public sealed class StreamingTests
     [Fact]
     public async Task Queued_stream_gets_keep_alive_comments_with_position()
     {
-        await using var host = await TestHost.StartAsync(new FakeEngineOptions { TokenDelay = TimeSpan.FromMilliseconds(150) });
+        await using var host = await TestHost.StartAsync(new FakeEngineOptions
+        {
+            TokenDelay = TimeSpan.FromMilliseconds(150),
+            // The slot stays busy for 12 x 150 ms, far longer than the 200 ms queued-comment interval, so the
+            // waiting stream always sees several comments however slowly the machine runs.
+            Reply = string.Join(' ', Enumerable.Repeat("word", 12)),
+        });
         var token = await host.GetTokenAsync();
         // Occupy the single slot.
         var busy = host.Http.SendAsync(host.Authed(HttpMethod.Post, Routes.ChatCompletions, token,
