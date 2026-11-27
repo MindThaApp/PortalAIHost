@@ -33,6 +33,28 @@ public sealed partial class CatalogueEntry
     /// <summary>Model kind, see <see cref="ModelKinds"/> (chat, embedding, transcription). Open set.</summary>
     public string Kind { get; set; } = ModelKinds.Chat;
 
+    /// <summary>
+    /// Optional use-case category (see <see cref="ModelCategories"/>). Null or unknown: derived from <see cref="Kind"/>.
+    /// Older hosts ignore the field.
+    /// </summary>
+    public string? Category { get; init; }
+
+    /// <summary>
+    /// False for an entry whose engine this host does not have yet ("coming soon"): it is listed but never downloaded.
+    /// Defaults to true when the field is missing.
+    /// </summary>
+    public bool Available { get; set; } = true; // set, not init: generated readers would reset an init default
+
+    /// <summary>Minimum graphics memory in GB with CPU offload, for models that need a graphics card (video). Null when not given.</summary>
+    public double? MinVramGb { get; init; }
+
+    /// <summary>Recommended graphics memory in GB, or null.</summary>
+    public double? RecommendedVramGb { get; init; }
+
+    /// <summary>The category shown to people: <see cref="Category"/> when known, otherwise from <see cref="Kind"/>.</summary>
+    [JsonIgnore]
+    public string EffectiveCategory => ModelCategories.Resolve(Category, Kind);
+
     public CatalogueLicence Licence { get; set; } = new();
 
     /// <summary>Comparable quality score (higher is better); includes the quantisation penalty.</summary>
@@ -80,7 +102,7 @@ public sealed partial class CatalogueEntry
     /// </summary>
     [JsonIgnore]
     public bool IsDownloadable =>
-        CommitPattern().IsMatch(HfCommit) && Files.Count > 0 && Files.All(f => f.HasVerifiedHash && f.Size > 0);
+        Available && CommitPattern().IsMatch(HfCommit) && Files.Count > 0 && Files.All(f => f.HasVerifiedHash && f.Size > 0);
 
     [GeneratedRegex("^[0-9a-f]{40}$")]
     internal static partial Regex CommitPattern();

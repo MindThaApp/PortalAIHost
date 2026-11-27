@@ -98,6 +98,12 @@ public sealed class FakeHostControl : IHostControl, IDisposable
     /// <summary>True: a move stays "running" until cancelled (so tests can cancel it).</summary>
     public bool HoldMove { get; set; }
 
+    /// <summary>Adds a model to the list (tests).</summary>
+    public void AddModel(CatalogueModelSummary model)
+    {
+        lock (_gate) _models.Add(model);
+    }
+
     /// <summary>Marks a model as installed without a download (tests).</summary>
     public void MarkInstalled(string id)
     {
@@ -1202,6 +1208,7 @@ public sealed class FakeHostControl : IHostControl, IDisposable
         {
             Id = m.Id, DisplayName = m.DisplayName, Kind = m.Kind, Engine = m.Engine, SizeBytes = m.SizeBytes,
             Quality = m.Quality, Recommended = m.Recommended, Installed = true, FitsThisPc = m.FitsThisPc, Reason = m.Reason,
+            Category = m.Category, ComingSoon = m.ComingSoon, MinVramGb = m.MinVramGb, RecommendedVramGb = m.RecommendedVramGb,
         };
     }
 
@@ -1210,6 +1217,7 @@ public sealed class FakeHostControl : IHostControl, IDisposable
         Id = m.Id, DisplayName = m.DisplayName, Kind = m.Kind, Engine = m.Engine, SizeBytes = m.SizeBytes,
         Quality = m.Quality, Recommended = m.Recommended, Installed = m.Installed, Active = m.Id == _activeId,
         FitsThisPc = m.FitsThisPc, Reason = m.Reason, UserAdded = m.UserAdded,
+        Category = m.Category, ComingSoon = m.ComingSoon, MinVramGb = m.MinVramGb, RecommendedVramGb = m.RecommendedVramGb,
         Damaged = m.Installed && DamagedIds.Contains(m.Id),
         LastUsedAt = m.Installed ? DateTimeOffset.UtcNow.AddDays(-2) : null,
         MemoryNeededBytes = m.SizeBytes + 1_000_000_000,

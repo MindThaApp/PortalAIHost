@@ -71,6 +71,7 @@
                             <TextBlock Text="{x:Bind LastUsedText}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                         </StackPanel>
                         <TextBlock x:Uid="ModelTooBig" Visibility="{x:Bind TooBig, Mode=OneWay}" TextWrapping="Wrap" />
+                        <TextBlock Text="{x:Bind VramText}" Visibility="{x:Bind HasVram}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                         <ProgressBar Value="{x:Bind Percent, Mode=OneWay}" Maximum="100" Visibility="{x:Bind ShowProgress, Mode=OneWay}" IsIndeterminate="{x:Bind Removing, Mode=OneWay}" />
                         <TextBlock Text="{x:Bind ProgressText, Mode=OneWay}" Visibility="{x:Bind ShowProgress, Mode=OneWay}" TextWrapping="Wrap" />
                         <ProgressBar Value="{x:Bind CheckPercent, Mode=OneWay}" Maximum="100" Visibility="{x:Bind Checking, Mode=OneWay}" />
@@ -98,6 +99,30 @@
                     </StackPanel>
                 </Grid>
             </Border>
+        </DataTemplate>
+        <DataTemplate x:Key="ModelChipTemplate" x:DataType="vm:ModelCategoryChip">
+            <ToggleButton IsChecked="{x:Bind Selected, Mode=TwoWay}" AutomationProperties.Name="{x:Bind Tooltip}" ToolTipService.ToolTip="{x:Bind Tooltip}" MinWidth="88">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <FontIcon Glyph="{x:Bind Glyph}" FontSize="14" />
+                    <TextBlock Text="{x:Bind Label}" />
+                </StackPanel>
+            </ToggleButton>
+        </DataTemplate>
+        <DataTemplate x:Key="ModelGroupTemplate" x:DataType="vm:ModelGroupViewModel">
+            <StackPanel Spacing="8" Margin="0,0,0,12">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon Glyph="{x:Bind Glyph}" FontSize="16" />
+                    <TextBlock Text="{x:Bind Title}" Style="{StaticResource SubtitleTextBlockStyle}" />
+                    <TextBlock Text="{x:Bind CountText, Mode=OneWay}" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <ItemsControl ItemsSource="{x:Bind Rows}" ItemTemplate="{StaticResource ModelRowTemplate}" />
+                <Button Command="{x:Bind ToggleAllCommand}" Visibility="{x:Bind CanToggle, Mode=OneWay}" ToolTipService.ToolTip="{x:Bind ToggleText, Mode=OneWay}" AutomationProperties.Name="{x:Bind ToggleText, Mode=OneWay}">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <FontIcon Glyph="&#xE70D;" FontSize="14" />
+                        <TextBlock Text="{x:Bind ToggleText, Mode=OneWay}" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
         </DataTemplate>
     </Page.Resources>
     <ScrollViewer>
@@ -181,11 +206,19 @@
                 </ItemsControl>
             </StackPanel>
 
-            <TextBlock x:Uid="ModelsDownloadedHeader" Style="{StaticResource SubtitleTextBlockStyle}" Visibility="{x:Bind ViewModel.HasDownloaded, Mode=OneWay}" />
-            <ItemsControl ItemsSource="{x:Bind ViewModel.Downloaded}" ItemTemplate="{StaticResource ModelRowTemplate}" />
+            <TextBox x:Uid="ModelsSearch" Text="{x:Bind ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <ItemsRepeater ItemsSource="{x:Bind ViewModel.Chips}" ItemTemplate="{StaticResource ModelChipTemplate}">
+                <ItemsRepeater.Layout>
+                    <UniformGridLayout MinItemWidth="104" MinRowSpacing="6" MinColumnSpacing="6" ItemsStretch="None" />
+                </ItemsRepeater.Layout>
+            </ItemsRepeater>
+            <TextBlock x:Uid="ModelsNoMatches" Visibility="{x:Bind ViewModel.NoMatches, Mode=OneWay}" TextWrapping="Wrap" />
+
+            <TextBlock x:Uid="ModelsDownloadedHeader" Style="{StaticResource SubtitleTextBlockStyle}" Visibility="{x:Bind ViewModel.HasDownloadedShown, Mode=OneWay}" />
+            <ItemsControl ItemsSource="{x:Bind ViewModel.DownloadedShown}" ItemTemplate="{StaticResource ModelRowTemplate}" />
 
             <TextBlock x:Uid="ModelsMoreHeader" Style="{StaticResource SubtitleTextBlockStyle}" />
-            <ItemsControl ItemsSource="{x:Bind ViewModel.Catalogue}" ItemTemplate="{StaticResource ModelRowTemplate}" />
+            <ItemsControl ItemsSource="{x:Bind ViewModel.Groups}" ItemTemplate="{StaticResource ModelGroupTemplate}" />
         </StackPanel>
     </ScrollViewer>
 </Page>

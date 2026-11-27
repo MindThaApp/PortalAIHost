@@ -10,6 +10,7 @@
       "maker": "Alibaba Qwen",
       "engine": "llama-server",
       "kind": "chat",
+      "category": "chat",
       "licence": {
         "spdx": "Apache-2.0",
         "url": "https://huggingface.co/Qwen/Qwen3-30B-A3B-Instruct-2507/blob/main/LICENSE",
@@ -56,6 +57,7 @@
       "maker": "Zhipu AI",
       "engine": "llama-server",
       "kind": "chat",
+      "category": "reasoning",
       "licence": {
         "spdx": "MIT",
         "url": "https://huggingface.co/zai-org/GLM-4.7-Flash",
@@ -102,6 +104,7 @@
       "maker": "IBM",
       "engine": "llama-server",
       "kind": "chat",
+      "category": "chat",
       "licence": {
         "spdx": "Apache-2.0",
         "url": "https://huggingface.co/ibm-granite/granite-4.0-h-small",
@@ -148,6 +151,7 @@
       "maker": "OpenAI",
       "engine": "llama-server",
       "kind": "chat",
+      "category": "reasoning",
       "licence": {
         "spdx": "Apache-2.0",
         "url": "https://huggingface.co/openai/gpt-oss-20b",
@@ -194,6 +198,7 @@
       "maker": "Mistral AI",
       "engine": "llama-server",
       "kind": "chat",
+      "category": "chat",
       "licence": {
         "spdx": "Apache-2.0",
         "url": "https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506",
@@ -240,6 +245,7 @@
       "maker": "Alibaba Qwen",
       "engine": "llama-server",
       "kind": "chat",
+      "category": "chat",
       "licence": {
         "spdx": "Apache-2.0",
         "url": "https://huggingface.co/Qwen/Qwen3-14B/blob/main/LICENSE",
@@ -286,6 +292,7 @@
       "maker": "Microsoft",
       "engine": "llama-server",
       "kind": "chat",
+      "category": "chat",
       "licence": {
         "spdx": "MIT",
         "url": "https://huggingface.co/microsoft/phi-4/blob/main/LICENSE",
@@ -332,6 +339,7 @@
       "maker": "Alibaba Qwen",
       "engine": "llama-server",
       "kind": "chat",
+      "category": "chat",
       "licence": {
         "spdx": "Apache-2.0",
         "url": "https://huggingface.co/Qwen/Qwen3-8B/blob/main/LICENSE",
@@ -378,6 +386,7 @@
       "maker": "Ai2",
       "engine": "llama-server",
       "kind": "chat",
+      "category": "chat",
       "licence": {
         "spdx": "Apache-2.0",
         "url": "https://huggingface.co/allenai/Olmo-3-7B-Instruct",
@@ -424,6 +433,7 @@
       "maker": "IBM",
       "engine": "llama-server",
       "kind": "chat",
+      "category": "chat",
       "licence": {
         "spdx": "Apache-2.0",
         "url": "https://huggingface.co/ibm-granite/granite-4.0-h-tiny",
@@ -470,6 +480,7 @@
       "maker": "Alibaba Qwen",
       "engine": "llama-server",
       "kind": "chat",
+      "category": "chat",
       "licence": {
         "spdx": "Apache-2.0",
         "url": "https://huggingface.co/Qwen/Qwen3-4B/blob/main/LICENSE",
@@ -516,6 +527,7 @@
       "maker": "Microsoft",
       "engine": "llama-server",
       "kind": "chat",
+      "category": "chat",
       "licence": {
         "spdx": "MIT",
         "url": "https://huggingface.co/microsoft/Phi-4-mini-instruct",
@@ -562,6 +574,7 @@
       "maker": "Hugging Face",
       "engine": "llama-server",
       "kind": "chat",
+      "category": "chat",
       "licence": {
         "spdx": "Apache-2.0",
         "url": "https://huggingface.co/HuggingFaceTB/SmolLM3-3B",
@@ -608,6 +621,7 @@
       "maker": "Alibaba Qwen",
       "engine": "llama-server",
       "kind": "chat",
+      "category": "chat",
       "licence": {
         "spdx": "Apache-2.0",
         "url": "https://huggingface.co/Qwen/Qwen3-Next-80B-A3B-Instruct",
@@ -654,6 +668,7 @@
       "maker": "OpenAI",
       "engine": "llama-server",
       "kind": "chat",
+      "category": "chat",
       "licence": {
         "spdx": "Apache-2.0",
         "url": "https://huggingface.co/openai/gpt-oss-120b",
@@ -700,6 +715,7 @@
       "maker": "Zhipu AI",
       "engine": "llama-server",
       "kind": "chat",
+      "category": "reasoning",
       "licence": {
         "spdx": "MIT",
         "url": "https://huggingface.co/zai-org/GLM-4.5-Air",
@@ -754,6 +770,7 @@
       "maker": "Alibaba Qwen",
       "engine": "llama-server",
       "kind": "chat",
+      "category": "reasoning",
       "licence": {
         "spdx": "Apache-2.0",
         "url": "https://huggingface.co/Qwen/Qwen3.5-122B-A10B",
@@ -816,6 +833,7 @@
       "maker": "Alibaba Qwen",
       "engine": "llama-server",
       "kind": "chat",
+      "category": "chat",
       "licence": {
         "spdx": "Apache-2.0",
         "url": "https://huggingface.co/Qwen/Qwen3-235B-A22B-Instruct-2507",
@@ -878,6 +896,7 @@
       "maker": "Alibaba Qwen",
       "engine": "llama-server",
       "kind": "chat",
+      "category": "chat",
       "licence": {
         "spdx": "Apache-2.0",
         "url": "https://huggingface.co/Qwen/Qwen3-235B-A22B-Instruct-2507",
@@ -940,6 +959,7 @@
       "maker": "Nomic AI",
       "engine": "llama-server",
       "kind": "embedding",
+      "category": "search",
       "licence": {
         "spdx": "Apache-2.0",
         "url": "https://huggingface.co/nomic-ai/nomic-embed-text-v1.5",
@@ -986,6 +1006,7 @@
       "maker": "Alibaba Qwen",
       "engine": "llama-server",
       "kind": "embedding",
+      "category": "search",
       "licence": {
         "spdx": "Apache-2.0",
         "url": "https://huggingface.co/Qwen/Qwen3-Embedding-0.6B",
@@ -1024,6 +1045,303 @@
       },
       "min_host_version": "1.0.0",
       "notes": "Commit, sizes and SHA-256 pinned from the Hugging Face file listing. Layer and KV numbers from the model config (unverified). More multilingual than nomic."
+    },
+    {
+      "id": "wan2.1-t2v-1.3b",
+      "display_name": "Wan 2.1 Text-to-Video 1.3B",
+      "family": "wan",
+      "maker": "Alibaba Wan-AI",
+      "engine": "video-engine",
+      "kind": "video",
+      "category": "video",
+      "available": false,
+      "licence": {
+        "spdx": "Apache-2.0",
+        "url": "https://huggingface.co/Wan-AI/Wan2.1-T2V-1.3B-Diffusers/blob/main/LICENSE.txt",
+        "commercial_ok": true
+      },
+      "quality": 45,
+      "params_total_b": 1.3,
+      "params_active_b": 1.3,
+      "quant": "bf16",
+      "hf_repo": "Wan-AI/Wan2.1-T2V-1.3B-Diffusers",
+      "hf_commit": "PLACEHOLDER-UNPINNED",
+      "files": [
+        {
+          "name": "wan2.1-t2v-1.3b-weights.bin",
+          "size": 17000000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED",
+          "urls": [
+            "https://huggingface.co/Wan-AI/Wan2.1-T2V-1.3B-Diffusers/resolve/PLACEHOLDER-UNPINNED/wan2.1-t2v-1.3b-weights.bin"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 17000000000,
+        "n_layers": 30,
+        "kv_bytes_per_1k_ctx": 1048576,
+        "compute_overhead_bytes": 0
+      },
+      "context_max": 1,
+      "context_default": 1,
+      "features": {
+        "tools": false,
+        "json_schema": false,
+        "reasoning": false
+      },
+      "min_vram_gb": 8,
+      "recommended_vram_gb": 12,
+      "min_host_version": "1.0.0",
+      "advice": {
+        "summary": "Turns a text description into a short 480p video clip on an ordinary gaming graphics card.",
+        "good_for": [
+          "short clips from a text prompt",
+          "trying video generation on a modest PC"
+        ],
+        "caveats": [
+          "480p only",
+          "a few seconds of video can take several minutes"
+        ],
+        "hardware": "Graphics card with 8 GB or more"
+      },
+      "notes": "Coming soon: no video engine yet, so this entry is never downloaded. Commit, file list, size and SHA-256 are placeholders to be pinned from the Hugging Face listing; size and VRAM figures are estimates (VRAM minimum assumes CPU offload). Quality only orders models within the category."
+    },
+    {
+      "id": "wan2.2-ti2v-5b",
+      "display_name": "Wan 2.2 Text/Image-to-Video 5B",
+      "family": "wan",
+      "maker": "Alibaba Wan-AI",
+      "engine": "video-engine",
+      "kind": "video",
+      "category": "video",
+      "available": false,
+      "licence": {
+        "spdx": "Apache-2.0",
+        "url": "https://huggingface.co/Wan-AI/Wan2.2-TI2V-5B-Diffusers/blob/main/LICENSE.txt",
+        "commercial_ok": true
+      },
+      "quality": 60,
+      "params_total_b": 5,
+      "params_active_b": 5,
+      "quant": "bf16",
+      "hf_repo": "Wan-AI/Wan2.2-TI2V-5B-Diffusers",
+      "hf_commit": "PLACEHOLDER-UNPINNED",
+      "files": [
+        {
+          "name": "wan2.2-ti2v-5b-weights.bin",
+          "size": 33000000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED",
+          "urls": [
+            "https://huggingface.co/Wan-AI/Wan2.2-TI2V-5B-Diffusers/resolve/PLACEHOLDER-UNPINNED/wan2.2-ti2v-5b-weights.bin"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 33000000000,
+        "n_layers": 30,
+        "kv_bytes_per_1k_ctx": 1048576,
+        "compute_overhead_bytes": 0
+      },
+      "context_max": 1,
+      "context_default": 1,
+      "features": {
+        "tools": false,
+        "json_schema": false,
+        "reasoning": false
+      },
+      "min_vram_gb": 12,
+      "recommended_vram_gb": 24,
+      "min_host_version": "1.0.0",
+      "advice": {
+        "summary": "Makes 720p video from a text prompt or from a still picture.",
+        "good_for": [
+          "animating a picture",
+          "720p clips from a prompt"
+        ],
+        "caveats": [
+          "needs a strong graphics card for reasonable speed"
+        ],
+        "hardware": "Graphics card with 12 GB or more (24 GB recommended)"
+      },
+      "notes": "Coming soon: no video engine yet, so this entry is never downloaded. Commit, file list, size and SHA-256 are placeholders to be pinned from the Hugging Face listing; size and VRAM figures are estimates (VRAM minimum assumes CPU offload). Quality only orders models within the category."
+    },
+    {
+      "id": "ltx-video-2b-distilled",
+      "display_name": "LTX-Video 2B (distilled)",
+      "family": "ltx-video",
+      "maker": "Lightricks",
+      "engine": "video-engine",
+      "kind": "video",
+      "category": "video",
+      "available": false,
+      "licence": {
+        "spdx": "OpenRAIL-M",
+        "url": "https://huggingface.co/Lightricks/LTX-Video/blob/main/LICENSE",
+        "commercial_ok": true
+      },
+      "quality": 40,
+      "params_total_b": 2,
+      "params_active_b": 2,
+      "quant": "bf16",
+      "hf_repo": "Lightricks/LTX-Video",
+      "hf_commit": "PLACEHOLDER-UNPINNED",
+      "files": [
+        {
+          "name": "ltx-video-2b-distilled-weights.bin",
+          "size": 6300000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED",
+          "urls": [
+            "https://huggingface.co/Lightricks/LTX-Video/resolve/PLACEHOLDER-UNPINNED/ltx-video-2b-distilled-weights.bin"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 6300000000,
+        "n_layers": 28,
+        "kv_bytes_per_1k_ctx": 1048576,
+        "compute_overhead_bytes": 0
+      },
+      "context_max": 1,
+      "context_default": 1,
+      "features": {
+        "tools": false,
+        "json_schema": false,
+        "reasoning": false
+      },
+      "min_vram_gb": 8,
+      "recommended_vram_gb": 12,
+      "min_host_version": "1.0.0",
+      "advice": {
+        "summary": "A fast, small video model: the distilled version makes clips in few steps.",
+        "good_for": [
+          "quick drafts",
+          "text or picture to video"
+        ],
+        "caveats": [
+          "lower detail than the larger models",
+          "check the licence terms before commercial use"
+        ],
+        "hardware": "Graphics card with 8 GB or more"
+      },
+      "notes": "Coming soon: no video engine yet, so this entry is never downloaded. Commit, file list, size and SHA-256 are placeholders to be pinned from the Hugging Face listing; size and VRAM figures are estimates (VRAM minimum assumes CPU offload). Quality only orders models within the category."
+    },
+    {
+      "id": "wan2.1-t2v-14b",
+      "display_name": "Wan 2.1 Text-to-Video 14B (high-end)",
+      "family": "wan",
+      "maker": "Alibaba Wan-AI",
+      "engine": "video-engine",
+      "kind": "video",
+      "category": "video",
+      "available": false,
+      "licence": {
+        "spdx": "Apache-2.0",
+        "url": "https://huggingface.co/Wan-AI/Wan2.1-T2V-14B-Diffusers/blob/main/LICENSE.txt",
+        "commercial_ok": true
+      },
+      "quality": 70,
+      "params_total_b": 14,
+      "params_active_b": 14,
+      "quant": "bf16",
+      "hf_repo": "Wan-AI/Wan2.1-T2V-14B-Diffusers",
+      "hf_commit": "PLACEHOLDER-UNPINNED",
+      "files": [
+        {
+          "name": "wan2.1-t2v-14b-weights.bin",
+          "size": 65000000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED",
+          "urls": [
+            "https://huggingface.co/Wan-AI/Wan2.1-T2V-14B-Diffusers/resolve/PLACEHOLDER-UNPINNED/wan2.1-t2v-14b-weights.bin"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 65000000000,
+        "n_layers": 40,
+        "kv_bytes_per_1k_ctx": 1048576,
+        "compute_overhead_bytes": 0
+      },
+      "context_max": 1,
+      "context_default": 1,
+      "features": {
+        "tools": false,
+        "json_schema": false,
+        "reasoning": false
+      },
+      "min_vram_gb": 16,
+      "recommended_vram_gb": 24,
+      "min_host_version": "1.0.0",
+      "advice": {
+        "summary": "High quality 480p and 720p video from a text prompt.",
+        "good_for": [
+          "best quality text-to-video"
+        ],
+        "caveats": [
+          "very large download",
+          "slow without a high-end graphics card"
+        ],
+        "hardware": "High-end graphics card with 24 GB or more"
+      },
+      "notes": "Coming soon: no video engine yet, so this entry is never downloaded. Commit, file list, size and SHA-256 are placeholders to be pinned from the Hugging Face listing; size and VRAM figures are estimates (VRAM minimum assumes CPU offload). Quality only orders models within the category."
+    },
+    {
+      "id": "wan2.2-t2v-a14b",
+      "display_name": "Wan 2.2 Text-to-Video A14B (high-end)",
+      "family": "wan",
+      "maker": "Alibaba Wan-AI",
+      "engine": "video-engine",
+      "kind": "video",
+      "category": "video",
+      "available": false,
+      "licence": {
+        "spdx": "Apache-2.0",
+        "url": "https://huggingface.co/Wan-AI/Wan2.2-T2V-A14B-Diffusers/blob/main/LICENSE.txt",
+        "commercial_ok": true
+      },
+      "quality": 80,
+      "params_total_b": 27,
+      "params_active_b": 14,
+      "quant": "bf16",
+      "hf_repo": "Wan-AI/Wan2.2-T2V-A14B-Diffusers",
+      "hf_commit": "PLACEHOLDER-UNPINNED",
+      "files": [
+        {
+          "name": "wan2.2-t2v-a14b-weights.bin",
+          "size": 126000000000,
+          "sha256": "PLACEHOLDER-UNVERIFIED",
+          "urls": [
+            "https://huggingface.co/Wan-AI/Wan2.2-T2V-A14B-Diffusers/resolve/PLACEHOLDER-UNPINNED/wan2.2-t2v-a14b-weights.bin"
+          ]
+        }
+      ],
+      "memory": {
+        "weights_bytes": 126000000000,
+        "n_layers": 40,
+        "kv_bytes_per_1k_ctx": 1048576,
+        "compute_overhead_bytes": 0
+      },
+      "context_max": 1,
+      "context_default": 1,
+      "features": {
+        "tools": false,
+        "json_schema": false,
+        "reasoning": false
+      },
+      "min_vram_gb": 24,
+      "recommended_vram_gb": 48,
+      "min_host_version": "1.0.0",
+      "advice": {
+        "summary": "The most capable open Wan model for cinematic text-to-video.",
+        "good_for": [
+          "best quality text-to-video"
+        ],
+        "caveats": [
+          "huge download",
+          "needs a workstation-class graphics card or lots of memory for offload"
+        ],
+        "hardware": "High-end graphics card with 48 GB or more"
+      },
+      "notes": "Coming soon: no video engine yet, so this entry is never downloaded. Commit, file list, size and SHA-256 are placeholders to be pinned from the Hugging Face listing; size and VRAM figures are estimates (VRAM minimum assumes CPU offload). Quality only orders models within the category."
     }
   ]
 }

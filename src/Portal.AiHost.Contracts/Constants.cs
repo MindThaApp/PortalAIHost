@@ -79,6 +79,46 @@ public static class ModelKinds
     public const string Transcription = "transcription";
 }
 
+/// <summary>
+/// Use-case categories the Models page groups by. Open strings: a catalogue or host may send an id this build does not
+/// know, which then shows under <see cref="Other"/>. <see cref="Resolve"/> falls back to the model kind.
+/// </summary>
+public static class ModelCategories
+{
+    public const string Chat = "chat";
+    public const string Coding = "coding";
+    public const string Reasoning = "reasoning";
+    public const string Vision = "vision";
+    public const string Search = "search";
+    public const string Image = "image";
+    public const string Video = "video";
+    public const string Speech = "speech";
+    public const string Other = "other";
+
+    /// <summary>Display order of the known categories.</summary>
+    public static IReadOnlyList<string> Ordered { get; } =
+        [Chat, Coding, Reasoning, Vision, Search, Image, Video, Speech, Other];
+
+    /// <summary>Category for a model kind when the catalogue gives none.</summary>
+    public static string FromKind(string? kind) => kind switch
+    {
+        ModelKinds.Chat => Chat,
+        ModelKinds.Embedding => Search,
+        ModelKinds.Transcription => Speech,
+        "speech" => Speech,
+        "image" => Image,
+        "video" => Video,
+        _ => Other,
+    };
+
+    /// <summary>The catalogue category when it is a known id, otherwise the one derived from the kind.</summary>
+    public static string Resolve(string? category, string? kind)
+    {
+        var c = category?.Trim().ToLowerInvariant();
+        return c is { Length: > 0 } && Ordered.Contains(c) ? c : FromKind(kind);
+    }
+}
+
 /// <summary>Engine kinds. Open strings, see <see cref="ModelKinds"/>.</summary>
 public static class EngineKinds
 {

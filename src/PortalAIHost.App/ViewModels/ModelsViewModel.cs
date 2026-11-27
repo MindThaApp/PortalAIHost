@@ -19,6 +19,9 @@ public sealed partial class ModelRowViewModel : ObservableObject
         _s = strings;
         Id = m.Id;
         Kind = m.Kind;
+        Category = ModelCategories.Resolve(m.Category, m.Kind);
+        ComingSoon = m.ComingSoon;
+        VramText = VramLine(strings, m);
         Name = m.DisplayName;
         SizeBytes = m.SizeBytes;
         SizeText = Fmt.Bytes(m.SizeBytes);
@@ -59,6 +62,21 @@ public sealed partial class ModelRowViewModel : ObservableObject
 
     public string Id { get; }
     public string Kind { get; }
+
+    /// <summary>Use-case category id (from the model list, or derived from the kind).</summary>
+    public string Category { get; }
+
+    /// <summary>The host has no engine for this model yet: shown, never downloadable.</summary>
+    public bool ComingSoon { get; }
+
+    /// <summary>"Needs 8 GB graphics memory with CPU offload; 12 GB recommended". Empty when the list gives none.</summary>
+    public string VramText { get; }
+    public bool HasVram => VramText.Length > 0;
+
+    private static string VramLine(IStrings s, CatalogueModelSummary m) =>
+        m.MinVramGb is { } min && m.RecommendedVramGb is { } rec ? s.Format("Vm_VramBoth", min, rec)
+        : m.MinVramGb is { } only ? s.Format("Vm_VramMin", only)
+        : m.RecommendedVramGb is { } r ? s.Format("Vm_VramRec", r) : "";
     public string Name { get; }
     public long SizeBytes { get; }
     public string SizeText { get; }
@@ -209,7 +227,7 @@ public sealed partial class ModelRowViewModel : ObservableObject
         CanPause = State == "downloading";
         CanResume = State is "paused" or "failed";
         CanCancel = State is "downloading" or "paused" or "queued";
-        CanDownload = !InOldFolder && !Installed && State == "none";
+        CanDownload = !InOldFolder && !Installed && !ComingSoon && State == "none";
         CanActivate = !InOldFolder && Installed && !Active && !Removing && !Damaged;
         // The model in use can be removed too: the host unloads it first.
         CanRemove = InOldFolder || (Installed && !busy && !Removing && !Checking);
@@ -227,11 +245,11 @@ public sealed partial class ModelRowViewModel : ObservableObject
             CanPause = CanResume = CanCancel = CanDownload = false;
         }
 
-        TooBig = !FitsThisPc && !Installed;
+        TooBig = !FitsThisPc && !Installed && !ComingSoon;
         Badge = InOldFolder ? _s.Get("Vm_OldFolderBadge")
             : Removing ? _s.Get("Vm_RemovingBadge")
             : Damaged ? _s.Get("Vm_DamagedBadge")
-            : Active ? _s.Get("Vm_InUse") : Installed ? _s.Get(UserAdded ? "Vm_UserAddedBadge" : "Vm_Installed") : Recommended ? _s.Get("Vm_BestForYou") : "";
+            : Active ? _s.Get("Vm_InUse") : Installed ? _s.Get(UserAdded ? "Vm_UserAddedBadge" : "Vm_Installed") : ComingSoon && !Installed ? _s.Get("Vm_ComingSoon") : Recommended ? _s.Get("Vm_BestForYou") : "";
     }
 
     partial void OnActiveChanged(bool value) => Refresh();
@@ -345,6 +363,7 @@ public sealed partial class ModelsViewModel : ObservableObject, IDisposable
         Models.Clear();
         Downloaded.Clear();
         Catalogue.Clear();
+        _ = RegroupAsync();
     }
 
     private void Fill(ModelCatalogView view)
@@ -360,6 +379,7 @@ public sealed partial class ModelsViewModel : ObservableObject, IDisposable
         }
 
         HasDownloaded = Downloaded.Count > 0;
+        _ = RegroupAsync();
         CanOpenFolder = view.StorageFolder.Length > 0;
         Recommended = Models.FirstOrDefault(m => m.Recommended && !m.InOldFolder);
         StorageLine = _s.Format("Vm_StorageLine", Fmt.PrivatePath(view.StorageFolder), Fmt.Bytes(view.FreeBytes), Fmt.Bytes(view.ModelsBytes));

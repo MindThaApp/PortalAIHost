@@ -29,18 +29,20 @@ public class CatalogueTests
         Assert.Contains(catalogue.Models, m => m.Kind == "embedding");
         Assert.True(catalogue.Models.Select(m => m.Maker).Distinct().Count() >= 6, "mixed-vendor defaults");
         Assert.Contains(catalogue.Models, m => m.Files.Count == 3 && m.TotalBytes > 100_000_000_000);
-        Assert.All(catalogue.Models, m => Assert.True(m.Licence.Spdx is "Apache-2.0" or "MIT"));
+        Assert.All(catalogue.Models, m => Assert.True(m.Licence.Spdx is "Apache-2.0" or "MIT" or "OpenRAIL-M"));
     }
 
     [Fact]
     public void SeedEntriesArePinnedAndVerified()
     {
         var (catalogue, _) = CatalogueValidator.Parse(TestData.SeedCatalogueBytes());
-        Assert.All(catalogue!.Models, m =>
+        // Entries marked available:false (no engine yet) are placeholders and are never downloadable.
+        Assert.All(catalogue!.Models.Where(m => m.Available), m =>
         {
             Assert.True(m.IsDownloadable);
             Assert.All(m.Files, f => Assert.True(f.HasVerifiedHash));
         });
+        Assert.All(catalogue.Models.Where(m => !m.Available), m => Assert.False(m.IsDownloadable));
     }
 
     [Fact]

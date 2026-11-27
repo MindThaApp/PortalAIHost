@@ -21,7 +21,18 @@
         "family": { "type": "string" },
         "maker": { "type": "string" },
         "engine": { "type": "string", "description": "llama-server today; unknown engines are ignored." },
-        "kind": { "type": "string", "description": "chat, embedding or transcription (speech); open set." },
+        "kind": { "type": "string", "description": "chat, embedding, transcription (speech) or video; open set." },
+        "category": {
+          "type": "string",
+          "description": "Optional use-case group for the Models page: chat, coding, reasoning, vision, search, image, video, speech or other. Missing or unknown: derived from kind. Older hosts ignore it."
+        },
+        "available": {
+          "type": "boolean",
+          "default": true,
+          "description": "False when the host has no engine for the model yet (coming soon): listed, never downloaded. Hashes may be placeholders."
+        },
+        "min_vram_gb": { "type": "number", "minimum": 0, "description": "Minimum graphics memory in GB with CPU offload (video models)." },
+        "recommended_vram_gb": { "type": "number", "minimum": 0, "description": "Recommended graphics memory in GB (video models)." },
         "licence": {
           "type": "object",
           "required": ["spdx", "url", "commercial_ok"],
