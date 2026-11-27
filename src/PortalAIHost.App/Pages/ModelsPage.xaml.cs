@@ -18,6 +18,8 @@ public sealed partial class ModelsPage : Page
 
     public RemoteModelsViewModel Remote { get; }
 
+    public ClientLinkViewModel Link => AppServices.Shell.ClientLink;
+
     protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
         _ = Remote.LoadAsync();

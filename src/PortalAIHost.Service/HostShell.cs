@@ -400,6 +400,8 @@ public sealed class HostShell : IAsyncDisposable
             InitialRelayMode = settings.RelayMode,
             InitialPromptShown = settings.FallbackPromptShown,
             PersistPrefs = SaveClientPrefs,
+            State = _o.SecretProtector is null ? null : new Portal.AiHost.Core.Remote.Client.ClientStateStore(root, _o.SecretProtector),
+            PairingConnector = _o.ClientConnector,
             AppModels = _o.SecretProtector is null ? null : new Portal.AiHost.Core.Remote.Client.AppModelStore(new Portal.AiHost.Core.Remote.Client.ClientStateStore(root, _o.SecretProtector).Directory),
         });
         Runtime.ClientStatus = () => ClientMode.StatusRemote();

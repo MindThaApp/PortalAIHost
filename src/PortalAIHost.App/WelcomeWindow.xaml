@@ -85,6 +85,12 @@
                                 <TextBlock Text="{x:Bind ViewModel.ModelDetail, Mode=OneWay}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                                 <TextBlock Text="{x:Bind ViewModel.ExistingLine, Mode=OneWay}" Visibility="{x:Bind ViewModel.HasExisting, Mode=OneWay}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                             </StackPanel>
+                            <Button x:Name="HomePcButton" x:Uid="WelcomeHomePc" Command="{x:Bind ViewModel.UseHomePcCommand}" HorizontalAlignment="Left">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon Glyph="&#xE839;" FontSize="16" />
+                                    <TextBlock x:Uid="WelcomeHomePcText" />
+                                </StackPanel>
+                            </Button>
                             <TextBlock x:Uid="WelcomeNoModel" TextWrapping="Wrap" Visibility="{x:Bind ViewModel.ShowNoModel, Mode=OneWay}" />
                             <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4,0,0" Visibility="{x:Bind ViewModel.ShowOffer, Mode=OneWay}">
                                 <Button x:Name="DownloadButton" x:Uid="WelcomeDownload" Command="{x:Bind ViewModel.DownloadCommand}" />

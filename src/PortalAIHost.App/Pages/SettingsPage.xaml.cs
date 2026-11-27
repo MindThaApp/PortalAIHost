@@ -23,6 +23,7 @@ public sealed partial class SettingsPage : Page
             if (e.PropertyName == nameof(SettingsViewModel.PairingQrText)) ShowQr();
         };
         ShowPerformanceSeverity();
+        ViewModel.PairRequested += () => _ = ClientFlows.PairHomePcAsync();
         ShowSeverity();
     }
 

@@ -135,8 +135,29 @@ public sealed class ResourceStrings : IStrings
     }
 }
 
+/// <summary>Client-mode flows that need the dialogs and the shared services.</summary>
+public static class ClientFlows
+{
+    /// <summary>Opens the pairing dialog. True when a PC was paired (the link view then refreshes).</summary>
+    public static async Task<bool> PairHomePcAsync()
+    {
+        using var vm = new PairingViewModel(AppServices.Host, AppServices.Ui, AppServices.Strings, Environment.MachineName);
+        var ok = await AppServices.Dialogs.ShowPairingAsync(vm);
+        if (ok) AppServices.Shell.ClientLink.Poke();
+        return ok;
+    }
+
+    /// <summary>The one calm prompt: saves the choice and tells the host it was shown, so it is never raised again.</summary>
+    public static async Task ShowFallbackPromptAsync()
+    {
+        var link = AppServices.Shell.ClientLink;
+        var useLaptop = await AppServices.Dialogs.ShowFallbackPromptAsync(link.PcName);
+        await link.AnswerFallbackPromptAsync(useLaptop);
+    }
+}
+
 /// <summary>Shows confirmation and approval dialogs one at a time (WinUI allows only one open dialog).</summary>
-public sealed class WinUiDialogService : IDialogService
+public sealed partial class WinUiDialogService : IDialogService
 {
     private readonly IStrings _s;
     private readonly SemaphoreSlim _one = new(1, 1);

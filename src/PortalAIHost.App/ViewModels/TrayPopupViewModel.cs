@@ -13,15 +13,26 @@ public sealed partial class TrayPopupViewModel : ObservableObject, IDisposable
 {
     private readonly IStrings _s;
 
-    public TrayPopupViewModel(IHostControl host, IUiDispatcher ui, IStrings strings, TimeProvider? time = null, TimeSpan? interval = null)
+    public TrayPopupViewModel(IHostControl host, IUiDispatcher ui, IStrings strings, TimeProvider? time = null, TimeSpan? interval = null, ClientLinkViewModel? link = null)
     {
         _s = strings;
+        Link = link;
+        if (link is not null) link.PropertyChanged += OnLinkChanged;
         Live = new LiveViewModel(host, ui, strings, time, interval);
         Live.Updated += Update;
         Update();
     }
 
     public LiveViewModel Live { get; }
+
+    /// <summary>The home PC link (client mode), or null when the pop-up runs without one.</summary>
+    public ClientLinkViewModel? Link { get; }
+
+    /// <summary>"Connected - home network", "Not reachable" and so on; empty outside client mode.</summary>
+    [ObservableProperty] private string _linkLine = "";
+    [ObservableProperty] private bool _hasLinkLine;
+
+    private void OnLinkChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e) => Update();
 
     /// <summary>Set by the window: opens the main window and closes the pop-up.</summary>
     public Action? OpenApp { get; set; }
@@ -43,6 +54,20 @@ public sealed partial class TrayPopupViewModel : ObservableObject, IDisposable
     private void Open() => OpenApp?.Invoke();
 
     private void Update()
+    {
+        UpdateLink();
+        UpdateHost();
+    }
+
+    private void UpdateLink()
+    {
+        var link = Link;
+        var on = link is { IsClientMode: true };
+        LinkLine = !on ? "" : link!.UsingLaptopModel ? link.UsingLaptopText : _s.Format("Vm_TrayLink", link.PcName, link.ChipText);
+        HasLinkLine = LinkLine.Length > 0;
+    }
+
+    private void UpdateHost()
     {
         var status = Live.Status;
         IsOff = status is null;
@@ -79,6 +104,7 @@ public sealed partial class TrayPopupViewModel : ObservableObject, IDisposable
     public void Dispose()
     {
         Live.Updated -= Update;
+        if (Link is not null) Link.PropertyChanged -= OnLinkChanged;
         Live.Dispose();
     }
 }

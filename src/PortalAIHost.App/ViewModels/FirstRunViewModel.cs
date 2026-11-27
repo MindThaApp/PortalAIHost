@@ -302,6 +302,14 @@ public sealed partial class FirstRunViewModel : ObservableObject, IDisposable
         _ui.Post(() => CloseRequested?.Invoke());
     }
 
+    /// <summary>"Use my home PC": ends the welcome and opens the pairing dialog in the main window (no local model is needed then).</summary>
+    [RelayCommand]
+    private void UseHomePc()
+    {
+        _shell.PairOnStart = true;
+        CloseRequested?.Invoke();
+    }
+
     /// <summary>Leaves the welcome without finishing (a download in progress carries on in the host). Choices already made stay.</summary>
     [RelayCommand]
     private void Skip() => CloseRequested?.Invoke();

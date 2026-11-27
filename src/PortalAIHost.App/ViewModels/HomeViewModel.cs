@@ -28,6 +28,7 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
         Live = new LiveViewModel(shell.Host, ui, strings);
         Health = new HealthViewModel(shell.Host, ui, strings);
         _shell.SnapshotChanged += OnSnapshot;
+        Link.PropertyChanged += OnLinkChanged;
         _shell.ClientsChanged += OnClientsChanged;
         _shell.Host.DownloadProgress += OnProgress;
         _shell.PropertyChanged += (_, e) =>
@@ -35,6 +36,17 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
             if (e.PropertyName is nameof(ShellViewModel.Starting) or nameof(ShellViewModel.StartMessage)) Update();
         };
         Update();
+    }
+
+    /// <summary>The link to the home PC: the status card, and which local-model blocks stay hidden in client mode.</summary>
+    public ClientLinkViewModel Link => _shell.ClientLink;
+
+    /// <summary>For the device notice line.</summary>
+    public ShellViewModel Shell => _shell;
+
+    private void OnLinkChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is nameof(ClientLinkViewModel.HideLocalModel) or nameof(ClientLinkViewModel.IsClientMode)) Update();
     }
 
     /// <summary>Live activity, meters, Unload and Load, and the Today list.</summary>
@@ -258,8 +270,9 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
         }
         st.Models.TryGetValue(ModelKinds.Chat, out var chat);
         var hasModel = chat is not null && chat.State != ModelStates.NotInstalled && !string.IsNullOrEmpty(chat.DisplayName);
-        ShowInstalled = hasModel;
-        ShowOnboarding = !hasModel;
+        var hideLocal = Link.HideLocalModel;
+        ShowInstalled = hasModel && !hideLocal;
+        ShowOnboarding = !hasModel && !hideLocal;
         UpgradeAvailable = hasModel && st.UpgradeAvailable;
         StatusTitle = _s.Get(st.State switch
         {
@@ -301,6 +314,7 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
     public void Dispose()
     {
         _shell.SnapshotChanged -= OnSnapshot;
+        Link.PropertyChanged -= OnLinkChanged;
         _shell.ClientsChanged -= OnClientsChanged;
         _shell.Host.DownloadProgress -= OnProgress;
         Live.Dispose();

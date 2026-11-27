@@ -132,6 +132,12 @@ public static class ControlTypes
     /// <summary>The one-time unreachable prompt was shown: it is not raised again. No payload; answers <see cref="ClientModeStatus"/>.</summary>
     public const string ClientPromptShown = "client.promptshown";
 
+    /// <summary>Pairs this laptop with a PC from a pairing link, or a typed address and code, and then switches to client mode. Payload <see cref="PairCommand"/>; answers <see cref="PairResult"/>. A failure is an answer with <c>ok: false</c>, not a pipe error.</summary>
+    public const string ClientPair = "client.pair";
+
+    /// <summary>Leaves client mode and forgets the paired PC (only this app's own pairing files). No payload; answers <see cref="ClientModeStatus"/>.</summary>
+    public const string ClientUnpair = "client.unpair";
+
     /// <summary>
     /// Lists the PC's installed models for this laptop (Model control). No payload; answers <see cref="RemoteModelsAnswer"/>.
     /// A refusal (no grant, PC unreachable) is an answer with <c>ok: false</c>, not a pipe error.
@@ -693,10 +699,10 @@ public static class NotificationKinds
     /// <summary>The engine stopped and could not restart, or the health check turned to fail.</summary>
     public const string Problems = "problems";
 
-    /// <summary>A new device paired, or a device connected through the relay from away. Not in <see cref="All"/>: no switch for it yet.</summary>
+    /// <summary>A new device paired, or a device connected through the relay from away.</summary>
     public const string Devices = "devices";
 
-    public static readonly string[] All = [Downloads, Approvals, Problems];
+    public static readonly string[] All = [Downloads, Approvals, Problems, Devices];
 }
 
 /// <summary>Values of <see cref="HostSettings.Preset"/>.</summary>

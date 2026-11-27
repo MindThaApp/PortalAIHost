@@ -82,6 +82,45 @@
                 </StackPanel>
             </Expander>
 
+            <!-- A new device paired, or one connected from away. -->
+            <InfoBar Severity="Informational" IsClosable="True" Message="{x:Bind ViewModel.Shell.DeviceNotice, Mode=OneWay}"
+                     IsOpen="{x:Bind ViewModel.Shell.HasDeviceNotice, Mode=OneWay}" CloseButtonClick="OnDeviceNoticeClosed"
+                     AutomationProperties.LiveSetting="Polite" />
+
+            <!-- Client mode: the home PC, how it is reached, and a way back. -->
+            <Border Style="{StaticResource CardBorder}" Visibility="{x:Bind ViewModel.Link.IsClientMode, Mode=OneWay}">
+                <StackPanel Spacing="10">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <FontIcon Glyph="&#xE839;" FontSize="20" />
+                        <TextBlock Text="{x:Bind ViewModel.Link.ChipText, Mode=OneWay}" Style="{StaticResource SubtitleTextBlockStyle}" TextWrapping="Wrap"
+                                   AutomationProperties.LiveSetting="Polite" />
+                    </StackPanel>
+                    <TextBlock Text="{x:Bind ViewModel.Link.DetailText, Mode=OneWay}" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="Wrap" />
+                    <TextBlock Text="{x:Bind ViewModel.Link.LastSeenText, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                    <InfoBar Severity="Warning" IsClosable="False" Message="{x:Bind ViewModel.Link.AttentionText, Mode=OneWay}"
+                             IsOpen="{x:Bind ViewModel.Link.NeedsAttention, Mode=OneWay}" />
+                    <InfoBar Severity="Informational" IsClosable="False" Message="{x:Bind ViewModel.Link.UsingLaptopText, Mode=OneWay}"
+                             IsOpen="{x:Bind ViewModel.Link.UsingLaptopModel, Mode=OneWay}" />
+                    <TextBlock x:Uid="HomeClientEmpty" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                               Visibility="{x:Bind ViewModel.Link.HideLocalModel, Mode=OneWay}" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button x:Uid="HomeChangePc" Click="OnOpenSettings">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE895;" FontSize="16" />
+                                <TextBlock x:Uid="HomeChangePcText" />
+                            </StackPanel>
+                        </Button>
+                        <Button x:Uid="HomeRunHere" Command="{x:Bind ViewModel.Link.RunHereCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE7F8;" FontSize="16" />
+                                <TextBlock x:Uid="HomeRunHereText" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
             <!-- The host is not running. -->
             <Border Style="{StaticResource CardBorder}" Visibility="{x:Bind ViewModel.NoHost, Mode=OneWay}">
                 <StackPanel Spacing="8">

@@ -156,8 +156,46 @@
                     <ToggleSwitch x:Uid="SettingsNotifyDownloads" IsOn="{x:Bind ViewModel.NotifyDownloads, Mode=TwoWay}" IsEnabled="{x:Bind ViewModel.Available, Mode=OneWay}" />
                     <ToggleSwitch x:Uid="SettingsNotifyApprovals" IsOn="{x:Bind ViewModel.NotifyApprovals, Mode=TwoWay}" IsEnabled="{x:Bind ViewModel.Available, Mode=OneWay}" />
                     <ToggleSwitch x:Uid="SettingsNotifyProblems" IsOn="{x:Bind ViewModel.NotifyProblems, Mode=TwoWay}" IsEnabled="{x:Bind ViewModel.Available, Mode=OneWay}" />
+                    <ToggleSwitch x:Uid="SettingsNotifyDevices" IsOn="{x:Bind ViewModel.NotifyDevices, Mode=TwoWay}" IsEnabled="{x:Bind ViewModel.Available, Mode=OneWay}" />
                 </StackPanel>
             </Border>
+
+            <TextBlock x:Uid="SettingsHomePcHeader" Style="{StaticResource SubtitleTextBlockStyle}" />
+            <Border Style="{StaticResource CardBorder}">
+                <StackPanel Spacing="16">
+                    <TextBlock x:Uid="SettingsHomePcHelp" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <ComboBox x:Uid="SettingsHomeMode" ItemsSource="{x:Bind ViewModel.ModeChoices}" SelectedIndex="{x:Bind ViewModel.ModeIndex, Mode=TwoWay}"
+                              IsEnabled="{x:Bind ViewModel.Available, Mode=OneWay}" MinWidth="240" />
+                    <StackPanel Spacing="2" Visibility="{x:Bind ViewModel.HomePaired, Mode=OneWay}">
+                        <TextBlock Text="{x:Bind ViewModel.HomePcName, Mode=OneWay}" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="Wrap" />
+                        <TextBlock Text="{x:Bind ViewModel.HomeRouteText, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" TextWrapping="Wrap" />
+                        <TextBlock Text="{x:Bind ViewModel.HomeLastSeenText, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                    </StackPanel>
+                    <ComboBox x:Uid="SettingsHomeFallback" ItemsSource="{x:Bind ViewModel.FallbackChoices}" SelectedIndex="{x:Bind ViewModel.FallbackIndex, Mode=TwoWay}"
+                              IsEnabled="{x:Bind ViewModel.HomePaired, Mode=OneWay}" MinWidth="240" />
+                    <ComboBox x:Uid="SettingsHomeRelayMode" ItemsSource="{x:Bind ViewModel.RelayModeChoices}" SelectedIndex="{x:Bind ViewModel.RelayModeIndex, Mode=TwoWay}"
+                              IsEnabled="{x:Bind ViewModel.HomePaired, Mode=OneWay}" MinWidth="240" />
+                    <ToggleSwitch x:Uid="SettingsHomeUseRelay" IsOn="{x:Bind ViewModel.UseRelay, Mode=TwoWay}" Visibility="{x:Bind ViewModel.ShowUseRelay, Mode=OneWay}" />
+                    <InfoBar IsOpen="{x:Bind ViewModel.HasHomeMessage, Mode=OneWay}" Message="{x:Bind ViewModel.HomeMessage, Mode=OneWay}" Severity="Warning" IsClosable="False" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button x:Uid="SettingsHomePair" Command="{x:Bind ViewModel.PairHomePcCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE71B;" FontSize="16" />
+                                <TextBlock x:Uid="SettingsHomePairText" />
+                            </StackPanel>
+                        </Button>
+                        <Button x:Uid="SettingsHomeUnpair" Command="{x:Bind ViewModel.UnpairCommand}" Visibility="{x:Bind ViewModel.HomePaired, Mode=OneWay}">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE74D;" FontSize="16" />
+                                <TextBlock x:Uid="SettingsHomeUnpairText" />
+                            </StackPanel>
+                        </Button>
+                        <ProgressRing IsActive="{x:Bind ViewModel.HomeBusy, Mode=OneWay}" Width="18" Height="18" Visibility="{x:Bind ViewModel.HomeBusy, Mode=OneWay}" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
 
             <TextBlock x:Uid="SettingsRemoteHeader" Style="{StaticResource SubtitleTextBlockStyle}" />
             <Border Style="{StaticResource CardBorder}">

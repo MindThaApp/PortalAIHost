@@ -32,7 +32,7 @@ public sealed partial class TrayPopupWindow : Window
 
     public TrayPopupWindow()
     {
-        ViewModel = new TrayPopupViewModel(AppServices.Host, AppServices.Ui, AppServices.Strings);
+        ViewModel = new TrayPopupViewModel(AppServices.Host, AppServices.Ui, AppServices.Strings, link: AppServices.Shell.ClientLink);
         ViewModel.OpenApp = () => { Hide(); OpenAppRequested?.Invoke(); };
         InitializeComponent();
         Title = AppServices.Strings.Get("TrayWindowTitle");
