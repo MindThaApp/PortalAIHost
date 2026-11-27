@@ -1,0 +1,8 @@
+{
+  "note": "Repo ids and revisions are placeholders until pinned by the spike; the Host refuses to install while any value starts with PLACEHOLDER.",
+  "models": [
+    { "id": "seedvr2-3b", "engine": "seedvr2", "licence": "Apache-2.0", "repo": "PLACEHOLDER_REPO_SEEDVR2_3B", "revision": "PLACEHOLDER_REV", "min_vram_gb": 12, "approx_bytes": 7000000000 },
+    { "id": "seedvr2-7b", "engine": "seedvr2", "licence": "Apache-2.0", "repo": "PLACEHOLDER_REPO_SEEDVR2_7B", "revision": "PLACEHOLDER_REV", "min_vram_gb": 24, "approx_bytes": 16000000000 },
+    { "id": "flashvsr", "engine": "flashvsr", "licence": "PLACEHOLDER_VERIFY_AT_PIN", "repo": "PLACEHOLDER_REPO_FLASHVSR", "revision": "PLACEHOLDER_REV", "min_vram_gb": 12, "approx_bytes": 5000000000 }
+  ]
+}
