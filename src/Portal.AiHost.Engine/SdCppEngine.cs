@@ -13,6 +13,9 @@ public sealed class SdCppEngineOptions
     /// <summary>Executable names tried in each flavour folder (newer releases ship sd-cli.exe, older sd.exe).</summary>
     public IReadOnlyList<string> ExeNames { get; init; } = ["sd-cli.exe", "sd.exe"];
 
+    /// <summary>Overrides the lookup: flavour to executable path, or null when absent (tests run a stand-in).</summary>
+    public Func<string, string?>? ResolveExe { get; init; }
+
     public SdCppOptions Args { get; init; } = new();
 
     /// <summary>Host log sink. Receives exit codes and error kinds only, never prompt text.</summary>
@@ -54,6 +57,11 @@ public sealed class SdCppEngine : IGenerationEngine
     /// <summary>The executable of a flavour, or null when it is not installed.</summary>
     public string? ExeFor(string flavour)
     {
+        if (_o.ResolveExe is { } resolve)
+        {
+            return resolve(flavour) is { } p && File.Exists(p) ? p : null;
+        }
+
         if (string.IsNullOrEmpty(_o.EngineRoot))
         {
             return null;

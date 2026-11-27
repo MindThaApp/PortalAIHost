@@ -8,8 +8,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="StubChild\**" />
+    <Compile Remove="FakeSdCpp\**" />
     <ProjectReference Include="..\..\src\Portal.AiHost.Engine\Portal.AiHost.Engine.csproj" />
     <ProjectReference Include="..\Portal.AiHost.FakeEngine\Portal.AiHost.FakeEngine.csproj" />
     <ProjectReference Include="StubChild\StubChild.csproj" />
+    <ProjectReference Include="FakeSdCpp\FakeSdCpp.csproj" />
   </ItemGroup>
 </Project>
