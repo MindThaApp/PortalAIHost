@@ -25,12 +25,12 @@ The weights are used unchanged apart from the ONNX export. Use voice cloning onl
 ## stable-diffusion.cpp
 
 Image and video generation runtime (sd-cli.exe, Vulkan and CPU builds), built from the leejet/stable-diffusion.cpp project.
-Licence: MIT License. Copyright the stable-diffusion.cpp authors. https://github.com/leejet/stable-diffusion.cpp
+Licence: MIT License. Copyright (c) 2023 leejet. https://github.com/leejet/stable-diffusion.cpp
 
 ## ggml
 
 Tensor library used by stable-diffusion.cpp and the llama.cpp runtime.
-Licence: MIT License. Copyright the ggml authors. https://github.com/ggml-org/ggml
+Licence: MIT License. Copyright (c) 2023-2026 The ggml authors. https://github.com/ggml-org/ggml
 
 ## Wan 2.1 Text-to-Video 1.3B (video generation)
 
@@ -43,3 +43,19 @@ Licence: Apache License 2.0 (https://huggingface.co/Wan-AI/Wan2.1-T2V-1.3B/blob/
 Text-to-image model originally by Runway and CompVis. Downloaded by the user, not bundled.
 Licence: CreativeML OpenRAIL-M (https://huggingface.co/spaces/CompVis/stable-diffusion-license). The licence's use
 restrictions apply to the model and to what it generates, including its list of prohibited uses.
+
+## llama.cpp
+
+Chat and embedding runtime (llama-server.exe) used by the host.
+Licence: MIT License. Copyright the llama.cpp authors. https://github.com/ggml-org/llama.cpp
+
+## libwebp and libwebm
+
+Image and video file libraries shipped with the stable-diffusion.cpp build (libwebp.dll, webm.dll).
+Licence: BSD 3-Clause. Copyright (c) 2010, Google Inc. The full licence texts ship next to the files as libwebp.txt
+and libwebm.txt. https://chromium.googlesource.com/webm/libwebp
+
+## UMT5-XXL text encoder (used with Wan 2.1)
+
+Text encoder by Google (umt5-xxl), in the GGUF conversion by city96. Downloaded by the user, not bundled.
+Licence: Apache License 2.0. https://huggingface.co/google/umt5-xxl , https://huggingface.co/city96/umt5-xxl-encoder-gguf
