@@ -173,6 +173,9 @@ public sealed class HostCapabilities
     public CapabilityLimits Limits { get; set; } = new();
     public List<string> Endpoints { get; set; } = new();
 
+    /// <summary>Voice cloning and speech (api-v1 section 6, Voice). Absent when this host has no voice feature.</summary>
+    public VoiceCapabilities? Voice { get; set; }
+
     /// <summary>
     /// Only in the answer to a paired device: whether this device has Model control (4.7). Missing for local apps.
     /// </summary>

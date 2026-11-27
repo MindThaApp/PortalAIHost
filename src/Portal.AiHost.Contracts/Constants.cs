@@ -77,6 +77,7 @@ public static class ModelKinds
     public const string Chat = "chat";
     public const string Embedding = "embedding";
     public const string Transcription = "transcription";
+    public const string Voice = "voice";
 
     /// <summary>Still pictures from a text prompt (generation engine, <see cref="Routes.ImageJobs"/>).</summary>
     public const string Image = "image";
@@ -111,6 +112,7 @@ public static class ModelCategories
         ModelKinds.Chat => Chat,
         ModelKinds.Embedding => Search,
         ModelKinds.Transcription => Speech,
+        ModelKinds.Voice => Speech,
         "speech" => Speech,
         "image" => Image,
         "video" => Video,
@@ -149,6 +151,7 @@ public static class EngineKinds
 
     /// <summary>Image and video generation (model kinds image and video), served by the bundled stable-diffusion.cpp runtime.</summary>
     public const string StableDiffusionCpp = "stable-diffusion-cpp";
+    public const string VoiceServer = "voice-server";
 }
 
 /// <summary>Model names clients may send in the request model field.</summary>
@@ -249,6 +252,8 @@ public static class EndpointNames
 
     /// <summary>Listed while a video model can run (POST /host/video/jobs).</summary>
     public const string VideoJobs = "video.jobs";
+    public const string Voices = "voices";
+    public const string Speech = "speech";
 }
 
 /// <summary>Route paths.</summary>
@@ -287,4 +292,11 @@ public static class Routes
         ModelKinds.Video => VideoJobs,
         _ => null,
     };
+
+    // Voice library and speech jobs (api-v1 section 6, Voice).
+    public const string Voices = "/host/voices";
+    public const string VoiceById = "/host/voices/{id}";
+    public const string SpeechJobs = "/host/speech/jobs";
+    public const string SpeechJobById = "/host/speech/jobs/{id}";
+    public const string SpeechJobAudio = "/host/speech/jobs/{id}/audio";
 }

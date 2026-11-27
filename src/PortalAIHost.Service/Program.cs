@@ -6,6 +6,7 @@ using Portal.AiHost.CrashReports;
 using Portal.AiHost.Core.Download;
 using Portal.AiHost.Core.Runtime;
 using Portal.AiHost.Core.Store;
+using Portal.AiHost.Core.Voice;
 using Portal.AiHost.Platform.Windows.Power;
 using Portal.AiHost.Engine;
 using Portal.AiHost.Platform.Windows.Hardware;
@@ -62,6 +63,7 @@ internal static class Program
                 KeyProtector = new DpapiHostKeyProtector(),
                 SecretProtector = new DpapiSecretProtector(),
                 CallerResolver = new WindowsCallerIdentityResolver(),
+                CreateVoice = CreateVoice,
                 Hardware = new WindowsHardwareProbe(),
                 UsageProbe = new ProcessUsageProbe(),
                 EaseOffSensors = new EaseOffSensors(),
@@ -188,6 +190,34 @@ internal static class Program
     }
 
     private static readonly Lazy<HttpClient> Http = new(() => new HttpClient { Timeout = Timeout.InfiniteTimeSpan });
+
+    /// <summary>The voice feature: library and speech jobs under the data root, a supervised voice helper, and ffmpeg for MP3 samples. The helper and models are fetched separately; without them the capability reports false.</summary>
+    private static VoiceService CreateVoice(string dataRoot, HardwareProfile? hardware)
+    {
+        var engineDir = Path.Combine(AppContext.BaseDirectory, "engine");
+        var options = new VoiceEngineOptions
+        {
+            ExePath = Path.Combine(engineDir, "voice", "portal-voice-server.exe"),
+            ModelRoot = Path.Combine(dataRoot, "voice-models"),
+        };
+        var supervisor = new EngineSupervisor(ModelKinds.Voice, new VoiceServerAdapter(), new EngineSupervisorOptions
+        {
+            ResolveBinary = (_, _) => new EngineBinary(RuntimeProbe.Cpu, options.ExePath),
+            LoadTimeout = TimeSpan.FromSeconds(120),
+            IdleUnloadAfter = TimeSpan.FromMinutes(5),
+        });
+        return new VoiceService(
+            new VoiceServiceOptions
+            {
+                VoicesDirectory = Path.Combine(dataRoot, "voices"),
+                OutputDirectory = Path.Combine(dataRoot, "speech-output"),
+                Limits = VoiceLimits.ForHardware(hardware),
+                EstimatesPath = Path.Combine(dataRoot, "voice-estimates.json"),
+            },
+            new VoiceEngineClient(supervisor, options),
+            new FfmpegAudioDecoder(Path.Combine(engineDir, "ffmpeg", "ffmpeg.exe")),
+            owned: supervisor);
+    }
 
     private static EngineSupervisor CreateSupervisor(string kind, Func<TimeSpan?> idle) => new(kind, new LlamaServerAdapter(),
         new EngineSupervisorOptions

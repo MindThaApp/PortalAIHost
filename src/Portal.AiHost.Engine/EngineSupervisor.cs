@@ -55,7 +55,7 @@ public sealed class EngineSupervisorOptions
 /// </summary>
 public sealed class EngineSupervisor : IEngineSupervisor, IEngineProcess
 {
-    private static readonly string[] AllowedForwardPaths = { "/v1/chat/completions", "/v1/embeddings", "/tokenize", "/apply-template" };
+    private static readonly string[] AllowedForwardPaths = { "/v1/chat/completions", "/v1/embeddings", "/tokenize", "/apply-template", "/v1/speech" };
 
     private readonly IEngineAdapter _adapter;
     private readonly EngineSupervisorOptions _o;
