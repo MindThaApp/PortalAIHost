@@ -10,7 +10,7 @@ namespace PortalAIHost.App.ViewModels;
 /// <summary>One of the PC's installed models on the laptop's Models page (client mode with Model control).</summary>
 public sealed partial class RemoteModelRowViewModel : ObservableObject
 {
-    private static readonly string[] Placements = [DevicePlacements.Auto, DevicePlacements.Gpu, DevicePlacements.Cpu];
+    private static readonly string[] Placements = [DevicePlacements.Auto, DevicePlacements.Gpu, DevicePlacements.Cpu, DevicePlacements.CpuOnly];
 
     private readonly RemoteModelsViewModel _owner;
     private readonly IStrings _s;
@@ -20,7 +20,7 @@ public sealed partial class RemoteModelRowViewModel : ObservableObject
         _owner = owner;
         _s = strings;
         Id = id;
-        PlacementChoices = [_s.Get("Vm_RemPlacementAuto"), _s.Get("Vm_RemPlacementGpu"), _s.Get("Vm_RemPlacementCpu")];
+        PlacementChoices = [_s.Get("Vm_RemPlacementAuto"), _s.Get("Vm_RemPlacementGpu"), _s.Get("Vm_RemPlacementCpu"), _s.Get("Vm_RemPlacementCpuOnly")];
     }
 
     public string Id { get; }

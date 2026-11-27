@@ -351,7 +351,7 @@ request from this PC finds no route, `404 not_found`; routes outside the table, 
 import, also answer `404 not_found`). The grant is read from `devices.json` on every call. **Two slots:** the chat kind
 has two engine slots, each its own `llama-server` process (own loopback port and own Job object membership). The PC's
 own model lives in slot 1; a device's load goes to slot 2 when slot 1 holds a PC model, so the device never evicts the
-PC's model to get its own. See "Two models at once" below. Placement: `placement` is `auto`, `gpu` or `cpu`; the PC's own limits always win (a PC set to
+PC's model to get its own. See "Two models at once" below. Placement: `placement` is `auto`, `gpu`, `cpu` or `cpu_only`; the PC's own limits always win (a PC set to
 `cpu` stays `cpu`; a device's memory and thread numbers are only ever cut to the PC's). A model that is not in the model
 list has no memory estimate, so only its thread count is applied. A device's model is never saved as the PC's choice
 (`active-models.json` keeps the PC's own model); when the device's engine stops (idle, crash, `Take back`) the PC's own
@@ -435,8 +435,21 @@ used only as the fallback of 1.3).
 - **What the PC shows.** In the Models page and the Other devices row, each loaded model reads "Loaded by <device
   name>" (or "by this PC") with its placement (graphics card / system memory) and a `Take back` button that unloads a
   device's model. A tray notification of kind `approvals` ("<device> loaded <model>") appears once per load.
+- **CPU-only preset (done).** `cpu_only` (in `placement` of a load and in `compute` of `POST /host/placement`) runs a
+  chat model with zero graphics layers and a processor thread cap: half the logical processors (the physical cores on
+  a hyper-threaded PC) unless `cpu_threads` is sent, and never above the PC's own thread limit. It works in slot 1 and
+  slot 2; it is meant for "director on the processor, another engine on the graphics card" (the media plan,
+  section 6.4). The laptop's placement control lists it as `Processor only`.
+- **RAM budget and refusal (done).** `GET /host/status` `memory` (api-v1.md) sums the planned RAM and video memory of
+  all engines, including a load in progress. A load, or a placement change, that would exceed the user's RAM limit
+  answers `503 insufficient_memory` with a plain reason, before anything is stopped. The Models page shows RAM and
+  graphics memory bars (used, reserved while loading, free) and a placeholder until the host has answered.
+- **Generation engines (hook).** Inside the host, an engine that renders images or video asks `CanReserve(ram, vram)`
+  before it loads. `YieldDirectorAsync` stops the CPU-only slot 2 engine ("director yields while a clip renders";
+  engine stop only, model files and the device's claim stay) and `ResumeDirectorAsync` loads it again from disk. While
+  yielded, requests for slot 2 answer `503 engine_restarting`.
 - **Laptop UI.** With the grant, the Models page shows a `Models on <PC name>` section: installed models with `Load` /
-  `Unload` buttons and a placement control (Auto, Graphics card, System memory; same labels as on the PC), plus the
+  `Unload` buttons and a placement control (Auto, Graphics card, System memory, Processor only; same labels as on the PC), plus the
   per-app dropdown in the Apps page. Without the grant the section is an empty state ("Ask the owner of <PC name> to
   turn on Model control for this laptop").
 

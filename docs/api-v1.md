@@ -257,6 +257,15 @@ final event `data: {"error":{...}}` and closes the stream **without** `data: [DO
   (speed of the last finished request; missing until one has finished) and `updated_at`. It is sampled at most every 
   1.5 seconds and only while someone asks, so reading it often costs nothing extra. It is missing when the host cannot 
   read the engine. Ignore unknown fields.
+- `memory` is the planned memory of every running engine against the user's RAM limit (read-only; missing until the
+  host knows the PC's hardware): `ram_limit_bytes`, `ram_planned_bytes`, `ram_free_bytes`, `vram_total_bytes`,
+  `vram_planned_bytes`, `vram_free_bytes` and `engines`, a list of `{ slot, model_id, ram_bytes, vram_bytes, loading,
+  cpu_only }`. `slot` is `chat`, `chat.2`, `embedding` or `apps` (memory apps reserved with `reserved_bytes` on
+  `POST /host/ease-off`). A model that is still loading counts from the moment its placement is decided
+  (`loading: true`), so two loads started together cannot both claim the same free memory. A load that would not fit
+  under `ram_limit_bytes` is refused with `503 insufficient_memory`; the message is a plain sentence and `details`
+  carries `ram_limit_bytes` and `ram_planned_bytes`. These are the host's plan, not what the operating system
+  reports. Ignore unknown fields.
 
 ### `GET /host/capabilities`
 What the current model on this machine can do. It changes when the user switches models, when hardware changes or

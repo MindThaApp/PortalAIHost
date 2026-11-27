@@ -95,14 +95,17 @@ public sealed class PairFinishResponse
 
 // ---- Model control (docs/client-mode-v1.md section 4.7) ---------------------------------------------------------
 
-/// <summary>Placement words of a device load: <c>auto</c> (the PC decides), <c>gpu</c> (graphics card) or <c>cpu</c> (system memory).</summary>
+/// <summary>Placement words of a device load: <c>auto</c> (the PC decides), <c>gpu</c> (graphics card), <c>cpu</c> (system memory) or <c>cpu_only</c> (the CPU-only preset).</summary>
 public static class DevicePlacements
 {
     public const string Auto = "auto";
     public const string Gpu = "gpu";
     public const string Cpu = "cpu";
 
-    public static bool IsValid(string? value) => value is Auto or Gpu or Cpu;
+    /// <summary>Preset: no graphics layers and a processor thread cap (half the physical cores unless a count is given).</summary>
+    public const string CpuOnly = "cpu_only";
+
+    public static bool IsValid(string? value) => value is Auto or Gpu or Cpu or CpuOnly;
 }
 
 /// <summary>details.reason of the model_conflict error.</summary>

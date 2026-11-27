@@ -412,6 +412,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
             Client = principal is null ? null : ClientFor(principal, null),
             Models = models,
             Usage = _sampler?.Get(Activity.LastTokensPerSecond),
+            Memory = BuildMemoryBudget(hardware ?? _hardwareProfile),
             Queue = new QueueStatus
             {
                 Running = snap.Running,
@@ -705,13 +706,12 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
             return (new Placement { ContextTokens = model.ContextTokens, ParallelSlots = model.ParallelSlots }, null);
         }
 
-        var hw = await _o.Hardware.ProbeAsync(ct).ConfigureAwait(false);
+        var hw = _hardwareProfile = await _o.Hardware.ProbeAsync(ct).ConfigureAwait(false);
         var plan = PlacementPlanner.Plan(model.Entry, hw, _o.Hardware.GetMemory(), PlannerFor(model),
             CommittedExcept(model.Kind, ignoreKind));
         if (!plan.Fits || plan.Placement is null)
         {
-            throw new ApiException(ErrorCodes.InsufficientMemory,
-                "The model cannot load in the memory available now.");
+            throw InsufficientMemory(model, plan);
         }
 
         return (plan.Placement, plan);
@@ -1049,7 +1049,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
     {
         ApiVersion = s.ApiVersion, HostVersion = s.HostVersion, InstanceId = s.InstanceId, State = s.State,
         Client = client, Models = s.Models, Queue = s.Queue, Hardware = s.Hardware,
-        UpgradeAvailable = s.UpgradeAvailable, Sharing = s.Sharing, Usage = s.Usage, Mode = s.Mode, Remote = s.Remote,
+        UpgradeAvailable = s.UpgradeAvailable, Sharing = s.Sharing, Usage = s.Usage, Mode = s.Mode, Remote = s.Remote, Memory = s.Memory,
     };
 
     private Task ListModelsAsync(ApiContext ctx)
@@ -1263,6 +1263,11 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         }
 
         // A request never starts a device's second engine again: once it has stopped, that model is gone.
+        if (ModelSlots.IsSecond(kind) && DirectorYielded)
+        {
+            throw new ApiException(ErrorCodes.EngineRestarting, "The second model is paused while a clip renders.", retryAfterMs: 5000);
+        }
+
         if (ModelSlots.IsSecond(kind) && sup.State is EngineState.Stopped or EngineState.Failed)
         {
             throw SlotChanged();

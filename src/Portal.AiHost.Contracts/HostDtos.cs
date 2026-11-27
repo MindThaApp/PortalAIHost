@@ -86,6 +86,9 @@ public sealed class HostStatus
 
     /// <summary>Live use of the engine. Counts and speeds only. Null until the host has sampled.</summary>
     public HostUsage? Usage { get; set; }
+
+    /// <summary>Planned memory of every running engine against the user's RAM limit. Null when the host cannot tell yet.</summary>
+    public MemoryBudgetStatus? Memory { get; set; }
 }
 
 /// <summary>The paired PC as <c>/host/status</c> shows it in client mode.</summary>
@@ -349,6 +352,50 @@ public sealed class HostUsage
     public double? GenerationTokensPerSecond { get; init; }
 
     public DateTimeOffset UpdatedAt { get; init; }
+}
+
+/// <summary>
+/// Planned memory across all running engines (a loading engine counts from the moment its placement is decided).
+/// "Planned" is what the planner reserved, not what the operating system reports.
+/// </summary>
+public sealed class MemoryBudgetStatus
+{
+    /// <summary>The user's RAM limit for the host's engines.</summary>
+    public long RamLimitBytes { get; set; }
+
+    /// <summary>Sum of the planned RAM of every engine, plus memory apps reserved for their own models.</summary>
+    public long RamPlannedBytes { get; set; }
+
+    /// <summary>Limit minus planned, never below zero.</summary>
+    public long RamFreeBytes { get; set; }
+
+    /// <summary>Video memory of the best graphics card; 0 when there is none or it is unknown.</summary>
+    public long VramTotalBytes { get; set; }
+
+    public long VramPlannedBytes { get; set; }
+
+    public long VramFreeBytes { get; set; }
+
+    /// <summary>Per engine split. Engines of other kinds and apps' own reservations use their own names.</summary>
+    public List<EngineMemoryStatus> Engines { get; set; } = [];
+}
+
+public sealed class EngineMemoryStatus
+{
+    /// <summary>Slot key: <c>chat</c>, <c>chat.2</c>, <c>embedding</c> or <c>apps</c> for memory apps reserved.</summary>
+    public string Slot { get; set; } = "";
+
+    public string? ModelId { get; set; }
+
+    public long RamBytes { get; set; }
+
+    public long VramBytes { get; set; }
+
+    /// <summary>True while the engine is still loading and the figures are a reservation.</summary>
+    public bool Loading { get; set; }
+
+    /// <summary>True when the engine runs on the processor only (the CPU-only preset or no graphics layers).</summary>
+    public bool CpuOnly { get; set; }
 }
 
 // ---- /host/performance -------------------------------------------------------

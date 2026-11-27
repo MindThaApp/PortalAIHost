@@ -141,7 +141,7 @@ public sealed partial class SettingsViewModel
             Devices.Add(new DeviceRow(d.DeviceId, d.Name, seen, _s.Format("Vm_AutoRemoveDevice", d.Name),
                 d.ModelControl, _s.Format("Vm_AutoModelControl", d.Name),
                 loaded is null ? "" : _s.Format("Vm_LoadedBy", d.Name, loaded.DisplayName,
-                    loaded.Placement switch { "gpu" => _s.Get("Vm_PlacementGpu"), "cpu" => _s.Get("Vm_PlacementCpu"), _ => _s.Get("Vm_PlacementAuto") }),
+                    loaded.Placement switch { "gpu" => _s.Get("Vm_PlacementGpu"), "cpu" => _s.Get("Vm_PlacementCpu"), "cpu_only" => _s.Get("Vm_PlacementCpuOnly"), _ => _s.Get("Vm_PlacementAuto") }),
                 loaded?.Kind ?? "chat", _s.Format("Vm_AutoTakeBack", d.Name)));
         }
 

@@ -166,7 +166,8 @@ public sealed partial class AiHostRuntime
         static long? Lower(long? pc, long? asked) => asked is null ? pc : pc is null ? asked : Math.Min(pc.Value, asked.Value);
         return planner with
         {
-            Backend = planner.Backend == "auto" && o.Compute is "gpu" or "cpu" ? o.Compute : planner.Backend,
+            Backend = planner.Backend == "auto" && o.Compute is "gpu" or "cpu" or DevicePlacements.CpuOnly
+                ? (o.Compute == DevicePlacements.CpuOnly ? "cpu" : o.Compute) : planner.Backend,
             GpuMemoryLimitBytes = Lower(planner.GpuMemoryLimitBytes, o.GpuMemoryLimitBytes),
             MemoryLimitBytes = Lower(planner.MemoryLimitBytes, o.MemoryLimitBytes),
         };
@@ -175,7 +176,13 @@ public sealed partial class AiHostRuntime
     private int? ThreadsFor(ActiveModel model)
     {
         var pc = _limits?.CpuThreads;
-        return model.Override?.CpuThreads is { } asked && asked > 0 ? (pc is null ? asked : Math.Min(pc.Value, asked)) : pc;
+        var asked = model.Override?.CpuThreads is { } t && t > 0 ? t : (int?)null;
+        if (asked is null && model.Override?.Compute == DevicePlacements.CpuOnly)
+        {
+            asked = CpuOnlyThreads(_hardwareProfile?.CpuCores ?? Environment.ProcessorCount); // the preset's default cap
+        }
+
+        return asked is { } a ? (pc is null ? a : Math.Min(pc.Value, a)) : pc;
     }
 
     private static bool SamePlacement(Placement a, Placement b) =>

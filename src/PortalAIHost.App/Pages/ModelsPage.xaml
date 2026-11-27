@@ -103,6 +103,28 @@
     <ScrollViewer>
         <StackPanel Padding="32,24" Spacing="16" MaxWidth="820" HorizontalAlignment="Left">
             <TextBlock x:Uid="ModelsTitle" Style="{StaticResource TitleTextBlockStyle}" />
+            <Border Style="{StaticResource CardBorder}">
+                <Grid>
+                    <ProgressRing IsActive="True" Width="20" Height="20" HorizontalAlignment="Left" Opacity="{x:Bind Budget.PlaceholderOpacity, Mode=OneWay}" />
+                    <StackPanel Spacing="8" Opacity="{x:Bind Budget.BarOpacity, Mode=OneWay}">
+                        <TextBlock x:Uid="ModelsMemoryTitle" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                        <StackPanel Spacing="2">
+                            <TextBlock Text="{x:Bind Budget.Ram.Text, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" TextWrapping="Wrap" />
+                            <Grid>
+                                <ProgressBar Value="{x:Bind Budget.Ram.ReservedEndPercent, Mode=OneWay}" Maximum="100" Opacity="0.45" />
+                                <ProgressBar Value="{x:Bind Budget.Ram.UsedPercent, Mode=OneWay}" Maximum="100" Background="Transparent" />
+                            </Grid>
+                        </StackPanel>
+                        <StackPanel Spacing="2" Visibility="{x:Bind Budget.Vram.Visible, Mode=OneWay}">
+                            <TextBlock Text="{x:Bind Budget.Vram.Text, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" TextWrapping="Wrap" />
+                            <Grid>
+                                <ProgressBar Value="{x:Bind Budget.Vram.ReservedEndPercent, Mode=OneWay}" Maximum="100" Opacity="0.45" />
+                                <ProgressBar Value="{x:Bind Budget.Vram.UsedPercent, Mode=OneWay}" Maximum="100" Background="Transparent" />
+                            </Grid>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Border>
             <TextBlock Text="{x:Bind ViewModel.ErrorLine, Mode=OneWay}" TextWrapping="Wrap" />
             <InfoBar
                 x:Uid="ModelsRemoveFailedBar"
