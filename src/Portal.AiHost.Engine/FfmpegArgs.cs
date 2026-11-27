@@ -47,9 +47,16 @@ public static partial class FfmpegArgs
         a.AddRange(["-protocol_whitelist", "file,pipe", "-i", Full(path)]);
     }
 
-    private static void VideoOut(List<string> a)
+    private static void VideoOut(List<string> a, MediaEncodeSettings? encode = null)
     {
-        a.AddRange(["-c:v", VideoEncoder, "-rate_control", "quality", "-quality", "80", "-pix_fmt", "yuv420p"]);
+        if (encode is null)
+        {
+            a.AddRange(["-c:v", VideoEncoder, "-rate_control", "quality", "-quality", "80", "-pix_fmt", "yuv420p"]);
+            return;
+        }
+
+        a.AddRange(FfmpegEncoders.VideoArgs(encode));
+        a.AddRange(["-pix_fmt", "yuv420p"]);
     }
 
     /// <summary>Probe: first video stream width, height and rate plus the container duration, as key=value lines.</summary>
@@ -101,12 +108,12 @@ public static partial class FfmpegArgs
     }
 
     /// <summary>AVI (motion JPEG) to MP4: even sides, 4:2:0, index at the front so a viewer can start at once. No sound is added.</summary>
-    public static IReadOnlyList<string> ConvertToMp4(string input, string output)
+    public static IReadOnlyList<string> ConvertToMp4(string input, string output, MediaEncodeSettings? encode = null)
     {
         var a = new List<string>(Quiet) { "-n" };
         Input(a, input);
         a.AddRange(["-an", "-vf", "scale=trunc(iw/2)*2:trunc(ih/2)*2,format=yuv420p"]);
-        VideoOut(a);
+        VideoOut(a, encode);
         a.AddRange(["-movflags", "+faststart", Full(output)]);
         return a;
     }
@@ -198,7 +205,7 @@ public static partial class FfmpegArgs
             a.AddRange(["-map", "[aout]"]);
         }
 
-        VideoOut(a);
+        VideoOut(a, plan.Encode);
         if (hasAudio)
         {
             a.AddRange(["-c:a", AudioEncoder, "-b:a", "160k"]);

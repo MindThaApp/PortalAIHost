@@ -600,6 +600,7 @@ the engine's defaults for the model family.
   while it is there, and answers `400 unsupported_parameter` (`param: "container"`) for `mp4` otherwise. The clip is
   made as an AVI first and then converted (stage `converting`); if the conversion fails the job still succeeds with
   the AVI, so check `result.content_type`. On an image job `container` is `400 unsupported_parameter`.
+- `encode` (video with `container: "mp4"`, and joins): how the MP4 is encoded, see "Encode settings" below.
 
 **Job:**
 
@@ -661,6 +662,24 @@ it these features report off and nothing else changes: `generation.video_contain
 | `GET /host/video/joins`, `GET /host/video/joins/{id}` | This app's joins, newest first; one join with `state`, `stage`, `progress` and `result`. |
 | `DELETE /host/video/joins/{id}` | Cancels a queued or running join and answers with its state once it has ended. |
 | `GET /host/video/joins/{id}/result`, `GET /host/video/joins/{id}/last-frame` | The MP4 (`video/mp4`) and its last picture. |
+| `GET /host/media/encoders` | The encoders that passed a test encode on this PC (see below). `503 engine_missing` without ffmpeg. |
+
+**Encode settings.** The optional `encode` object of an MP4 video job or a join picks the encoder. Omitted, the
+clip is H.264 from the Windows encoder, exactly as before. Fields (all optional):
+- `codec`: `h264` (default), `hevc`, `av1` or `auto` (same as `h264`). `vp9` is `400 unsupported_parameter` (it
+  needs WebM, which jobs do not offer). A codec this PC cannot encode is `400 unsupported_parameter` too.
+- `preset`: `fast`, `balanced` (default) or `best`.
+- `mode`: `quality` (default) or `bitrate`. `quality` is 0-100 (higher is better, omitted: the preset's own value);
+  `bitrate_kbps` (100-200000) is required, and only allowed, in mode `bitrate`.
+- The host picks the encoder itself: the card's hardware encoder for the codec, then the Windows one, then software
+  (`libsvtav1` for AV1). Unknown fields are ignored; a wrong value is `400 invalid_request` with `param`
+  (`encode.codec`, `encode.quality`, ...). `encode` needs `container: "mp4"` on a job.
+
+`GET /host/media/encoders` returns `{ "object": "list", "data": [{ "id": "h264_amf", "codec": "h264", "hardware": true,
+"vendor": "AMD", "modes": ["quality", "bitrate"] }], "auto": { "h264": "h264_amf", "av1": "libsvtav1" } }`. The first call
+runs a 0.1 s test encode per encoder of the bundled ffmpeg (it can take a few seconds); the answer is then cached
+until the host restarts. `generation.media_encoders` is true and the endpoint `media.encoders` is listed while
+ffmpeg is there.
 
 ```json
 { "clips": ["gen_6f1c2a9e4b7d4c0f9a51d3e8b2c47a10", "gen_0a1b2c3d4e5f60718293a4b5c6d7e8f9"],

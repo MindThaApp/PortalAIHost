@@ -92,6 +92,12 @@ public sealed class GenerationJobRequest
     /// everywhere). <c>mp4</c> needs ffmpeg on the host (see <see cref="GenerationAvailability.VideoContainers"/>).
     /// </summary>
     public string? Container { get; set; }
+
+    /// <summary>
+    /// Video with <c>container: "mp4"</c> only: how the MP4 is encoded (codec, preset, rate). Omitted: H.264 from the
+    /// Windows encoder, as before.
+    /// </summary>
+    public EncodeRequest? Encode { get; set; }
 }
 
 /// <summary>Where the work runs, as planned against the memory left on this PC.</summary>
@@ -188,6 +194,9 @@ public sealed class GenerationAvailability
 
     /// <summary>True when POST /host/video/joins is available (ffmpeg is installed and a video model can run).</summary>
     public bool VideoJoins { get; init; }
+
+    /// <summary>True when GET /host/media/encoders and the <c>encode</c> object are available (ffmpeg is installed).</summary>
+    public bool MediaEncoders { get; init; }
 }
 
 /// <summary>Values of <see cref="GenerationDetail"/>. The set is open: clients ignore values they do not know.</summary>
@@ -319,4 +328,70 @@ public sealed class VideoJoinRequest
 
     /// <summary>With both music and voice tracks: the music sinks while the voice speaks.</summary>
     public bool? Duck { get; set; }
+
+    /// <summary>How the joined MP4 is encoded. Omitted: H.264 from the Windows encoder, as before.</summary>
+    public EncodeRequest? Encode { get; set; }
+}
+
+/// <summary>Values of <see cref="EncodeRequest"/> (api-v1.md, "Encode settings").</summary>
+public static class EncodeValues
+{
+    public const string H264 = "h264";
+    public const string Hevc = "hevc";
+    public const string Av1 = "av1";
+    public const string Vp9 = "vp9";
+    public const string Auto = "auto";
+
+    public const string Fast = "fast";
+    public const string Balanced = "balanced";
+    public const string Best = "best";
+
+    public const string Quality = "quality";
+    public const string Bitrate = "bitrate";
+
+    /// <summary>Largest bitrate a request may ask for, in kbit/s.</summary>
+    public const int MaxKbps = 200_000;
+}
+
+/// <summary>The <c>encode</c> object of an MP4 video job or a join.</summary>
+public sealed class EncodeRequest
+{
+    /// <summary><c>h264</c> (default), <c>hevc</c> or <c>av1</c>. (<c>vp9</c> is WebM only and is refused for MP4.)</summary>
+    public string? Codec { get; set; }
+
+    /// <summary><c>fast</c>, <c>balanced</c> (default) or <c>best</c>.</summary>
+    public string? Preset { get; set; }
+
+    /// <summary><c>quality</c> (default) or <c>bitrate</c>.</summary>
+    public string? Mode { get; set; }
+
+    /// <summary>Quality mode: 0 to 100, higher is better. Omitted: the preset's own value.</summary>
+    public int? Quality { get; set; }
+
+    /// <summary>Bitrate mode: the target in kbit/s (required there).</summary>
+    public int? BitrateKbps { get; set; }
+}
+
+/// <summary>One encoder that passed the test encode on this PC.</summary>
+public sealed class MediaEncoder
+{
+    public string Id { get; init; } = "";
+    public string Codec { get; init; } = "";
+    public bool Hardware { get; init; }
+
+    /// <summary><c>AMD</c>, <c>NVIDIA</c>, <c>Intel</c>, <c>Windows</c> or <c>software</c>.</summary>
+    public string Vendor { get; init; } = "";
+
+    /// <summary>The <c>mode</c> values the encoder supports: <c>quality</c>, <c>bitrate</c>.</summary>
+    public List<string> Modes { get; init; } = [];
+}
+
+/// <summary>GET /host/media/encoders.</summary>
+public sealed class MediaEncoderList
+{
+    public string Object { get; init; } = "list";
+    public List<MediaEncoder> Data { get; init; } = [];
+
+    /// <summary>The encoder <c>codec</c> "auto" uses, per codec (only codecs this PC can encode).</summary>
+    public Dictionary<string, string> Auto { get; init; } = [];
 }
