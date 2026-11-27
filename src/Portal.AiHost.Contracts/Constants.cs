@@ -119,6 +119,22 @@ public static class ModelCategories
     }
 }
 
+/// <summary>
+/// The second concurrent engine slot of a kind. A slot is named by its key: the kind itself for the first slot (the PC's
+/// own model lives there) and the kind plus ".2" for the second, which only a device with Model control fills.
+/// </summary>
+public static class ModelSlots
+{
+    public const string SecondSuffix = ".2";
+
+    public static string Second(string kind) => kind + SecondSuffix;
+
+    public static bool IsSecond(string key) => key.EndsWith(SecondSuffix, StringComparison.Ordinal);
+
+    /// <summary>The model kind of a slot key ("chat.2" is "chat").</summary>
+    public static string KindOf(string key) => IsSecond(key) ? key[..^SecondSuffix.Length] : key;
+}
+
 /// <summary>Engine kinds. Open strings, see <see cref="ModelKinds"/>.</summary>
 public static class EngineKinds
 {

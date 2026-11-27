@@ -28,12 +28,16 @@ public interface IModelControlHost
 /// Model control (docs/client-mode-v1.md 4.7 and 5.1a): the models a paired device with the grant loaded on this PC.
 /// The PC decides by default; a device may load and unload models only while it holds the grant, the PC owner's own
 /// action always wins, and nothing here ever touches a model file (unload means "out of memory").
-/// One model per kind is active at a time (a second concurrent slot is its own step).
+/// Each kind has two engine slots when the host has an engine for the second one (docs/client-mode-v1.md 4.7): the PC's own
+/// model lives in the first slot, a device's second model goes to the second slot without displacing the PC's. A slot is
+/// named by its key (<see cref="ModelSlots"/>), and the "loaded by" table, the owner-change epoch and the conflict rules
+/// are all kept per slot.
 /// </summary>
 public sealed class ModelControl
 {
     private sealed class Entry
     {
+        /// <summary>The slot key this entry holds: the kind (first slot) or <c>kind.2</c> (second slot).</summary>
         public required string Kind { get; init; }
         public required string ModelId { get; init; }
         public required string DisplayName { get; init; }
@@ -58,6 +62,9 @@ public sealed class ModelControl
     private readonly Lock _lock = new();
     private readonly Dictionary<string, Entry> _loaded = new(StringComparer.Ordinal);
     private readonly HashSet<(string Device, string Model)> _displaced = [];
+
+    /// <summary>The model a device load is working on, per slot key, from before the planning until the load ends.</summary>
+    private readonly Dictionary<string, string> _pending = new(StringComparer.Ordinal);
     private readonly Dictionary<string, long> _epoch = new(StringComparer.Ordinal);
     private const int MaxDisplaced = 256;
     private readonly SemaphoreSlim _gate = new(1, 1);
@@ -82,6 +89,15 @@ public sealed class ModelControl
 
     // ---- reading ---------------------------------------------------------------------------------
 
+    /// <summary>True while a device (not the PC) holds this slot key.</summary>
+    public bool HasClaim(string slotKey)
+    {
+        lock (_lock)
+        {
+            return _loaded.ContainsKey(slotKey);
+        }
+    }
+
     /// <summary>The models a device loaded that are still loaded, with the device's name.</summary>
     public IReadOnlyList<LoadedModelInfo> Loaded()
     {
@@ -89,7 +105,7 @@ public sealed class ModelControl
         {
             return [.. _loaded.Values.Select(e => new LoadedModelInfo
             {
-                Kind = e.Kind, ModelId = e.ModelId, DisplayName = e.DisplayName, DeviceId = e.DeviceId,
+                Kind = ModelSlots.KindOf(e.Kind), ModelId = e.ModelId, DisplayName = e.DisplayName, DeviceId = e.DeviceId,
                 DeviceName = _devices.Find(e.DeviceId)?.Name ?? "a removed device", Placement = e.Placement,
             })];
         }
@@ -146,7 +162,7 @@ public sealed class ModelControl
     /// own choice comes back, then the owner's action runs. A device operation in flight for this kind is cancelled
     /// (it never touches the engine again), and the device sees <c>owner_changed</c>.
     /// </summary>
-    public async Task OwnerChangedAsync(string kind, CancellationToken ct)
+    public async Task OwnerChangedAsync(string kind, CancellationToken ct, string? newModelId = null)
     {
         var (entry, epoch) = Remove(kind, displaced: true);
         if (entry is not null)
@@ -154,21 +170,63 @@ public sealed class ModelControl
             await RestoreAsync(entry, epoch, stopEngine: false, ct).ConfigureAwait(false);
             Changed?.Invoke();
         }
+
+        // The owner picked the model a device holds in the second slot: one model is never in both slots, so the
+        // device's copy goes (its engine stops, memory only).
+        var second = ModelSlots.Second(kind);
+        if (newModelId is not null && !ModelSlots.IsSecond(kind))
+        {
+            bool same;
+            lock (_lock)
+            {
+                // The entry, the model active in slot 2, or the model a device load is still planning for it.
+                same = (_loaded.TryGetValue(second, out var held) && held.ModelId == newModelId) ||
+                    _pending.GetValueOrDefault(second) == newModelId;
+            }
+
+            same |= _runtime.GetActive(second)?.ModelId == newModelId;
+            if (same)
+            {
+                // Counts slot 2's epoch whether or not an entry exists yet, so a device load in flight ends with owner_changed.
+                var (e2, ep2) = Remove(second, displaced: true);
+                if (e2 is not null)
+                {
+                    await RestoreAsync(e2, ep2, stopEngine: true, ct).ConfigureAwait(false); // engine stop: slot 2 only
+                    Changed?.Invoke();
+                }
+                else if (_runtime.GetActive(second)?.ModelId == newModelId)
+                {
+                    await _runtime.UnloadAsync(second, ct).ConfigureAwait(false); // engine stop: slot 2 only
+                    await _runtime.SetActiveAsync(second, null, ct).ConfigureAwait(false);
+                }
+            }
+        }
     }
 
     /// <summary>"Take back": unloads the model a device loaded for this kind (memory only) and gives the PC's choice back.</summary>
     public async Task<bool> TakeBackAsync(string kind, CancellationToken ct)
     {
-        var (entry, epoch) = Remove(kind, displaced: true);
-        if (entry is null)
+        // Both slots of the kind: whatever a device loaded there goes (the PC's own model in the first slot is never stopped).
+        var any = false;
+        foreach (var key in ModelSlots.IsSecond(kind) ? [kind] : new[] { kind, ModelSlots.Second(kind) })
         {
-            return false;
+            var (entry, epoch) = Remove(key, displaced: true);
+            if (entry is null)
+            {
+                continue;
+            }
+
+            any = true;
+            await RestoreAsync(entry, epoch, stopEngine: true, ct).ConfigureAwait(false);
         }
 
-        await RestoreAsync(entry, epoch, stopEngine: true, ct).ConfigureAwait(false);
-        Changed?.Invoke();
-        await _host.ChangedAsync().ConfigureAwait(false);
-        return true;
+        if (any)
+        {
+            Changed?.Invoke();
+            await _host.ChangedAsync().ConfigureAwait(false);
+        }
+
+        return any;
     }
 
     // ---- the device's side ------------------------------------------------------------------------
@@ -202,8 +260,9 @@ public sealed class ModelControl
 
     private DeviceModelState StateOf(InstalledModel m)
     {
-        var active = _runtime.GetActive(m.Kind);
-        var engine = _runtime.EngineStateOf(m.Kind);
+        var slot = SlotHolding(m.Kind, m.Id);
+        var active = _runtime.GetActive(slot);
+        var engine = _runtime.EngineStateOf(slot);
         var isActive = active?.ModelId == m.Id;
         var state = !isActive ? "unloaded"
             : engine == EngineState.Ready ? "loaded"
@@ -212,7 +271,7 @@ public sealed class ModelControl
         Entry? entry;
         lock (_lock)
         {
-            _loaded.TryGetValue(m.Kind, out entry);
+            _loaded.TryGetValue(slot, out entry);
         }
 
         var byDevice = entry is not null && entry.ModelId == m.Id;
@@ -223,6 +282,35 @@ public sealed class ModelControl
             Placement = state == "unloaded" ? null : byDevice ? entry!.Placement : DevicePlacements.Auto,
             LoadedBy = state == "unloaded" ? null : byDevice ? entry!.DeviceId : "pc",
         };
+    }
+
+    /// <summary>The slot key where this model is the active one (second slot first, else the first slot).</summary>
+    private string SlotHolding(string kind, string modelId)
+    {
+        var second = ModelSlots.Second(kind);
+        return _runtime.GetActive(second)?.ModelId == modelId ? second : kind;
+    }
+
+    /// <summary>
+    /// A request from a granted device named an installed model that is not loaded: load it under the same rules as
+    /// <see cref="LoadAsync"/> (grant, the device's allowed list, conflict rules, memory). Does nothing without the grant
+    /// or for a model that is not installed with this kind; a refusal throws the same <see cref="ApiException"/> a load
+    /// would, which the caller treats as "serve the request as it was".
+    /// </summary>
+    public async Task AutoLoadAsync(string deviceId, string modelId, string kind, CancellationToken ct)
+    {
+        if (!Granted(deviceId) || !MayUse(deviceId, modelId))
+        {
+            return;
+        }
+
+        var installed = (await _host.ListInstalledAsync(ct).ConfigureAwait(false)).FirstOrDefault(m => m.Id == modelId);
+        if (installed is null || installed.Kind != kind)
+        {
+            return;
+        }
+
+        await ReplaceAsync(deviceId, modelId, DevicePlacements.Auto, null, requireOwn: false, ct).ConfigureAwait(false);
     }
 
     /// <summary>Loads an installed model for a device. Returns when the model is ready.</summary>
@@ -308,16 +396,37 @@ public sealed class ModelControl
                 throw new ApiException(ErrorCodes.ModelNotFound, "This device may not use that model.");
             }
 
-            var kind = resolved.Kind;
-            var epoch = EpochOf(kind); // any owner-side change of this kind after this point cancels the call
-            var active = _runtime.GetActive(kind);
-            var engine = _runtime.EngineStateOf(kind);
-            var running = engine is EngineState.Starting or EngineState.Loading or EngineState.Ready;
-            Entry? held;
+            var modelKind = resolved.Kind;
+            var first = modelKind;
+            var second = ModelSlots.Second(modelKind);
+            var hasSecond = _runtime.HasSecondSlot(modelKind);
+
+            // Both slots' epochs are read before anything else: any owner-side change of the chosen slot after this point cancels the call.
+            var epoch1 = EpochOf(first);
+            var epoch2 = EpochOf(second);
+            Entry? held1, held2;
             lock (_lock)
             {
-                _loaded.TryGetValue(kind, out held);
+                _loaded.TryGetValue(first, out held1);
+                _loaded.TryGetValue(second, out held2);
             }
+
+            var active1 = _runtime.GetActive(first);
+            var active2 = hasSecond ? _runtime.GetActive(second) : null;
+            var kind = requireOwn
+                ? (held2 is not null && held2.DeviceId == deviceId && held2.ModelId == modelId ? second : first)
+                : ChooseSlot(deviceId, modelId, hasSecond, first, second, held1, held2, active1, active2);
+            var isSecond = kind == second;
+            lock (_lock)
+            {
+                _pending[kind] = modelId;
+            }
+
+            var epoch = isSecond ? epoch2 : epoch1;
+            var active = isSecond ? active2 : active1;
+            var engine = _runtime.EngineStateOf(kind);
+            var running = engine is EngineState.Starting or EngineState.Loading or EngineState.Ready;
+            var held = isSecond ? held2 : held1;
 
             if (requireOwn)
             {
@@ -339,13 +448,13 @@ public sealed class ModelControl
                 }
 
                 // The PC's own chosen model is protected whether or not its engine is running right now.
-                if (held is null && active is not null && active.ModelId != modelId && !_allowReplace())
+                if (!isSecond && held is null && active is not null && active.ModelId != modelId && !_allowReplace())
                 {
                     throw Conflict(ModelConflictReasons.InUseByHost, "This PC's own apps are using a model.");
                 }
             }
 
-            var next = resolved with { Override = over };
+            var next = resolved with { Kind = kind, Override = over };
 
             // Nothing is evicted before the new model is known to fit (the planner checks with this kind's memory free).
             await _runtime.DecidePlacementAsync(next, ct).ConfigureAwait(false);
@@ -354,7 +463,7 @@ public sealed class ModelControl
             {
                 Kind = kind, ModelId = modelId, DisplayName = resolved.DisplayName, DeviceId = deviceId,
                 Placement = placementWord, Override = over,
-                PreviousId = held is not null ? held.PreviousId : active?.ModelId,
+                PreviousId = isSecond ? null : held is not null ? held.PreviousId : active?.ModelId, // the second slot never holds a PC choice
             };
             lock (_lock)
             {
@@ -444,8 +553,63 @@ public sealed class ModelControl
         }
         finally
         {
+            lock (_lock)
+            {
+                foreach (var key in _pending.Where(p => p.Value == modelId).Select(p => p.Key).ToList())
+                {
+                    _pending.Remove(key);
+                }
+            }
+
             _gate.Release();
         }
+    }
+
+    /// <summary>
+    /// Picks the engine slot for a device's load. A model already in a slot stays there. The PC's own model keeps the first
+    /// slot: a device goes to the second slot while the first holds a PC model, takes the first only when nothing is
+    /// loaded there (or when the owner allows replacing and the second slot is another device's), and replaces its own
+    /// model before it ever touches someone else's.
+    /// </summary>
+    private string ChooseSlot(string deviceId, string modelId, bool hasSecond, string first, string second,
+        Entry? held1, Entry? held2, ActiveModel? active1, ActiveModel? active2)
+    {
+        if (!hasSecond)
+        {
+            return first;
+        }
+
+        if (active2?.ModelId == modelId)
+        {
+            return second;
+        }
+
+        if (active1?.ModelId == modelId)
+        {
+            return first;
+        }
+
+        if (held1 is null && active1 is null)
+        {
+            return first; // nothing of the PC's is loaded there
+        }
+
+        if (held2 is null || held2.DeviceId == deviceId)
+        {
+            return second;
+        }
+
+        if (held1 is not null && held1.DeviceId == deviceId)
+        {
+            return first; // the device's own model there is replaced
+        }
+
+        if (held1 is null && _allowReplace())
+        {
+            return first; // the owner allows devices to replace the PC's model
+        }
+
+        throw Conflict(ModelConflictReasons.InUseByDevice, "Another device loaded a model on this PC."); // the first loader keeps its slot
     }
 
     /// <summary>Unloads a model this device loaded (memory only) and gives the PC's own choice back.</summary>
@@ -564,7 +728,7 @@ public sealed class ModelControl
     /// Gives the PC's own choice for the kind back. The device's model leaves memory first when asked (memory only). The
     /// PC's model is looked up again (it may be gone), and nothing happens if the kind changed since <paramref name="epoch"/>.
     /// </summary>
-    private async Task RestoreAsync(Entry entry, long epoch, bool stopEngine, CancellationToken ct)
+    private async Task RestoreAsync(Entry entry, long epoch, bool stopEngine, CancellationToken ct, bool requireStopped = false)
     {
         if (stopEngine && _runtime.EngineStateOf(entry.Kind) is not (EngineState.Stopped or null) &&
             _runtime.GetActive(entry.Kind)?.ModelId == entry.ModelId && EpochOf(entry.Kind) == epoch)
@@ -577,7 +741,9 @@ public sealed class ModelControl
         lock (_lock)
         {
             // Only while nothing else changed this kind and the active model is still the device's own.
-            if (_epoch.GetValueOrDefault(entry.Kind) == epoch && _runtime.GetActive(entry.Kind)?.ModelId == entry.ModelId)
+            // Without a stop asked for, an engine that is running again (freshly started) is left alone.
+            if (_epoch.GetValueOrDefault(entry.Kind) == epoch && _runtime.GetActive(entry.Kind)?.ModelId == entry.ModelId &&
+                (stopEngine || !requireStopped || _runtime.EngineStateOf(entry.Kind) is EngineState.Stopped or EngineState.Failed or null))
             {
                 set = _runtime.SetActiveAsync(entry.Kind, previous, ct); // null when the PC's model is no longer installed
             }
@@ -605,7 +771,7 @@ public sealed class ModelControl
 
         foreach (var (e, epoch) in gone)
         {
-            await RestoreAsync(e, epoch, stopEngine: false, ct).ConfigureAwait(false);
+            await RestoreAsync(e, epoch, stopEngine: false, ct, requireStopped: true).ConfigureAwait(false);
         }
 
         if (gone.Count > 0)

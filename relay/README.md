@@ -23,6 +23,11 @@ All limits are constants in `src/protocol.ts` (`LIMITS`). Remote use is text cha
 
 Nothing that passes through is logged or stored. The only state is the rate counters (saved in the relay's own storage, so hibernation does not reset them) and the sockets' attachments.
 
+Optional admission: a host may publish a SHA-256 of a per-PC admission token in its signed hello (`adm`). The relay then lets a
+device in only when its `X-Portal-Admission` request header hashes to that value (constant-time compare); otherwise the upgrade is
+accepted only to close with code 4403, and the host is never told. Hosts that publish nothing keep an open room. The header is never
+logged. See docs/remote-v1.md section 10.5.
+
 ## Develop and test
 
 ```

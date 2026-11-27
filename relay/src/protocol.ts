@@ -3,6 +3,9 @@
 export const PROTOCOL_VERSION = 1;
 export const ROOM_PREFIX = "portalai-relay-v1";
 export const HOST_PROOF_PREFIX = "portalai-relay-v1-host";
+export const ADMISSION_PREFIX = "portalai-relay-v1-admit";
+/** Request header a device may use to present its admission token (never a URL query string). */
+export const ADMISSION_HEADER = "x-portal-admission";
 
 /** Abuse limits. Remote use is text chat only, so these are strict on purpose. */
 export const LIMITS = {
@@ -98,7 +101,16 @@ export async function roomIdForCertificate(der: Uint8Array): Promise<string> {
   return roomIdForFingerprint(new Uint8Array(await crypto.subtle.digest("SHA-256", der)));
 }
 
-/** The bytes the host signs: "portalai-relay-v1-host\n" + roomId + "\n" followed by the 32 nonce bytes. */
-export function hostProofMessage(roomId: string, nonce: Uint8Array): Uint8Array {
-  return concat(enc.encode(`${HOST_PROOF_PREFIX}\n${roomId}\n`), nonce);
+/**
+ * The bytes the host signs: "portalai-relay-v1-host\n" + roomId + "\n" followed by the 32 nonce bytes. A host that
+ * publishes an admission hash signs it too (32 more bytes), so the relay knows the value really comes from the host.
+ */
+export function hostProofMessage(roomId: string, nonce: Uint8Array, admission?: Uint8Array): Uint8Array {
+  const head = concat(enc.encode(`${HOST_PROOF_PREFIX}\n${roomId}\n`), nonce);
+  return admission ? concat(head, admission) : head;
+}
+
+/** SHA-256("portalai-relay-v1-admit\n" || token): what the host publishes in its hello, and what the relay computes. */
+export async function admissionHash(token: Uint8Array): Promise<Uint8Array> {
+  return new Uint8Array(await crypto.subtle.digest("SHA-256", concat(enc.encode(`${ADMISSION_PREFIX}\n`), token)));
 }

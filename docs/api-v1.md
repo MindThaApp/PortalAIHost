@@ -199,7 +199,7 @@ and may be localised later. Each code always comes with the same `type` (OpenAI-
 | 503 | `insufficient_memory` | `unavailable` | no | The model cannot load in the memory available now. Fall back. |
 | 503 | `host_stopping` | `unavailable` | no | The host is quitting. Fall back. |
 | 503 | `auth_unavailable` | `unavailable` | yes | The host cannot read its token store right now (for example a locked file). Your token is not lost: keep it and retry shortly. |
-| 503 | `remote_unreachable` | `unavailable` | yes | Client mode only: the PC that runs the AI cannot be reached now. `details.reason` is `offline`, `relay_host_offline`, `relay_busy`, `clock`, `refused`, `cert_changed`, `paused`, `quiet_hours`, `gaming_busy` or `limit_reached`; `retry_after_ms` follows the reconnect backoff. Use your own built-in AI meanwhile. |
+| 503 | `remote_unreachable` | `unavailable` | yes | Client mode only: the PC that runs the AI cannot be reached now. `details.reason` is `offline`, `relay_host_offline`, `relay_busy`, `relay_admission`, `clock`, `refused`, `cert_changed`, `paused`, `quiet_hours`, `gaming_busy` or `limit_reached`; `retry_after_ms` follows the reconnect backoff. Use your own built-in AI meanwhile. |
 | 504 | `deadline_exceeded` | `timeout` | no | `details.phase` is `queued`, `loading` or `generating`. |
 | 500 | `engine_error` | `server_error` | once | The engine failed unexpectedly. Retry at most once, then fall back. |
 | 500 | `internal_error` | `server_error` | once | Unexpected host error. Retry at most once, then fall back. |
@@ -249,7 +249,9 @@ final event `data: {"error":{...}}` and closes the stream **without** `data: [DO
 - `client.paused` is `true` while the user has paused your app (new generation requests get `403 app_paused`).
   `client.priority` is `high`, `normal` or `low`.
 - `models.<kind>.state` is one of `unloaded`, `loading`, `loaded`, `failed` or `not_installed`. The keys under
-  `models` are model kinds. Expect more kinds later (for example `transcription`) and ignore unknown ones.
+  `models` are model kinds. Expect more kinds later (for example `transcription`) and ignore unknown ones. While a
+  paired device holds a model in the second chat slot (Model control, [client-mode-v1.md](client-mode-v1.md) section
+  4.7) an extra key `chat.2` appears with the same fields; it is absent otherwise. Treat `chat` as the PC's own model.
 - `usage` is the live use of the engine process (read-only): `ram_used_bytes` (working set) and `vram_used_bytes` 
   (dedicated graphics memory), `cpu_percent` (share of the whole PC, 0 to 100), `generation_tokens_per_second` 
   (speed of the last finished request; missing until one has finished) and `updated_at`. It is sampled at most every 
@@ -421,6 +423,10 @@ OpenAI shape, with extra fields.
 - An active model's id is also accepted.
 - In v1, any other name is served by the active model of the needed kind, and `X-Portal-Model` tells you which.
 - Only active models serve requests. The user chooses the active model in the host.
+- **Second chat model.** When a paired device with Model control holds a second chat model, `GET /v1/models` lists it
+  too (same `kind: "chat"`, `active: true`), and a request that names it by id is served by it. Every other name still
+  goes to the PC's own chat model. A device that names an installed model that is not loaded gets it loaded first when
+  its grant and the conflict rules allow; otherwise it is served as above.
 
 ### `POST /host/warmup`
 Body `{ "kind": "chat" }` (or `"embedding"`). It starts loading in the background and returns `202` with

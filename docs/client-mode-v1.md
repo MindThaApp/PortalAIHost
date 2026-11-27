@@ -108,6 +108,7 @@ All under the host's existing state directory (the one that holds the settings a
 | `client\device.key` | the device's P-256 private key (PKCS#8) | **DPAPI**, user scope, in the style of `DpapiHostKeyProtector` / `DpapiTokenStore`. Never logged, never exported. |
 | `client\apps.json` | per-laptop-app model mapping (4.7): app id to model id | Plain JSON via `AtomicFile` (no secrets). |
 | `client\token.dat` | the host's own access token for the remote PC (3.3) | DPAPI, same as above. |
+| `client\relay-admission.dat` | the PC's relay admission token from the pairing link (`a`, remote-v1 section 10.5); only when the PC asked for one | DPAPI, same as above. Replaced or removed with each new pairing. |
 
 The authoritative mode flag lives in the existing settings store (`mode: "server" | "client"`), together with `client_fallback` (1.3) and `relay_mode: "auto" | "manual"` (3.1). `Forget this PC` removes only the own `client\` files above and nothing else.
 
@@ -199,7 +200,7 @@ with `r` has been used once (owner decision 5).
    `{"t":"open"}` (10.2 step 2), then run the TLS client handshake **over the WebSocket's binary messages** (a
    `Stream` adapter that maps reads and writes to binary frames of at most 65536 bytes; no text frames except
    `ping`), pinned to `F` exactly as on the LAN, then HTTP/1.1 on top (10.2 step 3). Relay HTTP `503 host_offline`,
-   `429 too_many_streams`, `429 too_many_connections`, and the close codes 1000, 4404, 4408, 4410, 4429 (10.2 table)
+   `429 too_many_streams`, `429 too_many_connections`, and the close codes 1000, 4403, 4404, 4408, 4410, 4429 (10.2 table)
    map to "unreachable" with the right retry delay (4429: 60 s). The text `ping` is sent about every 45 s on idle
    open streams (answered `pong`; it does not count as activity for the 2-minute idle limit).
 3. The last working route is remembered in memory (not on disk) and tried first for the next request; the other route
@@ -309,7 +310,7 @@ laptop's own engine is not restarting):
 
 | HTTP | `code` | `type` | Retry? | Meaning |
 |---|---|---|---|---|
-| 503 | `remote_unreachable` | `unavailable` | yes | The PC that runs the AI cannot be reached now. `details.reason`: `offline` (nothing answered on LAN or relay), `relay_host_offline`, `relay_busy` (429s, close 4429), `clock` (`stale_timestamp`), `refused` (the pairing is no longer valid, see 5.2), `cert_changed` (5.3). `retry_after_ms` follows the backoff. Sent to apps when `client_fallback` is `none` (default), or when the local fallback could not load (then the engine's own error, such as `insufficient_memory`, is passed on). |
+| 503 | `remote_unreachable` | `unavailable` | yes | The PC that runs the AI cannot be reached now. `details.reason`: `offline` (nothing answered on LAN or relay), `relay_host_offline`, `relay_busy` (429s, close 4429), `relay_admission` (close 4403: the PC asks for a relay access key this laptop does not have; pair again), `clock` (`stale_timestamp`), `refused` (the pairing is no longer valid, see 5.2), `cert_changed` (5.3). `retry_after_ms` follows the backoff. Sent to apps when `client_fallback` is `none` (default), or when the local fallback could not load (then the engine's own error, such as `insufficient_memory`, is passed on). |
 
 This is additive under api-v1 rules (new code, same `type`; clients ignore unknown codes and fall back, which is the
 right outcome for AI Portal). Apps that handle only the old codes treat any `503 unavailable` as "fall back".
@@ -347,10 +348,10 @@ Mapping of remote answers on the way back:
 "loaded by" table and the conflict rules; the model store reaches it through `IModelControlHost` (read-only: list
 installed models, resolve one). The four routes below are mapped on the host's own pipeline for a signed device only (a
 request from this PC finds no route, `404 not_found`; routes outside the table, such as remove, download, verify or
-import, also answer `404 not_found`). The grant is read from `devices.json` on every call. **Single slot:** one model
-per kind is active at a time, so a second load of the same kind replaces the first under the conflict rules; the
-**second concurrent slot is its own step** (engine and planner work), and the "Two models at once" paragraph below
-describes that later step. Placement: `placement` is `auto`, `gpu` or `cpu`; the PC's own limits always win (a PC set to
+import, also answer `404 not_found`). The grant is read from `devices.json` on every call. **Two slots:** the chat kind
+has two engine slots, each its own `llama-server` process (own loopback port and own Job object membership). The PC's
+own model lives in slot 1; a device's load goes to slot 2 when slot 1 holds a PC model, so the device never evicts the
+PC's model to get its own. See "Two models at once" below. Placement: `placement` is `auto`, `gpu` or `cpu`; the PC's own limits always win (a PC set to
 `cpu` stays `cpu`; a device's memory and thread numbers are only ever cut to the PC's). A model that is not in the model
 list has no memory estimate, so only its thread count is applied. A device's model is never saved as the PC's choice
 (`active-models.json` keeps the PC's own model); when the device's engine stops (idle, crash, `Take back`) the PC's own
@@ -391,14 +392,35 @@ used only as the fallback of 1.3).
 - **Per-app model mapping.** Lives on the laptop (`client\apps.json`, 1.5), edited in the laptop's Apps page (a
   "Model" dropdown per app, default "PC's choice"). The laptop host writes the mapped model id into `model` on every
   forwarded `chat/completions` / `embeddings` request (the host's own change; the app is unaware). Without the grant
-  the mapping is hidden and `model` is left as the app sent it. A mapped model that is not loaded on the PC is loaded
-  **only** if the grant exists and the conflict rules below allow it; otherwise the PC's normal `model_not_found` /
-  `no_model` answer passes through.
-- **Two models at once.** With the grant the laptop may keep up to two models loaded on the PC, for example one on the
-  graphics card (`compute: gpu`) and one in system memory (`compute: cpu`), within the PC's memory limit and `fit`
-  checks. **This needs host work:** today the host has one active model per kind (api-v1 `models.<kind>`), so a second
-  concurrent slot per kind is new engine and planner work (6.4 step 6). Until it ships, a second load replaces the
-  first under the conflict rules.
+  the mapping is hidden and `model` is left as the app sent it. **Auto-load (done, PC side):** a request from a device
+  that names an installed model (of the right kind, on the device's allowed list) that is in neither slot makes the PC
+  load it first, exactly like `POST /host/models/load` with `placement: auto` (same grant check, same conflict rules,
+  same memory check). Only a device with the grant triggers it. When the load is refused (no grant, `409
+  model_conflict`, `503 insufficient_memory`) the request is served as it would have been: by the PC's model of that
+  kind, as today. The laptop needs no extra call, so a laptop that lost its grant simply sees the PC's normal answer.
+- **Two models at once (done).** With the grant the laptop may keep up to two models loaded on the PC, for example one
+  on the graphics card (`compute: gpu`) and one in system memory (`compute: cpu`).
+  - **Slots.** The PC's own default model stays in slot 1 (key `chat`). A device load goes to slot 2 (key `chat.2`)
+    unless slot 1 holds nothing; it takes slot 1 only when the PC has no model there, or when the owner turned on
+    "Devices may replace models" and slot 2 belongs to another device. The embedding kind has one slot. A host
+    without a second engine keeps the single-slot behaviour.
+  - **Memory.** Before a load the planner counts what the other slot holds (the engines' planned RAM and graphics
+    memory) against the PC's own limits (maximum memory, graphics memory limit, keep free, threads). A second load that
+    does not fit is refused with `503 insufficient_memory`; nothing is evicted. The PC's own limits always win: when the
+    PC's own model needs to load again and no longer fits next to a device's slot-2 model, the slot-2 engine stops
+    (memory only) and the PC's model loads.
+  - **Routing.** `model` in a request names the model. A request naming the model in slot 2 is served by slot 2;
+    anything else (no name, `default`, the slot-1 model, an unknown name) is served by slot 1 as before. Each slot has
+    its own queue, so the two models generate in parallel.
+  - **Loaded by.** Kept per slot. `GET /host/models` shows `loaded_by` for each model (`pc` or the device id), and the
+    PC's Models page and the Other devices row list both.
+  - **Idle unload.** Each slot's engine unloads by the normal idle rule of the kind (Settings, 5 minutes on battery).
+    A device's slot is never "keep loaded". When slot 2 stops, its "loaded by" entry ends and slot 1 is untouched.
+  - **Owner wins.** An owner action on a slot (`engine.unload`, picking another model, `Take back`) ends the claim on
+    that slot and cancels a device load in flight for it (`409 owner_changed`). If the owner picks the model a device
+    holds in slot 2, the device's copy is stopped, so one model is never in both slots. `Take back` for a kind stops
+    every device-loaded slot of the kind and never the PC's own model. Only the engine process stops; model files are
+    never touched.
 - **Conflict rules.**
   1. The PC owner's local action always wins. An `engine.load`, `models.activate` or `settings.set` on the PC takes
      effect at once and may unload a device-loaded model; the device then sees `409 model_conflict` with
@@ -606,8 +628,7 @@ known `unavailable` code.
    lists in 6.3. (Needs steps 3 and 4.)
 6. **Model control, server side.** `model_control` flag in the device store, "Devices may replace models" setting, the
    4.7 routes (list, load, unload, placement), conflict rules, "loaded by" tracking, the PC UI (switch, "Loaded by",
-   `Take back`). Includes the second concurrent model slot in the engine planner; if that proves large, ship
-   single-slot first and make the second slot its own step. Tests: the Model control list in 6.3 against the fake
+   `Take back`). Includes the second concurrent model slot in the engine planner (built: see 4.7, "Two models at once"). Tests: the Model control list in 6.3 against the fake
    remote. Needs an independent review (it can change what is loaded on the PC: read every load, unload and eviction
    path).
 7. **Devices on this PC.** The Devices view of 5.7: `X-Portal-Client-App` on the laptop and its parsing on the PC,
@@ -636,5 +657,5 @@ known `unavailable` code.
 | 5 | **Address + code without a link:** allowed, LAN only until a link with `r` has been used. | 2.2, 3.1 |
 
 Points to confirm before step 6: (a) the second concurrent model slot is new engine work, not only remote plumbing
-(4.7); (b) a device that loses its grant leaves its models loaded until idle or taken back; (c) "Devices may replace
+(4.7; built as a second engine process keyed `chat.2`); (b) a device that loses its grant leaves its models loaded until idle or taken back; (c) "Devices may replace
 models" is PC-wide, not per device.

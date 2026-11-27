@@ -1,9 +1,9 @@
 import { SELF } from "cloudflare:test";
 import { describe, expect, it } from "vitest";
 import { spkiFromCertificate } from "../src/der";
-import { fromBase64Url, hostProofMessage, LIMITS, roomIdForCertificate, toBase64Url } from "../src/protocol";
+import { admissionHash, fromBase64Url, hostProofMessage, LIMITS, roomIdForCertificate, toBase64Url } from "../src/protocol";
 import fixture from "./fixtures/dotnet-host.json";
-import { connectDevice, connectHost, freshIp, mustOpen, newIdentity, open, sign, tagged } from "./helpers";
+import { connectDevice, connectHost, freshIp, mustOpen, newIdentity, open, Sock, sign, tagged } from "./helpers";
 
 const bytes = (...n: number[]) => new Uint8Array(n);
 const status = (o: Awaited<ReturnType<typeof open>>) => ("status" in o ? o.status : 101);
@@ -280,5 +280,95 @@ describe("rate limit per address", () => {
 
     expect(status(await open("device", id.room, ip))).toBe(429);
     expect(status(await open("device", id.room, freshIp()))).toBe(503);
+  });
+});
+
+describe("admission hash vector", () => {
+  it("matches the host's own code (token 0..31)", async () => {
+    const token = Uint8Array.from({ length: 32 }, (_, i) => i);
+    expect(toBase64Url(await admissionHash(token))).toBe("p9IEbdYnU2WxrDjoY0IOpU7VtsDTSjCCDcfuYy1Z-0w");
+  });
+});
+
+describe("device admission", () => {
+  const token = crypto.getRandomValues(new Uint8Array(32));
+  const header = (t: Uint8Array) => ({ "x-portal-admission": toBase64Url(t) });
+
+  it("lets a device with the right token in, and tells the host", async () => {
+    const id = await newIdentity();
+    const host = await connectHost(id, token);
+    const o = await open("device", id.room, freshIp(), header(token));
+    expect("sock" in o).toBe(true);
+    if (!("sock" in o)) return;
+    expect((await host.nextJson()).t).toBe("open");
+    expect((await o.sock.nextJson()).t).toBe("open");
+  });
+
+  it("closes a device without a token with 4403 and never tells the host", async () => {
+    const id = await newIdentity();
+    const host = await connectHost(id, token);
+    const o = await open("device", id.room);
+    expect("sock" in o).toBe(true);
+    if (!("sock" in o)) return;
+    expect((await o.sock.waitClosed()).code).toBe(4403);
+    expect(await host.quiet()).toBe(true);
+  });
+
+  it("closes a device with a wrong, truncated or malformed token", async () => {
+    const id = await newIdentity();
+    const host = await connectHost(id, token);
+    const wrong = crypto.getRandomValues(new Uint8Array(32));
+    for (const h of [header(wrong), header(token.slice(0, 31)), { "x-portal-admission": "not base64!" }, { "x-portal-admission": "" }]) {
+      const o = await open("device", id.room, freshIp(), h);
+      expect("sock" in o).toBe(true);
+      if (!("sock" in o)) return;
+      expect((await o.sock.waitClosed()).code).toBe(4403);
+    }
+
+    expect(await host.quiet()).toBe(true);
+  });
+
+  it("does not read the token from the URL", async () => {
+    const id = await newIdentity();
+    await connectHost(id, token);
+    const res = await SELF.fetch(`https://relay.test/v1/device/${id.room}?a=${toBase64Url(token)}`, {
+      headers: { Upgrade: "websocket", "CF-Connecting-IP": freshIp() },
+    });
+    const sock = new Sock(res.webSocket!);
+    expect((await sock.waitClosed()).code).toBe(4403);
+  });
+
+  it("keeps today's behaviour for a host that publishes nothing", async () => {
+    const id = await newIdentity();
+    const host = await connectHost(id);
+    const d = await connectDevice(id, host);
+    expect(d.stream).toBeTypeOf("number");
+    const extra = await open("device", id.room, freshIp(), header(token)); // a token nobody asked for is ignored
+    expect("sock" in extra).toBe(true);
+  });
+
+  it("refuses a hello whose admission hash is malformed or not covered by the signature", async () => {
+    const id = await newIdentity();
+    for (const adm of ["short", toBase64Url(new Uint8Array(33)), 42]) {
+      const sock = await mustOpen("host", id.room);
+      const nonce = fromBase64Url(String((await sock.nextJson()).nonce), 32)!;
+      sock.sendJson({ t: "hello", cert: toBase64Url(id.cert), sig: toBase64Url(await sign(id, id.room, nonce)), adm });
+      expect((await sock.waitClosed()).code).toBe(4401);
+    }
+
+    // A valid-looking hash that the signature does not cover (someone edited the hello in transit).
+    const sock = await mustOpen("host", id.room);
+    const nonce = fromBase64Url(String((await sock.nextJson()).nonce), 32)!;
+    sock.sendJson({ t: "hello", cert: toBase64Url(id.cert), sig: toBase64Url(await sign(id, id.room, nonce)), adm: toBase64Url(new Uint8Array(32)) });
+    expect((await sock.waitClosed()).code).toBe(4401);
+  });
+
+  it("forgets the requirement when the host reconnects without one", async () => {
+    const id = await newIdentity();
+    await connectHost(id, token);
+    await connectHost(id); // replaces the first host, publishing nothing
+    const o = await open("device", id.room);
+    expect("sock" in o).toBe(true);
+    if ("sock" in o) expect(await o.sock.quiet()).toBe(false); // gets {"t":"open"}, not a close
   });
 });

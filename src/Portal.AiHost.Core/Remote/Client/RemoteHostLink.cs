@@ -45,6 +45,9 @@ public static class RemoteLinkReasons
 
     /// <summary>The relay refused for budget reasons (HTTP 429, close 4429): wait about a minute.</summary>
     public const string RelayBusy = "relay_busy";
+
+    /// <summary>The relay wants an admission token this device does not have (close 4403): pair with the PC again.</summary>
+    public const string RelayAdmission = "relay_admission";
 }
 
 /// <summary>A snapshot of the link: state, why, the last round trip and whether the host has its own token.</summary>

@@ -74,6 +74,7 @@ public sealed class LanServer : IAsyncDisposable
         _pairing = pairing;
         _verifier = verifier;
         _options = options;
+        BridgeTokens = new BridgeTokens(options.Time);
     }
 
     public int Port { get; private set; }
@@ -84,6 +85,13 @@ public sealed class LanServer : IAsyncDisposable
     private ListenOptions? _bridgeListen;
 
     private const string BridgeItem = "portal.bridge";
+
+    /// <summary>Tokens the relay bridge must present on the internal endpoint (docs/remote-v1.md section 10.3).</summary>
+    public BridgeTokens BridgeTokens { get; }
+
+    private static readonly TimeSpan BridgeTokenWait = TimeSpan.FromSeconds(3);
+    private const int MaxBridgeWaiting = 16;
+    private int _bridgeWaiting;
 
     public static async Task<LanServer> StartAsync(AiHostRuntime runtime, PairingService pairing,
         DeviceRequestVerifier verifier, DeviceSessions sessions, LanServerOptions options, CancellationToken ct = default)
@@ -181,10 +189,36 @@ public sealed class LanServer : IAsyncDisposable
                 {
                     _bridgeListen = listen;
                     listen.Protocols = HttpProtocols.Http1;
-                    listen.Use(next => context =>
+                    listen.Use(next => async context =>
                     {
+                        // Only the bridge knows a token: it writes one before the TLS handshake. Anything else is closed
+                        // at once, with no reply.
+                        // At most 16 connections may wait for their token at once; more are dropped without waiting.
+                        if (Interlocked.Increment(ref _bridgeWaiting) > MaxBridgeWaiting)
+                        {
+                            Interlocked.Decrement(ref _bridgeWaiting);
+                            context.Abort();
+                            return;
+                        }
+
+                        bool ok;
+                        try
+                        {
+                            ok = await BridgeTokens.ReadAndConsumeAsync(context.Transport.Input, BridgeTokenWait, context.ConnectionClosed).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            Interlocked.Decrement(ref _bridgeWaiting);
+                        }
+
+                        if (!ok)
+                        {
+                            context.Abort();
+                            return;
+                        }
+
                         context.Items[BridgeItem] = true;
-                        return next(context);
+                        await next(context).ConfigureAwait(false);
                     });
                     listen.UseHttps(_options.Certificate);
                 });
@@ -305,7 +339,7 @@ public sealed class LanServer : IAsyncDisposable
                 }
 
                 var kind = path == Routes.Embeddings ? ModelKinds.Embedding : ModelKinds.Chat;
-                var active = path == Routes.Warmup ? null : _runtime.GetActive(kind);
+                var active = path == Routes.Warmup ? null : _runtime.GetActive(_runtime.SlotFor(kind, ModelNamed(body)));
                 if (active is not null && current.AllowedModels.Count > 0 &&
                     !current.AllowedModels.Contains(active.ModelId, StringComparer.Ordinal))
                 {
@@ -341,10 +375,25 @@ public sealed class LanServer : IAsyncDisposable
         {
             if (call is not null)
             {
-                var model = path == Routes.ChatCompletions ? _runtime.GetActive(ModelKinds.Chat) : null;
+                var model = path == Routes.ChatCompletions ? _runtime.GetActive(_runtime.SlotFor(ModelKinds.Chat, ModelNamed(body))) : null;
                 call.Complete(counting?.Tokens ?? 0, counting?.FirstByte, model?.ModelId, model?.DisplayName);
                 call.Dispose();
             }
+        }
+    }
+
+    /// <summary>The <c>model</c> a JSON request body names, or null (not JSON, no name). Read only to pick the engine slot.</summary>
+    private static string? ModelNamed(byte[] body)
+    {
+        try
+        {
+            using var doc = JsonDocument.Parse(body);
+            return doc.RootElement.ValueKind == JsonValueKind.Object && doc.RootElement.TryGetProperty("model", out var m) &&
+                m.ValueKind == JsonValueKind.String ? m.GetString() : null;
+        }
+        catch (JsonException)
+        {
+            return null;
         }
     }
 

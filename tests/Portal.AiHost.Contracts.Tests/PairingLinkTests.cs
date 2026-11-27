@@ -13,6 +13,28 @@ public sealed class PairingLinkTests
         Assert.Equal(new PairingLink("192.168.1.20", 48123, "abc_-", "042917", "Desk PC", null), link);
     }
 
+    private const string Token = "p9IEbdYnU2WxrDjoY0IOpU7VtsDTSjCCDcfuYy1Z-0w";
+
+    [Fact]
+    public void ReadsTheAdmissionTokenOnlyTogetherWithARelay()
+    {
+        Assert.True(PairingLink.TryParse(Lan + "&r=https%3A%2F%2Frelay.example.com&a=" + Token, out var link));
+        Assert.Equal(Token, link!.RelayAdmission);
+        Assert.True(PairingLink.TryParse(Lan + "&a=" + Token, out var noRelay));
+        Assert.Null(noRelay!.RelayAdmission);
+    }
+
+    [Theory]
+    [InlineData("short")]
+    [InlineData("p9IEbdYnU2WxrDjoY0IOpU7VtsDTSjCCDcfuYy1Z-0wx")]
+    [InlineData("p9IEbdYnU2WxrDjoY0IOpU7VtsDTSjCCDcfuYy1Z+0w")]
+    [InlineData("")]
+    public void AMalformedAdmissionTokenCountsAsNone(string a)
+    {
+        Assert.True(PairingLink.TryParse(Lan + "&r=https%3A%2F%2Frelay.example.com&a=" + a, out var link));
+        Assert.Null(link!.RelayAdmission);
+    }
+
     [Fact]
     public void ReadsTheEscapedRelayAddressAndIgnoresUnknownFields()
     {

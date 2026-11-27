@@ -182,8 +182,9 @@ public sealed class HostShell : IAsyncDisposable
     internal (bool KeepLoaded, int IdleUnloadSeconds) IdlePolicyFor(string kind)
     {
         var s = _settings?.Current;
-        var k = s is not null && s.Kinds.TryGetValue(kind, out var v) ? v : null;
-        if (k?.KeepLoaded == true)
+        var secondSlot = ModelSlots.IsSecond(kind); // a device's second model follows the kind's idle time, but is never kept loaded
+        var k = s is not null && s.Kinds.TryGetValue(ModelSlots.KindOf(kind), out var v) ? v : null;
+        if (k?.KeepLoaded == true && !secondSlot)
         {
             return (true, 0);
         }
@@ -394,7 +395,8 @@ public sealed class HostShell : IAsyncDisposable
                 ? null
                 : new Portal.AiHost.Core.Remote.Client.RemoteHostLink(new Portal.AiHost.Core.Remote.Client.ClientStateStore(root, _o.SecretProtector),
                     _o.ClientConnector ?? new Portal.AiHost.Core.Remote.Client.LanConnector(Portal.AiHost.Core.Remote.Client.LanConnector.LinkConnectTimeout),
-                    relayFactory: (url, fingerprint) => new Portal.AiHost.Core.Remote.Client.RelayConnector(url, fingerprint)),
+                    relayFactory: (url, fingerprint) => new Portal.AiHost.Core.Remote.Client.RelayConnector(url, fingerprint,
+                        admission: new Portal.AiHost.Core.Remote.Client.ClientStateStore(root, _o.SecretProtector).LoadRelayAdmission())),
             PersistMode = SaveMode,
             InitialFallback = settings.ClientFallback,
             InitialRelayMode = settings.RelayMode,
@@ -817,7 +819,7 @@ public sealed class HostShell : IAsyncDisposable
         // The owner's choice wins over a device's: the device's claim on this kind ends first.
         if (Remote is { } remote)
         {
-            await remote.ModelControl.OwnerChangedAsync(stored.Kind, ct).ConfigureAwait(false);
+            await remote.ModelControl.OwnerChangedAsync(stored.Kind, ct, stored.Id).ConfigureAwait(false);
         }
 
         await Runtime.SetActiveAsync(stored.Kind, ToActive(stored), ct).ConfigureAwait(false);
