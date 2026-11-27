@@ -212,6 +212,16 @@ try {
         }
         elseif ($a -eq 'x64') { Write-Warning 'engine\voice\portal-voice-server.exe is missing: this package has no voice feature (run scripts\build-voice.ps1).' }
 
+        # The upscale helper (built by scripts\build-upscale.ps1) is x64 only; without it picture upscaling reports itself off.
+        $upscaleSrc = Join-Path $repo 'engine\upscale'
+        if ($a -eq 'x64' -and (Test-Path (Join-Path $upscaleSrc 'portal-upscale.exe'))) {
+            $upscaleDest = Join-Path $layout 'engine\upscale'
+            New-Item -ItemType Directory -Force $upscaleDest | Out-Null
+            Copy-Item (Join-Path $upscaleSrc '*') $upscaleDest -Recurse -Force
+            Remove-Item (Join-Path $upscaleDest '.engine-fetch') -Force -ErrorAction SilentlyContinue
+        }
+        elseif ($a -eq 'x64') { Write-Warning 'engine\upscale\portal-upscale.exe is missing: this package has no upscaling (run scripts\build-upscale.ps1).' }
+
         # engine\ffmpeg\ (fetched by scripts\fetch-ffmpeg.ps1; x64 only): MP4 conversion, last-frame pictures, joins, MP3 samples.
         # Without it those features report themselves off.
         $ffDir = Join-Path $repo 'engine\ffmpeg'
