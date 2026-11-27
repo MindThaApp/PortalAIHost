@@ -9,6 +9,11 @@ public sealed class ProtocolLinkTests
     [InlineData("PORTAL-AI-HOST:Settings/Performance", "settings/performance")]
     [InlineData("portal-ai-host://settings/performance/", "settings/performance")]
     [InlineData("\"portal-ai-host:models\"", "models")]
+    [InlineData("portal-ai-host:models?category=image", "models/image")]
+    [InlineData("portal-ai-host:models?category=Video/", "models/video")]
+    [InlineData("portal-ai-host:models?category=", "models")]
+    [InlineData("portal-ai-host:models?category=../x", "models")]
+    [InlineData("portal-ai-host:models?other=1", "models")]
     [InlineData("portal-ai-host:apps", "apps")]
     [InlineData("portal-ai-host:try", "tryit")]
     public void Page_links_open_the_window_on_that_page(string arg, string page)

@@ -549,6 +549,9 @@ must allow the model; the device's pause, quiet hours, gaming mode and daily req
 the counts cover every app on this host. Capabilities then also list the endpoints `image.jobs` and `video.jobs`.
 Older hosts leave `generation` out.
 
+To send people to the right place when no model of a kind is installed, open `portal-ai-host:models?category=image`
+(or `video`): the host's Models page opens filtered to that category. An unknown category opens the generic page.
+
 `generation.detail` (additive; older hosts leave it out) says why a kind is or is not available:
 `"detail": { "image": "ready", "video": "no_model" }`. Values per kind (an open set, ignore unknown ones):
 `ready` (engine and a model installed, no job running), `busy` (a job is running now; new jobs still queue),

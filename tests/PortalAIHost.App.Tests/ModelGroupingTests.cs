@@ -107,6 +107,22 @@ public class ModelsPageGroupingViewModelTests
     }
 
     [Fact]
+    public async Task A_category_link_filters_the_page_and_an_unknown_one_shows_everything()
+    {
+        using var rig = new Rig(FakeScenario.Fresh);
+        var vm = await LoadAsync(rig, [M("wan", "video", "video", soon: true)]);
+        vm.ApplyCategoryLink("Video");
+        Assert.Equal("video", vm.CategoryFilter);
+        await vm.RegroupAsync();
+        Assert.Equal(["video"], vm.Groups.Select(g => g.CategoryId));
+        vm.ApplyCategoryLink("nonsense");
+        Assert.Equal(ModelGrouping.All, vm.CategoryFilter);
+        vm.ApplyCategoryLink("image");
+        vm.ApplyCategoryLink(null);
+        Assert.Equal(ModelGrouping.All, vm.CategoryFilter);
+    }
+
+    [Fact]
     public async Task A_crowded_group_collapses_to_three_and_show_all_expands_it_without_replacing_the_group()
     {
         using var rig = new Rig(FakeScenario.Fresh);

@@ -53,7 +53,13 @@ internal static class LaunchArgs
                 continue;
             }
 
-            return a[Scheme.Length..].TrimStart('/').ToLowerInvariant() switch
+            var link = a[Scheme.Length..].TrimStart('/').ToLowerInvariant();
+            if (ModelsPageFor(link) is { } modelsPage)
+            {
+                return modelsPage;
+            }
+
+            return link switch
             {
                 "settings/performance" => "settings/performance",
                 "models" => "models",
@@ -64,6 +70,27 @@ internal static class LaunchArgs
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// "models?category=image" becomes "models/image" (the Models page filtered to that category). The category is only
+    /// passed on when it is a plain id; the window checks it against the known categories, and an unknown one shows the
+    /// generic page. Any other query on the models link opens the generic page; null for any other link.
+    /// </summary>
+    private static string? ModelsPageFor(string link)
+    {
+        const string head = "models?";
+        if (!link.StartsWith(head, StringComparison.Ordinal))
+        {
+            return null;
+        }
+
+        var query = link[head.Length..];
+        const string key = "category=";
+        return query.StartsWith(key, StringComparison.Ordinal) && query[key.Length..] is { Length: > 0 and <= 32 } id &&
+            id.All(ch => ch is (>= 'a' and <= 'z') or (>= '0' and <= '9') or '-' or '_')
+            ? "models/" + id
+            : "models";
     }
 
     public static bool IsProtocol(IReadOnlyList<string> args) =>

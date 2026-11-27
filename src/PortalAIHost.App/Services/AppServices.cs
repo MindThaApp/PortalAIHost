@@ -23,6 +23,9 @@ public static class AppServices
     /// <summary>Opens a page by name (home, models, apps, tryit, settings) and moves the menu selection. Set by the window.</summary>
     public static Action<string>? NavigateTo { get; set; }
 
+    /// <summary>Category id the Models page should filter to when it opens (from a portal-ai-host:models?category= link), or null.</summary>
+    public static string? PendingModelsCategory { get; set; }
+
     /// <summary>Section of the Settings page to bring into view when it opens (for example "performance"), or null.</summary>
     public static string? PendingSettingsSection { get; set; }
 

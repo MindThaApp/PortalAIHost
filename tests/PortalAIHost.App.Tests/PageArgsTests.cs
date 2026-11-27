@@ -20,6 +20,7 @@ public class PageArgsTests
     [InlineData("settings", "settings", null)]
     [InlineData("Models", "models", null)]
     [InlineData("apps/", "apps", null)]
+    [InlineData("models/image", "models", "image")]
     [InlineData("nonsense/performance", "home", null)]
     public void Splits_a_page_and_its_section(string tag, string page, string? section)
     {

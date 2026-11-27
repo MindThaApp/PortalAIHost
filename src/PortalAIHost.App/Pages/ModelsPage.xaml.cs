@@ -25,6 +25,8 @@ public sealed partial class ModelsPage : Page
 
     protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
+        ViewModel.ApplyCategoryLink(AppServices.PendingModelsCategory);
+        AppServices.PendingModelsCategory = null;
         _ = Remote.LoadAsync();
         await ViewModel.LoadAsync();
     }

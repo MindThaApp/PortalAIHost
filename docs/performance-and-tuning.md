@@ -193,6 +193,7 @@ Read-only, sampled at most every 1.5 s and only while someone asks. `ram_used_by
 
 - `portal-ai-host:settings/performance`
 - `portal-ai-host:models`
+- `portal-ai-host:models?category=<id>` (the Models page filtered to one category: `chat`, `coding`, `reasoning`, `vision`, `search`, `image`, `video`, `speech` or `other`; an unknown id opens the generic Models page)
 - `portal-ai-host:apps`
 - `portal-ai-host:try` (the Try it page)
 

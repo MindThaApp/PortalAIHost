@@ -98,6 +98,16 @@ public sealed partial class ModelsViewModel
     [ObservableProperty] private bool _hasDownloadedShown;
     [ObservableProperty] private bool _noMatches;
 
+    /// <summary>
+    /// A portal-ai-host:models?category=&lt;id&gt; link: filter to that category. Null, empty or an unknown id shows
+    /// all models (the generic page).
+    /// </summary>
+    public void ApplyCategoryLink(string? category)
+    {
+        var id = category?.Trim().ToLowerInvariant();
+        CategoryFilter = id is { Length: > 0 } && ModelCategories.Ordered.Contains(id) ? id : ModelGrouping.All;
+    }
+
     partial void OnSearchTextChanged(string value) => _ = RegroupAsync(debounce: true);
 
     partial void OnCategoryFilterChanged(string value)
