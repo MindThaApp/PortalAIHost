@@ -373,7 +373,16 @@ Buttons, menus and lists show an icon and a 1-3 word label. Explanations go in t
 Steps 1, 2, 8, 10 and 11 can start in parallel. Steps 1-17 can be built and tested on the owner's AMD PC with stub
 CUDA output; only 18 and 19 need NVIDIA hardware.
 
-## 10. Open decisions for the owner
+## 10. Decisions for the owner
+
+**Decided 2026-11-27 (owner):** 1. Upstream first, a copy in a release of the owner's public repo as the second URL.
+2. NVIDIA CUDA redistribution terms accepted. 3. CUDA 12.8 line first; CUDA 13 later. 4. Build the Best-tier add-on now,
+at lower priority, and steps 18-19 are built for NVIDIA users even without a test card here (stub and unit tests now,
+live test when a card is available). 5. Real-ESRGAN accepted; ONNX files hosted in a release of the owner's public repo.
+6. Uploads local only in v1. 7. H.264 by default. 8. Never hide a tier for being slow: show a warning with the time
+estimate when a job is estimated above 10x clip length, and a stronger warning above 100x.
+
+The original questions:
 1. **CUDA download source:** upstream GitHub releases (pinned), a copy in a release of the owner's public repo, or
    both (recommended: upstream first, owner copy as second URL). A Store optional package is possible but heavy.
 2. **NVIDIA CUDA EULA:** accept the redistribution terms in 3.5 after review?
