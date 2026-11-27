@@ -10,6 +10,12 @@ Speech runtime used by the voice helper (org.k2fsa.sherpa.onnx 2.0.3, with ONNX 
 Licence: Apache License 2.0. Copyright the k2-fsa authors. https://github.com/k2-fsa/sherpa-onnx
 ONNX Runtime: MIT licence, Copyright Microsoft Corporation.
 
+## ONNX Runtime with DirectML (picture upscaling)
+
+Model runtime used by the upscale helper `portal-upscale.exe`, which ships in `engine\upscale\` (Microsoft.ML.OnnxRuntime.DirectML 1.23.0, with DirectML).
+Licence: MIT, Copyright Microsoft Corporation. https://github.com/microsoft/onnxruntime
+The upscale models are downloaded by the user to the host's model folders; none is bundled.
+
 ## Kokoro-82M (built-in voices)
 
 Text-to-speech model, multi-language v1.0 export for sherpa-onnx.
