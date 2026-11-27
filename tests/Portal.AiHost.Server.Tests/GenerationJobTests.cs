@@ -418,6 +418,75 @@ public sealed class GenerationJobTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task InstalledModelsAreListedPerKindWithSizeCategoryAndFit()
+    {
+        using (var anonymous = await _host.Http.GetAsync("/host/image/models"))
+        {
+            Assert.Equal(HttpStatusCode.Unauthorized, anonymous.StatusCode);
+        }
+
+        var token = await _host.GetTokenAsync();
+        var (code, image) = await SendAsync(HttpMethod.Get, "/host/image/models", token);
+        Assert.Equal(HttpStatusCode.OK, code);
+        var m = image.GetProperty("data")[0];
+        Assert.Equal("sd15", m.GetProperty("id").GetString());
+        Assert.Equal("SD 1.5", m.GetProperty("display_name").GetString());
+        Assert.Equal("image", m.GetProperty("category").GetString());
+        Assert.Equal("image", m.GetProperty("kind").GetString());
+        Assert.Equal(2L << 30, m.GetProperty("size_bytes").GetInt64());
+        Assert.True(m.GetProperty("fits_this_pc").GetBoolean());
+        Assert.True(m.GetProperty("default").GetBoolean());
+        var (_, video) = await SendAsync(HttpMethod.Get, "/host/video/models", token);
+        Assert.Equal("wan-1.3b", video.GetProperty("data")[0].GetProperty("id").GetString());
+        Assert.Equal("video", video.GetProperty("data")[0].GetProperty("category").GetString());
+
+        // A model that cannot fit this PC is still listed, flagged.
+        await _service.DisposeAsync();
+        await _host.DisposeAsync();
+        await StartAsync(new GenerationProbe());
+        token = await _host.GetTokenAsync();
+        _models.ImageBytes = 60L << 30;
+        (_, image) = await SendAsync(HttpMethod.Get, "/host/image/models", token);
+        Assert.False(image.GetProperty("data")[0].GetProperty("fits_this_pc").GetBoolean());
+        _models.Empty = true;
+        (_, image) = await SendAsync(HttpMethod.Get, "/host/image/models", token);
+        Assert.Equal(0, image.GetProperty("data").GetArrayLength());
+    }
+
+    [Fact]
+    public async Task StatusSaysWhyAKindIsNotAvailable()
+    {
+        var token = await _host.GetTokenAsync();
+        await _service.RefreshAvailabilityAsync();
+        var (_, status) = await SendAsync(HttpMethod.Get, Routes.Status, token);
+        var detail = status.GetProperty("generation").GetProperty("detail");
+        Assert.Equal("ready", detail.GetProperty("image").GetString());
+        Assert.Equal("ready", detail.GetProperty("video").GetString());
+
+        _engine.Gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        _engine.Started += _ => started.TrySetResult();
+        var id = await CreateAsync(token);
+        await started.Task.WaitAsync(TimeSpan.FromSeconds(10));
+        (_, status) = await SendAsync(HttpMethod.Get, Routes.Status, token);
+        Assert.Equal("busy", status.GetProperty("generation").GetProperty("detail").GetProperty("image").GetString());
+        _engine.Gate.TrySetResult();
+        await WaitAsync(token, id, GenerationJobStates.Succeeded);
+
+        _models.Empty = true;
+        await _service.RefreshAvailabilityAsync();
+        (_, status) = await SendAsync(HttpMethod.Get, Routes.Status, token);
+        detail = status.GetProperty("generation").GetProperty("detail");
+        Assert.Equal("no_model", detail.GetProperty("image").GetString());
+        Assert.False(status.GetProperty("generation").GetProperty("image").GetBoolean());
+
+        _engine.Present = false;
+        await _service.RefreshAvailabilityAsync();
+        (_, status) = await SendAsync(HttpMethod.Get, Routes.Status, token);
+        Assert.Equal("no_engine", status.GetProperty("generation").GetProperty("detail").GetProperty("video").GetString());
+    }
+
+    [Fact]
     public async Task JobsNeedATokenAndBelongToTheirApp()
     {
         using (var anonymous = await _host.Http.PostAsync(Routes.ImageJobs, TestHost.Json(ImageBody)))

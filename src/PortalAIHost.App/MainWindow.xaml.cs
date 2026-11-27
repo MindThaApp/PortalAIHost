@@ -266,6 +266,7 @@ public sealed partial class MainWindow : Window, IAppearanceApplier
     {
         var (tag, section) = PageArgs.Split(fullTag);
         AppServices.PendingSettingsSection = tag == "settings" ? section : null;
+        AppServices.PendingModelsCategory = tag == "models" ? section : null;
         var item = Nav.MenuItems.Concat(Nav.FooterMenuItems).OfType<NavigationViewItem>().FirstOrDefault(i => (string)i.Tag == tag);
         if (item is not null) Nav.SelectedItem = item;
         else
@@ -276,6 +277,13 @@ public sealed partial class MainWindow : Window, IAppearanceApplier
 
         // Already on Settings: the page does not reload, so ask it to scroll to the section.
         if (ContentFrame.Content is SettingsPage settings) settings.ShowPendingSection();
+
+        // Already on Models: the page does not reload, so filter it now.
+        if (tag == "models" && ContentFrame.Content is ModelsPage models)
+        {
+            models.ViewModel.ApplyCategoryLink(AppServices.PendingModelsCategory);
+            AppServices.PendingModelsCategory = null;
+        }
     }
 
     private void OpenStartPage()
