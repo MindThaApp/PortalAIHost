@@ -44,7 +44,7 @@ public sealed partial class AiHostRuntime
             var cpu = !gpuBuild || settings.Backend == "cpu";
             return new GenerationPlan(true, new GenerationPlacement
             {
-                Backend = cpu ? "cpu" : "vulkan", VaeTiling = needs.Video, FlashAttention = needs.Video,
+                Backend = cpu ? "cpu" : "vulkan", VaeTiling = needs.Video, FlashAttention = needs.Video || !cpu,
             }, "", cpu ? 0 : needs.WeightsBytes + needs.ComputeBytes, cpu ? needs.WeightsBytes + needs.ComputeBytes : GenerationPlanner.ProcessOverheadBytes);
         }
 

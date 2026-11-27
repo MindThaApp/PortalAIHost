@@ -32,6 +32,7 @@ public sealed class GenerationPlannerTests
         Assert.True(plan.Fits);
         Assert.Equal("vulkan", plan.Placement!.Backend);
         Assert.False(plan.Placement.ClipOnCpu || plan.Placement.VaeOnCpu || plan.Placement.OffloadToCpu || plan.Placement.VaeTiling);
+        Assert.True(plan.Placement.FlashAttention);
         Assert.Empty(plan.OnCpu);
     }
 

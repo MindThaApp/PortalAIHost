@@ -36,6 +36,8 @@ public static class SdCppFlags
     public const string ClipOnCpu = "backend.te_cpu";
     public const string VaeOnCpu = "backend.vae_cpu";
     public const string MaxVram = "max_vram";
+    public const string AutoFit = "auto_fit";
+    public const string Off = "off";
     public const string VaeTiling = "vae_tiling";
     public const string FlashAttention = "flash_attn";
     public const string FlashAttentionDiffusion = "flash_attn.diffusion";
@@ -82,13 +84,15 @@ public static class SdCppFlags
 
         // Memory placement. --clip-on-cpu, --vae-on-cpu and --diffusion-fa are deprecated in 908965d: module
         // assignments through --backend (te=cpu, vae=cpu; one value, comma-separated) and --flash-attn replace them.
-        // --max-vram caps the runtime's own automatic fitting (--auto-fit, on by default) at the host's plan.
+        // --max-vram caps the runtime's own automatic fitting (--auto-fit, on by default) at the host's plan; runs that fit the card turn it off.
         new(OffloadToCpu, "--offload-to-cpu", true),
         new(Backend, "--backend", true),
         new(BackendAllCpu, "cpu", true),
         new(ClipOnCpu, "te=cpu", true),
         new(VaeOnCpu, "vae=cpu", true),
         new(MaxVram, "--max-vram", true),
+        new(AutoFit, "--auto-fit", true),
+        new(Off, "off", true),
         new(VaeTiling, "--vae-tiling", true),
         new(FlashAttention, "--flash-attn", true),
         new(FlashAttentionDiffusion, "auto,diffusion=on", true),
@@ -256,10 +260,21 @@ public static class SdCppArgs
                 args.AddRange([SdCppFlags.Of(SdCppFlags.Backend), string.Join(',', onCpu)]);
             }
 
-            // At least 0.1 GiB: 0 would mean "live free memory" to the runtime, not "none".
-            if (p.MaxVramBytes is { } maxVram && maxVram >= (1L << 30) / 10)
+            if (p.OffloadToCpu)
             {
-                args.AddRange([SdCppFlags.Of(SdCppFlags.MaxVram), (maxVram / (double)(1L << 30)).ToString("0.0", CultureInfo.InvariantCulture)]);
+                // Streaming run: the runtime's own fitting stays on, capped at the host's graphics-memory plan.
+                // At least 0.1 GiB: 0 would mean "live free memory" to the runtime, not "none".
+                if (p.MaxVramBytes is { } maxVram && maxVram >= (1L << 30) / 10)
+                {
+                    args.AddRange([SdCppFlags.Of(SdCppFlags.MaxVram), (maxVram / (double)(1L << 30)).ToString("0.0", CultureInfo.InvariantCulture)]);
+                }
+            }
+            else
+            {
+                // The plan says the weights fit the card: keep them there. The runtime's automatic fitting would
+                // otherwise segment the graph and manage weight residency in RAM for no gain (and failed with a
+                // zero-byte RAM weight capacity in a measured run).
+                args.AddRange([SdCppFlags.Of(SdCppFlags.AutoFit), SdCppFlags.Of(SdCppFlags.Off)]);
             }
         }
 
@@ -278,7 +293,7 @@ public static class SdCppArgs
             args.AddRange([SdCppFlags.Of(SdCppFlags.Preview), SdCppFlags.Of(SdCppFlags.PreviewMethod), SdCppFlags.Of(SdCppFlags.PreviewPath), preview]);
         }
 
-        var protectedFlags = new[] { SdCppFlags.Of(SdCppFlags.Output), SdCppFlags.Of(SdCppFlags.Mode), SdCppFlags.Of(SdCppFlags.Backend), SdCppFlags.Of(SdCppFlags.MaxVram) }
+        var protectedFlags = new[] { SdCppFlags.Of(SdCppFlags.Output), SdCppFlags.Of(SdCppFlags.Mode), SdCppFlags.Of(SdCppFlags.Backend), SdCppFlags.Of(SdCppFlags.MaxVram), SdCppFlags.Of(SdCppFlags.AutoFit) }
             .Concat(SdCppFlags.Table.Where(e => e.Option.StartsWith(SdCppFlags.FilePrefix, StringComparison.Ordinal)).Select(e => e.Flag))
             .ToHashSet(StringComparer.Ordinal);
         foreach (var extra in options.ExtraArgs)

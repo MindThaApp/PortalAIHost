@@ -13,7 +13,16 @@
 .PARAMETER SdExe
   The sd.cpp program. Default: engine\sdcpp\vulkan\sd-cli.exe (or sd.exe) in this repository.
 .PARAMETER Runs
-  Runs per case (the first one includes the cold disk read of the weights).
+  Runs per case (default 1; the first one includes the cold disk read of the weights).
+.PARAMETER ClipOnCpu
+  Text encoder on the processor. Use it only when the text encoder does not fit the card (the host does the same).
+.PARAMETER OffloadToCpu
+  Stream weights from RAM (only for models that do not fit the card). Adds --max-vram and keeps --auto-fit on.
+.PARAMETER AutoFit
+  Leave the runtime's automatic fitting on. By default a run without -OffloadToCpu passes --auto-fit off, so the
+  weights stay on the card, like the host does for a model that fits.
+.PARAMETER PrintCommand
+  Print the exact command line of each run before it starts.
 .EXAMPLE
   .\scripts\measure-gen.ps1 -Sd15Model D:\models\sd15-q8.gguf -WanDiffusion D:\models\wan2.1-t2v-1.3b-q8.gguf `
       -WanT5 D:\models\umt5-xxl-q8.gguf -WanVae D:\models\wan_2.1_vae.safetensors
@@ -32,6 +41,8 @@ param(
     [switch]$ClipOnCpu,
     [switch]$VaeOnCpu,
     [switch]$OffloadToCpu,
+    [switch]$AutoFit,
+    [switch]$PrintCommand,
     [string[]]$ExtraArgs = @()
 )
 $ErrorActionPreference = 'Stop'
@@ -67,7 +78,7 @@ if ($WanDiffusion) {
         Files = @('--diffusion-model', (Assert-File $WanDiffusion 'Wan diffusion model'), '--t5xxl', (Assert-File $WanT5 'UMT5 text encoder'),
             '--vae', (Assert-File $WanVae 'Wan VAE'))
         Extra = @('--cfg-scale', '6', '--sampling-method', 'euler', '--flow-shift', '3', '--video-frames', '33', '--fps', '16',
-            '--flash-attn', 'auto,diffusion=on', '--vae-tiling') }
+            '--vae-tiling') }
 }
 if ($cases.Count -eq 0) { throw 'Give at least one model: -Sd15Model, -SdxlModel or -WanDiffusion/-WanT5/-WanVae.' }
 
@@ -95,8 +106,12 @@ foreach ($case in $cases) {
         if ($ClipOnCpu) { $onCpu += 'te=cpu' }
         if ($VaeOnCpu) { $onCpu += 'vae=cpu' }
         if ($onCpu.Count -gt 0) { $cmd += @('--backend', ($onCpu -join ',')) }
-        if ($OffloadToCpu) { $cmd += '--offload-to-cpu' }
+        if ($OffloadToCpu) { $cmd += @('--offload-to-cpu', '--max-vram', '6.5') }
+        elseif (-not $AutoFit) { $cmd += @('--auto-fit', 'off') }
+        # Flash attention on for the diffusion model: the runtime's auto probe is noisy and once picked 'off' (2x slower).
+        $cmd += @('--flash-attn', 'auto,diffusion=on')
         $cmd += $ExtraArgs
+        if ($PrintCommand) { Write-Host ('"{0}" {1}' -f $SdExe, (($cmd | ForEach-Object { if ("$_" -match '\s') { '"' + $_ + '"' } else { "$_" } }) -join ' ')) }
 
         Write-Host ("{0} run {1}: {2}x{3}, {4} steps, {5} frame(s)" -f $case.Name, $run, $case.Width, $case.Height, $case.Steps, $case.Frames)
         $psi = [Diagnostics.ProcessStartInfo]::new($SdExe)
@@ -137,7 +152,7 @@ $info = [pscustomobject]@{
         cpu = (Get-CimInstance Win32_Processor | Select-Object -First 1).Name
         ram_bytes = (Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory
         gpu = (Get-CimInstance Win32_VideoController | Select-Object -ExpandProperty Name) -join '; ' }
-    flags = @{ clip_on_cpu = [bool]$ClipOnCpu; vae_on_cpu = [bool]$VaeOnCpu; offload_to_cpu = [bool]$OffloadToCpu; threads = $Threads }
+    flags = @{ clip_on_cpu = [bool]$ClipOnCpu; vae_on_cpu = [bool]$VaeOnCpu; offload_to_cpu = [bool]$OffloadToCpu; auto_fit = [bool]$AutoFit; threads = $Threads }
     results = $results
 }
 $info | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $out 'results.json')

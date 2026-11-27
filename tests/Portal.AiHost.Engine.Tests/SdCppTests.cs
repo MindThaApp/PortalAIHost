@@ -162,13 +162,51 @@ public sealed class SdCppArgsTests
     {
         Assert.Equal(SdCppFlags.Table.Count, SdCppFlags.Table.Select(e => e.Option).Distinct().Count());
         Assert.Empty(SdCppFlags.Unverified);
-        var gpu = SdCppArgs.Build(Launch(GenerationFamilies.Sd15, placement: new GenerationPlacement { MaxVramBytes = (long)(6.7 * (1L << 30)) },
+        var gpu = SdCppArgs.Build(Launch(GenerationFamilies.Sd15, placement: new GenerationPlacement { OffloadToCpu = true, MaxVramBytes = (long)(6.7 * (1L << 30)) },
             files: new GenerationComponent(GenerationFileRoles.Model, @"C:\m\sd15.safetensors", 1)));
         Assert.Equal("6.7", ValueOf(gpu, "--max-vram"));
         Assert.DoesNotContain("--backend", gpu);
         Assert.Throws<ArgumentException>(() => SdCppArgs.Build(Launch(GenerationFamilies.Sd15,
             files: new GenerationComponent(GenerationFileRoles.Model, @"C:\m\sd15.safetensors", 1)), new SdCppOptions { ExtraArgs = ["--backend", "cuda0"] }));
         Assert.Throws<ArgumentOutOfRangeException>(() => SdCppFlags.Of("no-such-option"));
+    }
+
+    [Fact]
+    public void SmallModelThatFitsRunsEntirelyOnTheCard()
+    {
+        var args = SdCppArgs.Build(Launch(GenerationFamilies.Sd15, placement: new GenerationPlacement { FlashAttention = true, MaxVramBytes = 6L << 30 },
+            files: new GenerationComponent(GenerationFileRoles.Model, @"C:\m\sd15.safetensors", 1)));
+        Assert.DoesNotContain("--backend", args);
+        Assert.DoesNotContain("--offload-to-cpu", args);
+        Assert.DoesNotContain("--max-vram", args);
+        Assert.DoesNotContain("--max-ram", args);
+        Assert.Equal("off", ValueOf(args, "--auto-fit"));
+        Assert.Equal("auto,diffusion=on", ValueOf(args, "--flash-attn"));
+    }
+
+    [Fact]
+    public void LargeModelStreamsWithOffloadAndAVramCap()
+    {
+        var args = SdCppArgs.Build(Launch(GenerationFamilies.Flux, placement: new GenerationPlacement
+            { OffloadToCpu = true, ClipOnCpu = true, VaeOnCpu = true, MaxVramBytes = 6L << 30 },
+            files: new GenerationComponent(GenerationFileRoles.Diffusion, @"C:\m\flux.gguf", 1)));
+        Assert.Contains("--offload-to-cpu", args);
+        Assert.Equal("6.0", ValueOf(args, "--max-vram"));
+        Assert.DoesNotContain("--auto-fit", args);
+        Assert.DoesNotContain("--max-ram", args);
+    }
+
+    [Fact]
+    public void TextEncoderThatDoesNotFitMovesToTheProcessorOnly()
+    {
+        var args = SdCppArgs.Build(Launch(GenerationFamilies.Wan, "video", new GenerationPlacement { ClipOnCpu = true, FlashAttention = true, VaeTiling = true, MaxVramBytes = 6L << 30 },
+            new GenerationComponent(GenerationFileRoles.Diffusion, @"C:\m\wan2.1-t2v-1.3b-q8.gguf", 1),
+            new GenerationComponent(GenerationFileRoles.T5xxl, @"C:\m\umt5-xxl-q4.gguf", 1),
+            new GenerationComponent(GenerationFileRoles.Vae, @"C:\m\wan_2.1_vae.safetensors", 1)));
+        Assert.Equal("te=cpu", ValueOf(args, "--backend"));
+        Assert.DoesNotContain("--offload-to-cpu", args);
+        Assert.Equal("off", ValueOf(args, "--auto-fit"));
+        Assert.Equal("auto,diffusion=on", ValueOf(args, "--flash-attn"));
     }
 
     [Fact]

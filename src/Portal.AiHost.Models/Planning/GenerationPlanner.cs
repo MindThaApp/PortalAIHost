@@ -141,7 +141,8 @@ public static class GenerationPlanner
             {
                 if (gpu <= vram && cpu <= ram)
                 {
-                    var p = (needs.Video ? placement with { FlashAttention = true } : placement) with { MaxVramBytes = vram };
+                    // Flash attention always on the card: the runtime's "auto" probe is noisy (it picked "off" on a cold first run, 2x slower).
+                    var p = placement with { FlashAttention = true, MaxVramBytes = vram };
                     return new GenerationPlan(true, p, "", gpu, cpu);
                 }
             }
