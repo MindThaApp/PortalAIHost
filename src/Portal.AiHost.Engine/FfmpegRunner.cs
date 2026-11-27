@@ -22,6 +22,9 @@ public sealed class FfmpegRunnerOptions
     public TimeSpan FrameTimeout { get; init; } = TimeSpan.FromMinutes(2);
     public TimeSpan ProbeTimeout { get; init; } = TimeSpan.FromSeconds(30);
 
+    /// <summary>Limit of one encoder test encode (and of the encoder list).</summary>
+    public TimeSpan EncoderProbeTimeout { get; init; } = TimeSpan.FromSeconds(5);
+
     /// <summary>How long a cancelled or timed-out process may take to end after the kill.</summary>
     public TimeSpan KillWait { get; init; } = TimeSpan.FromSeconds(10);
 
@@ -67,6 +70,60 @@ public sealed class FfmpegRunner : IMediaTools
         }
     }
 
+    private readonly Lock _encodersLock = new();
+    private Task<IReadOnlyList<MediaEncoder>>? _encoders;
+
+    /// <summary>
+    /// The encoders that passed the test encode, probed on first use (on the thread pool, never at start-up) and
+    /// cached for the life of the process. A cancelled or failed probe is not cached. Each test encode is one child
+    /// process of this host, limited to <see cref="FfmpegRunnerOptions.EncoderProbeTimeout"/> and killed with its tree.
+    /// </summary>
+    public Task<IReadOnlyList<MediaEncoder>> ListEncodersAsync(CancellationToken ct)
+    {
+        if (!Available)
+        {
+            return Task.FromResult<IReadOnlyList<MediaEncoder>>([]);
+        }
+
+        Task<IReadOnlyList<MediaEncoder>> task;
+        lock (_encodersLock)
+        {
+            // The probe itself is not tied to one caller's token (others wait for the same run); the host's own
+            // shutdown ends it through the child-process kill of the caller that started it.
+            task = _encoders ??= Task.Run(() => new EncoderProbe(RunProbeAsync, _o.Log).RunAsync(CancellationToken.None));
+        }
+
+        return AwaitAsync(task, ct);
+    }
+
+    private async Task<IReadOnlyList<MediaEncoder>> AwaitAsync(Task<IReadOnlyList<MediaEncoder>> task, CancellationToken ct)
+    {
+        try
+        {
+            return await task.WaitAsync(ct).ConfigureAwait(false);
+        }
+        catch (Exception e) when (e is not OperationCanceledException)
+        {
+            lock (_encodersLock)
+            {
+                if (ReferenceEquals(_encoders, task))
+                {
+                    _encoders = null;
+                }
+            }
+
+            return [];
+        }
+    }
+
+    private async Task<(int Code, string Output)> RunProbeAsync(IReadOnlyList<string> args, CancellationToken ct)
+    {
+        var sink = new MemoryStream();
+        var code = await FfmpegProcess.RunAsync(_o.ExePath, args, null, sink, null, _o.EncoderProbeTimeout, _o.Priority, _o.KillWait, ct)
+            .ConfigureAwait(false);
+        return (code, Encoding.UTF8.GetString(sink.GetBuffer(), 0, (int)sink.Length));
+    }
+
     public async Task<FfmpegMediaInfo?> ProbeAsync(string path, CancellationToken ct)
     {
         RequireAvailable();
@@ -89,12 +146,16 @@ public sealed class FfmpegRunner : IMediaTools
     public async Task<(int Width, int Height)?> ProbeSizeAsync(string path, CancellationToken ct) =>
         await ProbeAsync(path, ct).ConfigureAwait(false) is { } info ? (info.Width, info.Height) : null;
 
-    public async Task ConvertToMp4Async(string inputPath, string outputPath, IProgress<double>? progress, CancellationToken ct)
+    public Task ConvertToMp4Async(string inputPath, string outputPath, IProgress<double>? progress, CancellationToken ct) =>
+        ConvertToMp4Async(inputPath, outputPath, null, progress, ct);
+
+    public async Task ConvertToMp4Async(string inputPath, string outputPath, MediaEncodeSettings? encode, IProgress<double>? progress,
+        CancellationToken ct)
     {
         RequireAvailable();
         RequireNew(outputPath);
         var total = (await ProbeAsync(inputPath, ct).ConfigureAwait(false))?.DurationSeconds ?? 0;
-        await RunToFileAsync(FfmpegArgs.ConvertToMp4(inputPath, outputPath), outputPath, total, progress, _o.ConvertTimeout, ct)
+        await RunToFileAsync(FfmpegArgs.ConvertToMp4(inputPath, outputPath, encode), outputPath, total, progress, _o.ConvertTimeout, ct)
             .ConfigureAwait(false);
     }
 

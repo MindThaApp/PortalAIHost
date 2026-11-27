@@ -121,6 +121,7 @@ public sealed partial class GenerationService : IAsyncDisposable
             Video = video,
             VideoContainers = VideoContainersNow(video),
             VideoJoins = MediaAvailable,
+            MediaEncoders = MediaAvailable,
             Queued = states.Count(s => s == GenerationJobStates.Queued),
             Running = running,
             Detail = new GenerationDetail { Image = Detail(image), Video = Detail(video) },
@@ -237,6 +238,7 @@ public sealed partial class GenerationService : IAsyncDisposable
         var video = kind == ModelKinds.Video;
         ValidateShape(request, video);
         ValidateContainer(request, video);
+        ValidateEncode(request, video);
         CheckContainer(request);
 
         var check = _o.Engine.Check();
@@ -285,7 +287,7 @@ public sealed partial class GenerationService : IAsyncDisposable
                 retryAfterMs: 10_000);
         }
 
-        var settings = Resolve(request, model, family, video);
+        var settings = Resolve(request, model, family, video) with { Encode = await ResolveEncodeAsync(request.Encode, ct).ConfigureAwait(false) };
         var initBytes = DecodeInitImage(request.InitImage, out var initExt);
         if (initBytes is not null && video && !(model.Entry?.Generation?.ImageToVideo == true ||
             model.Components.Any(c => c.Role == GenerationFileRoles.ClipVision)))
@@ -446,7 +448,8 @@ public sealed partial class GenerationService : IAsyncDisposable
 
     /// <summary>Request values, then the catalogue's defaults, then the engine's per-family defaults.</summary>
     internal sealed record JobSettings(string Prompt, string? NegativePrompt, int Width, int Height, int Steps, long Seed,
-        double CfgScale, string? Sampler, double? FlowShift, int Frames, int Fps, double? Strength, string Container = GenerationContainers.Avi);
+        double CfgScale, string? Sampler, double? FlowShift, int Frames, int Fps, double? Strength, string Container = GenerationContainers.Avi,
+        MediaEncodeSettings? Encode = null);
 
     private static JobSettings Resolve(GenerationJobRequest r, GenerationModel model, string family, bool video)
     {

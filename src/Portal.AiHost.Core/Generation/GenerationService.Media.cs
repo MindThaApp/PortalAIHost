@@ -61,6 +61,57 @@ public sealed partial class GenerationService
         }
     }
 
+    /// <summary>The <c>encode</c> object belongs to MP4 output of video jobs; its fields are checked here.</summary>
+    private static void ValidateEncode(GenerationJobRequest r, bool video)
+    {
+        if (r.Encode is null)
+        {
+            return;
+        }
+
+        if (!video)
+        {
+            throw new ApiException(ErrorCodes.UnsupportedParameter, "encode is for video jobs.", "encode");
+        }
+
+        if (r.Container != GenerationContainers.Mp4)
+        {
+            throw new ApiException(ErrorCodes.UnsupportedParameter, "encode needs container mp4.", "encode");
+        }
+
+        MediaEncodeResolver.Validate(r.Encode);
+    }
+
+    /// <summary>
+    /// The encoder settings of an <c>encode</c> object, resolved against the encoders that passed the test encode
+    /// (the first call probes them, off the request thread; later calls read the cache). Null in, null out.
+    /// </summary>
+    private async Task<MediaEncodeSettings?> ResolveEncodeAsync(EncodeRequest? encode, CancellationToken ct)
+    {
+        if (encode is null)
+        {
+            return null;
+        }
+
+        MediaEncodeResolver.Validate(encode);
+        var probed = _o.Media is { Available: true } media
+            ? await media.ListEncodersAsync(ct).ConfigureAwait(false)
+            : [];
+        return MediaEncodeResolver.Resolve(encode, probed);
+    }
+
+    /// <summary>GET /host/media/encoders.</summary>
+    private async Task<MediaEncoderList> ListEncodersAsync(CancellationToken ct)
+    {
+        if (_o.Media is not { Available: true } media)
+        {
+            throw new ApiException(ErrorCodes.EngineMissing, "ffmpeg is not installed on this PC.");
+        }
+
+        var probed = await media.ListEncodersAsync(ct).ConfigureAwait(false);
+        return new MediaEncoderList { Data = [.. probed], Auto = MediaEncodeResolver.AutoChoices(probed) };
+    }
+
     /// <summary>
     /// When the job asked for MP4: converts the finished AVI into <c>converting.mp4</c> of the job's work folder, then
     /// renames it to the job's partial output and removes the job's own AVI. The AVI is finished and marked so before
@@ -84,7 +135,7 @@ public sealed partial class GenerationService
         var temp = GenerationOutputFolder.ConvertingPath(job.WorkDir!);
         try
         {
-            await media.ConvertToMp4Async(aviPartial, temp, null, ct).ConfigureAwait(false);
+            await media.ConvertToMp4Async(aviPartial, temp, job.Settings.Encode, null, ct).ConfigureAwait(false);
             var mp4 = GenerationOutputFolder.PartialPath(job.WorkDir!, ".mp4");
             File.Move(temp, mp4, overwrite: false); // Same folder, a new name.
             _o.Output.DeletePartial(aviPartial); // The job's own AVI; the MP4 replaces it.
@@ -108,6 +159,8 @@ public sealed partial class GenerationService
         }
 
         var json = AiHostJsonContext.Default;
+        pipeline.Map("GET", Routes.MediaEncoders, async c =>
+            await c.WriteJsonAsync(200, await ListEncodersAsync(c.Aborted).ConfigureAwait(false), json.MediaEncoderList).ConfigureAwait(false));
         pipeline.Map("GET", root + "/{id}/last-frame", c =>
             WriteLastFrameAsync(c, JobResults.ResultIfSucceeded(Find(kind, Owner(c), c.RouteValues["id"]))));
 
@@ -115,7 +168,8 @@ public sealed partial class GenerationService
         pipeline.Map("POST", joins, async c =>
         {
             var body = c.ReadJson(json.VideoJoinRequest);
-            var job = CreateJoin(Owner(c), body);
+            MediaEncodeResolver.Validate(body.Encode);
+            var job = CreateJoin(Owner(c), body, await ResolveEncodeAsync(body.Encode, c.Aborted).ConfigureAwait(false));
             c.ResponseHeaders["Location"] = joins + "/" + job.Id;
             await c.WriteJsonAsync(202, job, json.GenerationJob).ConfigureAwait(false);
         });
@@ -318,7 +372,7 @@ public sealed partial class GenerationService
     }
 
     /// <summary>Checks a join request, resolves its inputs and queues the job.</summary>
-    public GenerationJob CreateJoin((string AppId, string DeviceId) owner, VideoJoinRequest request)
+    public GenerationJob CreateJoin((string AppId, string DeviceId) owner, VideoJoinRequest request, MediaEncodeSettings? encode = null)
     {
         ArgumentNullException.ThrowIfNull(request);
         if (_o.Runtime.IsStopping || Volatile.Read(ref _disposed) != 0)
@@ -326,6 +380,7 @@ public sealed partial class GenerationService
             throw new ApiException(ErrorCodes.HostStopping, "Portal AI Host is quitting.");
         }
 
+        MediaEncodeResolver.Validate(request.Encode);
         if (!MediaAvailable)
         {
             throw new ApiException(ErrorCodes.EngineMissing, "Joining clips needs ffmpeg, which is not installed on this PC.");
@@ -355,7 +410,7 @@ public sealed partial class GenerationService
         var transitions = NormalizeTransitions(clips.Count, request.Transitions);
         var audio = ResolveAudio(owner, request.Audio);
 
-        var job = new JoinJob(NewJobId(), owner.AppId, owner.DeviceId, _o.Time.GetUtcNow(), clips, transitions, request.Duck == true);
+        var job = new JoinJob(NewJobId(), owner.AppId, owner.DeviceId, _o.Time.GetUtcNow(), clips, transitions, request.Duck == true) { Encode = encode };
         job.WorkDir = _o.Output.CreateWorkFolder(job.Id);
         try
         {
@@ -398,7 +453,7 @@ public sealed partial class GenerationService
             });
             _o.Output.MarkState(job.WorkDir!, GenerationOutputFolder.StateRunning);
             var progress = new SyncProgress<double>(p => job.Update(j => j.Fraction = Math.Max(j.Fraction, p)));
-            await media.JoinAsync(new MediaJoinPlan(job.Clips, job.Transitions, job.Audio, job.Duck), partial, progress, ct)
+            await media.JoinAsync(new MediaJoinPlan(job.Clips, job.Transitions, job.Audio, job.Duck, job.Encode), partial, progress, ct)
                 .ConfigureAwait(false);
             var size = await media.ProbeSizeAsync(partial, ct).ConfigureAwait(false);
             _o.Output.MarkState(job.WorkDir!, GenerationOutputFolder.StateFinished);
@@ -519,6 +574,7 @@ public sealed partial class GenerationService
         public List<string> Clips { get; } = clips;
         public List<MediaTransition> Transitions { get; } = transitions;
         public List<MediaAudioTrack> Audio { get; } = [];
+        public MediaEncodeSettings? Encode { get; init; }
         public int Width { get; set; }
         public int Height { get; set; }
         public bool Duck { get; } = duck;

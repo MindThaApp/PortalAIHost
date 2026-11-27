@@ -18,6 +18,21 @@ internal sealed class FakeMediaTools : IMediaTools
     public byte[] Png { get; set; } = [0x89, 0x50, 0x4E, 0x47, 1, 2, 3];
 
     public bool Available => Present;
+    public List<MediaEncoder> Encoders { get; } =
+    [
+        new() { Id = "h264_amf", Codec = "h264", Hardware = true, Vendor = "AMD", Modes = ["quality", "bitrate"] },
+        new() { Id = "h264_mf", Codec = "h264", Hardware = false, Vendor = "Windows", Modes = ["quality", "bitrate"] },
+    ];
+    public List<MediaEncodeSettings?> ConvertEncodes { get; } = [];
+
+    public Task<IReadOnlyList<MediaEncoder>> ListEncodersAsync(CancellationToken ct) =>
+        Task.FromResult<IReadOnlyList<MediaEncoder>>(Present ? Encoders : []);
+
+    public Task ConvertToMp4Async(string inputPath, string outputPath, MediaEncodeSettings? encode, IProgress<double>? progress, CancellationToken ct)
+    {
+        ConvertEncodes.Add(encode);
+        return ConvertToMp4Async(inputPath, outputPath, progress, ct);
+    }
 
     public Task ConvertToMp4Async(string inputPath, string outputPath, IProgress<double>? progress, CancellationToken ct)
     {
@@ -155,6 +170,62 @@ public sealed class GenerationMediaTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task TheEncodeObjectReachesTheConversionWithTheResolvedEncoder()
+    {
+        var token = await _host.GetTokenAsync();
+        await VideoJobAsync(token, """{ "prompt": "waves", "frames": 9, "container": "mp4", "encode": { "preset": "best", "quality": 90 } }""");
+        var e = Assert.Single(_media.ConvertEncodes)!;
+        Assert.Equal(("h264_amf", "best", 90), (e.EncoderId, e.Preset, e.Quality));
+    }
+
+    [Fact]
+    public async Task WithoutEncodeTheConversionGetsNoSettings()
+    {
+        var token = await _host.GetTokenAsync();
+        await VideoJobAsync(token, """{ "prompt": "waves", "frames": 9, "container": "mp4" }""");
+        Assert.Null(Assert.Single(_media.ConvertEncodes));
+    }
+
+    [Theory]
+    [InlineData("""{ "prompt": "x", "container": "mp4", "encode": { "codec": "vp9" } }""", ErrorCodes.UnsupportedParameter, "encode.codec")]
+    [InlineData("""{ "prompt": "x", "container": "mp4", "encode": { "codec": "av1" } }""", ErrorCodes.UnsupportedParameter, "encode.codec")]
+    [InlineData("""{ "prompt": "x", "container": "mp4", "encode": { "quality": 500 } }""", ErrorCodes.InvalidRequest, "encode.quality")]
+    [InlineData("""{ "prompt": "x", "encode": { "preset": "fast" } }""", ErrorCodes.UnsupportedParameter, "encode")]
+    public async Task ABadEncodeObjectIsRefused(string body, string code, string param)
+    {
+        var token = await _host.GetTokenAsync();
+        var (status, error) = await SendAsync(HttpMethod.Post, Routes.VideoJobs, token, body);
+        AssertError(status, error, HttpStatusCode.BadRequest, code);
+        Assert.Equal(param, error.GetProperty("error").GetProperty("param").GetString());
+    }
+
+    [Fact]
+    public async Task TheEncoderListShowsTheProbedEncodersAndTheAutoChoice()
+    {
+        var token = await _host.GetTokenAsync();
+        var (status, body) = await SendAsync(HttpMethod.Get, Routes.MediaEncoders, token);
+        Assert.Equal(HttpStatusCode.OK, status);
+        Assert.Equal(["h264_amf", "h264_mf"], body.GetProperty("data").EnumerateArray().Select(e => e.GetProperty("id").GetString()));
+        Assert.Equal("h264_amf", body.GetProperty("auto").GetProperty("h264").GetString());
+    }
+
+    [Fact]
+    public async Task AJoinCarriesTheResolvedEncodeAndABadOneIsRefused()
+    {
+        var token = await _host.GetTokenAsync();
+        var a = await VideoJobAsync(token);
+        var (status, accepted) = await SendAsync(HttpMethod.Post, Routes.VideoJoins, token,
+            $$"""{ "clips": ["{{a}}"], "encode": { "mode": "bitrate", "bitrate_kbps": 6000 } }""");
+        Assert.Equal(HttpStatusCode.Accepted, status);
+        await WaitAsync(token, Routes.VideoJoins, accepted.GetProperty("id").GetString()!, GenerationJobStates.Succeeded);
+        var e = Assert.Single(_media.Joins).Encode!;
+        Assert.Equal(("h264_amf", "bitrate", 6000), (e.EncoderId, e.RateMode, e.Kbps));
+
+        var (bad, error) = await SendAsync(HttpMethod.Post, Routes.VideoJoins, token, $$"""{ "clips": ["{{a}}"], "encode": { "codec": "vp9" } }""");
+        AssertError(bad, error, HttpStatusCode.BadRequest, ErrorCodes.UnsupportedParameter);
+    }
+
+    [Fact]
     public async Task TheDefaultStaysAviAndNothingIsConverted()
     {
         var token = await _host.GetTokenAsync();
@@ -216,10 +287,12 @@ public sealed class GenerationMediaTests : IAsyncLifetime
         await _service.RefreshAvailabilityAsync();
         var gen = _service.Availability();
         Assert.True(gen.VideoJoins);
+        Assert.True(gen.MediaEncoders);
         Assert.Equal([GenerationContainers.Avi, GenerationContainers.Mp4], gen.VideoContainers);
         var token = await _host.GetTokenAsync();
         var (_, caps) = await SendAsync(HttpMethod.Get, "/host/capabilities", token);
         Assert.Contains(caps.GetProperty("endpoints").EnumerateArray(), e => e.GetString() == EndpointNames.VideoJoins);
+        Assert.Contains(caps.GetProperty("endpoints").EnumerateArray(), e => e.GetString() == EndpointNames.MediaEncoders);
     }
 
     [Fact]
