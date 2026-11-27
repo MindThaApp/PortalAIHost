@@ -14,7 +14,7 @@ public sealed class VoiceLibraryOptions
     public int SampleRate { get; init; } = 24000;
 
     public double MinSampleSeconds { get; init; } = 3;
-    public double MaxSampleSeconds { get; init; } = 60;
+    public double MaxSampleSeconds { get; init; } = VoiceLimits.SampleSeconds;
     public int MaxVoices { get; init; } = 50;
 }
 

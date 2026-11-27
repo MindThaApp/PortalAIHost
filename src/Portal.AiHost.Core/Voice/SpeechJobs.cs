@@ -16,6 +16,9 @@ public sealed class SpeechJobOptions
     public int MaxChunkChars { get; init; } = 300;
     public int MaxQueuedPerApp { get; init; } = 8;
 
+    /// <summary>Learns how long jobs take. Optional.</summary>
+    public VoiceEstimator? Estimator { get; init; }
+
     /// <summary>How many finished jobs stay in the list (the files stay on disk).</summary>
     public int MaxRememberedJobs { get; init; } = 200;
 
@@ -198,7 +201,7 @@ public sealed class SpeechJobManager : IAsyncDisposable
 
         var chunks = SpeechText.Split(text, _options.MaxChunkChars);
         var job = new Job(TokenFormat.NewId("sp_", 12), appId, request.VoiceId, request.BuiltinVoice, samplePath, speed, chunks,
-            _time.GetUtcNow());
+            _time.GetUtcNow()) { Chars = text.Length };
         lock (_gate)
         {
             var waiting = _jobs.Values.Count(j => j.AppId == appId && j.Status is SpeechJobStatuses.Queued or SpeechJobStatuses.Running);
@@ -316,6 +319,8 @@ public sealed class SpeechJobManager : IAsyncDisposable
             job.Status = SpeechJobStatuses.Running;
         }
 
+        var startedAt = _time.GetTimestamp();
+
         using var linked = CancellationTokenSource.CreateLinkedTokenSource(job.Cancel.Token, _stop.Token);
         try
         {
@@ -351,6 +356,8 @@ public sealed class SpeechJobManager : IAsyncDisposable
                 job.Status = SpeechJobStatuses.Completed;
                 job.FinishedAt = _time.GetUtcNow();
             }
+
+            _options.Estimator?.Record(job.VoiceId is not null, job.Chars, _time.GetElapsedTime(startedAt).TotalSeconds);
         }
         catch (OperationCanceledException)
         {
@@ -447,6 +454,7 @@ public sealed class SpeechJobManager : IAsyncDisposable
             CreatedAt = job.CreatedAt,
             FinishedAt = job.FinishedAt,
             QueuePosition = position,
+            EstimatedSeconds = EstimateSeconds(job),
             Result = job.Result is null ? null : new SpeechJobResult
             {
                 Format = job.Result.Format,
@@ -460,9 +468,31 @@ public sealed class SpeechJobManager : IAsyncDisposable
         };
     }
 
+    /// <summary>Seconds left for this job plus the queued or running jobs ahead of it. Null when finished or no estimator.</summary>
+    private int? EstimateSeconds(Job job)
+    {
+        if (_options.Estimator is not { } est || job.Status is not (SpeechJobStatuses.Queued or SpeechJobStatuses.Running))
+        {
+            return null;
+        }
+
+        double Left(Job j) => j.Chars / 1000.0 * est.For(j.VoiceId is not null).SecondsPer1000 * (1 - Math.Clamp(j.Progress, 0, 1));
+        var total = Left(job);
+        if (job.Status == SpeechJobStatuses.Queued)
+        {
+            total += _jobs.Values
+                .Where(j => j != job && (j.Status == SpeechJobStatuses.Running ||
+                    (j.Status == SpeechJobStatuses.Queued && j.CreatedAt < job.CreatedAt)))
+                .Sum(Left);
+        }
+
+        return (int)Math.Ceiling(total);
+    }
+
     private sealed class Job(string id, string appId, string? voiceId, string? builtinVoice, string? samplePath, double speed,
         List<string> chunks, DateTimeOffset createdAt)
     {
+        public int Chars { get; init; }
         public string Id { get; } = id;
         public string AppId { get; } = appId;
         public string? VoiceId { get; } = voiceId;

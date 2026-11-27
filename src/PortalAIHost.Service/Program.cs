@@ -186,7 +186,7 @@ internal static class Program
     private static readonly Lazy<HttpClient> Http = new(() => new HttpClient { Timeout = Timeout.InfiniteTimeSpan });
 
     /// <summary>The voice feature: library and speech jobs under the data root, a supervised voice helper, and ffmpeg for MP3 samples. The helper and models are fetched separately; without them the capability reports false.</summary>
-    private static VoiceService CreateVoice(string dataRoot)
+    private static VoiceService CreateVoice(string dataRoot, HardwareProfile? hardware)
     {
         var engineDir = Path.Combine(AppContext.BaseDirectory, "engine");
         var options = new VoiceEngineOptions
@@ -205,6 +205,8 @@ internal static class Program
             {
                 VoicesDirectory = Path.Combine(dataRoot, "voices"),
                 OutputDirectory = Path.Combine(dataRoot, "speech-output"),
+                Limits = VoiceLimits.ForHardware(hardware),
+                EstimatesPath = Path.Combine(dataRoot, "voice-estimates.json"),
             },
             new VoiceEngineClient(supervisor, options),
             new FfmpegAudioDecoder(Path.Combine(engineDir, "ffmpeg", "ffmpeg.exe")),
