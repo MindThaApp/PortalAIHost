@@ -1,0 +1,16 @@
+{
+  "note": "Pinned ffmpeg for the Host's media tools (MP4 conversion, last-frame pictures, clip joins, MP3 samples). LGPL shared build: no GPL-only parts, no libx264. H.264 is encoded with the Windows Media Foundation encoder (h264_mf) that the OS provides. Source code of this exact build: https://github.com/FFmpeg/FFmpeg/tree/n8.1.3 (build recipe: https://github.com/BtbN/FFmpeg-Builds, tag autobuild-2026-11-27-12-42). Release assets of old autobuild tags are removed upstream after a while: keep a copy of the pinned zip with the release artifacts.",
+  "source": "https://github.com/BtbN/FFmpeg-Builds/releases/download",
+  "tag": "autobuild-2026-11-27-12-42",
+  "version": "n8.1.3-41-ga8029b6528",
+  "license": "LGPL-3.0-or-later",
+  "builds": [
+    {
+      "flavour": "x64",
+      "arch": "x64",
+      "asset": "ffmpeg-n8.1.3-41-ga8029b6528-win64-lgpl-shared-8.1.zip",
+      "sha256": "bb63313643f91add6ab97f546c216b07378476f4953f983c9e1c8875f4ff9558",
+      "size": 81544084
+    }
+  ]
+}
