@@ -34,8 +34,8 @@
                            Style="{StaticResource CaptionTextBlockStyle}" IsHitTestVisible="False" />
             </StackPanel>
         </Grid>
+        <Grid Grid.Row="1">
         <NavigationView
-            Grid.Row="1"
             x:Name="Nav"
             PaneDisplayMode="Left"
             IsBackButtonVisible="Collapsed"
@@ -55,5 +55,18 @@
             </NavigationView.FooterMenuItems>
             <Frame x:Name="ContentFrame" />
         </NavigationView>
+            <InfoBar x:Name="UpdateBar" x:Uid="UpdateBar" Severity="Informational" IsOpen="False" IsClosable="True"
+                     HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="16" MaxWidth="460"
+                     Closed="OnUpdateBarClosed">
+                <InfoBar.ActionButton>
+                    <Button x:Uid="UpdateButton" Click="OnUpdateClick">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE896;" FontSize="16" />
+                            <TextBlock x:Uid="UpdateButtonText" />
+                        </StackPanel>
+                    </Button>
+                </InfoBar.ActionButton>
+            </InfoBar>
+        </Grid>
     </Grid>
 </Window>

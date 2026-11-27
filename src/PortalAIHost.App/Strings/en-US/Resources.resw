@@ -374,14 +374,26 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</value></data>
   <data name="Vm_WhatsNewHeading" xml:space="preserve"><value>What's new in Portal AI Host {0}</value></data>
-  <data name="Vm_Wn1Title" xml:space="preserve"><value>See what's happening</value></data>
-  <data name="Vm_Wn1Body" xml:space="preserve"><value>Home now shows which app is using AI right now, how fast it answers, how much memory the model uses, and how often each app asked today. Unload or load the model with one click.</value></data>
-  <data name="Vm_Wn2Title" xml:space="preserve"><value>A quick look from the tray</value></data>
-  <data name="Vm_Wn2Body" xml:space="preserve"><value>Click the tray icon to see whether the AI is ready, which model is loaded and the last request, without opening the window.</value></data>
-  <data name="Vm_Wn3Title" xml:space="preserve"><value>Crash reports help us fix problems</value></data>
-  <data name="Vm_Wn3Body" xml:space="preserve"><value>If something goes wrong, a short report tells us where it happened. It never includes what you type, file names or your name. Turn it off in Settings under Privacy.</value></data>
-  <data name="Vm_Wn4Title" xml:space="preserve"><value>Smoother and steadier</value></data>
-  <data name="Vm_Wn4Body" xml:space="preserve"><value>Calmer animations, a safer model folder that only Portal AI Host can change, and many small fixes.</value></data>
+  <data name="Vm_Wn1Title" xml:space="preserve"><value>Thank you</value></data>
+  <data name="Vm_Wn1Body" xml:space="preserve"><value>Thank you for your feedback and reports. They shaped this update.</value></data>
+  <data name="Vm_Wn2Title" xml:space="preserve"><value>The tray pop-up no longer crashes</value></data>
+  <data name="Vm_Wn2Body" xml:space="preserve"><value>The small status window from the tray icon could crash the first time it opened. That is fixed.</value></data>
+  <data name="Vm_Wn3Title" xml:space="preserve"><value>Removing a device stops it at once</value></data>
+  <data name="Vm_Wn3Body" xml:space="preserve"><value>When you remove a device, anything it was still asking for now stops straight away.</value></data>
+  <data name="Vm_Wn4Title" xml:space="preserve"><value>Pairing a new PC is safer</value></data>
+  <data name="Vm_Wn4Body" xml:space="preserve"><value>A laptop paired with a new home PC no longer risks sending the old PC's access token to it.</value></data>
+  <data name="Vm_Wn5Title" xml:space="preserve"><value>Use your home PC from a laptop</value></data>
+  <data name="Vm_Wn5Body" xml:space="preserve"><value>Pair a laptop with your home PC once. Apps on the laptop then use the home PC's AI, at home or away, and fall back to the laptop's own model if you choose.</value></data>
+  <data name="Vm_Wn6Title" xml:space="preserve"><value>Devices on this PC</value></data>
+  <data name="Vm_Wn6Body" xml:space="preserve"><value>See each paired laptop on its own card. Pause it, set daily limits and quiet hours, choose which models it may use, or take back a model it loaded.</value></data>
+  <data name="Vm_Wn7Title" xml:space="preserve"><value>Two models at once</value></data>
+  <data name="Vm_Wn7Body" xml:space="preserve"><value>A laptop you trust can keep a second model loaded on your PC, for example one on the graphics card and one in memory. Your own model is never pushed out.</value></data>
+  <data name="Vm_Wn8Title" xml:space="preserve"><value>Gaming mode works in windowed games</value></data>
+  <data name="Vm_Wn8Body" xml:space="preserve"><value>Turn on gaming mode and other devices are told your PC is busy while a game runs, including games in a window.</value></data>
+  <data name="Vm_Wn9Title" xml:space="preserve"><value>Relay access key</value></data>
+  <data name="Vm_Wn9Body" xml:space="preserve"><value>Only devices paired with your key can reach this PC away from home. Make a new key at any time.</value></data>
+  <data name="Vm_Wn10Title" xml:space="preserve"><value>See your memory at a glance</value></data>
+  <data name="Vm_Wn10Body" xml:space="preserve"><value>Bars on the Models page show how much memory and graphics memory the loaded models use, against your limits.</value></data>
   <data name="Vm_WnShowMe" xml:space="preserve"><value>Show me</value></data>
   <data name="Vm_WnShowMeName" xml:space="preserve"><value>Show me: {0}</value></data>
   <data name="WhatsNewDone.Content" xml:space="preserve"><value>Got it</value></data>
@@ -854,4 +866,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="Vm_MemRam" xml:space="preserve"><value>RAM</value></data>
   <data name="Vm_MemVram" xml:space="preserve"><value>Graphics memory</value></data>
   <data name="Vm_MemLine" xml:space="preserve"><value>{0}: {1} used, {2} reserved while loading, {3} free of {4}</value></data>
+  <data name="UpdateBar.Title" xml:space="preserve"><value>Update available</value></data>
+  <data name="UpdateBar.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>A newer version of Portal AI Host is ready in the Microsoft Store</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Update</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Open the Microsoft Store page to update Portal AI Host</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Open the Microsoft Store page to update Portal AI Host</value></data>
+  <data name="UpdateButtonText.Text" xml:space="preserve"><value>Update</value></data>
 </root>
