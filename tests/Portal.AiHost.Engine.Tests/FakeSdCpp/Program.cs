@@ -52,6 +52,12 @@ if (prompt.Contains("nooutput", StringComparison.Ordinal))
     return 0;
 }
 
+if (prompt.Contains("hang", StringComparison.Ordinal))
+{
+    // Written before the sampling line so a cancel on the first sampling update always finds the partial.
+    File.WriteAllBytes(output, "partial"u8.ToArray());
+}
+
 Log("get_learned_condition completed, taking 5 ms");
 Log("sampling using Euler A method");
 for (var step = 1; step <= steps; step++)
@@ -61,7 +67,6 @@ for (var step = 1; step <= steps; step++)
     stdout.Flush();
     if (step == 1 && prompt.Contains("hang", StringComparison.Ordinal))
     {
-        File.WriteAllBytes(output, "partial"u8.ToArray());
         Thread.Sleep(Timeout.Infinite);
     }
 

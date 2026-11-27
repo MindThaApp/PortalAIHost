@@ -371,17 +371,18 @@ public sealed class SdCppEngineTests : IDisposable
         using var cts = new CancellationTokenSource();
         var engine = Engine();
         var launch = Launch("hang pid");
+        var cancelledAt = 0L;
         var run = engine.RunAsync(launch, new Progress(p =>
         {
             progress.Report(p);
-            if (p.Stage == GenerationStages.Sampling)
+            if (p.Stage == GenerationStages.Sampling && Interlocked.CompareExchange(ref cancelledAt, Stopwatch.GetTimestamp(), 0) == 0)
             {
                 cts.Cancel();
             }
         }), cts.Token);
-        var watch = Stopwatch.StartNew();
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => run);
-        Assert.True(watch.Elapsed < TimeSpan.FromSeconds(10));
+        // Timed from the cancel, not from the start: starting the stand-in is slow on a busy machine.
+        Assert.True(Stopwatch.GetElapsedTime(Volatile.Read(ref cancelledAt)) < TimeSpan.FromSeconds(10));
 
         // The stand-in process is gone (killed with its whole tree).
         var pid = int.Parse(await File.ReadAllTextAsync(Path.Combine(_work, "fake.pid")), System.Globalization.CultureInfo.InvariantCulture);
