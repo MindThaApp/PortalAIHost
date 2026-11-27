@@ -37,8 +37,7 @@ public sealed partial class TrayPopupWindow : Window
         InitializeComponent();
         Title = AppServices.Strings.Get("TrayWindowTitle");
         _hwnd = WindowNative.GetWindowHandle(this);
-        Root.FlowDirection = System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft
-            ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+        UiDirection.Apply(Root);
         Root.KeyboardAccelerators.Add(Escape());
         if (!_access.HighContrast) SystemBackdrop = new DesktopAcrylicBackdrop();
         else Root.Background = (Brush)Application.Current.Resources["SolidBackgroundFillColorBaseBrush"];

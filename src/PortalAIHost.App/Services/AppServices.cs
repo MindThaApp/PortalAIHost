@@ -215,6 +215,7 @@ public sealed partial class WinUiDialogService : IDialogService
             var dialog = new ContentDialog
             {
                 XamlRoot = Root,
+                FlowDirection = UiDirection.Current,
                 RequestedTheme = ThemeOf(),
                 Title = title,
                 Content = new TextBlock { Text = body, TextWrapping = TextWrapping.Wrap },
@@ -242,6 +243,7 @@ public sealed partial class WinUiDialogService : IDialogService
             var dialog = new ContentDialog
             {
                 XamlRoot = Root,
+                FlowDirection = UiDirection.Current,
                 RequestedTheme = ThemeOf(),
                 Title = title,
                 Content = new ScrollViewer { Content = new TextBlock { Text = body, TextWrapping = TextWrapping.Wrap, IsTextSelectionEnabled = true } },
@@ -287,6 +289,7 @@ public sealed partial class WinUiDialogService : IDialogService
             var dialog = new ContentDialog
             {
                 XamlRoot = Root,
+                FlowDirection = UiDirection.Current,
                 RequestedTheme = ThemeOf(),
                 Title = _s.Format("Vm_ApprovalTitle", ApprovalText.DisplayName(_s, a)),
                 Content = panel,
