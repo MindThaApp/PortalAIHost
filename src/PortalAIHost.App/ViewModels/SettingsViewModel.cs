@@ -48,12 +48,14 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
         MotionChoices = Names("Vm_Motion_", "Follow", "Reduced", "Off");
         ShowAppearance(shell.State.Appearance);
         InitPerformance();
+        InitHomePc();
     }
 
     public void Dispose()
     {
         _shell.Host.StoreProgress -= OnStoreProgress;
         _shell.Host.RemoteChanged -= OnRemoteChanged;
+        DisposeHomePc();
     }
 
     /// <summary>After a new models folder is saved: offers to move the models already downloaded into it.</summary>
@@ -164,6 +166,7 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
     [ObservableProperty] private bool _notifyDownloads = true;
     [ObservableProperty] private bool _notifyApprovals = true;
     [ObservableProperty] private bool _notifyProblems = true;
+    [ObservableProperty] private bool _notifyDevices = true;
     [ObservableProperty] private int _idleIndex = TenMinutesIndex;
     [ObservableProperty] private string _modelsFolder = "";
     [ObservableProperty] private string _folderPlaceholder = "";
@@ -288,6 +291,7 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
                 NotifyDownloads = IsOn(s, NotificationKinds.Downloads);
                 NotifyApprovals = IsOn(s, NotificationKinds.Approvals);
                 NotifyProblems = IsOn(s, NotificationKinds.Problems);
+                NotifyDevices = IsOn(s, NotificationKinds.Devices);
                 ModelsFolder = s.ModelsFolder ?? "";
                 FolderPlaceholder = Fmt.PrivatePath(shownFolder);
                 RemoteEnabled = s.Remote.Enabled;
@@ -298,6 +302,7 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
                 _loading = false;
             });
             await RefreshRemoteAsync().ConfigureAwait(false);
+            await LoadHomePcAsync().ConfigureAwait(false);
         }
         catch (HostUnavailableException)
         {
@@ -314,6 +319,7 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
         if (!NotifyDownloads) muted.Add(NotificationKinds.Downloads);
         if (!NotifyApprovals) muted.Add(NotificationKinds.Approvals);
         if (!NotifyProblems) muted.Add(NotificationKinds.Problems);
+        if (!NotifyDevices) muted.Add(NotificationKinds.Devices);
         // Names this version does not know stay as they were.
         muted.AddRange((_current.MutedNotifications ?? []).Where(k => !NotificationKinds.All.Contains(k)));
         return muted.Count == 0 ? null : muted;
@@ -322,10 +328,11 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
     partial void OnNotifyDownloadsChanged(bool value) { if (!_loading) _ = SaveAsync(); }
     partial void OnNotifyApprovalsChanged(bool value) { if (!_loading) _ = SaveAsync(); }
     partial void OnNotifyProblemsChanged(bool value) { if (!_loading) _ = SaveAsync(); }
+    partial void OnNotifyDevicesChanged(bool value) { if (!_loading) _ = SaveAsync(); }
 
     /// <summary>Puts the notification choices back to their defaults (all on).</summary>
     [RelayCommand]
-    private void ResetNotifications() => (NotifyDownloads, NotifyApprovals, NotifyProblems) = (true, true, true);
+    private void ResetNotifications() => (NotifyDownloads, NotifyApprovals, NotifyProblems, NotifyDevices) = (true, true, true, true);
 
     private static int IndexFor(HostSettings s)
     {

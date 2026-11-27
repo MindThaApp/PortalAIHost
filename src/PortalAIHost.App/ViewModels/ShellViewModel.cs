@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Portal.AiHost.Contracts.Control;
+using Portal.AiHost.Contracts;
 using PortalAIHost.App.Services;
 
 namespace PortalAIHost.App.ViewModels;
@@ -28,7 +29,39 @@ public sealed partial class ShellViewModel : ObservableObject, IDisposable
         State = state;
         host.StatusChanged += s => _ui.Post(() => Apply(s));
         host.ApprovalPending += a => _ui.Post(() => Enqueue(a));
+        ClientLink = new ClientLinkViewModel(host, ui, strings);
+        host.DeviceAlerted += OnDeviceAlert;
     }
+
+    /// <summary>The link to the home PC (client mode), shared by Home, Models, Settings and the tray.</summary>
+    public ClientLinkViewModel ClientLink { get; }
+
+    /// <summary>A new device paired, or one connected from away: the line the window shows until it is closed. Empty when none.</summary>
+    [ObservableProperty] private string _deviceNotice = "";
+
+    public bool HasDeviceNotice => DeviceNotice.Length > 0;
+
+    partial void OnDeviceNoticeChanged(string value) => OnPropertyChanged(nameof(HasDeviceNotice));
+
+    /// <summary>
+    /// The host raised a device alert. The Windows notification is the host's; here the window shows a quiet line,
+    /// unless the Devices notification kind is muted. The settings are read off the UI thread.
+    /// </summary>
+    private void OnDeviceAlert(DeviceAlert alert) => _ = Task.Run(async () =>
+    {
+        try
+        {
+            var settings = await _host.GetSettingsAsync(_cts.Token).ConfigureAwait(false);
+            if (settings.MutedNotifications?.Contains(NotificationKinds.Devices) == true) return;
+        }
+        catch (Exception ex) when (ex is HostUnavailableException or HostRequestException or OperationCanceledException)
+        {
+            return;
+        }
+
+        var key = alert.Kind == "paired" ? "Vm_DeviceAlertPaired" : "Vm_DeviceAlertRelay";
+        _ui.Post(() => DeviceNotice = _strings.Format(key, alert.DeviceName));
+    });
 
     public IAppState State { get; }
     public IHostControl Host => _host;
@@ -65,6 +98,7 @@ public sealed partial class ShellViewModel : ObservableObject, IDisposable
         State.SaveSendCrashReports(on);
         CrashReportsApplier?.Invoke(on);
         await SyncCrashReportsAsync().ConfigureAwait(false);
+        ClientLink.Poke();
     }
 
     /// <summary>Makes the host follow the window's choice. The host being away is fine: it is synced on the next connect.</summary>
