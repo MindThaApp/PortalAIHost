@@ -31,6 +31,7 @@ public sealed partial class WelcomeWindow : Window
     {
         ViewModel = new FirstRunViewModel(_shell, AppServices.Ui, AppServices.Strings);
         InitializeComponent();
+        UiDirection.Apply(this);
         CrashWhatsSent.NavigateUri = new Uri(Links.PrivacyUrl);
         AppWindow.SetIcon(System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "portalaihost.ico"));
         // A plain drag strip with only the close button; the window cannot be resized, minimised or maximised.

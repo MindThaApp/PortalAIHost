@@ -21,6 +21,7 @@ public sealed partial class WinUiDialogService
             var dialog = new ContentDialog
             {
                 XamlRoot = Root,
+                FlowDirection = UiDirection.Current,
                 RequestedTheme = ThemeOf(),
                 Title = _s.Get("Vm_FallbackTitle"),
                 Content = new TextBlock { Text = _s.Format("Vm_FallbackBody", pcName), TextWrapping = TextWrapping.Wrap },
@@ -72,6 +73,7 @@ public sealed partial class WinUiDialogService
             var dialog = new ContentDialog
             {
                 XamlRoot = Root,
+                FlowDirection = UiDirection.Current,
                 RequestedTheme = ThemeOf(),
                 Title = _s.Get("Vm_PairTitle"),
                 Content = panel,
