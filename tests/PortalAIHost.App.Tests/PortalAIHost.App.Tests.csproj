@@ -22,6 +22,7 @@
     <Compile Include="..\..\src\PortalAIHost.App\Services\ControlChannel.cs" Link="App\Services\ControlChannel.cs" />
     <Compile Include="..\..\src\PortalAIHost.App\Services\HostLaunchers.cs" Link="App\Services\HostLaunchers.cs" />
     <Compile Include="..\..\src\PortalAIHost.App\Services\AppStateStore.cs" Link="App\Services\AppStateStore.cs" />
+    <Compile Include="..\..\src\PortalAIHost.App\Services\LanguageCatalog.cs" Link="App\Services\LanguageCatalog.cs" />
     <Compile Include="..\..\src\PortalAIHost.App\Services\AppearanceTypes.cs" Link="App\Services\AppearanceTypes.cs" />
     <Compile Include="..\..\src\PortalAIHost.App\Services\Links.cs" Link="App\Services\Links.cs" />
     <Compile Include="..\..\src\PortalAIHost.App\Services\PseudoLoc.cs" Link="App\Services\PseudoLoc.cs" />

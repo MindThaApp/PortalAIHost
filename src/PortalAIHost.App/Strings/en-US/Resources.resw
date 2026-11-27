@@ -986,4 +986,28 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Put the appearance settings back to their defaults</value></data>
   <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Put the appearance settings back to their defaults</value></data>
   <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Health checks</value></data>
+  <data name="LanguagePicker.Header" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="LanguagePicker.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve">
+    <value>Choose the language for the app. Windows default follows your Windows display language.</value>
+  </data>
+  <data name="LanguageWindowsDefault" xml:space="preserve">
+    <value>Windows default</value>
+  </data>
+  <data name="LanguageWindowsDefaultHint" xml:space="preserve">
+    <value>Follows Windows</value>
+  </data>
+  <data name="LanguageRestartNote" xml:space="preserve">
+    <value>Restart the app to use the new language.</value>
+  </data>
+  <data name="LanguageRestartLabel" xml:space="preserve">
+    <value>Restart</value>
+  </data>
+  <data name="LanguageRestartButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Close and reopen the app in the chosen language</value>
+  </data>
+  <data name="LanguageRestartButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve">
+    <value>Restart</value>
+  </data>
 </root>

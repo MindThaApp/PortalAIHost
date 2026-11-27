@@ -1,6 +1,7 @@
 <Window
     x:Class="PortalAIHost.App.WelcomeWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:ctl="using:PortalAIHost.App.Controls"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Grid x:Name="Root">
         <Grid.RowDefinitions>
@@ -29,6 +30,7 @@
                                TextWrapping="Wrap" TextAlignment="Center" AutomationProperties.HeadingLevel="Level1" />
                     <TextBlock x:Name="Head0" x:Uid="WelcomeLead" FontSize="14" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"
                                Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <ctl:LanguagePicker HorizontalAlignment="Center" />
                     <TextBlock x:Uid="WelcomeIntro" TextWrapping="Wrap" Margin="0,8,0,0" />
                     <Grid ColumnSpacing="12">
                         <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>

@@ -28,6 +28,11 @@ public partial class App : Application
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
         AppServices.Build();
+        if (AppServices.Shell.State is AppStateStore store)
+        {
+            Controls.LanguagePicker.ApplyStored(store.Language);
+            Controls.LanguagePicker.Persist = store.SaveLanguage;
+        }
         AppServices.Host.TrayPopup += p => AppServices.Ui.Post(() => TogglePopup(p.X, p.Y));
         // A second launch is redirected here: a tray click shows the pop-up, anything else brings the window forward.
         AppInstance.GetCurrent().Activated += (_, e) => AppServices.Ui.Post(() => OnRedirected(e));

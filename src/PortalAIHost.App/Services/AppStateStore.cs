@@ -26,12 +26,22 @@ public sealed class AppStateStore : IAppState
         Appearance = d.Appearance ?? AppearancePrefs.Default;
         LastSeenVersion = d.LastSeenVersion;
         SendCrashReports = d.SendCrashReports ?? true;
+        Language = LanguageCatalog.Normalize(d.Language);
     }
 
     public bool FirstRunDone { get; private set; }
     public AppearancePrefs Appearance { get; private set; }
     public string? LastSeenVersion { get; private set; }
     public bool SendCrashReports { get; private set; } = true;
+
+    /// <summary>Chosen app language tag; empty follows Windows.</summary>
+    public string Language { get; private set; } = "";
+
+    public void SaveLanguage(string tag)
+    {
+        Language = LanguageCatalog.Normalize(tag);
+        Write();
+    }
 
     public void SaveSendCrashReports(bool on)
     {
@@ -63,6 +73,7 @@ public sealed class AppStateStore : IAppState
         public AppearancePrefs? Appearance { get; set; }
         public string? LastSeenVersion { get; set; }
         public bool? SendCrashReports { get; set; }
+        public string? Language { get; set; }
     }
 
     private void Write()
@@ -70,7 +81,7 @@ public sealed class AppStateStore : IAppState
         try
         {
             Directory.CreateDirectory(Path.GetDirectoryName(_path)!);
-            var data = new Data { FirstRunDone = FirstRunDone, Appearance = Appearance, LastSeenVersion = LastSeenVersion, SendCrashReports = SendCrashReports };
+            var data = new Data { FirstRunDone = FirstRunDone, Appearance = Appearance, LastSeenVersion = LastSeenVersion, SendCrashReports = SendCrashReports, Language = Language };
             File.WriteAllText(_path, JsonSerializer.Serialize(data, Json));
         }
         catch (IOException)

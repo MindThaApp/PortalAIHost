@@ -27,6 +27,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Assets\portalaihost.ico" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets\Flags\*.svg" />
     <PackageReference Include="Microsoft.WindowsAppSDK.WinUI" VersionOverride="2.3.9" />
     <PackageReference Include="Microsoft.WindowsAppSDK.Foundation" VersionOverride="2.3.12" />
     <PackageReference Include="Microsoft.WindowsAppSDK.InteractiveExperiences" VersionOverride="2.1.9" />
