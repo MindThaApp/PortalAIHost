@@ -54,7 +54,7 @@ public sealed partial class PdhGpuSampleSource : IGpuSampleSource, IDisposable
                 }
 
                 // A rate counter needs two collections; the first sample after opening has nothing to report.
-                return [];
+                return GpuSamples.NoData;
             }
 
             return PdhCollectQueryData(_query) == 0 ? Read() : [];

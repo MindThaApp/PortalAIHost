@@ -10,28 +10,72 @@ public class GpuBusyDeciderTests
 
     private static GpuProcessLoad[] Load(int pid, double pct) => [new GpuProcessLoad(pid, pct)];
 
+    private bool Feed(GpuBusyDecider d, double pct, int seconds = 2)
+    {
+        _now += TimeSpan.FromSeconds(seconds);
+        return d.Update(Load(5, pct));
+    }
+
     [Fact]
     public void Busy_only_after_sustained_window()
     {
         var d = Make();
-        Assert.False(d.Update(Load(5, 80)));
-        _now += TimeSpan.FromSeconds(9);
-        Assert.False(d.Update(Load(5, 80)));
-        _now += TimeSpan.FromSeconds(1);
-        Assert.True(d.Update(Load(5, 80)));
+        var busy = d.Update(Load(5, 80));
+        for (var i = 0; i < 3; i++)
+        {
+            busy = Feed(d, 80);
+        }
+
+        Assert.False(busy);
+        Assert.True(Feed(d, 80));
     }
 
     [Fact]
-    public void A_dip_below_threshold_restarts_the_window()
+    public void One_low_sample_does_not_restart_the_window()
     {
         var d = Make();
         d.Update(Load(5, 80));
-        _now += TimeSpan.FromSeconds(8);
-        d.Update(Load(5, 10));
+        Feed(d, 80);
+        Feed(d, 5);
+        Feed(d, 80);
+        Feed(d, 80);
+        Assert.True(Feed(d, 80));
+    }
+
+    [Fact]
+    public void Mostly_low_samples_are_not_busy()
+    {
+        var d = Make();
+        d.Update(Load(5, 80));
+        foreach (var pct in new[] { 5.0, 80, 5, 5, 80 })
+        {
+            Feed(d, pct);
+        }
+
+        Assert.False(d.Busy);
+    }
+
+    [Fact]
+    public void Too_few_samples_are_not_busy()
+    {
+        var d = Make();
+        d.Update(Load(5, 80));
+        Assert.False(Feed(d, 80, 10));
+    }
+
+    [Fact]
+    public void No_data_sample_leaves_history_alone()
+    {
+        var d = Make();
+        d.Update(Load(5, 80));
+        for (var i = 0; i < 3; i++)
+        {
+            Feed(d, 80);
+        }
+
         _now += TimeSpan.FromSeconds(2);
-        Assert.False(d.Update(Load(5, 80)));
-        _now += TimeSpan.FromSeconds(9);
-        Assert.False(d.Update(Load(5, 80)));
+        Assert.False(d.Update(GpuSamples.NoData));
+        Assert.True(Feed(d, 80));
     }
 
     [Fact]
@@ -39,8 +83,12 @@ public class GpuBusyDeciderTests
     {
         var d = Make();
         d.Update(Load(5, 80));
-        _now += TimeSpan.FromSeconds(10);
-        Assert.True(d.Update(Load(5, 80)));
+        for (var i = 0; i < 5; i++)
+        {
+            Feed(d, 80);
+        }
+
+        Assert.True(d.Busy);
         _now += TimeSpan.FromSeconds(29);
         Assert.True(d.Update([]));
         _now += TimeSpan.FromSeconds(1);
@@ -51,9 +99,13 @@ public class GpuBusyDeciderTests
     public void Our_own_processes_are_ignored()
     {
         var d = Make(7);
-        d.Update(Load(7, 99));
-        _now += TimeSpan.FromSeconds(20);
-        Assert.False(d.Update(Load(7, 99)));
+        for (var i = 0; i < 8; i++)
+        {
+            _now += TimeSpan.FromSeconds(2);
+            d.Update(Load(7, 99));
+        }
+
+        Assert.False(d.Busy);
     }
 
     [Fact]
