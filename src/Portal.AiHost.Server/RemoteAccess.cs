@@ -76,6 +76,8 @@ public sealed class RemoteAccess : IAsyncDisposable
     private bool _serverHasBridge;
     private RelayBridge? _bridge;
     private string? _bridgeUrl;
+    private bool _bridgeAdmission;
+    private byte[]? _admission;
     private PairingService? _pairing;
     private DeviceRequestVerifier? _verifier;
     private System.Security.Cryptography.X509Certificates.X509Certificate2? _certificate;
@@ -244,6 +246,7 @@ public sealed class RemoteAccess : IAsyncDisposable
             {
                 Enabled = settings.Enabled, Port = settings.Port, Relay = settings.Relay, RelayUrl = settings.RelayUrl,
                 AllowReplaceModels = settings.AllowReplaceModels, GamingMode = settings.GamingMode,
+                RelayAdmission = settings.RelayAdmission,
             };
             var wantRelay = wantOn && settings.Relay;
             _problem = settings.Enabled && !gate.Allowed ? gate.Reason ?? "Other devices are not available." : null;
@@ -254,7 +257,14 @@ public sealed class RemoteAccess : IAsyncDisposable
                 _problem = "The relay address is not valid, so this PC can only be reached at home.";
             }
 
-            if (_bridge is not null && (!wantRelay || url is null || url != _bridgeUrl))
+            var wantAdmission = wantRelay && settings.RelayAdmission;
+            if (wantAdmission && _admission is null && !TryLoadAdmission())
+            {
+                wantAdmission = false;
+                _problem = "The relay access key could not be saved, so the relay stays open to anyone who knows this PC's id.";
+            }
+
+            if (_bridge is not null && (!wantRelay || url is null || url != _bridgeUrl || wantAdmission != _bridgeAdmission))
             {
                 await StopBridgeAsync().ConfigureAwait(false);
             }
@@ -273,8 +283,10 @@ public sealed class RemoteAccess : IAsyncDisposable
             if (wantRelay && _bridge is null && _server?.BridgeEndPoint is { } target && url is not null && _certificate is not null)
             {
                 _bridgeUrl = url;
+                _bridgeAdmission = wantAdmission;
                 _bridge = RelayBridge.Start(new RelayBridgeOptions
                 {
+                    AdmissionToken = wantAdmission ? _admission : null,
                     Url = new Uri(url),
                     Certificate = _certificate,
                     LocalTarget = target,
@@ -312,11 +324,49 @@ public sealed class RemoteAccess : IAsyncDisposable
         return ok ? uri.GetLeftPart(UriPartial.Authority) : null;
     }
 
+    /// <summary>
+    /// The relay admission token (32 random bytes) lives in <c>remote-admission.bin</c> next to the certificate, protected
+    /// like the certificate key. It is created once and reused so devices paired with it keep working across restarts.
+    /// </summary>
+    private bool TryLoadAdmission()
+    {
+        var path = Path.Combine(_o.DataDirectory, "remote-admission.bin");
+        try
+        {
+            if (File.Exists(path))
+            {
+                try
+                {
+                    var plain = _o.KeyProtector.Unprotect(File.ReadAllBytes(path));
+                    if (plain.Length == RelayProtocol.AdmissionTokenBytes)
+                    {
+                        _admission = plain;
+                        return true;
+                    }
+                }
+                catch (HostKeyDamagedException)
+                {
+                    // Unreadable: replaced below. Devices that held the old token pair again.
+                }
+            }
+
+            var token = RelayProtocol.NewAdmissionToken();
+            Portal.AiHost.Core.Settings.AtomicFile.WriteAllBytes(path, _o.KeyProtector.Protect(token));
+            _admission = token;
+            return true;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or System.Security.Cryptography.CryptographicException)
+        {
+            return false;
+        }
+    }
+
     private async Task StopBridgeAsync()
     {
         var bridge = _bridge;
         _bridge = null;
         _bridgeUrl = null;
+        _bridgeAdmission = false;
         if (bridge is not null)
         {
             bridge.StateChanged -= RaiseChanged;
@@ -395,7 +445,7 @@ public sealed class RemoteAccess : IAsyncDisposable
             Address = address,
             Port = _server.Port,
             Fingerprint = fingerprint,
-            QrText = RemoteNetwork.QrText(address, _server.Port, fingerprint, PairingCrypto.Normalize(offer.Code)!, ShortName(_hostName), PairingRelayUrl()),
+            QrText = RemoteNetwork.QrText(address, _server.Port, fingerprint, PairingCrypto.Normalize(offer.Code)!, ShortName(_hostName), PairingRelayUrl(), PairingAdmission()),
         };
     }
 
@@ -454,13 +504,17 @@ public sealed class RemoteAccess : IAsyncDisposable
                 Port = _server.Port,
                 Fingerprint = fingerprint ?? "",
                 QrText = RemoteNetwork.QrText(addresses.FirstOrDefault() ?? "", _server.Port, fingerprint ?? "",
-                    PairingCrypto.Normalize(offer.Code)!, ShortName(_hostName), PairingRelayUrl()),
+                    PairingCrypto.Normalize(offer.Code)!, ShortName(_hostName), PairingRelayUrl(), PairingAdmission()),
             },
         };
     }
 
     /// <summary>The relay address that goes into the pairing QR code: null while the relay is off or has no usable address.</summary>
     private string? PairingRelayUrl() => _settings.Enabled && _settings.Relay ? RelayUrl(_settings, _o.UseDefaultRelay) : null;
+
+    /// <summary>The admission token for the pairing link: only while the relay publishes its hash (null otherwise).</summary>
+    private string? PairingAdmission() =>
+        _bridgeAdmission && _admission is { } t && PairingRelayUrl() is not null ? RemoteCodec.Encode(t) : null;
 
     private string RelayState() => _bridge?.State ?? RelayStates.Off;
 

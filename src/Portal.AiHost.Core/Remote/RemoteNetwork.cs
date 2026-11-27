@@ -84,10 +84,11 @@ public static class RemoteNetwork
     /// address, or null when the relay is off (no <c>r</c> field: LAN only).
     /// </summary>
     public static string QrText(string address, int port, string fingerprint, string code, string hostName,
-        string? relayUrl = null) =>
+        string? relayUrl = null, string? relayAdmission = null) =>
         $"{RemoteApi.PairingScheme}://pair?h={Uri.EscapeDataString(address)}&p={port}&f={fingerprint}&c={code}" +
         $"&n={Uri.EscapeDataString(hostName)}" +
-        (string.IsNullOrEmpty(relayUrl) ? "" : $"&r={EscapeRelay(relayUrl)}");
+        (string.IsNullOrEmpty(relayUrl) ? "" : $"&r={EscapeRelay(relayUrl)}") +
+        (string.IsNullOrEmpty(relayUrl) || string.IsNullOrEmpty(relayAdmission) ? "" : $"&a={relayAdmission}");
 
     // ':' and '/' are legal in a query value; keeping them readable saves 4 characters, which the QR code's
     // 213-byte limit (version 10) can use for a long custom relay address.

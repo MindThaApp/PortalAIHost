@@ -2,7 +2,7 @@ namespace Portal.AiHost.Contracts;
 
 /// <summary>A parsed pairing link (docs/remote-v1.md section 2).</summary>
 public sealed record PairingLink(
-    string Address, int Port, string Fingerprint, string Code, string HostName, string? RelayUrl)
+    string Address, int Port, string Fingerprint, string Code, string HostName, string? RelayUrl, string? RelayAdmission = null)
 {
     /// <summary>
     /// Reads <c>portalai://pair?h=..&amp;p=..&amp;f=..&amp;c=..&amp;n=..[&amp;r=..]</c>. Unknown fields are ignored. A missing,
@@ -46,9 +46,17 @@ public sealed record PairingLink(
 
         fields.TryGetValue("n", out var name);
         fields.TryGetValue("r", out var relay);
-        link = new PairingLink(host, port, fingerprint, code, name ?? "", ValidateRelayUrl(relay));
+        fields.TryGetValue("a", out var admission);
+        var relayUrl = ValidateRelayUrl(relay);
+        // The admission token only means something together with a relay address, and must be exactly 32 bytes.
+        link = new PairingLink(host, port, fingerprint, code, name ?? "", relayUrl,
+            relayUrl is not null && IsAdmissionToken(admission) ? admission : null);
         return true;
     }
+
+    /// <summary>True for the 43-character URL-safe form of 32 bytes.</summary>
+    public static bool IsAdmissionToken(string? text) =>
+        text is { Length: 43 } && text.All(c => char.IsAsciiLetterOrDigit(c) || c is '-' or '_');
 
     /// <summary>
     /// The relay address in its canonical form, or null when it is missing or unsafe (not https, has user info, or http on a

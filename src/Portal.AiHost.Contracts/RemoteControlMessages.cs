@@ -19,6 +19,12 @@ public sealed class RemoteSettings
     public string? RelayUrl { get; set; }
 
     /// <summary>
+    /// Ask the relay to let only devices that hold this PC's admission token open streams to it (off by default; needs
+    /// <see cref="Relay"/>). A device paired before this was turned on has no token and must pair again to use the relay.
+    /// </summary>
+    public bool RelayAdmission { get; set; }
+
+    /// <summary>
     /// "Devices may replace models" (PC-wide, off by default): a device with Model control may unload a model the PC's
     /// own apps are using in order to load another. Off: such a load is refused with <c>in_use_by_host</c>.
     /// </summary>

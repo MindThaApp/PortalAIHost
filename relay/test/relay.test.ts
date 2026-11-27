@@ -1,7 +1,7 @@
 import { SELF } from "cloudflare:test";
 import { describe, expect, it } from "vitest";
 import { spkiFromCertificate } from "../src/der";
-import { fromBase64Url, hostProofMessage, LIMITS, roomIdForCertificate, toBase64Url } from "../src/protocol";
+import { admissionHash, fromBase64Url, hostProofMessage, LIMITS, roomIdForCertificate, toBase64Url } from "../src/protocol";
 import fixture from "./fixtures/dotnet-host.json";
 import { connectDevice, connectHost, freshIp, mustOpen, newIdentity, open, Sock, sign, tagged } from "./helpers";
 
@@ -280,6 +280,13 @@ describe("rate limit per address", () => {
 
     expect(status(await open("device", id.room, ip))).toBe(429);
     expect(status(await open("device", id.room, freshIp()))).toBe(503);
+  });
+});
+
+describe("admission hash vector", () => {
+  it("matches the host's own code (token 0..31)", async () => {
+    const token = Uint8Array.from({ length: 32 }, (_, i) => i);
+    expect(toBase64Url(await admissionHash(token))).toBe("p9IEbdYnU2WxrDjoY0IOpU7VtsDTSjCCDcfuYy1Z-0w");
   });
 });
 

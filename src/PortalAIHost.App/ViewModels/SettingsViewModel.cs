@@ -389,7 +389,7 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
             Remote = new RemoteSettings
             {
                 Enabled = RemoteEnabled, Port = _current.Remote.Port, Relay = RemoteRelay, RelayUrl = _current.Remote.RelayUrl,
-                AllowReplaceModels = AllowReplaceModels,
+                AllowReplaceModels = AllowReplaceModels, RelayAdmission = _current.Remote.RelayAdmission,
             },
             Kinds = kinds,
         };

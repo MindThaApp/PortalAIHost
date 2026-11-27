@@ -27,6 +27,12 @@ public sealed class RelayBridgeOptions
     /// <summary>Issues the one-time token written before each local connection's TLS bytes. Null: none is sent (tests with a plain echo target).</summary>
     public BridgeTokens? Tokens { get; init; }
 
+    /// <summary>
+    /// The relay admission token (32 bytes). When set, the hello publishes only its SHA-256 and the relay then lets in
+    /// only devices that present the token. Null: the room stays open, as before.
+    /// </summary>
+    public byte[]? AdmissionToken { get; init; }
+
     public TimeSpan InitialDelay { get; init; } = TimeSpan.FromSeconds(2);
 
     /// <summary>A link must stay up this long before the reconnect delay starts over (stops a flapping link from hammering the relay).</summary>
@@ -261,17 +267,20 @@ public sealed class RelayBridge : IAsyncDisposable
         }
 
         byte[] sig;
+        var admissionHash = _o.AdmissionToken is { Length: RelayProtocol.AdmissionTokenBytes } at ? RelayProtocol.AdmissionHash(at) : [];
         using (var key = _o.Certificate.GetECDsaPrivateKey() ?? throw new InvalidOperationException("The certificate has no ECDSA key."))
         {
-            sig = RelayProtocol.SignHostProof(key, RoomId, nonce);
+            sig = RelayProtocol.SignHostProof(key, RoomId, nonce, admissionHash);
         }
 
-        var hello = JsonSerializer.SerializeToUtf8Bytes(new Dictionary<string, string>
+        var fields = new Dictionary<string, string>
         {
             ["t"] = "hello",
             ["cert"] = RemoteCodec.Encode(_o.Certificate.RawData),
             ["sig"] = RemoteCodec.Encode(sig),
-        }, RelayJson.Default.DictionaryStringString);
+        };
+        if (admissionHash.Length > 0) fields["adm"] = RemoteCodec.Encode(admissionHash);
+        var hello = JsonSerializer.SerializeToUtf8Bytes(fields, RelayJson.Default.DictionaryStringString);
         await SendAsync(ws, hello, WebSocketMessageType.Text, ct).ConfigureAwait(false);
 
         var answer = await ReceiveMessageAsync(ws, buffer, ct).ConfigureAwait(false);

@@ -28,10 +28,11 @@ public sealed record PairingOutcome(PairingError Error, string Message, string? 
 
 /// <summary>What to pair with. Build it with <see cref="FromLink"/> or <see cref="FromTypedCode"/>.</summary>
 public sealed record PairingTarget(
-    string Address, int Port, string Code, string? Fingerprint, string? RelayUrl, string? HostNameHint, string DeviceName)
+    string Address, int Port, string Code, string? Fingerprint, string? RelayUrl, string? HostNameHint, string DeviceName,
+    string? RelayAdmission = null)
 {
     public static PairingTarget FromLink(PairingLink link, string deviceName) =>
-        new(link.Address, link.Port, link.Code, link.Fingerprint, link.RelayUrl, link.HostName, deviceName);
+        new(link.Address, link.Port, link.Code, link.Fingerprint, link.RelayUrl, link.HostName, deviceName, link.RelayAdmission);
 
     /// <summary>A typed address and code: no fingerprint, and never a relay (LAN only).</summary>
     public static PairingTarget FromTypedCode(string address, int? port, string code, string deviceName) =>
@@ -166,7 +167,14 @@ public sealed class DevicePairingClient(IRemoteConnector connector, ClientStateS
             var pkcs8 = key.ExportPkcs8PrivateKey();
             try
             {
-                store.SavePairing(remote, pkcs8);
+                byte[] admission = [];
+                if (target.RelayUrl is not null && RemoteCodec.TryDecode(target.RelayAdmission, RelayProtocol.AdmissionTokenBytes, out var decoded)
+                    && decoded.Length == RelayProtocol.AdmissionTokenBytes)
+                {
+                    admission = decoded;
+                }
+
+                store.SavePairing(remote, pkcs8, admission);
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or CryptographicException)
             {
