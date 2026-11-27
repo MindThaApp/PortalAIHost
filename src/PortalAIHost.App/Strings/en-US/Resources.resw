@@ -376,24 +376,32 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="Vm_WhatsNewHeading" xml:space="preserve"><value>What's new in Portal AI Host {0}</value></data>
   <data name="Vm_Wn1Title" xml:space="preserve"><value>Thank you</value></data>
   <data name="Vm_Wn1Body" xml:space="preserve"><value>Thank you for your feedback and reports. They shaped this update.</value></data>
-  <data name="Vm_Wn2Title" xml:space="preserve"><value>The tray pop-up no longer crashes</value></data>
-  <data name="Vm_Wn2Body" xml:space="preserve"><value>The small status window from the tray icon could crash the first time it opened. That is fixed.</value></data>
-  <data name="Vm_Wn3Title" xml:space="preserve"><value>Removing a device stops it at once</value></data>
-  <data name="Vm_Wn3Body" xml:space="preserve"><value>When you remove a device, anything it was still asking for now stops straight away.</value></data>
-  <data name="Vm_Wn4Title" xml:space="preserve"><value>Pairing a new PC is safer</value></data>
-  <data name="Vm_Wn4Body" xml:space="preserve"><value>A laptop paired with a new home PC no longer risks sending the old PC's access token to it.</value></data>
-  <data name="Vm_Wn5Title" xml:space="preserve"><value>Use your home PC from a laptop</value></data>
-  <data name="Vm_Wn5Body" xml:space="preserve"><value>Pair a laptop with your home PC once. Apps on the laptop then use the home PC's AI, at home or away, and fall back to the laptop's own model if you choose.</value></data>
-  <data name="Vm_Wn6Title" xml:space="preserve"><value>Devices on this PC</value></data>
-  <data name="Vm_Wn6Body" xml:space="preserve"><value>See each paired laptop on its own card. Pause it, set daily limits and quiet hours, choose which models it may use, or take back a model it loaded.</value></data>
-  <data name="Vm_Wn7Title" xml:space="preserve"><value>Two models at once</value></data>
-  <data name="Vm_Wn7Body" xml:space="preserve"><value>A laptop you trust can keep a second model loaded on your PC, for example one on the graphics card and one in memory. Your own model is never pushed out.</value></data>
-  <data name="Vm_Wn8Title" xml:space="preserve"><value>Gaming mode works in windowed games</value></data>
-  <data name="Vm_Wn8Body" xml:space="preserve"><value>Turn on gaming mode and other devices are told your PC is busy while a game runs, including games in a window.</value></data>
-  <data name="Vm_Wn9Title" xml:space="preserve"><value>Relay access key</value></data>
-  <data name="Vm_Wn9Body" xml:space="preserve"><value>Only devices paired with your key can reach this PC away from home. Make a new key at any time.</value></data>
-  <data name="Vm_Wn10Title" xml:space="preserve"><value>See your memory at a glance</value></data>
-  <data name="Vm_Wn10Body" xml:space="preserve"><value>Bars on the Models page show how much memory and graphics memory the loaded models use, against your limits.</value></data>
+  <data name="Vm_Wn2Title" xml:space="preserve"><value>Video as MP4, and joining clips</value></data>
+  <data name="Vm_Wn2Body" xml:space="preserve"><value>Video jobs can now give you an MP4 file, a picture of the last frame, and several clips joined into one video.</value></data>
+  <data name="Vm_Wn3Title" xml:space="preserve"><value>Video quality settings</value></data>
+  <data name="Vm_Wn3Body" xml:space="preserve"><value>Choose how your PC encodes MP4 video, for example the quality, and which video encoder it uses.</value></data>
+  <data name="Vm_Wn4Title" xml:space="preserve"><value>Uploads for local apps</value></data>
+  <data name="Vm_Wn4Body" xml:space="preserve"><value>Apps on this PC can now hand over large files directly, instead of sending them in the request. Uploads are removed after a while.</value></data>
+  <data name="Vm_Wn5Title" xml:space="preserve"><value>The Home PC card stays in step</value></data>
+  <data name="Vm_Wn5Body" xml:space="preserve"><value>When you change several Home PC settings quickly, a slow answer can no longer show an older value.</value></data>
+  <data name="Vm_Wn6Title" xml:space="preserve"><value>Better in narrow windows</value></data>
+  <data name="Vm_Wn6Body" xml:space="preserve"><value>The side menu folds away when the window is narrow, and the reset links in Settings wrap under their headings.</value></data>
+  <data name="Vm_Wn7Title" xml:space="preserve"><value>Clearer for screen readers</value></data>
+  <data name="Vm_Wn7Body" xml:space="preserve"><value>The Home health section, and buttons on Home and Settings, now have names and help text for screen readers and tooltips.</value></data>
+  <data name="Vm_Wn8Title" xml:space="preserve"><value>Use your home PC from a laptop</value></data>
+  <data name="Vm_Wn8Body" xml:space="preserve"><value>Pair a laptop with your home PC once. Apps on the laptop then use the home PC's AI, at home or away, and fall back to the laptop's own model if you choose.</value></data>
+  <data name="Vm_Wn9Title" xml:space="preserve"><value>Devices on this PC</value></data>
+  <data name="Vm_Wn9Body" xml:space="preserve"><value>See each paired laptop on its own card. Pause it, set daily limits and quiet hours, choose which models it may use, or take back a model it loaded.</value></data>
+  <data name="Vm_Wn10Title" xml:space="preserve"><value>Two models at once</value></data>
+  <data name="Vm_Wn10Body" xml:space="preserve"><value>A laptop you trust can keep a second model loaded on your PC, for example one on the graphics card and one in memory. Your own model is never pushed out.</value></data>
+  <data name="Vm_Wn11Title" xml:space="preserve"><value>Safer device handling</value></data>
+  <data name="Vm_Wn11Body" xml:space="preserve"><value>Removing a device stops anything it was still asking for, and pairing a laptop with a new home PC no longer risks sending the old PC's access token to it.</value></data>
+  <data name="Vm_Wn12Title" xml:space="preserve"><value>Gaming mode works in windowed games</value></data>
+  <data name="Vm_Wn12Body" xml:space="preserve"><value>Turn on gaming mode and other devices are told your PC is busy while a game runs, including games in a window.</value></data>
+  <data name="Vm_Wn13Title" xml:space="preserve"><value>Relay access key</value></data>
+  <data name="Vm_Wn13Body" xml:space="preserve"><value>Only devices paired with your key can reach this PC away from home. Make a new key at any time.</value></data>
+  <data name="Vm_Wn14Title" xml:space="preserve"><value>See your memory at a glance</value></data>
+  <data name="Vm_Wn14Body" xml:space="preserve"><value>Bars on the Models page show how much memory and graphics memory the loaded models use, against your limits.</value></data>
   <data name="Vm_WnShowMe" xml:space="preserve"><value>Show me</value></data>
   <data name="Vm_WnShowMeName" xml:space="preserve"><value>Show me: {0}</value></data>
   <data name="WhatsNewDone.Content" xml:space="preserve"><value>Got it</value></data>
