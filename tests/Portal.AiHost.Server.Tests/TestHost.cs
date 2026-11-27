@@ -87,7 +87,8 @@ public sealed class TestHost : IAsyncDisposable
 
     public static async Task<TestHost> StartAsync(FakeEngineOptions? chat = null, int maxRequestBytes = ApiLimits.MaxRequestBytes,
         bool withModels = true, int parallelSlots = 1, HostSettings? settings = null, IEaseOffSensors? sensors = null,
-        bool secondSlot = false, FakeEngineOptions? chat2 = null, Portal.AiHost.Core.Voice.VoiceService? voice = null)
+        bool secondSlot = false, FakeEngineOptions? chat2 = null, IHardwareProbe? hardware = null,
+        Portal.AiHost.Core.Voice.VoiceService? voice = null)
     {
         var host = new TestHost();
         host.Voice = voice;
@@ -113,6 +114,7 @@ public sealed class TestHost : IAsyncDisposable
             Pipeline = new() { MaxRequestBytes = maxRequestBytes },
             Settings = settings is null ? null : () => settings,
             EaseOffSensors = sensors,
+            Hardware = hardware,
             Voice = voice,
         });
         if (settings is not null)

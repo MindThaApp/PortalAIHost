@@ -79,6 +79,17 @@ public sealed partial class AiHostRuntime
             engines.Add(new EngineMemoryStatus { Slot = "apps", RamBytes = apps });
         }
 
+        var (genRam, genVram) = GenerationReserved(); // a running image or video job (AiHostRuntime.Generation.cs)
+        if (genRam > 0 || genVram > 0)
+        {
+            ram += genRam;
+            vram += genVram;
+            engines.Add(new EngineMemoryStatus
+            {
+                Slot = GenerationSlot, ModelId = GenerationModelId(), RamBytes = genRam, VramBytes = genVram, CpuOnly = genVram == 0,
+            });
+        }
+
         var limit = RamLimitBytes(hw.RamBytes);
         var (_, vramTotal) = PerformanceModel.BestGpu(hw);
         return new MemoryBudgetStatus

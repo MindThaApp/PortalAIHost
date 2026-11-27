@@ -1,0 +1,78 @@
+using Portal.AiHost.Contracts;
+using Portal.AiHost.Core.Abstractions;
+using Portal.AiHost.Core.Generation;
+
+namespace PortalAIHost.Service;
+
+/// <summary>
+/// The model store as the generation engine sees it: installed, complete, undamaged models of a kind, with each file's
+/// role from the catalogue (or guessed from its name). Read-only apart from the in-use mark the store keeps while a job
+/// runs; nothing here writes, moves or deletes a model file.
+/// </summary>
+internal sealed class ShellGenerationModels(HostShell shell, Func<string, string?> damagedReason) : IGenerationModelSource
+{
+    public async Task<IReadOnlyList<GenerationModel>> ListAsync(string kind, CancellationToken ct)
+    {
+        if (shell.Store is not { } store)
+        {
+            return [];
+        }
+
+        var list = new List<GenerationModel>();
+        foreach (var m in await store.ListAsync(ct).ConfigureAwait(false))
+        {
+            if (m.Kind != kind || !m.IsComplete || damagedReason(m.Id) is not null)
+            {
+                continue;
+            }
+
+            // Engine stable-diffusion-cpp only, and only entries the catalogue marks available (not "coming soon").
+            var entry = shell.CatalogueEntry(m.Id);
+            if ((entry is not null && (!entry.Available || entry.Engine != EngineKinds.StableDiffusionCpp)) ||
+                (entry is null && m.Engine is { Length: > 0 } engine && engine != EngineKinds.StableDiffusionCpp))
+            {
+                continue;
+            }
+
+            var components = m.Files.Select(f =>
+            {
+                var catalogueRole = entry?.Files.FirstOrDefault(cf => string.Equals(cf.Name, f.Name, StringComparison.OrdinalIgnoreCase))?.Role;
+                return new GenerationComponent(GenerationFileRoles.FromCatalogue(catalogueRole, f.Name, m.Files.Count), f.Path, f.SizeBytes);
+            }).ToList();
+            list.Add(new GenerationModel(m.Id, m.DisplayName, m.Kind, entry?.Family ?? "", components, entry));
+        }
+
+        return list;
+    }
+
+    public async Task<IAsyncDisposable> UseAsync(string modelId, CancellationToken ct)
+    {
+        var store = shell.Store;
+        if (store is not null)
+        {
+            await store.SetInUseAsync(modelId, true, ct).ConfigureAwait(false);
+        }
+
+        return new Release(store, modelId);
+    }
+
+    private sealed class Release(IModelStore? store, string modelId) : IAsyncDisposable
+    {
+        public async ValueTask DisposeAsync()
+        {
+            if (store is null)
+            {
+                return;
+            }
+
+            try
+            {
+                await store.SetInUseAsync(modelId, false, CancellationToken.None).ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException)
+            {
+                // Released at the next start (stale in-use marks are cleared then).
+            }
+        }
+    }
+}

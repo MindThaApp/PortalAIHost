@@ -78,6 +78,53 @@ public static class ModelKinds
     public const string Embedding = "embedding";
     public const string Transcription = "transcription";
     public const string Voice = "voice";
+
+    /// <summary>Still pictures from a text prompt (generation engine, <see cref="Routes.ImageJobs"/>).</summary>
+    public const string Image = "image";
+
+    /// <summary>Short clips from a text prompt or a start picture (generation engine, <see cref="Routes.VideoJobs"/>).</summary>
+    public const string Video = "video";
+}
+
+/// <summary>
+/// Use-case categories the Models page groups by. Open strings: a catalogue or host may send an id this build does not
+/// know, which then shows under <see cref="Other"/>. <see cref="Resolve"/> falls back to the model kind.
+/// </summary>
+public static class ModelCategories
+{
+    public const string Chat = "chat";
+    public const string Coding = "coding";
+    public const string Reasoning = "reasoning";
+    public const string Vision = "vision";
+    public const string Search = "search";
+    public const string Image = "image";
+    public const string Video = "video";
+    public const string Speech = "speech";
+    public const string Other = "other";
+
+    /// <summary>Display order of the known categories.</summary>
+    public static IReadOnlyList<string> Ordered { get; } =
+        [Chat, Coding, Reasoning, Vision, Search, Image, Video, Speech, Other];
+
+    /// <summary>Category for a model kind when the catalogue gives none.</summary>
+    public static string FromKind(string? kind) => kind switch
+    {
+        ModelKinds.Chat => Chat,
+        ModelKinds.Embedding => Search,
+        ModelKinds.Transcription => Speech,
+        ModelKinds.Voice => Speech,
+        "speech" => Speech,
+        "image" => Image,
+        "video" => Video,
+        _ => Other,
+    };
+
+    /// <summary>The catalogue category when it is a known id, otherwise the one derived from the kind.</summary>
+    public static string Resolve(string? category, string? kind)
+    {
+        var c = category?.Trim().ToLowerInvariant();
+        return c is { Length: > 0 } && Ordered.Contains(c) ? c : FromKind(kind);
+    }
 }
 
 /// <summary>
@@ -101,6 +148,9 @@ public static class EngineKinds
 {
     public const string LlamaServer = "llama-server";
     public const string WhisperServer = "whisper-server";
+
+    /// <summary>Image and video generation (model kinds image and video), served by the bundled stable-diffusion.cpp runtime.</summary>
+    public const string StableDiffusionCpp = "stable-diffusion-cpp";
     public const string VoiceServer = "voice-server";
 }
 
@@ -196,6 +246,12 @@ public static class EndpointNames
     public const string Performance = "performance";
     public const string EaseOff = "ease-off";
     public const string Health = "health";
+
+    /// <summary>Listed while an image model can run (POST /host/image/jobs).</summary>
+    public const string ImageJobs = "image.jobs";
+
+    /// <summary>Listed while a video model can run (POST /host/video/jobs).</summary>
+    public const string VideoJobs = "video.jobs";
     public const string Voices = "voices";
     public const string Speech = "speech";
 }
@@ -223,6 +279,19 @@ public static class Routes
     public const string ChatCompletions = "/v1/chat/completions";
     public const string Embeddings = "/v1/embeddings";
     public const string AudioTranscriptions = "/v1/audio/transcriptions";
+
+    // Generation jobs (api-v1.md section 6, "Image and video jobs"): POST creates, GET /{id} reads, DELETE /{id} cancels,
+    // GET /{id}/result and /{id}/preview return the file.
+    public const string ImageJobs = "/host/image/jobs";
+    public const string VideoJobs = "/host/video/jobs";
+
+    /// <summary>The job collection route of a generation kind (image or video), or null for any other kind.</summary>
+    public static string? JobsFor(string kind) => kind switch
+    {
+        ModelKinds.Image => ImageJobs,
+        ModelKinds.Video => VideoJobs,
+        _ => null,
+    };
 
     // Voice library and speech jobs (api-v1 section 6, Voice).
     public const string Voices = "/host/voices";

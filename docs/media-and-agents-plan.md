@@ -142,9 +142,53 @@ Reasoning:
 | Wan 2.2 5B | Medium | Better quality, image-to-video capable | Needs offload on 8 GB |
 | Wan 14B class | Large | High-end quality | Heavy offload on 8 GB; slow; shown with a warning |
 
+In `catalogue/catalogue-gen.json` today (signed on its own, `available: false` until the engine lands): `wan2.1-t2v-1.3b`
+(three pinned parts: diffusion model, VAE, text encoder) and the image model `sd-1.5`.
+
+To add after measurement (no verified single-file builds pinned yet, so not in the catalogue):
+
+- Wan 2.2 TI2V 5B (Apache-2.0): about 12 GB graphics memory with CPU offload, 24 GB recommended.
+- LTX-Video 2B distilled (OpenRAIL-M): about 8 GB with CPU offload, 12 GB recommended.
+- Wan 2.1 T2V 14B, high-end (Apache-2.0): about 16 GB with CPU offload, 24 GB recommended.
+- Wan 2.2 T2V A14B, high-end (Apache-2.0): about 24 GB with CPU offload, 48 GB recommended.
+
+The figures are estimates until measured on the engine.
+
 Each catalogue entry records files, quantisation, minimum RAM and VRAM, whether image-to-video is supported, maximum
 frames, licence and a speed note per hardware class. Image-to-video support is required for the chaining in section
 5.2; a model without it can still make single clips.
+
+### 4.4 Engine as built (phase 4)
+- **One process per job, not a resident server.** The host runs the stable-diffusion.cpp command-line program
+  (`engine\sdcpp\<flavour>\sd-cli.exe`, or `sd.exe` on older releases) once per job, in its own Job object, at
+  below-normal priority. Reasons: a job lasts seconds to hours, so reloading weights (seconds) costs little; ending the
+  process gives back every byte of VRAM and RAM, so a chat model can use the card between jobs; cancel is a kill of
+  the job's own process tree; a driver fault ends one job, not a shared server. The runtime's server mode is newer,
+  its HTTP API changes between releases, and it reports neither step progress nor cancellation the host could rely
+  on. "Loaded" for this engine therefore means: binary present, model files checked, memory plan reserved.
+- **Image and video share one engine kind and one queue** (`generation` in the fair queue): on one GPU two jobs
+  would only fight over VRAM. The job API is in [api-v1.md](api-v1.md), "Image and video jobs".
+- **Memory plan.** The generation planner tries, in order: everything on the card; text encoders on the processor
+  (`--backend te=cpu`); encoders and VAE on the processor (`--backend te=cpu,vae=cpu`); weights in RAM streamed to the card
+  (`--offload-to-cpu`); processor only (pictures, or video when the owner chose processor-only). VAE tiling is on
+  for video and for pictures above one megapixel, flash attention for video. The share of offloaded weights assumed
+  on the card at once (25 %) and the compute-buffer estimates are guesses until `scripts\measure-gen.ps1` has been
+  run on the owner's PC.
+- **Flags.** Every sd.cpp flag lives in one table (`src\Portal.AiHost.Engine\SdCppArgs.cs`), checked against
+  `sd-cli --help` of the pinned release master-1142-908965d. That release deprecates `--clip-on-cpu`, `--vae-on-cpu`
+  and `--diffusion-fa`; the host sends `--backend te=cpu,vae=cpu` and `--flash-attn auto,diffusion=on` instead, runs
+  processor-only jobs on the Vulkan build with `--backend cpu`, and caps the runtime's own fitting (`--auto-fit`, on
+  by default) with `--max-vram` set to the planner's graphics-memory budget.
+- **Catalogue.** Image and video entries use engine `stable-diffusion-cpp` and per-file `role` (`checkpoint`,
+  `diffusion_model`, `vae`, `text_encoder`); only entries with `available: true` are offered, and `min_vram_gb` keeps a
+  smaller card out of the plan. An entry may also carry `generation` (default size, steps, cfg, sampler, flow shift,
+  frames, fps, `image_to_video`, `max_side`, `compute_bytes`). Without roles the parts are guessed from file names.
+  Supported families: SD 1.5, SD 2, SDXL, SD3 and FLUX for pictures; Wan for video.
+- **Fetch.** `scripts\fetch-sdcpp.ps1` installs the pinned Vulkan build (`engine\sdcpp.lock.json`: tag
+  master-1142-908965d, SHA-256 checked) into `engine\sdcpp\vulkan`. The MSIX build includes it only when present.
+- **Crash leftovers.** Each job's work folder holds a state marker. At start, before any job runs, a finished output is
+  moved to the finished folder, a running or cancelled one is deleted, and anything else is kept in
+  `generated\recovered\` under a unique name.
 
 ## 5. The director
 

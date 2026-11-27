@@ -169,6 +169,8 @@ internal sealed partial class ModelCenter : IAsyncDisposable
             {
                 Id = e.Id, DisplayName = e.DisplayName, Kind = e.Kind, Engine = e.Engine, SizeBytes = e.TotalBytes,
                 Quality = e.Quality, Installed = installed, Active = _activeId(e.Kind) == e.Id,
+                Category = e.EffectiveCategory, ComingSoon = !e.Available || !CatalogueValidator.IsSupported(e),
+                MinVramGb = e.MinVramGb, RecommendedVramGb = e.RecommendedVramGb,
                 Recommended = c.Best, FitsThisPc = c.Candidate?.Plan.Fits ?? true, Reason = c.Candidate?.Reason,
                 ExistingCopy = s is { Origin: ModelOrigin.External }, UserAdded = s is { UserAdded: true },
                 DownloadState = installed ? null : DownloadStateFor(e.Id, s),
@@ -190,7 +192,7 @@ internal sealed partial class ModelCenter : IAsyncDisposable
         {
             models.Add(new CatalogueModelSummary
             {
-                Id = s.Id, DisplayName = s.DisplayName, Kind = s.Kind, Engine = s.Engine, SizeBytes = s.TotalBytes,
+                Id = s.Id, DisplayName = s.DisplayName, Kind = s.Kind, Engine = s.Engine, SizeBytes = s.TotalBytes, Category = ModelCategories.FromKind(s.Kind),
                 Installed = s.IsComplete, Active = _activeId(s.Kind) == s.Id, FitsThisPc = true,
                 ExistingCopy = s.Origin == ModelOrigin.External, UserAdded = s.UserAdded,
                 DownloadState = s.IsComplete ? null : DownloadStateFor(s.Id, s),
@@ -222,7 +224,7 @@ internal sealed partial class ModelCenter : IAsyncDisposable
             {
                 models.Add(new CatalogueModelSummary
                 {
-                    Id = s.Id, DisplayName = s.DisplayName, Kind = s.Kind, Engine = s.Engine, SizeBytes = s.TotalBytes,
+                    Id = s.Id, DisplayName = s.DisplayName, Kind = s.Kind, Engine = s.Engine, SizeBytes = s.TotalBytes, Category = ModelCategories.FromKind(s.Kind),
                     Installed = s.IsComplete, FitsThisPc = true, ExistingCopy = s.Origin == ModelOrigin.External,
                     StoreFolder = old.Location.Path,
                 });

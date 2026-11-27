@@ -207,6 +207,8 @@ and may be localised later. Each code always comes with the same `type` (OpenAI-
 | 409 | `voice_in_use` | `conflict_error` | no | A speech job that is queued or running uses the voice. Cancel it or wait, then remove the voice. |
 | 500 | `engine_error` | `server_error` | once | The engine failed unexpectedly. Retry at most once, then fall back. |
 | 500 | `internal_error` | `server_error` | once | Unexpected host error. Retry at most once, then fall back. |
+| 503 | `engine_missing` | `unavailable` | no | The engine the request needs is not part of this installation (today: the image and video engine). Tell the user; do not retry. `details.kind` is `image` or `video`. |
+| 404 | `model_not_installed` | `not_found_error` | no | Image and video jobs: no installed model of the kind, or the named `model` is not installed (`param` is `model`). `details.kind` is `image` or `video`. |
 
 **Streaming errors:** if an error happens after a stream has started (HTTP 200 already sent), the host sends one
 final event `data: {"error":{...}}` and closes the stream **without** `data: [DONE]`.
@@ -525,6 +527,99 @@ infinite for streams.
 - **Store `model` with your vectors.** Vectors from different models must never be compared. Re-embed when
   `X-Portal-Model` differs from the stored id.
 
+### Image and video jobs (preview)
+
+Pictures and short clips are made by a separate generation engine (stable-diffusion.cpp, Vulkan or processor build)
+that the host starts as its own process for each job. Generation takes seconds to hours, so these routes are an
+asynchronous job API, not a streaming call. They need a token like every model route, from this PC or from a paired
+device (LAN or relay). A paired device also needs **Model control** from the PC owner, and its allowed-models list
+must allow the model; the device's pause, quiet hours, gaming mode and daily request limit apply to `POST`.
+
+| Route | What it does |
+|---|---|
+| `POST /host/image/jobs`, `POST /host/video/jobs` | Checks and queues a job. `202` with the job (state `queued`) and a `Location` header. |
+| `GET /host/{kind}/jobs` | This app's jobs of that kind on this host, newest first (`{ "object": "list", "data": [...] }`). |
+| `GET /host/{kind}/jobs/{id}` | State, stage, progress, preview link, plan and result. |
+| `DELETE /host/{kind}/jobs/{id}` | Cancels a queued or running job and answers with its state once it has ended (a finished job is returned as it is). |
+| `GET /host/{kind}/jobs/{id}/result` | The finished file: `image/png`, or `video/x-msvideo` (MJPEG AVI) for video. `404 not_found` until `succeeded`. |
+| `GET /host/{kind}/jobs/{id}/preview` | The latest preview picture (`image/png`) while the job runs, when the engine writes one; otherwise `404 not_found`. |
+
+**What can run:** `/host/status` and `/host/capabilities` carry `"generation": { "image": true, "video": false, "queued": 0, "running": 0 }`.
+`image` and `video` are true only when the engine is installed and an available model of that kind is installed;
+the counts cover every app on this host. Capabilities then also list the endpoints `image.jobs` and `video.jobs`.
+Older hosts leave `generation` out.
+
+`{kind}` is `image` or `video`. A job belongs to the app and device that created it: any other caller gets
+`404 not_found`. The host remembers the last 200 finished jobs until it quits; their files stay on disk.
+
+**Request.** Every field but `prompt` is optional. Omitted values come from the model's catalogue defaults, then from
+the engine's defaults for the model family.
+
+```json
+{ "model": "sd-1.5-q8", "prompt": "a lighthouse at dusk, oil painting", "negative_prompt": "blurry",
+  "width": 512, "height": 512, "steps": 20, "seed": 42, "cfg_scale": 7.5, "sampler": "euler_a" }
+```
+
+```json
+{ "model": "wan2.1-t2v-1.3b", "prompt": "waves on a beach at sunset", "width": 832, "height": 480,
+  "frames": 33, "fps": 16, "steps": 20 }
+```
+
+- `model`: an installed image or video model id. Omitted: the first installed model of the kind.
+- `width`, `height`: 64-2048, multiples of 16. `steps`: 1-150. `cfg_scale`: 0-30. `seed`: omitted or negative picks a
+  random seed, which the result reports.
+- `frames` (1-241) and `fps` (1-60) are for video only (`400 unsupported_parameter` on an image job).
+- `init_image`: base64 PNG or JPEG (a `data:image/png;base64,` prefix is accepted), within `max_request_bytes`.
+  Video: the first frame (image to video), only for models that support it. Image: the picture to rework, with
+  `strength` (0-1).
+
+**Job:**
+
+```json
+{ "id": "gen_6f1c2a9e4b7d4c0f9a51d3e8b2c47a10", "object": "generation.job", "kind": "video",
+  "model": "wan2.1-t2v-1.3b", "state": "running", "stage": "sampling", "progress": 0.42, "step": 9, "steps": 20,
+  "created_at": "2026-11-27T14:03:22+00:00", "started_at": "2026-11-27T14:03:25+00:00",
+  "preview_url": "/host/video/jobs/gen_6f1c2a9e4b7d4c0f9a51d3e8b2c47a10/preview",
+  "plan": { "backend": "vulkan", "gpu_bytes": 4047483904, "cpu_bytes": 6979321856, "on_cpu": ["text_encoder"] } }
+```
+
+```json
+{ "id": "gen_0c4b8e2f9a1d4c7b8e3f2a1b0c9d8e7f", "object": "generation.job", "kind": "image", "model": "sd-1.5-q8",
+  "state": "succeeded", "progress": 1, "created_at": "2026-11-27T14:03:22+00:00",
+  "started_at": "2026-11-27T14:03:23+00:00", "finished_at": "2026-11-27T14:03:41+00:00",
+  "plan": { "backend": "vulkan", "gpu_bytes": 3221225472, "cpu_bytes": 536870912, "on_cpu": [] },
+  "result": { "url": "/host/image/jobs/gen_0c4b8e2f9a1d4c7b8e3f2a1b0c9d8e7f/result", "content_type": "image/png",
+              "file_name": "20261127-140322-gen_0c4b8e2f9a1d4c7b8e3f2a1b0c9d8e7f.png", "bytes": 412345,
+              "width": 512, "height": 512, "seed": 42 } }
+```
+
+- `state`: `queued`, then `running`, then `succeeded`, `failed` or `cancelled`. While queued, `queue_position` (1 is
+  next).
+- `stage` while running: `loading`, `encoding`, `sampling`, `decoding`, `saving`. `progress` runs from 0 to 1 over the
+  whole job and never goes back; `step` and `steps` count the engine's current progress bar.
+- `plan`: where the work runs, decided when the job starts. `on_cpu` lists what was moved off the graphics card to
+  fit: `text_encoder`, `vae`, `weights` (weights kept in RAM and streamed to the card). Video never falls back to the
+  processor unless the PC owner chose processor-only in Settings.
+- A failed job has `error`, with the same body as an API error (for example `insufficient_memory`, `engine_error`,
+  or `model_not_installed` when the model was removed while the job waited). A job the host ended because it is
+  quitting is `cancelled` with `error.code` `host_stopping`.
+
+**Rules:**
+- **One job at a time.** Image and video jobs share one engine and one queue (the fair queue, batch class). A job
+  waits at most 12 hours. An app may have at most 8 jobs queued or running (`429 queue_full`).
+- **Memory.** `POST` refuses at once with `503 insufficient_memory` (`details.needed_bytes`) when the job cannot fit
+  this PC even with no other image or video job running. When the job starts it is planned again against the memory
+  left, chat and embedding engines included. Its plan is reserved until it ends, so a chat model that loads meanwhile
+  sees what is really left. The PC owner's memory, graphics-memory, processor-thread and backend settings apply.
+- **Errors at `POST`:** `503 engine_missing` (engine not installed), `404 model_not_installed`,
+  `400 unsupported_parameter` (a `model` the engine cannot run, `frames` on an image job, a start picture for a model
+  without image to video), `400 invalid_request`, and for paired devices `403 model_control_required` and
+  `404 model_not_found`.
+- **Files.** Results go to a folder the host owns (`generated\images` and `generated\videos` in the host's data
+  folder) under new unique names; nothing is ever overwritten. A job's partial output stays in its own work folder
+  until it finishes, and cancel or failure delete only that partial file. Model files are never touched.
+- Poll `GET /host/{kind}/jobs/{id}` every 1-2 seconds while a job runs, and less often while it is queued.
+
 ### Voice: cloning and text to speech (host 1.1)
 
 Make a voice once from a short recording, then read any text with it. The library of voices lives in the host and is
@@ -667,6 +762,10 @@ Use these messages to change them; generic `settings.set` preserves the host-own
 - `models.list` answers `{ models: [...], models_folder, free_bytes, upgrade_model_id, catalogue_available }`.
   `models_bytes` is the disk space the models in the current folder use. Each model has `id, display_name, kind,
   engine, size_bytes, quality, recommended, installed, active, fits_this_pc, reason`, plus:
+  - `category`: use-case group the Models page lists the model under (`chat`, `coding`, `reasoning`, `vision`, `search`,
+    `image`, `video`, `speech`, `other`); absent from an older host, then derive it from `kind`;
+  - `coming_soon`: `true` when the host has no engine for the model yet; it is listed but cannot be downloaded;
+  - `min_vram_gb`, `recommended_vram_gb`: graphics memory in GB (with CPU offload / recommended), only when the model list gives them;
   - `last_used_at`: when an engine last loaded the model (absent when never);
   - `damaged`, `damaged_reason`: a file check found a file that does not match the model list (nothing was deleted);
   - `advice_summary`, `good_for`, `caveats`: the model list's advice, each only when present;

@@ -444,6 +444,70 @@ public sealed class ModelControlTests
         Assert.NotEmpty(models!);
     }
 
+    private static string RepoCatalogueDir()
+    {
+        var dir = new DirectoryInfo(AppContext.BaseDirectory);
+        while (dir is not null && !File.Exists(Path.Combine(dir.FullName, "catalogue", "catalogue.json")))
+            dir = dir.Parent;
+        return Path.Combine(dir!.FullName, "catalogue");
+    }
+
+    private static string SignedCopy(TestRoot root, ECDsa key, bool signGen, bool copyGen = true, bool badGenSig = false)
+    {
+        var target = Path.Combine(root.Path, "catalogue");
+        Directory.CreateDirectory(target);
+        foreach (var name in new[] { "catalogue.json", "catalogue-gen.json" })
+        {
+            if (name == "catalogue-gen.json" && !copyGen) continue;
+            var bytes = File.ReadAllBytes(Path.Combine(RepoCatalogueDir(), name));
+            File.WriteAllBytes(Path.Combine(target, name), bytes);
+            var sig = Convert.ToBase64String(key.SignData(bytes, HashAlgorithmName.SHA256, DSASignatureFormat.IeeeP1363FixedFieldConcatenation));
+            if (name == "catalogue-gen.json" && (!signGen || badGenSig)) sig = Convert.ToBase64String(new byte[64]);
+            File.WriteAllText(Path.Combine(target, name + ".sig"), sig);
+        }
+
+        return Convert.ToBase64String(key.ExportSubjectPublicKeyInfo());
+    }
+
+    [Fact]
+    public void Generation_list_with_its_own_signature_adds_image_and_video_entries()
+    {
+        using var root = new TestRoot();
+        using var key = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+        var spki = SignedCopy(root, key, signGen: true);
+        var models = CatalogueSource.Load(root.Path, _ => null, [spki])!;
+        Assert.Contains(models, m => m.Id == "wan2.1-t2v-1.3b");
+        Assert.Contains(models, m => m.Id == "sd-1.5");
+        Assert.Contains(models, m => m.Id == "qwen3-8b-q4km");
+    }
+
+    [Fact]
+    public void A_bad_or_missing_generation_signature_costs_only_the_generation_entries()
+    {
+        using var root = new TestRoot();
+        using var key = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+        var spki = SignedCopy(root, key, signGen: true, badGenSig: true);
+        var models = CatalogueSource.Load(root.Path, _ => null, [spki])!;
+        Assert.Contains(models, m => m.Id == "qwen3-8b-q4km");
+        Assert.DoesNotContain(models, m => m.Kind is "video" or "image");
+
+        using var root2 = new TestRoot();
+        spki = SignedCopy(root2, key, signGen: true, copyGen: false);
+        models = CatalogueSource.Load(root2.Path, _ => null, [spki])!;
+        Assert.NotEmpty(models);
+        Assert.DoesNotContain(models, m => m.Kind is "video" or "image");
+    }
+
+    [Fact]
+    public void A_bad_main_signature_still_fails_closed_even_with_a_good_generation_list()
+    {
+        using var root = new TestRoot();
+        using var key = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+        var spki = SignedCopy(root, key, signGen: true);
+        File.WriteAllText(Path.Combine(root.Path, "catalogue", "catalogue.json.sig"), Convert.ToBase64String(new byte[64]));
+        Assert.Null(CatalogueSource.Load(root.Path, _ => null, [spki]));
+    }
+
     [Fact]
     public void Unverified_callers_have_no_publisher()
     {
