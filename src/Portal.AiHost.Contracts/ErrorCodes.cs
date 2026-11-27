@@ -38,6 +38,7 @@ public static class ErrorCodes
     public const string DeadlineExceeded = "deadline_exceeded";
     public const string ConsentRequired = "consent_required";
     public const string UnsupportedAudio = "unsupported_audio";
+    public const string UnsupportedMedia = "unsupported_media";
     public const string VoiceNotFound = "voice_not_found";
     public const string VoiceInUse = "voice_in_use";
     public const string EngineError = "engine_error";
@@ -105,6 +106,7 @@ public static class ErrorCatalog
         [ErrorCodes.DeadlineExceeded] = new(504, ErrorTypes.Timeout, false),
         [ErrorCodes.ConsentRequired] = new(400, ErrorTypes.InvalidRequest, false),
         [ErrorCodes.UnsupportedAudio] = new(400, ErrorTypes.InvalidRequest, false),
+        [ErrorCodes.UnsupportedMedia] = new(400, ErrorTypes.InvalidRequest, false),
         [ErrorCodes.VoiceNotFound] = new(404, ErrorTypes.NotFound, false),
         [ErrorCodes.VoiceInUse] = new(409, ErrorTypes.Conflict, false),
         [ErrorCodes.EngineError] = new(500, ErrorTypes.Server, true),

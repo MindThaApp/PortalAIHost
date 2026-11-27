@@ -200,9 +200,16 @@ public sealed partial class GenerationService
     {
         var param = $"clips[{index.ToString(CultureInfo.InvariantCulture)}]";
         var text = reference?.Trim() ?? "";
+        if (UploadService.IsUploadId(text))
+        {
+            // An upload id: only the caller's own finished video upload (another app's id is the same not_found).
+            return _o.Uploads?.ResolveVideo(owner, text)
+                ?? throw new ApiException(ErrorCodes.NotFound, "No video upload with that id.", param);
+        }
+
         if (!IsJobId(text))
         {
-            throw new ApiException(ErrorCodes.InvalidRequest, "A clip is the id of a finished video job of this app.", param);
+            throw new ApiException(ErrorCodes.InvalidRequest, "A clip is the id of a finished video job or of a video upload of this app.", param);
         }
 
         var path = FinishedClipOf(owner, text)

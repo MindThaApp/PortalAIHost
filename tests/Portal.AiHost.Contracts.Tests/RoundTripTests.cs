@@ -400,7 +400,7 @@ public class RoundTripTests
             "invalid_request", "unsupported_parameter", "context_length_exceeded", "auth_required", "token_invalid",
             "token_revoked", "access_denied", "app_paused", "forbidden_origin", "not_found", "feature_disabled", "request_too_large",
             "queue_full", "rate_limited", "no_model", "model_loading", "engine_restarting", "insufficient_memory",
-            "host_stopping", "auth_unavailable", "remote_unreachable", "device_unauthorized", "pairing_failed", "model_control_required", "model_conflict", "model_not_found", "device_paused", "device_quiet_hours", "host_busy_gaming", "device_limit_reached", "deadline_exceeded", "consent_required", "unsupported_audio", "voice_not_found", "voice_in_use", "engine_error", "internal_error", "engine_missing", "model_not_installed",
+            "host_stopping", "auth_unavailable", "remote_unreachable", "device_unauthorized", "pairing_failed", "model_control_required", "model_conflict", "model_not_found", "device_paused", "device_quiet_hours", "host_busy_gaming", "device_limit_reached", "deadline_exceeded", "consent_required", "unsupported_audio", "unsupported_media", "voice_not_found", "voice_in_use", "engine_error", "internal_error", "engine_missing", "model_not_installed",
         ];
         Assert.Equal(documented.Order(), ErrorCatalog.AllCodes.Order());
         Assert.Equal(400, ErrorCatalog.Get(ErrorCodes.InvalidRequest).HttpStatus);

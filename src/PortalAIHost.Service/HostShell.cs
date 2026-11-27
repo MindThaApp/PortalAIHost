@@ -170,6 +170,8 @@ public sealed class HostShell : IAsyncDisposable
     /// <summary>Image and video jobs (POST /host/image/jobs, /host/video/jobs).</summary>
     public GenerationService Generation { get; private set; } = null!;
 
+    private UploadService? _uploads;
+
     /// <summary>True from the start of a quit (pipe, tray or session end).</summary>
     public bool IsQuitting => Volatile.Read(ref _quitting) != 0;
 
@@ -611,6 +613,11 @@ public sealed class HostShell : IAsyncDisposable
             {
                 await generation.DisposeAsync().ConfigureAwait(false);
             }
+        }).ConfigureAwait(false);
+        await GuardAsync(() =>
+        {
+            _uploads?.Dispose();
+            return Task.CompletedTask;
         }).ConfigureAwait(false);
         await GuardAsync(() => Runtime?.StopAsync(grace) ?? Task.CompletedTask).ConfigureAwait(false);
         await GuardAsync(async () =>
@@ -1075,8 +1082,27 @@ public sealed class HostShell : IAsyncDisposable
         {
         }
 
+        UploadService? uploads = null;
+        try
+        {
+            uploads = new UploadService(new UploadServiceOptions
+            {
+                Folder = Path.Combine(root, "uploads"),
+                Media = _o.MediaTools,
+                Log = line => System.Diagnostics.Trace.WriteLine("Portal AI Host: " + line),
+            });
+            Runtime.UploadMaxBytes = uploads.MaxUploadBytes;
+            uploads.MapRoutes(Runtime.Pipeline);
+            _uploads = uploads;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            uploads = null; // No uploads folder: the routes stay unmapped and capabilities do not list them.
+        }
+
         var service = new GenerationService(new GenerationServiceOptions
         {
+            Uploads = uploads,
             Runtime = Runtime,
             Scheduler = _scheduler!,
             Engine = _o.GenerationEngine ?? new MissingGenerationEngine(),

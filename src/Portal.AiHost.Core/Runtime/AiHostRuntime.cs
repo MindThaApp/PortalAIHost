@@ -503,7 +503,11 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
                     MaxBatchInputs = _o.MaxBatchInputs,
                     Normalized = true,
                 },
-            Limits = new CapabilityLimits { MaxRequestBytes = _o.Pipeline.MaxRequestBytes },
+            Limits = new CapabilityLimits
+            {
+                MaxRequestBytes = _o.Pipeline.MaxRequestBytes,
+                MaxUploadBytes = UploadMaxBytes > 0 ? UploadMaxBytes : null,
+            },
             Endpoints =
             [
                 EndpointNames.ChatCompletions, EndpointNames.Embeddings, EndpointNames.Models,
@@ -512,6 +516,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
                 .. generation is { Image: true } ? [EndpointNames.ImageJobs] : Array.Empty<string>(),
                 .. generation is { Video: true } ? [EndpointNames.VideoJobs] : Array.Empty<string>(),
                 .. generation is { VideoJoins: true } ? [EndpointNames.VideoJoins] : Array.Empty<string>(),
+                .. UploadMaxBytes > 0 ? [EndpointNames.Uploads] : Array.Empty<string>(),
                 .. _o.Voice is null ? Array.Empty<string>() : new[] { EndpointNames.Voices, EndpointNames.Speech },
             ],
             Voice = _o.Voice?.Capabilities(),

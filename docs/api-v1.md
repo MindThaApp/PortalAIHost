@@ -203,6 +203,7 @@ and may be localised later. Each code always comes with the same `type` (OpenAI-
 | 504 | `deadline_exceeded` | `timeout` | no | `details.phase` is `queued`, `loading` or `generating`. |
 | 400 | `consent_required` | `invalid_request_error` | no | Creating a voice needs `consent`: `own_voice` or `permission`. |
 | 400 | `unsupported_audio` | `invalid_request_error` | no | The voice sample is not a readable MP3 or WAV file (or this host cannot read MP3 yet). |
+| 400 | `unsupported_media` | `invalid_request_error` | no | An upload is not a readable picture or video (wrong content type, or ffprobe cannot read it). |
 | 404 | `voice_not_found` | `not_found_error` | no | No voice with that id. |
 | 409 | `voice_in_use` | `conflict_error` | no | A speech job that is queued or running uses the voice. Cancel it or wait, then remove the voice. |
 | 500 | `engine_error` | `server_error` | once | The engine failed unexpectedly. Retry at most once, then fall back. |
@@ -688,6 +689,24 @@ it these features report off and nothing else changes: `generation.video_contain
   paired devices `403 model_control_required`.
 - MP3 voice samples: when ffmpeg is installed, `voice.sample_formats` includes `"mp3"` and `POST /host/voices` decodes
   the upload through pipes (no temporary file); otherwise MP3 is `unsupported_audio`.
+
+### Uploads (inputs bigger than a JSON body)
+
+For a picture or clip that does not fit in a 4 MiB JSON body. Apps on this PC only in this version: over the LAN or the
+relay `POST /host/uploads` answers `404 feature_disabled`. Capabilities list the endpoint `uploads` and
+`limits.max_upload_bytes` while uploads work.
+
+| Route | What it does |
+|---|---|
+| `POST /host/uploads` | The raw file as the body (no JSON). `Content-Type` is `image/png`, `image/jpeg`, `image/webp`, `video/mp4`, `video/quicktime`, `video/webm` or `video/x-matroska`; any other type is `400 unsupported_media`. The host streams the body to its own `uploads\` folder under a new unique name. `201` with `{ "id": "upl_...", "object": "upload", "bytes", "content_type", "expires_at" }` and a `Location` header. |
+| `GET /host/uploads/{id}` | The record of one upload (no content). |
+| `DELETE /host/uploads/{id}` | Deletes this app's upload (the host's copy only). `204`. |
+
+- A body over `limits.max_upload_bytes` (default 8 GiB) is `413 request_too_large`; a declared `Content-Length` over it is refused before any byte is read.
+- At most 4 uploads are open per app (`429 queue_full`); delete one to make room.
+- Pictures are checked by their first bytes. A video is checked with ffprobe in a child process before it is kept: `400 unsupported_media` when it cannot be read, `503 engine_missing` without ffmpeg. A refused or cancelled upload leaves no file.
+- An upload belongs to the app that made it: another app's id is `404 not_found`. An upload expires 24 hours after it was last used (a join that takes it counts as use). The host removes expired files at start and every 30 minutes, and only files of its own `upl_` name pattern.
+- A join takes an upload id in `clips` like a job id: `{ "clips": ["upl_...", "gen_..."] }`. Only video uploads are clips; a picture is `404 not_found` there.
 
 ### Voice: cloning and text to speech (host 1.1)
 

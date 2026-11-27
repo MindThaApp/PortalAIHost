@@ -44,6 +44,9 @@ public sealed class GenerationServiceOptions
     /// <summary>ffmpeg tools (MP4 output, last picture, joins). Null: those features are off.</summary>
     public IMediaTools? Media { get; init; }
 
+    /// <summary>The uploads of this PC's apps; a join clip may name one of the caller's own video uploads. Null: no uploads.</summary>
+    public UploadService? Uploads { get; init; }
+
     /// <summary>The WAV bytes of a finished speech job of the app (the soundtrack of a join), or null. Null delegate: no speech source.</summary>
     public Func<string, string, byte[]?>? SpeechAudio { get; init; }
 

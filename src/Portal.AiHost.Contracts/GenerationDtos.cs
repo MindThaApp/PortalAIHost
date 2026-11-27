@@ -320,3 +320,20 @@ public sealed class VideoJoinRequest
     /// <summary>With both music and voice tracks: the music sinks while the voice speaks.</summary>
     public bool? Duck { get; set; }
 }
+
+/// <summary>POST /host/uploads (the answer) and GET /host/uploads/{id}: the record of one upload, never its content.</summary>
+public sealed class UploadInfo
+{
+    /// <summary><c>upl_</c> and 32 hex digits.</summary>
+    public string Id { get; set; } = "";
+
+    public string Object { get; set; } = "upload";
+
+    /// <summary>Size of the stored file.</summary>
+    public long Bytes { get; set; }
+
+    public string ContentType { get; set; } = "";
+
+    /// <summary>UTC. Moves forward each time a job uses the upload.</summary>
+    public DateTimeOffset ExpiresAt { get; set; }
+}
