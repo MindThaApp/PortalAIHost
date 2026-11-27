@@ -1,0 +1,66 @@
+{
+  "note": "Download-on-demand engine flavours for NVIDIA cards (CUDA 12.8 line). They are not packed into the MSIX: scripts/build-msix.ps1 writes these entries into engine\\flavours.json inside the package, and the host downloads a flavour only after the user agrees (size and licence shown). The first URL is the upstream release, the second a copy in a release of the project's own public repository. Every tag, asset, URL, sha256, size, driver version and file list below is a placeholder: the host refuses to install an entry that still holds one, and so does any script. Replace them with the values of the real release assets (zip SHA-256 and size, unpacked size, and the SHA-256 and size of every file in the zip) before a build ships these flavours. llama-cuda12 and sd-cuda12 need cudart12 (cudart, cuBLAS and cuBLASLt, NVIDIA CUDA EULA Attachment A, redistributed unmodified; see docs/THIRD-PARTY-NOTICES.md).",
+  "schema": 1,
+  "flavours": [
+    {
+      "id": "cudart12",
+      "engine": "cudart",
+      "arch": "x64",
+      "tag": "PLACEHOLDER-TAG",
+      "asset": "PLACEHOLDER-cudart-win-cuda-12.8-x64.zip",
+      "urls": [
+        "https://github.com/ggml-org/llama.cpp/releases/download/PLACEHOLDER-TAG/PLACEHOLDER-cudart-win-cuda-12.8-x64.zip",
+        "https://github.com/MindThaApp/PLACEHOLDER-REPO/releases/download/PLACEHOLDER-TAG/PLACEHOLDER-cudart-win-cuda-12.8-x64.zip"
+      ],
+      "sha256": "PLACEHOLDER-SHA256",
+      "size": 0,
+      "unpacked_size": 0,
+      "files": [],
+      "min_driver": "PLACEHOLDER",
+      "compute_capability": { "min": "PLACEHOLDER", "max": "PLACEHOLDER" },
+      "licence": "LicenseRef-NVIDIA-CUDA-EULA",
+      "notice": "NVIDIA CUDA runtime",
+      "requires": []
+    },
+    {
+      "id": "llama-cuda12",
+      "engine": "llama",
+      "arch": "x64",
+      "tag": "PLACEHOLDER-TAG",
+      "asset": "PLACEHOLDER-llama-bin-win-cuda-12.8-x64.zip",
+      "urls": [
+        "https://github.com/ggml-org/llama.cpp/releases/download/PLACEHOLDER-TAG/PLACEHOLDER-llama-bin-win-cuda-12.8-x64.zip",
+        "https://github.com/MindThaApp/PLACEHOLDER-REPO/releases/download/PLACEHOLDER-TAG/PLACEHOLDER-llama-bin-win-cuda-12.8-x64.zip"
+      ],
+      "sha256": "PLACEHOLDER-SHA256",
+      "size": 0,
+      "unpacked_size": 0,
+      "files": [],
+      "min_driver": "PLACEHOLDER",
+      "compute_capability": { "min": "PLACEHOLDER", "max": "PLACEHOLDER" },
+      "licence": "MIT",
+      "notice": "llama.cpp",
+      "requires": [ "cudart12" ]
+    },
+    {
+      "id": "sd-cuda12",
+      "engine": "sdcpp",
+      "arch": "x64",
+      "tag": "PLACEHOLDER-TAG",
+      "asset": "PLACEHOLDER-sd-bin-win-cuda-12.8-x64.zip",
+      "urls": [
+        "https://github.com/leejet/stable-diffusion.cpp/releases/download/PLACEHOLDER-TAG/PLACEHOLDER-sd-bin-win-cuda-12.8-x64.zip",
+        "https://github.com/MindThaApp/PLACEHOLDER-REPO/releases/download/PLACEHOLDER-TAG/PLACEHOLDER-sd-bin-win-cuda-12.8-x64.zip"
+      ],
+      "sha256": "PLACEHOLDER-SHA256",
+      "size": 0,
+      "unpacked_size": 0,
+      "files": [],
+      "min_driver": "PLACEHOLDER",
+      "compute_capability": { "min": "PLACEHOLDER", "max": "PLACEHOLDER" },
+      "licence": "MIT",
+      "notice": "stable-diffusion.cpp",
+      "requires": [ "cudart12" ]
+    }
+  ]
+}
