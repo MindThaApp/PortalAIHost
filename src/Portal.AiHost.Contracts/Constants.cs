@@ -256,6 +256,9 @@ public static class EndpointNames
     /// <summary>Listed while ffmpeg is installed and a video model can run (POST /host/video/joins).</summary>
     public const string VideoJoins = "video.joins";
 
+    /// <summary>Listed while an upscale model and the helper are installed (POST /host/image/upscales).</summary>
+    public const string ImageUpscales = "image.upscales";
+
     /// <summary>Listed while ffmpeg is installed (GET /host/media/encoders and the <c>encode</c> object).</summary>
     public const string MediaEncoders = "media.encoders";
     /// <summary>Listed while uploads work (POST /host/uploads; this PC's own apps only in v1).</summary>
@@ -296,6 +299,8 @@ public static class Routes
     // Joins: POST creates, GET /{id}, DELETE /{id}, GET /{id}/result like a job; GET /host/video/jobs/{id}/last-frame
     // (and /host/video/joins/{id}/last-frame) returns the last picture as PNG.
     public const string VideoJoins = "/host/video/joins";
+
+    public const string ImageUpscales = "/host/image/upscales";
 
     /// <summary>GET: the encoders that passed the test encode on this PC.</summary>
     public const string MediaEncoders = "/host/media/encoders";

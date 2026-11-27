@@ -344,6 +344,18 @@ public sealed partial class UploadService : IDisposable
         return e.Path;
     }
 
+    /// <summary>The file of one of the caller's finished picture uploads (an upscale input), or null.</summary>
+    public string? ResolveImage((string AppId, string DeviceId) owner, string id)
+    {
+        if (!_entries.TryGetValue(id, out var e) || !e.Done || !Mine(e, owner) || e.Video || !File.Exists(e.Path))
+        {
+            return null;
+        }
+
+        e.LastUsed = _o.Time.GetUtcNow();
+        return e.Path;
+    }
+
     // ---- expiry ------------------------------------------------------------------------------------
 
     private async Task SweepLoopAsync()
