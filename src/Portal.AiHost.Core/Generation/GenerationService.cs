@@ -489,8 +489,11 @@ public sealed partial class GenerationService : IAsyncDisposable
                 j.Step = p.Steps > 0 ? p.Step : null;
                 j.Steps = p.Steps > 0 ? p.Steps : null;
             }));
+            _o.Output.MarkState(job.WorkDir!, GenerationOutputFolder.StateRunning);
             await _o.Engine.RunAsync(launch, progress, ct).ConfigureAwait(false);
 
+            // From here the output is complete: a crash before the move leaves it to the start sweep to publish.
+            _o.Output.MarkState(job.WorkDir!, GenerationOutputFolder.StateFinished);
             var final = _o.Output.Publish(partial, job.Kind, job.Id, job.CreatedAt);
             partial = null;
             job.Update(j =>
@@ -529,7 +532,11 @@ public sealed partial class GenerationService : IAsyncDisposable
         {
             if (partial is not null)
             {
-                // Cancel or failure: only this job's own partial output goes.
+                // Cancel or failure: only this job's own partial output goes. The marker first, so a crash in between
+                // leaves the sweep a clear answer (cancelled: delete; failed: keep in recovered).
+                var cancelled = job.SnapshotState() == GenerationJobStates.Cancelled;
+                Guard(() => _o.Output.MarkState(job.WorkDir!,
+                    cancelled ? GenerationOutputFolder.StateCancelled : GenerationOutputFolder.StateFailed));
                 Guard(() => _o.Output.DeletePartial(partial));
             }
 

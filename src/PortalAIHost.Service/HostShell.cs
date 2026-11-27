@@ -1032,16 +1032,20 @@ public sealed class HostShell : IAsyncDisposable
     private GenerationService CreateGeneration(string root)
     {
         var output = new GenerationOutputFolder(Path.Combine(root, "generated"));
-        _ = Task.Run(() =>
+        try
         {
-            try
+            // Leftovers of jobs a crash interrupted, before any new job can start (a sweep never meets a live job).
+            var swept = output.SweepStaleWork();
+            if (swept.Folders > 0)
             {
-                output.SweepStaleWork(); // partial files of jobs a crash interrupted
+                System.Diagnostics.Trace.WriteLine($"Portal AI Host: generation sweep: {swept.Published.Count} published, " +
+                    $"{swept.Recovered.Count} kept in recovered, {swept.DeletedPartials} partial removed.");
             }
-            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
-            {
-            }
-        });
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+        }
+
         var service = new GenerationService(new GenerationServiceOptions
         {
             Runtime = Runtime,

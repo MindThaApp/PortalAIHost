@@ -165,19 +165,57 @@ public sealed class GenerationOutputFolderTests : IDisposable
         Assert.Throws<IOException>(() => output.CreateWorkFolder(Job));
     }
 
+    private static string Id(int n) => "gen_" + n.ToString("x32", System.Globalization.CultureInfo.InvariantCulture);
+
     [Fact]
-    public void TheStartSweepRemovesOnlyLeftoversOfCrashedJobs()
+    public void TheStartSweepNeverDeletesAFinishedOrDoubtfulOutput()
     {
         var output = new GenerationOutputFolder(Path.Combine(_root.Path, "generated"));
-        var work = output.CreateWorkFolder(Job);
-        File.WriteAllText(GenerationOutputFolder.PartialPath(work, ".png"), "partial");
-        output.WriteInitImage(work, [0x89, 0x50, 0x4E, 0x47], ".png");
+        string Leftover(int n, string? state, string ext, string content)
+        {
+            var work = output.CreateWorkFolder(Id(n));
+            if (state is not null)
+            {
+                output.MarkState(work, state);
+            }
+
+            File.WriteAllText(GenerationOutputFolder.PartialPath(work, ext), content);
+            return work;
+        }
+
+        Leftover(1, GenerationOutputFolder.StateFinished, ".avi", "a finished clip");
+        Leftover(2, GenerationOutputFolder.StateRunning, ".png", "half a picture");
+        Leftover(3, GenerationOutputFolder.StateCancelled, ".png", "cancelled");
+        Leftover(4, null, ".png", "no marker");
+        Leftover(5, GenerationOutputFolder.StateFailed, ".png", "failed run");
+        Leftover(6, GenerationOutputFolder.StateFinished, ".png", "");
+        var init = output.CreateWorkFolder(Id(7));
+        output.WriteInitImage(init, [0x89, 0x50, 0x4E, 0x47], ".png");
         var foreign = Path.Combine(output.WorkRoot, "not-a-job");
         Directory.CreateDirectory(foreign);
         File.WriteAllText(Path.Combine(foreign, "output.png"), "keep");
 
-        Assert.Equal(1, output.SweepStaleWork());
-        Assert.False(Directory.Exists(work));
+        var result = output.SweepStaleWork();
+        Assert.Equal(7, result.Folders);
+        Assert.Equal(2, result.DeletedPartials);
+
+        // Finished and not empty: published under a unique name in the finished folder.
+        var clip = Assert.Single(result.Published);
+        Assert.Equal(output.FinishedFolder("video"), Path.GetDirectoryName(clip));
+        Assert.Equal("a finished clip", File.ReadAllText(clip));
+
+        // No marker, failed, or finished but empty: kept in recovered.
+        Assert.Equal(3, result.Recovered.Count);
+        Assert.All(result.Recovered, r => Assert.Equal(Path.Combine(output.Root, GenerationOutputFolder.RecoveredFolderName), Path.GetDirectoryName(r)));
+        Assert.Equal(["", "failed run", "no marker"], result.Recovered.Select(File.ReadAllText).Order());
+
+        Assert.DoesNotContain(Directory.GetDirectories(output.WorkRoot), d => Path.GetFileName(d).StartsWith("gen_", StringComparison.Ordinal));
         Assert.Equal("keep", File.ReadAllText(Path.Combine(foreign, "output.png")));
+
+        // A recovered name that exists already is never replaced.
+        Leftover(4, null, ".png", "second leftover of job 4");
+        var again = output.SweepStaleWork();
+        Assert.EndsWith(" (2).png", Assert.Single(again.Recovered), StringComparison.Ordinal);
+        Assert.Equal("no marker", File.ReadAllText(Path.Combine(output.Root, GenerationOutputFolder.RecoveredFolderName, Id(4) + ".png")));
     }
 }
