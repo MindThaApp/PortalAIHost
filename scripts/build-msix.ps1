@@ -176,6 +176,16 @@ try {
             }
         }
 
+        # The voice helper (built by scripts\build-voice.ps1) is x64 only; without it the voice feature reports itself off.
+        $voiceSrc = Join-Path $repo 'engine\voice'
+        if ($a -eq 'x64' -and (Test-Path (Join-Path $voiceSrc 'portal-voice-server.exe'))) {
+            $voiceDest = Join-Path $layout 'engine\voice'
+            New-Item -ItemType Directory -Force $voiceDest | Out-Null
+            Copy-Item (Join-Path $voiceSrc '*') $voiceDest -Recurse -Force
+            Remove-Item (Join-Path $voiceDest '.engine-fetch') -Force -ErrorAction SilentlyContinue
+        }
+        elseif ($a -eq 'x64') { Write-Warning 'engine\voice\portal-voice-server.exe is missing: this package has no voice feature (run scripts\build-voice.ps1).' }
+
         # Assets: the project's scale/targetsize-qualified logos (rendered from docs\store\logo). The App publish
         # indexes them into its PRI (resources.pri), which resolves the manifest's unqualified names.
         $assets = Join-Path $layout 'Assets'
