@@ -24,6 +24,9 @@ await foreach (var delta in client.StreamChatAsync(request))
     Console.Write(delta.Text);
 ```
 
+Pictures and short clips are jobs: `CreateImageJobAsync` or `CreateVideoJobAsync` queue one, `WaitForGenerationJobAsync` polls it,
+`DownloadGenerationResultAsync` copies the finished file and `CancelGenerationJobAsync` stops it (docs/api-v1.md, "Image and video jobs").
+
 The package is trimming and AOT friendly and carries the `Portal.AiHost.Contracts` types. Any OpenAI SDK also
 works: use `BaseAddress` and `GetBearerToken()`.
 

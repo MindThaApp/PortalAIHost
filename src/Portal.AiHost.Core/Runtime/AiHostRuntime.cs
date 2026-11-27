@@ -416,6 +416,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
             Models = models,
             Usage = _sampler?.Get(Activity.LastTokensPerSecond),
             Memory = BuildMemoryBudget(hardware ?? _hardwareProfile),
+            Generation = GenerationInfo?.Invoke(),
             Queue = new QueueStatus
             {
                 Running = snap.Running,
@@ -450,8 +451,10 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         var emb = GetActive(ModelKinds.Embedding);
         var chatSup = Supervisor(ModelKinds.Chat);
         var placement = chatSup?.Current?.Placement;
+        var generation = GenerationInfo?.Invoke();
         return new HostCapabilities
         {
+            Generation = generation,
             CapabilitiesRevision = CapabilitiesRevision,
             ModelControl = deviceId is null ? null : DeviceModelControl?.Invoke(deviceId) ?? false,
             Chat = chat is null || chatSup is null
@@ -506,6 +509,8 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
                 EndpointNames.ChatCompletions, EndpointNames.Embeddings, EndpointNames.Models,
                 EndpointNames.Tokenize, EndpointNames.Warmup, EndpointNames.Performance,
                 EndpointNames.EaseOff, EndpointNames.Health,
+                .. generation is { Image: true } ? [EndpointNames.ImageJobs] : Array.Empty<string>(),
+                .. generation is { Video: true } ? [EndpointNames.VideoJobs] : Array.Empty<string>(),
                 .. _o.Voice is null ? Array.Empty<string>() : new[] { EndpointNames.Voices, EndpointNames.Speech },
             ],
             Voice = _o.Voice?.Capabilities(),
@@ -697,6 +702,18 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         }
 
         ram += _leases.ReservedBytes; // memory the apps' own models hold (POST /host/ease-off reserved_bytes)
+        var (genRam, genVram) = GenerationReserved(); // a running image or video job (AiHostRuntime.Generation.cs)
+        ram += genRam;
+        if (genVram > 0)
+        {
+            if (vram.Count == 0)
+            {
+                vram.Add(0);
+            }
+
+            vram[0] += genVram;
+        }
+
         return ram == 0 && vram.Count == 0 ? CommittedMemory.None : new CommittedMemory(ram, vram);
     }
 
@@ -1056,6 +1073,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         ApiVersion = s.ApiVersion, HostVersion = s.HostVersion, InstanceId = s.InstanceId, State = s.State,
         Client = client, Models = s.Models, Queue = s.Queue, Hardware = s.Hardware,
         UpgradeAvailable = s.UpgradeAvailable, Sharing = s.Sharing, Usage = s.Usage, Mode = s.Mode, Remote = s.Remote, Memory = s.Memory,
+        Generation = s.Generation,
     };
 
     private Task ListModelsAsync(ApiContext ctx)

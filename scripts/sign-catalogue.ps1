@@ -4,6 +4,8 @@
 
 .DESCRIPTION
   Sign:     ./scripts/sign-catalogue.ps1 -PrivateKeyPath D:\keys\catalogue-current.pem
+            Signs catalogue.json and catalogue-gen.json (the image and video list) by default; each gets its own .sig.
+            Pass -CataloguePath to sign only the files you name.
   New key:  ./scripts/sign-catalogue.ps1 -NewKeyPair -OutDir D:\keys
 
   The signature is written next to the catalogue as catalogue.json.sig: base64 of the IEEE P1363 (r||s)
@@ -17,7 +19,9 @@ param(
     [string] $PrivateKeyPath,
 
     [Parameter(ParameterSetName = 'Sign')]
-    [string] $CataloguePath = (Join-Path $PSScriptRoot '..\catalogue\catalogue.json'),
+    [string[]] $CataloguePath = @(
+        (Join-Path $PSScriptRoot '..\catalogue\catalogue.json'),
+        (Join-Path $PSScriptRoot '..\catalogue\catalogue-gen.json')),
 
     [Parameter(Mandatory, ParameterSetName = 'NewKey')]
     [switch] $NewKeyPair,
@@ -60,24 +64,27 @@ if ($PSCmdlet.ParameterSetName -eq 'NewKey') {
 }
 
 $keyFull = Assert-OutsideRepo $PrivateKeyPath
-$catFull = [IO.Path]::GetFullPath($CataloguePath)
-$json = [IO.File]::ReadAllBytes($catFull)
-
-# Basic sanity before signing: parseable and has a positive catalogue_version.
-$parsed = [Text.Encoding]::UTF8.GetString($json) | ConvertFrom-Json
-if (-not ($parsed.catalogue_version -gt 0)) { throw 'catalogue_version must be a positive integer.' }
-
 $ecdsa = [Security.Cryptography.ECDsa]::Create()
 try {
     $ecdsa.ImportFromPem([IO.File]::ReadAllText($keyFull))
     if ($ecdsa.KeySize -ne 256) { throw 'Key must be ECDSA P-256.' }
-    $sig = $ecdsa.SignData($json, [Security.Cryptography.HashAlgorithmName]::SHA256,
-        [Security.Cryptography.DSASignatureFormat]::IeeeP1363FixedFieldConcatenation)
     $spki = [Convert]::ToBase64String($ecdsa.ExportSubjectPublicKeyInfo())
-} finally { $ecdsa.Dispose() }
+    foreach ($path in $CataloguePath) {
+        $catFull = [IO.Path]::GetFullPath($path)
+        if (-not (Test-Path -LiteralPath $catFull)) { throw "Catalogue not found: $catFull" }
+        $json = [IO.File]::ReadAllBytes($catFull)
 
-# The .sig file is this script's own output for this catalogue; it is replaced on each signing run.
-$sigPath = "$catFull.sig"
-[IO.File]::WriteAllText($sigPath, [Convert]::ToBase64String($sig))
-Write-Host "Signed catalogue_version $($parsed.catalogue_version) -> $sigPath"
+        # Basic sanity before signing: parseable and has a positive catalogue_version.
+        $parsed = [Text.Encoding]::UTF8.GetString($json) | ConvertFrom-Json
+        if (-not ($parsed.catalogue_version -gt 0)) { throw "catalogue_version must be a positive integer in $catFull." }
+
+        $sig = $ecdsa.SignData($json, [Security.Cryptography.HashAlgorithmName]::SHA256,
+            [Security.Cryptography.DSASignatureFormat]::IeeeP1363FixedFieldConcatenation)
+
+        # The .sig file is this script's own output for this catalogue; it is replaced on each signing run.
+        $sigPath = "$catFull.sig"
+        [IO.File]::WriteAllText($sigPath, [Convert]::ToBase64String($sig))
+        Write-Host "Signed catalogue_version $($parsed.catalogue_version) -> $sigPath"
+    }
+} finally { $ecdsa.Dispose() }
 Write-Host "Signing public key: $spki"

@@ -6,6 +6,7 @@ using Portal.AiHost.Core.Abstractions;
 using Portal.AiHost.Core.Auth;
 using Portal.AiHost.Core.Catalogue;
 using Portal.AiHost.Core.Download;
+using Portal.AiHost.Core.Generation;
 using Portal.AiHost.Core.Notifications;
 using Portal.AiHost.Core.Store;
 using Portal.AiHost.Core.Planning;
@@ -85,6 +86,9 @@ public sealed class HostShellOptions
 
     /// <summary>Tests: how the LAN listener binds and which sources it serves (never the real network).</summary>
     public RemoteAccessTestOptions? RemoteTest { get; init; }
+
+    /// <summary>The image and video engine (stable-diffusion.cpp); null leaves the job routes answering engine_missing.</summary>
+    public IGenerationEngine? GenerationEngine { get; init; }
 }
 
 /// <summary>Test hooks for the LAN listener.</summary>
@@ -159,6 +163,9 @@ public sealed class HostShell : IAsyncDisposable
 
     /// <summary>Server or client mode (use the paired PC's AI).</summary>
     public ClientModeController ClientMode { get; private set; } = null!;
+
+    /// <summary>Image and video jobs (POST /host/image/jobs, /host/video/jobs).</summary>
+    public GenerationService Generation { get; private set; } = null!;
 
     /// <summary>True from the start of a quit (pipe, tray or session end).</summary>
     public bool IsQuitting => Volatile.Read(ref _quitting) != 0;
@@ -358,6 +365,7 @@ public sealed class HostShell : IAsyncDisposable
         }, ct).ConfigureAwait(false);
 
         await Runtime.ApplyPerformanceAsync(ct).ConfigureAwait(false);
+        Generation = CreateGeneration(root);
 
         // A move that did not finish removing its old copies (crash, locked file) is finished, or named, at every start.
         _ = Task.Run(async () =>
@@ -400,6 +408,8 @@ public sealed class HostShell : IAsyncDisposable
             BusyDetector = _o.Paths.TestMode ? null : new Portal.AiHost.Core.Remote.CompositeBusyDetector(new Portal.AiHost.Platform.Windows.Usage.FullScreenGameDetector(), new Portal.AiHost.Platform.Windows.Usage.GpuLoadDetector(log: line => System.Diagnostics.Trace.WriteLine("Portal AI Host: " + line))),
         });
         Remote.Changed += () => _ = PushRemoteChangedAsync();
+        Generation.DeviceMayUse = (device, model) => Remote.Devices.Find(device) is not { } d || d.AllowedModels.Count == 0 ||
+            d.AllowedModels.Contains(model, StringComparer.Ordinal);
         Remote.Alert += a => _ = PushDeviceAlertAsync(a);
         // Client mode never listens: the suspension is in place before the first Apply, so nothing opens even briefly.
         if (settings.Mode == HostModes.Client)
@@ -589,6 +599,14 @@ public sealed class HostShell : IAsyncDisposable
             if (Models is { } m)
             {
                 await m.DisposeAsync().ConfigureAwait(false);
+            }
+        }).ConfigureAwait(false);
+        // Running image and video jobs end first (their engine processes are killed and their partial files removed).
+        await GuardAsync(async () =>
+        {
+            if (Generation is { } generation)
+            {
+                await generation.DisposeAsync().ConfigureAwait(false);
             }
         }).ConfigureAwait(false);
         await GuardAsync(() => Runtime?.StopAsync(grace) ?? Task.CompletedTask).ConfigureAwait(false);
@@ -1032,6 +1050,50 @@ public sealed class HostShell : IAsyncDisposable
     internal ActiveModel ToActiveModel(StoredModel m) => ToActive(m);
 
     internal CatalogueEntry? CatalogueEntry(string id) => _o.Catalogue?.FirstOrDefault(e => e.Id == id);
+
+    /// <summary>
+    /// The generation service with its host-owned output folder (&lt;data&gt;\generated). Without an engine it still maps
+    /// the routes, which then answer engine_missing.
+    /// </summary>
+    private GenerationService CreateGeneration(string root)
+    {
+        var output = new GenerationOutputFolder(Path.Combine(root, "generated"));
+        try
+        {
+            // Leftovers of jobs a crash interrupted, before any new job can start (a sweep never meets a live job).
+            var swept = output.SweepStaleWork();
+            if (swept.Folders > 0)
+            {
+                System.Diagnostics.Trace.WriteLine($"Portal AI Host: generation sweep: {swept.Published.Count} published, " +
+                    $"{swept.Recovered.Count} kept in recovered, {swept.DeletedPartials} partial removed.");
+            }
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+        }
+
+        var service = new GenerationService(new GenerationServiceOptions
+        {
+            Runtime = Runtime,
+            Scheduler = _scheduler!,
+            Engine = _o.GenerationEngine ?? new MissingGenerationEngine(),
+            Models = new ShellGenerationModels(this, id => _notes?.DamagedReason(id)),
+            Output = output,
+            Log = line => System.Diagnostics.Trace.WriteLine("Portal AI Host: " + line),
+        });
+        service.MapRoutes(Runtime.Pipeline);
+        return service;
+    }
+
+    private sealed class MissingGenerationEngine : IGenerationEngine
+    {
+        public GenerationEngineCheck Check() => new(false, false, "The image and video engine is not installed.");
+
+        public bool SupportsFamily(string family, string kind) => false;
+
+        public Task RunAsync(GenerationLaunch launch, IProgress<GenerationProgress>? progress, CancellationToken ct) =>
+            throw new EngineException(ErrorCodes.EngineMissing, "The image and video engine is not installed.");
+    }
 
     // ---- pushes -------------------------------------------------------------------------------
 
