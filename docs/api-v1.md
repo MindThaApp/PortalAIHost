@@ -199,7 +199,7 @@ and may be localised later. Each code always comes with the same `type` (OpenAI-
 | 503 | `insufficient_memory` | `unavailable` | no | The model cannot load in the memory available now. Fall back. |
 | 503 | `host_stopping` | `unavailable` | no | The host is quitting. Fall back. |
 | 503 | `auth_unavailable` | `unavailable` | yes | The host cannot read its token store right now (for example a locked file). Your token is not lost: keep it and retry shortly. |
-| 503 | `remote_unreachable` | `unavailable` | yes | Client mode only: the PC that runs the AI cannot be reached now. `details.reason` is `offline`, `relay_host_offline`, `relay_busy`, `clock`, `refused`, `cert_changed`, `paused`, `quiet_hours`, `gaming_busy` or `limit_reached`; `retry_after_ms` follows the reconnect backoff. Use your own built-in AI meanwhile. |
+| 503 | `remote_unreachable` | `unavailable` | yes | Client mode only: the PC that runs the AI cannot be reached now. `details.reason` is `offline`, `relay_host_offline`, `relay_busy`, `relay_admission`, `clock`, `refused`, `cert_changed`, `paused`, `quiet_hours`, `gaming_busy` or `limit_reached`; `retry_after_ms` follows the reconnect backoff. Use your own built-in AI meanwhile. |
 | 504 | `deadline_exceeded` | `timeout` | no | `details.phase` is `queued`, `loading` or `generating`. |
 | 500 | `engine_error` | `server_error` | once | The engine failed unexpectedly. Retry at most once, then fall back. |
 | 500 | `internal_error` | `server_error` | once | Unexpected host error. Retry at most once, then fall back. |

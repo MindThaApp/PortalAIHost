@@ -108,6 +108,7 @@ All under the host's existing state directory (the one that holds the settings a
 | `client\device.key` | the device's P-256 private key (PKCS#8) | **DPAPI**, user scope, in the style of `DpapiHostKeyProtector` / `DpapiTokenStore`. Never logged, never exported. |
 | `client\apps.json` | per-laptop-app model mapping (4.7): app id to model id | Plain JSON via `AtomicFile` (no secrets). |
 | `client\token.dat` | the host's own access token for the remote PC (3.3) | DPAPI, same as above. |
+| `client\relay-admission.dat` | the PC's relay admission token from the pairing link (`a`, remote-v1 section 10.5); only when the PC asked for one | DPAPI, same as above. Replaced or removed with each new pairing. |
 
 The authoritative mode flag lives in the existing settings store (`mode: "server" | "client"`), together with `client_fallback` (1.3) and `relay_mode: "auto" | "manual"` (3.1). `Forget this PC` removes only the own `client\` files above and nothing else.
 
@@ -199,7 +200,7 @@ with `r` has been used once (owner decision 5).
    `{"t":"open"}` (10.2 step 2), then run the TLS client handshake **over the WebSocket's binary messages** (a
    `Stream` adapter that maps reads and writes to binary frames of at most 65536 bytes; no text frames except
    `ping`), pinned to `F` exactly as on the LAN, then HTTP/1.1 on top (10.2 step 3). Relay HTTP `503 host_offline`,
-   `429 too_many_streams`, `429 too_many_connections`, and the close codes 1000, 4404, 4408, 4410, 4429 (10.2 table)
+   `429 too_many_streams`, `429 too_many_connections`, and the close codes 1000, 4403, 4404, 4408, 4410, 4429 (10.2 table)
    map to "unreachable" with the right retry delay (4429: 60 s). The text `ping` is sent about every 45 s on idle
    open streams (answered `pong`; it does not count as activity for the 2-minute idle limit).
 3. The last working route is remembered in memory (not on disk) and tried first for the next request; the other route
@@ -309,7 +310,7 @@ laptop's own engine is not restarting):
 
 | HTTP | `code` | `type` | Retry? | Meaning |
 |---|---|---|---|---|
-| 503 | `remote_unreachable` | `unavailable` | yes | The PC that runs the AI cannot be reached now. `details.reason`: `offline` (nothing answered on LAN or relay), `relay_host_offline`, `relay_busy` (429s, close 4429), `clock` (`stale_timestamp`), `refused` (the pairing is no longer valid, see 5.2), `cert_changed` (5.3). `retry_after_ms` follows the backoff. Sent to apps when `client_fallback` is `none` (default), or when the local fallback could not load (then the engine's own error, such as `insufficient_memory`, is passed on). |
+| 503 | `remote_unreachable` | `unavailable` | yes | The PC that runs the AI cannot be reached now. `details.reason`: `offline` (nothing answered on LAN or relay), `relay_host_offline`, `relay_busy` (429s, close 4429), `relay_admission` (close 4403: the PC asks for a relay access key this laptop does not have; pair again), `clock` (`stale_timestamp`), `refused` (the pairing is no longer valid, see 5.2), `cert_changed` (5.3). `retry_after_ms` follows the backoff. Sent to apps when `client_fallback` is `none` (default), or when the local fallback could not load (then the engine's own error, such as `insufficient_memory`, is passed on). |
 
 This is additive under api-v1 rules (new code, same `type`; clients ignore unknown codes and fall back, which is the
 right outcome for AI Portal). Apps that handle only the old codes treat any `503 unavailable` as "fall back".

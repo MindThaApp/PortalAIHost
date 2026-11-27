@@ -1,5 +1,5 @@
 import { SELF } from "cloudflare:test";
-import { concat, fromBase64Url, hostProofMessage, roomIdForCertificate, toBase64Url } from "../src/protocol";
+import { admissionHash, concat, fromBase64Url, hostProofMessage, roomIdForCertificate, toBase64Url } from "../src/protocol";
 
 const te = new TextEncoder();
 
@@ -45,8 +45,8 @@ export async function newIdentity(): Promise<Identity> {
   return { cert, room: await roomIdForCertificate(cert), key: pair.privateKey };
 }
 
-export async function sign(id: Identity, room: string, nonce: Uint8Array): Promise<Uint8Array> {
-  return new Uint8Array(await crypto.subtle.sign({ name: "ECDSA", hash: "SHA-256" }, id.key, hostProofMessage(room, nonce) as BufferSource));
+export async function sign(id: Identity, room: string, nonce: Uint8Array, adm?: Uint8Array): Promise<Uint8Array> {
+  return new Uint8Array(await crypto.subtle.sign({ name: "ECDSA", hash: "SHA-256" }, id.key, hostProofMessage(room, nonce, adm) as BufferSource));
 }
 
 let ipCounter = 0;
@@ -132,9 +132,14 @@ export class Sock {
 
 export type Opened = { sock: Sock } | { status: number; body: string };
 
-export async function open(role: "host" | "device", room: string, ip: string = freshIp()): Promise<Opened> {
+export async function open(
+  role: "host" | "device",
+  room: string,
+  ip: string = freshIp(),
+  extra: Record<string, string> = {},
+): Promise<Opened> {
   const res = await SELF.fetch(`https://relay.test/v1/${role}/${room}`, {
-    headers: { Upgrade: "websocket", "CF-Connecting-IP": ip },
+    headers: { Upgrade: "websocket", "CF-Connecting-IP": ip, ...extra },
   });
   if (res.status === 101 && res.webSocket) return { sock: new Sock(res.webSocket) };
   return { status: res.status, body: await res.text() };
@@ -147,11 +152,17 @@ export async function mustOpen(role: "host" | "device", room: string, ip?: strin
 }
 
 /** Connects as the host and completes the handshake. */
-export async function connectHost(id: Identity): Promise<Sock> {
+export async function connectHost(id: Identity, admissionToken?: Uint8Array): Promise<Sock> {
   const sock = await mustOpen("host", id.room);
   const challenge = await sock.nextJson();
   const nonce = fromBase64Url(String(challenge.nonce), 32)!;
-  sock.sendJson({ t: "hello", cert: toBase64Url(id.cert), sig: toBase64Url(await sign(id, id.room, nonce)) });
+  const adm = admissionToken ? await admissionHash(admissionToken) : undefined;
+  sock.sendJson({
+    t: "hello",
+    cert: toBase64Url(id.cert),
+    sig: toBase64Url(await sign(id, id.room, nonce, adm)),
+    ...(adm ? { adm: toBase64Url(adm) } : {}),
+  });
   const ready = await sock.nextJson();
   if (ready.t !== "ready") throw new Error("not ready");
   return sock;

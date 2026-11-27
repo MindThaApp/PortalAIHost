@@ -395,7 +395,8 @@ public sealed class HostShell : IAsyncDisposable
                 ? null
                 : new Portal.AiHost.Core.Remote.Client.RemoteHostLink(new Portal.AiHost.Core.Remote.Client.ClientStateStore(root, _o.SecretProtector),
                     _o.ClientConnector ?? new Portal.AiHost.Core.Remote.Client.LanConnector(Portal.AiHost.Core.Remote.Client.LanConnector.LinkConnectTimeout),
-                    relayFactory: (url, fingerprint) => new Portal.AiHost.Core.Remote.Client.RelayConnector(url, fingerprint)),
+                    relayFactory: (url, fingerprint) => new Portal.AiHost.Core.Remote.Client.RelayConnector(url, fingerprint,
+                        admission: new Portal.AiHost.Core.Remote.Client.ClientStateStore(root, _o.SecretProtector).LoadRelayAdmission())),
             PersistMode = SaveMode,
             InitialFallback = settings.ClientFallback,
             InitialRelayMode = settings.RelayMode,
