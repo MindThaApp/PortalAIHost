@@ -10,7 +10,7 @@ public sealed class SdCppEngineOptions
     /// <summary>Folder with one subfolder per build flavour (vulkan, cpu), each holding the sd.cpp executable.</summary>
     public string EngineRoot { get; init; } = "";
 
-    /// <summary>Executable names tried in each flavour folder (newer releases ship sd-cli.exe, older sd.exe).</summary>
+    /// <summary>Executable names tried in each flavour folder (the pinned release ships sd-cli.exe; older ones sd.exe).</summary>
     public IReadOnlyList<string> ExeNames { get; init; } = ["sd-cli.exe", "sd.exe"];
 
     /// <summary>Overrides the lookup: flavour to executable path, or null when absent (tests run a stand-in).</summary>
@@ -95,9 +95,9 @@ public sealed class SdCppEngine : IGenerationEngine
         ArgumentNullException.ThrowIfNull(launch);
         ct.ThrowIfCancellationRequested();
         var cpu = string.Equals(launch.Placement.Backend, Cpu, StringComparison.OrdinalIgnoreCase);
-        var exe = ExeFor(cpu ? Cpu : Vulkan)
-            ?? throw new EngineException(ErrorCodes.EngineMissing,
-                cpu ? "The processor build of the image and video engine is not installed." : "The image and video engine is not installed.");
+        // A processor run uses the processor build when there is one, else the graphics-card build with --backend cpu.
+        var exe = (cpu ? ExeFor(Cpu) ?? ExeFor(Vulkan) : ExeFor(Vulkan))
+            ?? throw new EngineException(ErrorCodes.EngineMissing, "The image and video engine is not installed.");
 
         // Never overwrite: the output path is a fresh name in the job's own work folder.
         if (File.Exists(launch.OutputPath) || Directory.Exists(launch.OutputPath))

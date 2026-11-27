@@ -1,22 +1,14 @@
 {
-  "note": "Pinned stable-diffusion.cpp release for the image and video engine. tag, asset, sha256 and size are placeholders: scripts/fetch-sdcpp.ps1 refuses to download until they are replaced with the values of a real release (owner approval needed for the download).",
+  "note": "Pinned stable-diffusion.cpp release for the image and video engine (sd-cli.exe). The Vulkan build also runs on the processor (--backend cpu), so no separate processor build is pinned.",
   "source": "https://github.com/leejet/stable-diffusion.cpp/releases/download",
-  "tag": "PLACEHOLDER-TAG",
+  "tag": "master-1142-908965d",
   "builds": [
     {
       "flavour": "vulkan",
       "arch": "x64",
-      "asset": "PLACEHOLDER-sd-bin-win-vulkan-x64.zip",
-      "sha256": "PLACEHOLDER-SHA256",
-      "size": 0
-    },
-    {
-      "flavour": "cpu",
-      "arch": "x64",
-      "optional": true,
-      "asset": "PLACEHOLDER-sd-bin-win-avx2-x64.zip",
-      "sha256": "PLACEHOLDER-SHA256",
-      "size": 0
+      "asset": "sd-master-908965d-bin-win-vulkan-x64.zip",
+      "sha256": "fc8eb570e1bd7b71eb7010b89f148f20bd349b471a96f40aeabb6e8ae5b394a9",
+      "size": 31076374
     }
   ]
 }

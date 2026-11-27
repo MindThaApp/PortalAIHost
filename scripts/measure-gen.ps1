@@ -67,7 +67,7 @@ if ($WanDiffusion) {
         Files = @('--diffusion-model', (Assert-File $WanDiffusion 'Wan diffusion model'), '--t5xxl', (Assert-File $WanT5 'UMT5 text encoder'),
             '--vae', (Assert-File $WanVae 'Wan VAE'))
         Extra = @('--cfg-scale', '6', '--sampling-method', 'euler', '--flow-shift', '3', '--video-frames', '33', '--fps', '16',
-            '--diffusion-fa', '--vae-tiling') }
+            '--flash-attn', 'auto,diffusion=on', '--vae-tiling') }
 }
 if ($cases.Count -eq 0) { throw 'Give at least one model: -Sd15Model, -SdxlModel or -WanDiffusion/-WanT5/-WanVae.' }
 
@@ -91,8 +91,10 @@ foreach ($case in $cases) {
         $cmd = @('-M', $case.Mode) + $case.Files + @('-p', 'a lighthouse on a cliff at dusk, waves, cinematic light',
             '-W', $case.Width, '-H', $case.Height, '--steps', $case.Steps, '-s', '42', '-o', $output) + $case.Extra
         if ($Threads -gt 0) { $cmd += @('-t', $Threads) }
-        if ($ClipOnCpu) { $cmd += '--clip-on-cpu' }
-        if ($VaeOnCpu) { $cmd += '--vae-on-cpu' }
+        $onCpu = @()
+        if ($ClipOnCpu) { $onCpu += 'te=cpu' }
+        if ($VaeOnCpu) { $onCpu += 'vae=cpu' }
+        if ($onCpu.Count -gt 0) { $cmd += @('--backend', ($onCpu -join ',')) }
         if ($OffloadToCpu) { $cmd += '--offload-to-cpu' }
         $cmd += $ExtraArgs
 

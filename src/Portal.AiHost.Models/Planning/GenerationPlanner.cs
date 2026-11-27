@@ -141,7 +141,7 @@ public static class GenerationPlanner
             {
                 if (gpu <= vram && cpu <= ram)
                 {
-                    var p = needs.Video ? placement with { FlashAttention = true } : placement;
+                    var p = (needs.Video ? placement with { FlashAttention = true } : placement) with { MaxVramBytes = vram };
                     return new GenerationPlan(true, p, "", gpu, cpu);
                 }
             }

@@ -5,9 +5,8 @@ namespace Portal.AiHost.Engine;
 
 /// <summary>
 /// The stable-diffusion.cpp command-line flags, in one table, so a runtime update that renames a flag is a change here
-/// and nowhere else. <see cref="Entry.Verified"/> is false for flags whose spelling or presence differs between
-/// releases; they are only sent when a launch needs them (or, for the preview flags, when switched on in
-/// <see cref="SdCppOptions"/>). Check every unverified flag against <c>sd-cli --help</c> of the pinned release.
+/// and nowhere else. <see cref="Entry.Verified"/> is true for every flag checked against <c>sd-cli --help</c> of the
+/// pinned release (engine/sdcpp.lock.json, master-1142-908965d). Check the table again whenever the pin changes.
 /// </summary>
 public static class SdCppFlags
 {
@@ -32,10 +31,14 @@ public static class SdCppFlags
     public const string Output = "output";
     public const string Threads = "threads";
     public const string OffloadToCpu = "offload_to_cpu";
-    public const string ClipOnCpu = "clip_on_cpu";
-    public const string VaeOnCpu = "vae_on_cpu";
+    public const string Backend = "backend";
+    public const string BackendAllCpu = "backend.cpu";
+    public const string ClipOnCpu = "backend.te_cpu";
+    public const string VaeOnCpu = "backend.vae_cpu";
+    public const string MaxVram = "max_vram";
     public const string VaeTiling = "vae_tiling";
-    public const string FlashAttention = "diffusion_fa";
+    public const string FlashAttention = "flash_attn";
+    public const string FlashAttentionDiffusion = "flash_attn.diffusion";
     public const string Preview = "preview";
     public const string PreviewMethod = "preview.method";
     public const string PreviewPath = "preview_path";
@@ -45,20 +48,20 @@ public static class SdCppFlags
 
     public static IReadOnlyList<Entry> Table { get; } =
     [
-        // Run mode. Older releases used txt2img/img2img/img2vid; current ones img_gen and vid_gen.
+        // Run mode.
         new(Mode, "-M", true),
-        new(ModeImage, "img_gen", false),
-        new(ModeVideo, "vid_gen", false),
+        new(ModeImage, "img_gen", true),
+        new(ModeVideo, "vid_gen", true),
 
         // Model files by role.
         new(FilePrefix + GenerationFileRoles.Model, "-m", true),
         new(FilePrefix + GenerationFileRoles.Diffusion, "--diffusion-model", true),
-        new(FilePrefix + GenerationFileRoles.HighNoise, "--high-noise-diffusion-model", false),
+        new(FilePrefix + GenerationFileRoles.HighNoise, "--high-noise-diffusion-model", true),
         new(FilePrefix + GenerationFileRoles.ClipL, "--clip_l", true),
         new(FilePrefix + GenerationFileRoles.ClipG, "--clip_g", true),
         new(FilePrefix + GenerationFileRoles.T5xxl, "--t5xxl", true),
         new(FilePrefix + GenerationFileRoles.Vae, "--vae", true),
-        new(FilePrefix + GenerationFileRoles.ClipVision, "--clip_vision", false),
+        new(FilePrefix + GenerationFileRoles.ClipVision, "--clip_vision", true),
 
         // Request values.
         new(Prompt, "-p", true),
@@ -69,25 +72,31 @@ public static class SdCppFlags
         new(Seed, "-s", true),
         new(CfgScale, "--cfg-scale", true),
         new(Sampler, "--sampling-method", true),
-        new(FlowShift, "--flow-shift", false),
-        new(Frames, "--video-frames", false),
-        new(Fps, "--fps", false),
+        new(FlowShift, "--flow-shift", true),
+        new(Frames, "--video-frames", true),
+        new(Fps, "--fps", true),
         new(InitImage, "-i", true),
         new(Strength, "--strength", true),
         new(Output, "-o", true),
         new(Threads, "-t", true),
 
-        // Memory placement.
-        new(OffloadToCpu, "--offload-to-cpu", false),
-        new(ClipOnCpu, "--clip-on-cpu", true),
-        new(VaeOnCpu, "--vae-on-cpu", true),
+        // Memory placement. --clip-on-cpu, --vae-on-cpu and --diffusion-fa are deprecated in 908965d: module
+        // assignments through --backend (te=cpu, vae=cpu; one value, comma-separated) and --flash-attn replace them.
+        // --max-vram caps the runtime's own automatic fitting (--auto-fit, on by default) at the host's plan.
+        new(OffloadToCpu, "--offload-to-cpu", true),
+        new(Backend, "--backend", true),
+        new(BackendAllCpu, "cpu", true),
+        new(ClipOnCpu, "te=cpu", true),
+        new(VaeOnCpu, "vae=cpu", true),
+        new(MaxVram, "--max-vram", true),
         new(VaeTiling, "--vae-tiling", true),
-        new(FlashAttention, "--diffusion-fa", false),
+        new(FlashAttention, "--flash-attn", true),
+        new(FlashAttentionDiffusion, "auto,diffusion=on", true),
 
-        // Preview picture while sampling (newer releases only).
-        new(Preview, "--preview", false),
-        new(PreviewMethod, "proj", false),
-        new(PreviewPath, "--preview-path", false),
+        // Preview picture while sampling.
+        new(Preview, "--preview", true),
+        new(PreviewMethod, "proj", true),
+        new(PreviewPath, "--preview-path", true),
     ];
 
     private static readonly Dictionary<string, string> ByOption = Table.ToDictionary(e => e.Option, e => e.Flag, StringComparer.Ordinal);
@@ -103,7 +112,7 @@ public static class SdCppFlags
 /// <summary>Switches for the sd.cpp argument list.</summary>
 public sealed record SdCppOptions
 {
-    /// <summary>Ask the engine for a preview picture while it samples. Off: the flag is unverified on older releases.</summary>
+    /// <summary>Ask the engine for a preview picture while it samples (projection preview, cheap). Off by default.</summary>
     public bool Preview { get; init; }
 
     /// <summary>Extra flags appended last (local tuning). They may not repeat the output or model flags.</summary>
@@ -219,19 +228,39 @@ public static class SdCppArgs
 
         var p = launch.Placement;
         var gpu = !string.Equals(p.Backend, "cpu", StringComparison.OrdinalIgnoreCase);
-        if (gpu && p.OffloadToCpu)
+        if (!gpu)
         {
-            args.Add(SdCppFlags.Of(SdCppFlags.OffloadToCpu));
+            // Processor only: works with the graphics-card build too (its ggml-cpu backends come with it).
+            args.AddRange([SdCppFlags.Of(SdCppFlags.Backend), SdCppFlags.Of(SdCppFlags.BackendAllCpu)]);
         }
-
-        if (gpu && p.ClipOnCpu)
+        else
         {
-            args.Add(SdCppFlags.Of(SdCppFlags.ClipOnCpu));
-        }
+            if (p.OffloadToCpu)
+            {
+                args.Add(SdCppFlags.Of(SdCppFlags.OffloadToCpu));
+            }
 
-        if (gpu && p.VaeOnCpu)
-        {
-            args.Add(SdCppFlags.Of(SdCppFlags.VaeOnCpu));
+            var onCpu = new List<string>();
+            if (p.ClipOnCpu)
+            {
+                onCpu.Add(SdCppFlags.Of(SdCppFlags.ClipOnCpu));
+            }
+
+            if (p.VaeOnCpu)
+            {
+                onCpu.Add(SdCppFlags.Of(SdCppFlags.VaeOnCpu));
+            }
+
+            if (onCpu.Count > 0)
+            {
+                args.AddRange([SdCppFlags.Of(SdCppFlags.Backend), string.Join(',', onCpu)]);
+            }
+
+            // At least 0.1 GiB: 0 would mean "live free memory" to the runtime, not "none".
+            if (p.MaxVramBytes is { } maxVram && maxVram >= (1L << 30) / 10)
+            {
+                args.AddRange([SdCppFlags.Of(SdCppFlags.MaxVram), (maxVram / (double)(1L << 30)).ToString("0.0", CultureInfo.InvariantCulture)]);
+            }
         }
 
         if (p.VaeTiling)
@@ -241,7 +270,7 @@ public static class SdCppArgs
 
         if (p.FlashAttention)
         {
-            args.Add(SdCppFlags.Of(SdCppFlags.FlashAttention));
+            args.AddRange([SdCppFlags.Of(SdCppFlags.FlashAttention), SdCppFlags.Of(SdCppFlags.FlashAttentionDiffusion)]);
         }
 
         if (options.Preview && launch.PreviewPath is { } preview && Path.IsPathFullyQualified(preview))
@@ -249,7 +278,7 @@ public static class SdCppArgs
             args.AddRange([SdCppFlags.Of(SdCppFlags.Preview), SdCppFlags.Of(SdCppFlags.PreviewMethod), SdCppFlags.Of(SdCppFlags.PreviewPath), preview]);
         }
 
-        var protectedFlags = new[] { SdCppFlags.Of(SdCppFlags.Output), SdCppFlags.Of(SdCppFlags.Mode) }
+        var protectedFlags = new[] { SdCppFlags.Of(SdCppFlags.Output), SdCppFlags.Of(SdCppFlags.Mode), SdCppFlags.Of(SdCppFlags.Backend), SdCppFlags.Of(SdCppFlags.MaxVram) }
             .Concat(SdCppFlags.Table.Where(e => e.Option.StartsWith(SdCppFlags.FilePrefix, StringComparison.Ordinal)).Select(e => e.Flag))
             .ToHashSet(StringComparer.Ordinal);
         foreach (var extra in options.ExtraArgs)

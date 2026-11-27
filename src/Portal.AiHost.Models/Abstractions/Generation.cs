@@ -164,6 +164,9 @@ public sealed record GenerationPlacement
 
     /// <summary>Flash attention in the diffusion model (less memory for video).</summary>
     public bool FlashAttention { get; init; }
+
+    /// <summary>The graphics memory the run may use (the planner's budget), passed to the runtime's own fitting; null: no cap.</summary>
+    public long? MaxVramBytes { get; init; }
 }
 
 /// <summary>Everything one generation run needs. The engine writes only <see cref="OutputPath"/> and <see cref="PreviewPath"/>.</summary>

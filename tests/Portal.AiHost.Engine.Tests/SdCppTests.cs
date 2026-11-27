@@ -82,10 +82,12 @@ public sealed class SdCppArgsTests
         Assert.Equal(@"C:\m\t5xxl_q8.gguf", ValueOf(args, "--t5xxl"));
         Assert.Equal(@"C:\m\ae.safetensors", ValueOf(args, "--vae"));
         Assert.DoesNotContain("-m", args);
-        foreach (var flag in new[] { "--offload-to-cpu", "--clip-on-cpu", "--vae-on-cpu", "--vae-tiling" })
-        {
-            Assert.Contains(flag, args);
-        }
+        Assert.Contains("--offload-to-cpu", args);
+        Assert.Contains("--vae-tiling", args);
+        Assert.Equal("te=cpu,vae=cpu", ValueOf(args, "--backend"));
+        Assert.Equal(1, args.Count(a => a == "--backend"));
+        Assert.DoesNotContain("--clip-on-cpu", args); // deprecated in the pinned release
+        Assert.DoesNotContain("--vae-on-cpu", args);
 
         Assert.Equal(2, args.Count(a => a == "--diffusion-model" || a == "--clip_l"));
     }
@@ -97,8 +99,8 @@ public sealed class SdCppArgsTests
         var args = SdCppArgs.Build(Launch(GenerationFamilies.Sd15, placement: placement,
             files: new GenerationComponent(GenerationFileRoles.Model, @"C:\m\sd15.safetensors", 1)) with { Threads = 8 });
         Assert.DoesNotContain("--offload-to-cpu", args);
-        Assert.DoesNotContain("--clip-on-cpu", args);
-        Assert.DoesNotContain("--vae-on-cpu", args);
+        Assert.DoesNotContain("--max-vram", args);
+        Assert.Equal("cpu", ValueOf(args, "--backend"));
         Assert.Contains("--vae-tiling", args);
         Assert.Equal("8", ValueOf(args, "-t"));
     }
@@ -122,8 +124,9 @@ public sealed class SdCppArgsTests
         Assert.Equal("3", ValueOf(args, "--flow-shift"));
         Assert.Equal(@"C:\work\gen_00000000000000000000000000000000\init.png", ValueOf(args, "-i"));
         Assert.Equal(@"C:\m\clip_vision_h.safetensors", ValueOf(args, "--clip_vision"));
-        Assert.Contains("--diffusion-fa", args);
-        Assert.Contains("--clip-on-cpu", args);
+        Assert.Equal("auto,diffusion=on", ValueOf(args, "--flash-attn"));
+        Assert.DoesNotContain("--diffusion-fa", args);
+        Assert.Equal("te=cpu", ValueOf(args, "--backend"));
         Assert.DoesNotContain("--strength", args); // image to image only
         Assert.EndsWith(".avi", ValueOf(args, "-o"), StringComparison.Ordinal);
         Assert.Equal(".avi", SdCppArgs.OutputExtension("video"));
@@ -155,10 +158,16 @@ public sealed class SdCppArgsTests
     }
 
     [Fact]
-    public void EveryOptionHasExactlyOneFlagAndTheUnverifiedOnesAreListed()
+    public void EveryOptionHasExactlyOneFlagAndAllAreCheckedAgainstThePinnedRelease()
     {
         Assert.Equal(SdCppFlags.Table.Count, SdCppFlags.Table.Select(e => e.Option).Distinct().Count());
-        Assert.Contains(SdCppFlags.Unverified, e => e.Flag == "--offload-to-cpu");
+        Assert.Empty(SdCppFlags.Unverified);
+        var gpu = SdCppArgs.Build(Launch(GenerationFamilies.Sd15, placement: new GenerationPlacement { MaxVramBytes = (long)(6.7 * (1L << 30)) },
+            files: new GenerationComponent(GenerationFileRoles.Model, @"C:\m\sd15.safetensors", 1)));
+        Assert.Equal("6.7", ValueOf(gpu, "--max-vram"));
+        Assert.DoesNotContain("--backend", gpu);
+        Assert.Throws<ArgumentException>(() => SdCppArgs.Build(Launch(GenerationFamilies.Sd15,
+            files: new GenerationComponent(GenerationFileRoles.Model, @"C:\m\sd15.safetensors", 1)), new SdCppOptions { ExtraArgs = ["--backend", "cuda0"] }));
         Assert.Throws<ArgumentOutOfRangeException>(() => SdCppFlags.Of("no-such-option"));
     }
 
@@ -383,10 +392,12 @@ public sealed class SdCppEngineTests : IDisposable
         var e = await Assert.ThrowsAsync<EngineException>(() => missing.RunAsync(Launch("x"), null, default));
         Assert.Equal(ErrorCodes.EngineMissing, e.ErrorCode);
 
-        // Only the graphics-card build: a processor run is refused, not run on the wrong build.
+        // Only the graphics-card build: a processor run uses it with --backend cpu.
         var cpuRun = Launch("x") with { Placement = new GenerationPlacement { Backend = "cpu" } };
-        e = await Assert.ThrowsAsync<EngineException>(() => Engine().RunAsync(cpuRun, null, default));
-        Assert.Equal(ErrorCodes.EngineMissing, e.ErrorCode);
+        await Engine().RunAsync(cpuRun, null, default);
+        var written = System.Text.Encoding.UTF8.GetString(await File.ReadAllBytesAsync(cpuRun.OutputPath));
+        Assert.Contains("--backend\ncpu", written, StringComparison.Ordinal);
+        File.Delete(cpuRun.OutputPath); // this test's own temp output
         Assert.True(Engine().Check().GpuBuild);
 
         e = await Assert.ThrowsAsync<EngineException>(() => Engine().RunAsync(Launch("x") with

@@ -166,23 +166,26 @@ frames, licence and a speed note per hardware class. Image-to-video support is r
 - **Image and video share one engine kind and one queue** (`generation` in the fair queue): on one GPU two jobs
   would only fight over VRAM. The job API is in [api-v1.md](api-v1.md), "Image and video jobs".
 - **Memory plan.** The generation planner tries, in order: everything on the card; text encoders on the processor
-  (`--clip-on-cpu`); encoders and VAE on the processor (`--vae-on-cpu`); weights in RAM streamed to the card
+  (`--backend te=cpu`); encoders and VAE on the processor (`--backend te=cpu,vae=cpu`); weights in RAM streamed to the card
   (`--offload-to-cpu`); processor only (pictures, or video when the owner chose processor-only). VAE tiling is on
   for video and for pictures above one megapixel, flash attention for video. The share of offloaded weights assumed
   on the card at once (25 %) and the compute-buffer estimates are guesses until `scripts\measure-gen.ps1` has been
   run on the owner's PC.
-- **Flags.** Every sd.cpp flag lives in one table (`src\Portal.AiHost.Engine\SdCppArgs.cs`). Not yet checked against
-  the pinned release: the run modes `img_gen` and `vid_gen`, `--high-noise-diffusion-model`, `--clip_vision`,
-  `--flow-shift`, `--video-frames`, `--fps`, `--offload-to-cpu`, `--diffusion-fa` and the preview flags (sent only when
-  switched on). Check them with `sd-cli --help` after the first fetch.
-- **Catalogue.** An image or video entry may carry `generation` (default size, steps, cfg, sampler, flow shift,
-  frames, fps, `image_to_video`, `max_side`, `compute_bytes`) and a `role` per file (`model`, `diffusion`,
-  `high_noise`, `clip_l`, `clip_g`, `t5xxl`, `vae`, `clip_vision`). Without them the roles are guessed from file
-  names and the defaults come from the model family. Supported families: SD 1.5, SD 2, SDXL, SD3 and FLUX for
-  pictures; Wan for video. LTX-Video is not supported by this runtime.
-- **Fetch.** `scripts\fetch-sdcpp.ps1` installs a pinned release into `engine\sdcpp\vulkan` (and an optional
-  processor build) after a SHA-256 check; `engine\sdcpp.lock.json` holds the tag and hashes, which are placeholders
-  until the owner approves the download. The MSIX build includes the engine only when it is present.
+- **Flags.** Every sd.cpp flag lives in one table (`src\Portal.AiHost.Engine\SdCppArgs.cs`), checked against
+  `sd-cli --help` of the pinned release master-1142-908965d. That release deprecates `--clip-on-cpu`, `--vae-on-cpu`
+  and `--diffusion-fa`; the host sends `--backend te=cpu,vae=cpu` and `--flash-attn auto,diffusion=on` instead, runs
+  processor-only jobs on the Vulkan build with `--backend cpu`, and caps the runtime's own fitting (`--auto-fit`, on
+  by default) with `--max-vram` set to the planner's graphics-memory budget.
+- **Catalogue.** Image and video entries use engine `stable-diffusion-cpp` and per-file `role` (`checkpoint`,
+  `diffusion_model`, `vae`, `text_encoder`); only entries with `available: true` are offered, and `min_vram_gb` keeps a
+  smaller card out of the plan. An entry may also carry `generation` (default size, steps, cfg, sampler, flow shift,
+  frames, fps, `image_to_video`, `max_side`, `compute_bytes`). Without roles the parts are guessed from file names.
+  Supported families: SD 1.5, SD 2, SDXL, SD3 and FLUX for pictures; Wan for video.
+- **Fetch.** `scripts\fetch-sdcpp.ps1` installs the pinned Vulkan build (`engine\sdcpp.lock.json`: tag
+  master-1142-908965d, SHA-256 checked) into `engine\sdcpp\vulkan`. The MSIX build includes it only when present.
+- **Crash leftovers.** Each job's work folder holds a state marker. At start, before any job runs, a finished output is
+  moved to the finished folder, a running or cancelled one is deleted, and anything else is kept in
+  `generated\recovered\` under a unique name.
 
 ## 5. The director
 

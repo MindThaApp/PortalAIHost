@@ -3,11 +3,13 @@
   Downloads the pinned stable-diffusion.cpp Windows build into engine/sdcpp/<flavour>/ and verifies SHA-256.
 .DESCRIPTION
   Reads engine/sdcpp.lock.json (tag + asset + SHA-256 + size per build). Downloads only from the official
-  leejet/stable-diffusion.cpp GitHub releases. Refuses to run while the lock file still holds placeholders.
+  leejet/stable-diffusion.cpp GitHub releases. Pinned: master-1142-908965d,
+  sd-master-908965d-bin-win-vulkan-x64.zip, SHA-256 fc8eb570e1bd7b71eb7010b89f148f20bd349b471a96f40aeabb6e8ae5b394a9
+  (31076374 bytes). Refuses to run while the lock file holds placeholders.
   A flavour folder is replaced only when it carries the .engine-fetch marker this script writes; any other folder
   is left alone and reported. The archive must hold sd-cli.exe (current releases) or sd.exe (older ones) at its root.
 .PARAMETER Flavour
-  Which builds to fetch: vulkan, cpu. Default: vulkan only (the image and video engine needs the graphics card).
+  Which builds to fetch. Default and only pinned build: vulkan (it runs processor-only jobs too, with --backend cpu).
 .PARAMETER Force
   Re-download even if the folder already holds the pinned tag.
 #>
