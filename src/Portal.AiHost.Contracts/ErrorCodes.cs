@@ -38,6 +38,12 @@ public static class ErrorCodes
     public const string DeadlineExceeded = "deadline_exceeded";
     public const string EngineError = "engine_error";
     public const string InternalError = "internal_error";
+
+    /// <summary>The engine this request needs is not part of this installation (for example the generation engine).</summary>
+    public const string EngineMissing = "engine_missing";
+
+    /// <summary>No installed model of the needed kind, or the named model is not installed.</summary>
+    public const string ModelNotInstalled = "model_not_installed";
 }
 
 /// <summary>Values of the error type field.</summary>
@@ -95,6 +101,8 @@ public static class ErrorCatalog
         [ErrorCodes.DeadlineExceeded] = new(504, ErrorTypes.Timeout, false),
         [ErrorCodes.EngineError] = new(500, ErrorTypes.Server, true),
         [ErrorCodes.InternalError] = new(500, ErrorTypes.Server, true),
+        [ErrorCodes.EngineMissing] = new(503, ErrorTypes.Unavailable, false),
+        [ErrorCodes.ModelNotInstalled] = new(404, ErrorTypes.NotFound, false),
     };
 
     public static IReadOnlyCollection<string> AllCodes => Map.Keys;

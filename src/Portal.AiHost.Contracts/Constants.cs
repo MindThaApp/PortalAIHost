@@ -77,6 +77,12 @@ public static class ModelKinds
     public const string Chat = "chat";
     public const string Embedding = "embedding";
     public const string Transcription = "transcription";
+
+    /// <summary>Still pictures from a text prompt (generation engine, <see cref="Routes.ImageJobs"/>).</summary>
+    public const string Image = "image";
+
+    /// <summary>Short clips from a text prompt or a start picture (generation engine, <see cref="Routes.VideoJobs"/>).</summary>
+    public const string Video = "video";
 }
 
 /// <summary>
@@ -100,6 +106,12 @@ public static class EngineKinds
 {
     public const string LlamaServer = "llama-server";
     public const string WhisperServer = "whisper-server";
+
+    /// <summary>Image generation, served by the bundled stable-diffusion.cpp runtime.</summary>
+    public const string ImageEngine = "image-engine";
+
+    /// <summary>Video generation, served by the same stable-diffusion.cpp runtime as <see cref="ImageEngine"/>.</summary>
+    public const string VideoEngine = "video-engine";
 }
 
 /// <summary>Model names clients may send in the request model field.</summary>
@@ -219,4 +231,17 @@ public static class Routes
     public const string ChatCompletions = "/v1/chat/completions";
     public const string Embeddings = "/v1/embeddings";
     public const string AudioTranscriptions = "/v1/audio/transcriptions";
+
+    // Generation jobs (api-v1.md section 6, "Image and video jobs"): POST creates, GET /{id} reads, DELETE /{id} cancels,
+    // GET /{id}/result and /{id}/preview return the file.
+    public const string ImageJobs = "/host/image/jobs";
+    public const string VideoJobs = "/host/video/jobs";
+
+    /// <summary>The job collection route of a generation kind (image or video), or null for any other kind.</summary>
+    public static string? JobsFor(string kind) => kind switch
+    {
+        ModelKinds.Image => ImageJobs,
+        ModelKinds.Video => VideoJobs,
+        _ => null,
+    };
 }
