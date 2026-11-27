@@ -546,7 +546,7 @@ must allow the model; the device's pause, quiet hours, gaming mode and daily req
 
 **What can run:** `/host/status` and `/host/capabilities` carry `"generation": { "image": true, "video": false, "queued": 0, "running": 0 }`.
 `image` and `video` are true only when the engine is installed and an available model of that kind is installed;
-the counts cover every app on this host. Capabilities then also list the endpoints `image.jobs` and `video.jobs`.
+the counts cover every app on this host. Capabilities then also list the endpoints `image.jobs` and `video.jobs` (and `video.joins` while ffmpeg is installed).
 Older hosts leave `generation` out.
 
 `{kind}` is `image` or `video`. A job belongs to the app and device that created it: any other caller gets
@@ -572,6 +572,11 @@ the engine's defaults for the model family.
 - `init_image`: base64 PNG or JPEG (a `data:image/png;base64,` prefix is accepted), within `max_request_bytes`.
   Video: the first frame (image to video), only for models that support it. Image: the picture to rework, with
   `strength` (0-1).
+- `container` (video only): `avi` (default, motion JPEG, what older hosts always return) or `mp4` (H.264, plays
+  everywhere). `mp4` needs ffmpeg on the host: the host lists `"video_containers": ["avi", "mp4"]` in `generation`
+  while it is there, and answers `400 unsupported_parameter` (`param: "container"`) for `mp4` otherwise. The clip is
+  made as an AVI first and then converted (stage `converting`); if the conversion fails the job still succeeds with
+  the AVI, so check `result.content_type`. On an image job `container` is `400 unsupported_parameter`.
 
 **Job:**
 
@@ -619,6 +624,48 @@ the engine's defaults for the model family.
   folder) under new unique names; nothing is ever overwritten. A job's partial output stays in its own work folder
   until it finishes, and cancel or failure delete only that partial file. Model files are never touched.
 - Poll `GET /host/{kind}/jobs/{id}` every 1-2 seconds while a job runs, and less often while it is queued.
+
+### MP4 output, last picture and joins (needs ffmpeg)
+
+The package carries ffmpeg (LGPL build) in `engine\ffmpeg`; H.264 is encoded with the Windows media encoder. Without
+it these features report off and nothing else changes: `generation.video_containers` is `["avi"]`,
+`generation.video_joins` is false and the endpoint `video.joins` is not listed.
+
+| Route | What it does |
+|---|---|
+| `GET /host/video/jobs/{id}/last-frame` | The last picture of a finished video job as `image/png` (use it as the `init_image` of the next clip). `404 not_found` until `succeeded`, `503 engine_missing` without ffmpeg. |
+| `POST /host/video/joins` | Joins clips into one MP4. `202` with a join job (`object: "generation.join"`, same fields as a job) and a `Location` header. |
+| `GET /host/video/joins`, `GET /host/video/joins/{id}` | This app's joins, newest first; one join with `state`, `stage`, `progress` and `result`. |
+| `DELETE /host/video/joins/{id}` | Cancels a queued or running join and answers with its state once it has ended. |
+| `GET /host/video/joins/{id}/result`, `GET /host/video/joins/{id}/last-frame` | The MP4 (`video/mp4`) and its last picture. |
+
+```json
+{ "clips": ["gen_6f1c2a9e4b7d4c0f9a51d3e8b2c47a10", "20261127-203000-gen_0a1b2c3d4e5f60718293a4b5c6d7e8f9.mp4"],
+  "transitions": [{ "kind": "crossfade", "seconds": 0.5 }],
+  "audio": [{ "speech_job": "speech_...", "role": "voice", "volume": 1, "start_seconds": 0.5 },
+            { "data_base64": "UklGR...", "role": "music", "volume": 0.6 }],
+  "duck": true }
+```
+
+- `clips` (1-20, in order): each is the **id of a finished video job** of this app (or of a finished join), or the
+  **file name** of a clip in the host's own video folder (`generated\videos`, a plain name such as the `file_name`
+  of an earlier result, never a path, folder, drive or URL). Anything else is `400 invalid_request`; an unknown id,
+  another app's job or a missing file is `404 not_found`. `param` names the entry (`clips[1]`).
+- `transitions`: omitted means cuts. One entry is used between every two clips; otherwise give one per gap (clips
+  minus one). `kind` is `cut` or `crossfade`; a crossfade has `seconds` (0.05-5, default 0.5) and is limited to half
+  of the shorter clip. Clips are fitted into the size and frame rate of the first clip without stretching.
+- `audio` (up to 4 tracks): generated clips carry no sound, so only these tracks are heard. Each has exactly one
+  source: `speech_job` (a finished speech job of this app) or `data_base64` (WAV or MP3, small: the request is limited
+  to `max_request_bytes`). `role` is `music` (default) or `voice`, `volume` 0-2 (default 1), `start_seconds` the
+  offset in the video. With `duck: true` and both roles, the music sinks while the voice speaks. The sound is cut or
+  padded to the video's length and fades out over its last half second.
+- The result is a **new, uniquely named file** in `generated\videos`; no input clip is changed, moved or deleted. A
+  join does not wait in the generation queue: one join runs at a time on the processor, at most 2 are open per app.
+  `result.width` and `result.height` are 0 for a join.
+- Errors at `POST`: `503 engine_missing` (no ffmpeg), `400 invalid_request`, `404 not_found`, `429 queue_full`, and for
+  paired devices `403 model_control_required`.
+- MP3 voice samples: when ffmpeg is installed, `voice.sample_formats` includes `"mp3"` and `POST /host/voices` decodes
+  the upload through pipes (no temporary file); otherwise MP3 is `unsupported_audio`.
 
 ### Voice: cloning and text to speech (host 1.1)
 
