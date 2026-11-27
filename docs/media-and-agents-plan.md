@@ -12,13 +12,16 @@ owner's PC before it is promised in the UI or the Store listing.
 | 3 | Video generation engine and models | Host, then AI Portal | Large |
 | 4 | Director workflow (shot list, chaining, stitching) | AI Portal | Large |
 | 5 | Models page by category | Host (in progress on another branch) | Small |
+| 6 | Voice cloning and text to speech (sections 10 and 11) | Host, then Voice Portal | Medium |
 
 Plain version: AI Portal learns to talk to cloud providers as well as local and remote-PC models. A lead model can
 ask other models for help, visibly and within limits. The Host learns a new engine type for video. A "director"
 uses all of this to turn an idea into a finished video, with the user approving each shot.
 
 Terms: the **Host** is Portal AI Host (runs local models, shares them over an OpenAI-compatible API). **AI Portal** is
-the separate chat and documents app that uses the Host.
+the separate chat and documents app that uses the Host. Since 27/11 the apps are split (section 10): the Host is the
+engine, AI Portal does chat and agents, Voice Portal does voice, and a new Studio Portal does images, video and the
+director.
 
 ## 2. Cloud models in AI Portal (not in the Host)
 
@@ -285,8 +288,151 @@ Order notes:
 5. **Director default:** cloud director when a key exists and local otherwise, or local first?
 6. **Video quality bar:** is 480p draft quality acceptable for v1, with 720p only on stronger hardware?
 7. **ffmpeg:** ship it in the Store package (licence and patent review needed) or download it on first use?
-8. **Audio:** user-supplied music and voice only at first, or add generated speech and music in a later phase?
+8. **Audio:** generated speech is decided (section 11). Is generated music wanted in a later phase?
 9. **Remote video:** may paired laptops run the director against the home PC's video engine in the first release, or
    later?
 10. **Price tables:** bundled and updated with app releases, or fetched from a small file the app checks (needs
     approval for the network call)?
+
+## 10. App split (owner decision 27/11)
+
+The apps are split so that each one has one job and the engines live in one place.
+
+| App | Role | What it does |
+|---|---|---|
+| **Portal AI Host** | Engine | Runs and supervises every engine (chat, embeddings, voice, later image and video), owns the model store, the shared voice library, the job queues, memory budget, placement and access control. No end-user workflow of its own. |
+| **AI Portal** | Chat and agents | Chat, documents, cloud models, the lead model and consults (sections 2 and 3). Its lead model can use the Host's other engines as tools. |
+| **Voice Portal** | Voice | Dictation and transcription, plus voice cloning and text to speech: the screens for making a voice from a sample and reading text with it. |
+| **Studio Portal** (working name) | Images, video and the director | Image and video generation panels and the director workflow (section 5). |
+
+How they talk to each other:
+- Every app is a client of the Host. Each one calls the Host's own API (`docs/api-v1.md`) with its own access token;
+  the user approves each app once. Apps do not call each other and never touch each other's files.
+- **Shared by the Host:** the model store, the queues, the memory budget, and the **voice library**. A voice made in
+  Voice Portal appears in `GET /host/voices` for every approved app, so AI Portal or Studio Portal can read text with it
+  without holding the sample. Only the Host stores samples; apps hold voice ids.
+- **The Studio director** calls the Host's chat engine (shot list, prompts), image and video engines (shots), and voice
+  engine (narration or dialogue lines from `POST /host/speech/jobs`), and joins the pieces with ffmpeg in its project
+  folder. It asks the Host for every step, so the Host's budget and yield rules apply to the whole workflow.
+- **AI Portal's lead model** can be given the Host engines as tools (read this aloud, make this image), through the same
+  API, under the same hand-off and limit rules as model consults (section 3). Tool results are shown as visible cards.
+- Paired laptops reach the same Host APIs over the existing remote path. Voice routes work for paired devices (they sign
+  requests like any other call); a device can change only voices its own app made.
+- What the Host guarantees to all of them: one queue per engine kind, a memory budget, cancel everywhere, a consent
+  record for every cloned voice, and a "made with Portal" tag on generated audio.
+
+## 11. Voice: cloning and text-to-speech
+
+### 11.1 The feature
+
+The user gives an MP3 or WAV of a voice (10 to 30 seconds). The Host makes a reusable voice from it. That voice then
+reads any text and produces audio. All Portal apps use the same library through the Host. Built-in fixed voices cover
+the case where nobody wants to clone anything.
+
+Requirements for the runtime: runs natively on Windows without Python, on the CPU (an 8 GB AMD GPU is optional), and is
+commercially usable (code **and** model weights).
+
+### 11.2 Candidates
+
+Facts below come from the projects' own pages (checked 27/11/2026). Speed and size figures marked "estimate" are mine
+and have to be measured on the owner's PC before they reach any UI or Store text.
+
+| Candidate | Licence (code / weights) | Quality | CPU speed | Packaging | Verdict |
+|---|---|---|---|---|---|
+| **sherpa-onnx + Pocket TTS** (Kyutai, 100M parameters; listed by sherpa-onnx as English voice cloning) | sherpa-onnx Apache-2.0 / weights CC-BY-4.0 (credit needed; the model card forbids cloning "without explicit and lawful consent") | Good for its size; cloning from a few seconds of audio, no transcript needed | Kyutai reports about 6x real time on 2 cores of a MacBook Air M4 and about 2.3 to 2.5x on a 4 vCPU x86 cloud VM; estimate 3 to 6x on a Ryzen 9 9900X | C/C++ API and ONNX runtime DLLs, Windows x64 and arm64; no ready TTS server, so Portal ships a small helper; model size estimate 150 to 250 MB | **Recommended for cloning** |
+| **sherpa-onnx + Kokoro-82M** (and Piper/VITS for more fixed voices) | sherpa-onnx Apache-2.0 / Kokoro Apache-2.0; Piper voices differ per voice (some are GPL or non-commercial, so only vetted voices go in the catalogue) | Very good for fixed voices; many languages; no cloning | Estimate 5 to 15x real time on the 9900X (sherpa-onnx only publishes Raspberry Pi numbers); first chunk well under a second | Same runtime and helper as above; model about 80 to 330 MB depending on quantisation (estimate) | **Recommended for fast fixed voices** |
+| sherpa-onnx + ZipVoice (zero-shot flow matching) | Code Apache-2.0 / **weights CC-BY-NC** (trained on Emilia) | Good, English and Chinese | Usable on CPU with the distilled int8 model; needs the reference text as well | Same runtime | **Rejected: weights not for commercial use** |
+| llama.cpp `llama-tts` with OuteTTS | llama.cpp MIT / OuteTTS 0.2 and 0.3 weights non-commercial or share-alike (CC-BY-NC, CC-BY-SA depending on version); 1.0 1B mixes Llama 3.2 licence with CC-BY-NC-SA; 1.0 0.6B is reported as Apache-2.0 (not confirmed on the official card) | OK to good | Slow: a language model plus a vocoder pass, estimate under real time on CPU for the 1B | Reuses the existing engine, but stock `llama-tts` supports only OuteTTS 0.2/0.3; 1.0 needs a patched build and a DAC encoder, and the speaker profile is made with a Python tool | **Rejected for now** (licence and tooling). Revisit if the 0.6B Apache-2.0 model gets upstream support |
+| Chatterbox (Resemble AI) via ONNX | MIT code and weights (also on the ONNX export) | Best of the open models in this list (claimed; not measured here), includes an optional Perth watermark | Unknown: 0.5B Llama-style language model plus decoder; estimate below real time to about 1x on a desktop CPU | ONNX export exists as four graphs, but the only reference code is Python; a C# or C++ port of tokenizer, sampling and audio front end would be needed; large files | **Later, as a quality tier** if the spike shows Pocket TTS is not good enough |
+| OpenVoice v2 via ONNX | MIT | Converts the tone colour only; keeps the base voice's accent; sounds less like the person | Converter is light (about 150 MB graph), but the base voice (MeloTTS) is not | Converter and speaker encoder exist as ONNX; the MeloTTS front end still needs Python | **Rejected** (not Python-free, weaker cloning) |
+| F5-TTS | Code MIT / **official weights CC-BY-NC** (Emilia) | Very good | Heavy for CPU | PyTorch | **Rejected: weights not for commercial use** |
+
+### 11.3 Decision
+
+- **Cloning:** sherpa-onnx with **Pocket TTS**. It is the only candidate that is native on Windows without Python,
+  runs fast enough on a CPU, has commercial-friendly licences (CC-BY-4.0 asks for credit, which goes in the app's
+  about page and the catalogue entry) and clones from a short sample without a transcript.
+- **Fast fixed voices:** sherpa-onnx with **Kokoro-82M**, in the same helper process.
+- **One helper for both.** sherpa-onnx has no TTS server, so Portal builds a small helper (`portal-voice-server.exe`) that
+  links the sherpa-onnx C API and serves a loopback HTTP API. The Host supervises it like every other engine (random
+  port, per-launch key, Job Object, health, restart backoff, idle unload). A separate process keeps a crash or a model
+  fault out of the Host and lets the memory limit apply.
+- The decision rests on facts from project pages, not on a run. Before any download is approved, the spike has to
+  measure speed and quality and confirm three things I could not read directly: the exact sherpa-onnx flags and files
+  for Pocket TTS (its documentation page returned 404), the languages it supports through sherpa-onnx (the project page
+  lists English), and the licence text of the exact model files. If Pocket TTS is not good enough, Chatterbox is the
+  next step up (11.2).
+- The GPU stays optional: everything above runs on the CPU. A DirectML or Vulkan provider can be tried later for speed;
+  the generation engines have the first claim on the 8 GB card (section 6).
+
+### 11.4 What is built in the Host (branch `voice-engine`)
+
+All of it works without any download; tests use a fake engine and a stub process.
+
+- **Engine kind `voice-server`:** `VoiceServerAdapter` (argument list built from a table, loopback only, same checks as
+  llama-server) and `VoiceEngineClient`, which starts the supervised helper on the first request and sends it one text
+  piece at a time. The helper's contract: `GET /health`; `POST /v1/speech` with
+  `{ "text", "speed", "format": "wav", "voice": { "kind": "builtin", "id" } | { "kind": "clone", "sample_path" } }`,
+  answering a mono WAV. The helper only reads the sample path it is given.
+- **Voice library** (`GET/POST /host/voices`, `PATCH/DELETE /host/voices/{id}`): the upload is base64 inside JSON (so it
+  follows the same auth and size rules as every route; about 3 MB of audio, so mono or MP3 for long WAV files). The Host
+  converts it to mono 24 kHz 16-bit and stores its own copy in `voices\vc_<id>\` (`sample.wav` and `voice.json`) under a
+  new unique id. The original file is never kept or touched (it is never seen: only bytes arrive). **Consent is required**
+  (`own_voice` or `permission`) and stored. A delete removes only that voice's two files and then its empty folder, after
+  checking that the id has the exact shape the Host generates and that the folder is a direct child of the library root.
+  A voice used by a queued or running job cannot be deleted.
+- **MP3 samples** are read through ffmpeg over pipes (no temporary files). Until ffmpeg is bundled (open decision 7) the
+  capability says `sample_formats: ["wav"]` and MP3 uploads are refused with a clear error.
+- **Speech jobs** (`POST /host/speech/jobs`, `GET .../{id}`, `GET .../{id}/audio`, `DELETE .../{id}`): a small queue with
+  one worker, 8 waiting jobs per app. The text is split at sentence ends and read piece by piece, so progress is real and a
+  cancel works between pieces. The result is one WAV in the Host-owned `speech-output\` folder under a unique name; no
+  file is overwritten or deleted by the Host. The job plumbing is self-contained on purpose and will move onto the shared
+  generation queue when the image and video branch lands.
+- **Tag:** every generated WAV ends with a `LIST/INFO` chunk (`ICMT = "Made with Portal"`, `ISFT = "Portal AI Host"`). This
+  is metadata, not an inaudible watermark; it is lost if audio is re-encoded. An inaudible watermark would need a model
+  (Chatterbox's Perth is one) and is left as an open decision.
+- **Capabilities:** `voice: { cloning, speech, formats: ["wav"], sample_formats, ... }`. `cloning` and `speech` are false
+  (and `formats` empty) while the helper or the models are missing. **MP3 output is not offered**; WAV only for now.
+- **Auth:** all routes need a token, so this PC's apps and signed paired devices use them the same way. Jobs are private to
+  the app that made them; the library is shared; a paired device can rename or delete only voices its own app made.
+- **Client library:** `GetVoiceCapabilitiesAsync`, `ListVoicesAsync`, `CreateVoiceAsync`, `RenameVoiceAsync`,
+  `DeleteVoiceAsync`, `StartSpeechAsync`, `GetSpeechJobAsync`, `CancelSpeechAsync`, `DownloadSpeechAsync`, `SpeakAsync`.
+- **Fetch script:** `scripts/fetch-voice.ps1` reads `engine/voice.lock.json` (helper and model archives). Every tag, asset,
+  hash and size is a placeholder, and the script refuses to download until real values are pinned.
+- **Not done here:** the helper itself (a small program on the sherpa-onnx C API), the real model files, the catalogue
+  entries, and the placement and memory-budget hooks of the generation engines (the voice helper is small enough to start
+  without them; they join when the queues are unified).
+
+Catalogue entries for the voice models are not added to `catalogue.json`. `catalogue-gen.json` does not exist yet, so the
+entries are listed here for when it does. File names, sizes, hashes and commits are filled in when the spike pins the
+exact files:
+
+```json
+[
+  { "id": "pocket-tts-clone", "display_name": "Pocket TTS (voice cloning)", "engine": "voice-server", "kind": "voice",
+    "licence": { "spdx": "CC-BY-4.0", "url": "https://huggingface.co/kyutai/pocket-tts", "commercial_ok": true },
+    "notes": "Credit Kyutai. Voice cloning only with the speaker's consent. Folder: voice-models\\cloning." },
+  { "id": "kokoro-82m-voices", "display_name": "Kokoro (built-in voices)", "engine": "voice-server", "kind": "voice",
+    "licence": { "spdx": "Apache-2.0", "commercial_ok": true },
+    "notes": "Fixed voices, no cloning. Folder: voice-models\\fixed." }
+]
+```
+
+### 11.5 Safety and consent
+
+- Every voice has a stored consent value; the Host refuses to create one without it. Apps must ask the user, in plain words,
+  whose voice it is, and must not clone a voice without the speaker's permission (this is also the licence condition of the
+  Pocket TTS weights).
+- Generated audio carries the "Made with Portal" tag. Apps should say that a voice is generated wherever audio is shared.
+- Voices and samples stay on the PC. The Host never uploads them, and the library is removable in one place.
+- The API exposes no way to read a stored sample back, only to read text with a voice.
+
+### 11.6 Open decisions for the owner
+
+1. Approve the spike (a download of sherpa-onnx, Pocket TTS and Kokoro, and measuring on the 9900X) to confirm quality and
+   speed before the helper is built.
+2. Ship ffmpeg (for MP3 samples) in the Store package, or accept WAV samples only at first (open decision 7).
+3. Offer MP3 output later through ffmpeg (the capability list is built for it), or stay WAV only.
+4. Add an inaudible watermark (needs a model) on top of the metadata tag.
+5. Pocket TTS covers English in sherpa-onnx today. Are other languages needed in the first release (Kokoro covers several for
+   fixed voices)?

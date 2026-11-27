@@ -64,6 +64,9 @@ public sealed class HostShellOptions
     /// <summary>Opens earlier models folders (settings) for listing and remove only; never creates anything.</summary>
     public Func<HostSettings, IModelStore?, IReadOnlyList<IModelStore>>? OpenPreviousStores { get; init; }
 
+    /// <summary>Creates the voice feature (library, speech jobs) under the data root; null leaves the voice routes out.</summary>
+    public Func<string, Portal.AiHost.Core.Voice.VoiceService?>? CreateVoice { get; init; }
+
     /// <summary>Verified catalogue entries, or null when no trusted model list could be loaded (fail closed).</summary>
     public IReadOnlyList<CatalogueEntry>? Catalogue { get; init; }
 
@@ -110,6 +113,7 @@ public sealed class HostShell : IAsyncDisposable
     private ControlPipeServer _pipe = null!;
     private ClientRegistry? _registry;
     private FairScheduler? _scheduler;
+    private Portal.AiHost.Core.Voice.VoiceService? _voice;
     private SettingsStore<HostSettings> _settings = null!;
     private SafeModeMarker? _marker;
     private readonly Lock _showGate = new();
@@ -314,6 +318,7 @@ public sealed class HostShell : IAsyncDisposable
         };
         _registry = new ClientRegistry(new ClientRegistryOptions { DataDirectory = root }, _o.KeyProtector);
         _scheduler = new FairScheduler(new FairSchedulerOptions { AppControls = _registry });
+        _voice = _o.CreateVoice?.Invoke(root);
         Runtime = await AiHostRuntime.StartAsync(new AiHostRuntimeOptions
         {
             Registry = _registry,
@@ -330,6 +335,7 @@ public sealed class HostShell : IAsyncDisposable
             IdlePolicy = IdlePolicyFor,
             UsageProbe = _o.UsageProbe,
             EaseOffSensors = _o.EaseOffSensors,
+            Voice = _voice,
             Health = new HealthSources
             {
                 EngineFiles = _o.EngineFiles,
@@ -593,6 +599,13 @@ public sealed class HostShell : IAsyncDisposable
             if (Runtime is { } r)
             {
                 await r.DisposeAsync().ConfigureAwait(false);
+            }
+        }).ConfigureAwait(false);
+        await GuardAsync(async () =>
+        {
+            if (_voice is { } v)
+            {
+                await v.DisposeAsync().ConfigureAwait(false);
             }
         }).ConfigureAwait(false);
         await GuardAsync(DrainInUseAsync).ConfigureAwait(false);

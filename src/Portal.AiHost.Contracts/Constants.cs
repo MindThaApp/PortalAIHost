@@ -77,6 +77,7 @@ public static class ModelKinds
     public const string Chat = "chat";
     public const string Embedding = "embedding";
     public const string Transcription = "transcription";
+    public const string Voice = "voice";
 }
 
 /// <summary>
@@ -100,6 +101,7 @@ public static class EngineKinds
 {
     public const string LlamaServer = "llama-server";
     public const string WhisperServer = "whisper-server";
+    public const string VoiceServer = "voice-server";
 }
 
 /// <summary>Model names clients may send in the request model field.</summary>
@@ -194,6 +196,8 @@ public static class EndpointNames
     public const string Performance = "performance";
     public const string EaseOff = "ease-off";
     public const string Health = "health";
+    public const string Voices = "voices";
+    public const string Speech = "speech";
 }
 
 /// <summary>Route paths.</summary>
@@ -219,4 +223,11 @@ public static class Routes
     public const string ChatCompletions = "/v1/chat/completions";
     public const string Embeddings = "/v1/embeddings";
     public const string AudioTranscriptions = "/v1/audio/transcriptions";
+
+    // Voice library and speech jobs (api-v1 section 6, Voice).
+    public const string Voices = "/host/voices";
+    public const string VoiceById = "/host/voices/{id}";
+    public const string SpeechJobs = "/host/speech/jobs";
+    public const string SpeechJobById = "/host/speech/jobs/{id}";
+    public const string SpeechJobAudio = "/host/speech/jobs/{id}/audio";
 }

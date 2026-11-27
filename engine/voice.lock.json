@@ -1,0 +1,36 @@
+{
+  "note": "Pinned downloads for the voice engine: the voice helper (a small loopback server around sherpa-onnx, built from this repo) and the speech models. Every tag, asset, sha256 and size is a placeholder: scripts/fetch-voice.ps1 refuses to download until they are replaced with the values of real releases (owner approval needed for the download). Model licences are checked before a model is pinned: cloning = Pocket TTS (CC-BY-4.0, use needs the speaker's consent), fixed voices = Kokoro-82M (Apache-2.0).",
+  "helper": {
+    "source": "https://github.com/MindThaApp/PortalAIHost/releases/download",
+    "tag": "PLACEHOLDER-TAG",
+    "builds": [
+      {
+        "flavour": "cpu",
+        "arch": "x64",
+        "asset": "PLACEHOLDER-portal-voice-server-win-x64.zip",
+        "sha256": "PLACEHOLDER-SHA256",
+        "size": 0
+      }
+    ]
+  },
+  "models": [
+    {
+      "folder": "cloning",
+      "name": "Pocket TTS (voice cloning)",
+      "license": "CC-BY-4.0",
+      "source": "https://huggingface.co/",
+      "asset": "PLACEHOLDER-pocket-tts-onnx.zip",
+      "sha256": "PLACEHOLDER-SHA256",
+      "size": 0
+    },
+    {
+      "folder": "fixed",
+      "name": "Kokoro-82M (built-in voices)",
+      "license": "Apache-2.0",
+      "source": "https://github.com/k2-fsa/sherpa-onnx/releases/download",
+      "asset": "PLACEHOLDER-kokoro-onnx.zip",
+      "sha256": "PLACEHOLDER-SHA256",
+      "size": 0
+    }
+  ]
+}

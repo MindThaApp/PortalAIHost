@@ -104,6 +104,14 @@ public sealed class ApiContext
         await _sink.CompleteAsync(Aborted).ConfigureAwait(false);
     }
 
+    /// <summary>Writes a complete binary body (for example a WAV file) with its content type.</summary>
+    public async Task WriteBytesAsync(int statusCode, string contentType, ReadOnlyMemory<byte> bytes)
+    {
+        await _sink.StartAsync(statusCode, contentType, ResponseHeaders, Aborted).ConfigureAwait(false);
+        await _sink.WriteAsync(bytes, Aborted).ConfigureAwait(false);
+        await _sink.CompleteAsync(Aborted).ConfigureAwait(false);
+    }
+
     public async Task WriteEmptyAsync(int statusCode)
     {
         await _sink.StartAsync(statusCode, "application/json; charset=utf-8", ResponseHeaders, Aborted)
