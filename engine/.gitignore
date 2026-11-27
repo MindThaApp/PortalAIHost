@@ -1,4 +1,5 @@
-# Engine binaries are fetched by scripts/fetch-engine.ps1 and never committed.
+# Engine binaries are fetched by scripts/fetch-engine.ps1 (llama.cpp) and scripts/fetch-sdcpp.ps1 (stable-diffusion.cpp) and never committed.
 *
 !.gitignore
 !engine.lock.json
+!sdcpp.lock.json

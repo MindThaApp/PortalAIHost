@@ -1,0 +1,22 @@
+{
+  "note": "Pinned stable-diffusion.cpp release for the image and video engine. tag, asset, sha256 and size are placeholders: scripts/fetch-sdcpp.ps1 refuses to download until they are replaced with the values of a real release (owner approval needed for the download).",
+  "source": "https://github.com/leejet/stable-diffusion.cpp/releases/download",
+  "tag": "PLACEHOLDER-TAG",
+  "builds": [
+    {
+      "flavour": "vulkan",
+      "arch": "x64",
+      "asset": "PLACEHOLDER-sd-bin-win-vulkan-x64.zip",
+      "sha256": "PLACEHOLDER-SHA256",
+      "size": 0
+    },
+    {
+      "flavour": "cpu",
+      "arch": "x64",
+      "optional": true,
+      "asset": "PLACEHOLDER-sd-bin-win-avx2-x64.zip",
+      "sha256": "PLACEHOLDER-SHA256",
+      "size": 0
+    }
+  ]
+}

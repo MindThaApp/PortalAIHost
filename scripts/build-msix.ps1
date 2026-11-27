@@ -95,6 +95,26 @@ function Test-EngineFolder([string]$flavour) {
     $dir
 }
 
+# The image and video engine (stable-diffusion.cpp) is optional: packed only when scripts\fetch-sdcpp.ps1 installed
+# a build that matches engine\sdcpp.lock.json. Returns the folder, or $null (with a warning when it does not match).
+$sdLockPath = Join-Path $repo 'engine\sdcpp.lock.json'
+$sdLock = if (Test-Path $sdLockPath) { Get-Content -Raw $sdLockPath | ConvertFrom-Json } else { $null }
+function Get-SdCppFolder([string]$flavour) {
+    $dir = Join-Path $repo "engine\sdcpp\$flavour"
+    if (-not $sdLock -or -not (Test-Path $dir)) { return $null }
+    $b = $sdLock.builds | Where-Object { $_.flavour -eq $flavour }
+    $marker = Join-Path $dir '.engine-fetch'
+    if (-not $b -or -not (Test-Path $marker) -or (Get-Content -Raw $marker).Trim() -ne "$($sdLock.tag) $($b.sha256)") {
+        Write-Warning "engine\sdcpp\$flavour does not match engine\sdcpp.lock.json; the image and video engine is left out."
+        return $null
+    }
+    if (-not ((Test-Path (Join-Path $dir 'sd-cli.exe')) -or (Test-Path (Join-Path $dir 'sd.exe')))) {
+        Write-Warning "engine\sdcpp\$flavour has no sd-cli.exe or sd.exe; the image and video engine is left out."
+        return $null
+    }
+    $dir
+}
+
 $out = Join-Path $repo "builds\msix\$Version"
 New-Item -ItemType Directory -Force $out | Out-Null
 $work = Join-Path ([IO.Path]::GetTempPath()) ('portalaihost-msix-' + [guid]::NewGuid().ToString('N'))
@@ -173,6 +193,20 @@ try {
                 New-Item -ItemType Directory -Force $dest | Out-Null
                 Copy-Item (Join-Path $engine[$f] '*') $dest -Recurse -Force
                 Remove-Item (Join-Path $dest '.engine-fetch') -Force -ErrorAction SilentlyContinue
+            }
+        }
+
+        # engine\sdcpp\<flavour>\ (x64 only), only when present; without it the job routes answer engine_missing.
+        if ($a -eq 'x64') {
+            foreach ($sf in @('vulkan', 'cpu')) {
+                $sdDir = Get-SdCppFolder $sf
+                if ($sdDir) {
+                    $dest = Join-Path $layout "engine\sdcpp\$sf"
+                    New-Item -ItemType Directory -Force $dest | Out-Null
+                    Copy-Item (Join-Path $sdDir '*') $dest -Recurse -Force
+                    Remove-Item (Join-Path $dest '.engine-fetch') -Force -ErrorAction SilentlyContinue
+                    $summary += "image and video engine ($sf) included"
+                }
             }
         }
 

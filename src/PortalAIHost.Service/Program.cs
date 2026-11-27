@@ -70,7 +70,7 @@ internal static class Program
                 Catalogue = catalogue,
                 CreateDownloader = store => new ModelDownloader(Http.Value, store, options: null, sleep: new PowerRequestSleepBlocker()),
                 HostVersion = typeof(Program).Assembly.GetName().Version?.ToString(3) ?? "1.0.0",
-                // engine\sdcpp\<flavour>\sd-cli.exe beside the host, present only when scriptsetch-sdcpp.ps1 put it in the package.
+                // engine\sdcpp\<flavour>\sd-cli.exe beside the host, present only when scripts\fetch-sdcpp.ps1 put it in the package.
                 GenerationEngine = new SdCppEngine(new SdCppEngineOptions
                 {
                     EngineRoot = Path.Combine(AppContext.BaseDirectory, "engine", "sdcpp"),
