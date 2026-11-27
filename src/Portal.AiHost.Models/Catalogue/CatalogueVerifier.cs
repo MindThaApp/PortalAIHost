@@ -338,12 +338,22 @@ public static partial class CatalogueValidator
             {
                 errors.Add($"{p}: file '{f.Name}' needs https urls");
             }
-            else if (!f.Urls[0].StartsWith($"https://huggingface.co/{m.HfRepo}/resolve/{m.HfCommit}/", StringComparison.Ordinal))
+            else
             {
-                errors.Add($"{p}: first url of '{f.Name}' must resolve against hf_repo at hf_commit");
+                var repo = f.HfRepo ?? m.HfRepo;
+                var commit = f.HfCommit ?? m.HfCommit;
+                if (f.HfRepo is not null && (!RepoPattern().IsMatch(f.HfRepo) || f.HfRepo.Contains("..", StringComparison.Ordinal)
+                    || !CommitOrPlaceholderPattern().IsMatch(f.HfCommit ?? "")))
+                {
+                    errors.Add($"{p}: file '{f.Name}' hf_repo must look like owner/name with a 40-hex hf_commit");
+                }
+                else if (!f.Urls[0].StartsWith($"https://huggingface.co/{repo}/resolve/{commit}/", StringComparison.Ordinal))
+                {
+                    errors.Add($"{p}: first url of '{f.Name}' must resolve against hf_repo at hf_commit");
+                }
             }
 
-            if (m.Files.Count > 1)
+            if (m.Files.Count > 1 && m.Files.All(x => x.Role is null))
             {
                 var split = SplitPattern().Match(f.Name);
                 if (!split.Success || int.Parse(split.Groups[1].Value) != i + 1 || int.Parse(split.Groups[2].Value) != m.Files.Count)
@@ -365,7 +375,7 @@ public static partial class CatalogueValidator
     [GeneratedRegex("^[a-z0-9][a-z0-9._-]{0,63}$")]
     private static partial Regex IdPattern();
 
-    [GeneratedRegex("^[A-Za-z0-9][A-Za-z0-9._-]{0,199}\\.(gguf|bin)$")]
+    [GeneratedRegex("^[A-Za-z0-9][A-Za-z0-9._-]{0,199}\\.(gguf|bin|safetensors)$")]
     private static partial Regex FileNamePattern();
 
     [GeneratedRegex("-(\\d{5})-of-(\\d{5})\\.gguf$")]

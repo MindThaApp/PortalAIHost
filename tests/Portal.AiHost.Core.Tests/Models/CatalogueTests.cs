@@ -29,7 +29,7 @@ public class CatalogueTests
         Assert.Contains(catalogue.Models, m => m.Kind == "embedding");
         Assert.True(catalogue.Models.Select(m => m.Maker).Distinct().Count() >= 6, "mixed-vendor defaults");
         Assert.Contains(catalogue.Models, m => m.Files.Count == 3 && m.TotalBytes > 100_000_000_000);
-        Assert.All(catalogue.Models, m => Assert.True(m.Licence.Spdx is "Apache-2.0" or "MIT" or "OpenRAIL-M"));
+        Assert.All(catalogue.Models, m => Assert.True(m.Licence.Spdx is "Apache-2.0" or "MIT" or "CreativeML-OpenRAIL-M"));
     }
 
     [Fact]

@@ -66,25 +66,41 @@ public class CatalogueCategoryTests
     }
 
     [Fact]
-    public void Video_entries_are_listed_but_never_downloadable()
+    public void Video_and_image_entries_are_listed_but_never_downloadable()
     {
-        var video = Shipped().Models.Where(m => m.Kind == "video").ToList();
-        Assert.True(video.Count >= 5);
-        Assert.All(video, m =>
+        var media = Shipped().Models.Where(m => m.Kind is "video" or "image").ToList();
+        Assert.Equal(["sd-1.5", "wan2.1-t2v-1.3b"], media.Select(m => m.Id).Order(StringComparer.Ordinal));
+        Assert.All(media, m =>
         {
             Assert.False(m.Available, m.Id);
             Assert.False(m.IsDownloadable, m.Id);
             Assert.False(CatalogueValidator.IsSupported(m), m.Id);
             Assert.NotNull(m.MinVramGb);
-            Assert.NotNull(m.RecommendedVramGb);
             Assert.True(m.RecommendedVramGb >= m.MinVramGb);
-            Assert.False(string.IsNullOrEmpty(m.Licence.Spdx));
-            Assert.All(m.Files, f => Assert.False(f.HasVerifiedHash));
+            Assert.All(m.Files, f => Assert.True(f.HasVerifiedHash, m.Id + "/" + f.Name));
+            Assert.Equal(ModelCategories.FromKind(m.Kind), m.EffectiveCategory);
         });
-        foreach (var id in new[] { "wan2.1-t2v-1.3b", "wan2.2-ti2v-5b", "ltx-video-2b-distilled", "wan2.1-t2v-14b", "wan2.2-t2v-a14b" })
-        {
-            Assert.Contains(video, m => m.Id == id);
-        }
+    }
+
+    [Fact]
+    public void The_video_model_has_three_pinned_parts_with_roles_from_two_repos()
+    {
+        var wan = Shipped().Models.Single(m => m.Id == "wan2.1-t2v-1.3b");
+        Assert.Equal(["diffusion_model", "vae", "text_encoder"], wan.Files.Select(f => f.Role));
+        Assert.Equal(6_747_264_190, wan.TotalBytes);
+        Assert.Equal("city96/umt5-xxl-encoder-gguf", wan.Files[2].HfRepo);
+        Assert.All(wan.Files, f => Assert.True(f.HasPinnedSource));
+        Assert.Equal(4, Shipped().Models.Single(m => m.Id == "sd-1.5").MinVramGb);
+    }
+
+    [Fact]
+    public void A_file_from_another_repo_needs_a_pinned_commit_and_a_matching_url()
+    {
+        var json = Encoding.UTF8.GetString(TestData.SeedCatalogueBytes())
+            .Replace("b535255bee98c2b0a59ea7c0ae2dcd0c6657b3b7\",", "PLACEHOLDER-NOPE\",", StringComparison.Ordinal);
+        var (catalogue, errors) = CatalogueValidator.Parse(Encoding.UTF8.GetBytes(json));
+        Assert.Null(catalogue);
+        Assert.NotEmpty(errors);
     }
 
     [Fact]
@@ -105,8 +121,9 @@ public class CatalogueCategoryTests
         Assert.True(c.Models.Single(m => m.Id == "qwen3-8b-q4km").Available);
         var again = CatalogueValidator.Parse(Encoding.UTF8.GetBytes(CatalogueValidator.Serialize(c))).Catalogue!;
         Assert.Equal(c.Models.Count, again.Models.Count);
-        Assert.Equal("video", again.Models.Single(m => m.Id == "wan2.2-ti2v-5b").Category);
-        Assert.False(again.Models.Single(m => m.Id == "wan2.2-ti2v-5b").Available);
-        Assert.Equal(12, again.Models.Single(m => m.Id == "wan2.2-ti2v-5b").MinVramGb);
+        Assert.Equal("video", again.Models.Single(m => m.Id == "wan2.1-t2v-1.3b").Category);
+        Assert.False(again.Models.Single(m => m.Id == "wan2.1-t2v-1.3b").Available);
+        Assert.Equal(8, again.Models.Single(m => m.Id == "wan2.1-t2v-1.3b").MinVramGb);
+        Assert.Equal("text_encoder", again.Models.Single(m => m.Id == "wan2.1-t2v-1.3b").Files[2].Role);
     }
 }

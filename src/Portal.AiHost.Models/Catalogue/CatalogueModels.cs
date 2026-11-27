@@ -102,7 +102,7 @@ public sealed partial class CatalogueEntry
     /// </summary>
     [JsonIgnore]
     public bool IsDownloadable =>
-        Available && CommitPattern().IsMatch(HfCommit) && Files.Count > 0 && Files.All(f => f.HasVerifiedHash && f.Size > 0);
+        Available && CommitPattern().IsMatch(HfCommit) && Files.Count > 0 && Files.All(f => f.HasVerifiedHash && f.Size > 0 && f.HasPinnedSource);
 
     [GeneratedRegex("^[0-9a-f]{40}$")]
     internal static partial Regex CommitPattern();
@@ -113,6 +113,17 @@ public sealed partial class CatalogueFile
     /// <summary>Local file name (flat, no folders). Split parts keep their "-0000k-of-0000N.gguf" names.</summary>
     public string Name { get; set; } = "";
 
+    /// <summary>
+    /// Optional part role for models made of several files (see <see cref="FileRoles"/>); null for a plain weights file.
+    /// </summary>
+    public string? Role { get; init; }
+
+    /// <summary>Optional Hugging Face repository when this file comes from another repo than the entry's. Needs <see cref="HfCommit"/>.</summary>
+    public string? HfRepo { get; init; }
+
+    /// <summary>Pinned 40-hex commit of <see cref="HfRepo"/>.</summary>
+    public string? HfCommit { get; init; }
+
     public long Size { get; init; }
 
     /// <summary>Lower-case hex SHA-256. Anything else (for example a placeholder) fails verification.</summary>
@@ -121,11 +132,24 @@ public sealed partial class CatalogueFile
     /// <summary>HTTPS URLs; the first is the pinned Hugging Face resolve URL, the rest optional mirrors.</summary>
     public List<string> Urls { get; set; } = new();
 
+    /// <summary>True when the file has no own repo, or has one with a pinned 40-hex commit.</summary>
+    [JsonIgnore]
+    public bool HasPinnedSource => HfRepo is null || (HfCommit is not null && CatalogueEntry.CommitPattern().IsMatch(HfCommit));
+
     [JsonIgnore]
     public bool HasVerifiedHash => Sha256Pattern().IsMatch(Sha256);
 
     [GeneratedRegex("^[0-9a-f]{64}$")]
     internal static partial Regex Sha256Pattern();
+}
+
+/// <summary>Roles of the files of a model made of several parts (image and video models).</summary>
+public static class FileRoles
+{
+    public const string DiffusionModel = "diffusion_model";
+    public const string Vae = "vae";
+    public const string TextEncoder = "text_encoder";
+    public const string Checkpoint = "checkpoint";
 }
 
 public sealed class CatalogueLicence
