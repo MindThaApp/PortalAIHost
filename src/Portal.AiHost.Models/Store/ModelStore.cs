@@ -163,6 +163,12 @@ public sealed partial class ModelStore : IModelStoreWriter, IModelStoreMover, IM
     private OwnedFolder _folder;
     private StoreManifest _manifest;
 
+    /// <summary>Where removed host-owned model files go: the Recycle Bin, never a permanent delete. Faked in tests.</summary>
+    public IFileRecycler Recycler { get; set; } = DefaultRecycler;
+
+    /// <summary>The recycler new stores start with. Test assemblies point it at a fake so no test file reaches the real Bin.</summary>
+    public static IFileRecycler DefaultRecycler { get; set; } = ShellRecycler.Default;
+
     private readonly StoreOptions _options;
 
     private FileStream _lock;
@@ -791,6 +797,11 @@ public sealed partial class ModelStore : IModelStoreWriter, IModelStoreMover, IM
             {
                 _folder.AssertDeletable(f.Path, f.State == StoredFileState.Partial || skipIdentity ? null : f.Size,
                     f.State == StoredFileState.Partial || skipIdentity ? null : f.FileId);
+                if (f.State != StoredFileState.Partial)
+                {
+                    _folder.AssertRecyclable(f.Path, Recycler); // refuse before anything moves when the Bin would not keep it
+                }
+
                 if (f.PartPath is { } part)
                 {
                     _folder.AssertDeletable(part);
@@ -802,13 +813,14 @@ public sealed partial class ModelStore : IModelStoreWriter, IModelStoreMover, IM
             {
                 if (f.State != StoredFileState.Partial)
                 {
+                    // Finished model files go to the Recycle Bin, so a removal can be undone from there.
                     if (skipIdentity)
                     {
-                        _folder.DeleteOwnedFile(f.Path);
+                        _folder.RecycleOwnedFile(f.Path, Recycler);
                     }
                     else
                     {
-                        _folder.DeleteOwnedFile(f.Path, f.Size, f.FileId);
+                        _folder.RecycleOwnedFile(f.Path, Recycler, f.Size, f.FileId);
                     }
                 }
 

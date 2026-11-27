@@ -362,6 +362,51 @@ internal sealed class OwnedFolder
     }
 
     /// <summary>
+    /// Sends one file the caller has found in the manifest to the Recycle Bin, after the same checks as
+    /// <see cref="DeleteOwnedFile"/>: marker, inside the store with no links on the way, a file and not a folder,
+    /// size and file ID unchanged. The recycler refuses when the drive's Bin would not keep the file. Missing files
+    /// are fine (already gone).
+    /// </summary>
+    public void RecycleOwnedFile(string relativePath, IFileRecycler recycler, long? expectedSize = null, string? expectedFileId = null)
+    {
+        AssertMarker();
+        var full = Resolve(relativePath);
+        if (Directory.Exists(full))
+        {
+            throw new StoreSafetyException($"'{full}' is a folder, not a file the host created.");
+        }
+
+        var info = new FileInfo(full);
+        if (!info.Exists)
+        {
+            return;
+        }
+
+        if (expectedSize is { } size && info.Length != size)
+        {
+            throw new StoreSafetyException($"'{full}' changed since the host stored it; left in place.");
+        }
+
+        if (expectedFileId is not null && GetIdentity(relativePath).Id is { } id && !string.Equals(id, expectedFileId, StringComparison.Ordinal))
+        {
+            throw new StoreSafetyException($"'{full}' was replaced since the host stored it; left in place.");
+        }
+
+        recycler.Recycle(full, info.Length);
+    }
+
+    /// <summary>Throws when the file at <paramref name="relativePath"/> (inside the store) could not go to the Recycle Bin.</summary>
+    public void AssertRecyclable(string relativePath, IFileRecycler recycler)
+    {
+        var full = Resolve(relativePath);
+        var info = new FileInfo(full);
+        if (info.Exists)
+        {
+            recycler.AssertCanRecycle(full, info.Length);
+        }
+    }
+
+    /// <summary>
     /// Opens a host-created file for writing (never creating or truncating it) after the marker and link checks,
     /// then checks the open handle: exactly one hard link, and the same file ID the host recorded when it created
     /// the file. Returns the identity so the caller can record it on first use.

@@ -342,6 +342,10 @@ public sealed class CatalogueModelSummary
     /// </summary>
     public string? StoreFolder { get; init; }
 
+    /// <summary>Full path of the model's main file on this PC, for "Show in folder"; null when nothing is on disk.</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? FilePath { get; init; }
+
     /// <summary>When the model was last loaded by the host (UTC), or null when never or not tracked.</summary>
     public DateTimeOffset? LastUsedAt { get; init; }
 

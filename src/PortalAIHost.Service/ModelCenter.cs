@@ -175,7 +175,7 @@ internal sealed partial class ModelCenter : IAsyncDisposable
                 ExistingCopy = s is { Origin: ModelOrigin.External }, UserAdded = s is { UserAdded: true },
                 DownloadState = installed ? null : DownloadStateFor(e.Id, s),
                 BytesDone = installed || s is null ? 0 : s.Files.Sum(f => f.SizeBytes),
-                LastUsedAt = Hooks.Notes?.LastUsed(e.Id),
+                LastUsedAt = Hooks.Notes?.LastUsed(e.Id), FilePath = installed ? MainFile(s) : null,
                 Damaged = installed && Hooks.Notes?.DamagedReason(e.Id) is not null,
                 DamagedReason = installed ? Hooks.Notes?.DamagedReason(e.Id) : null,
                 AdviceSummary = e.Advice?.Summary,
@@ -197,7 +197,7 @@ internal sealed partial class ModelCenter : IAsyncDisposable
                 ExistingCopy = s.Origin == ModelOrigin.External, UserAdded = s.UserAdded,
                 DownloadState = s.IsComplete ? null : DownloadStateFor(s.Id, s),
                 BytesDone = s.IsComplete ? 0 : s.Files.Sum(f => f.SizeBytes),
-                LastUsedAt = Hooks.Notes?.LastUsed(s.Id),
+                LastUsedAt = Hooks.Notes?.LastUsed(s.Id), FilePath = s.IsComplete ? MainFile(s) : null,
             });
         }
 
@@ -226,7 +226,7 @@ internal sealed partial class ModelCenter : IAsyncDisposable
                 {
                     Id = s.Id, DisplayName = s.DisplayName, Kind = s.Kind, Engine = s.Engine, SizeBytes = s.TotalBytes, Category = ModelCategories.FromKind(s.Kind),
                     Installed = s.IsComplete, FitsThisPc = true, ExistingCopy = s.Origin == ModelOrigin.External,
-                    StoreFolder = old.Location.Path,
+                    StoreFolder = old.Location.Path, FilePath = s.IsComplete ? MainFile(s) : null,
                 });
             }
         }
@@ -1008,6 +1008,10 @@ internal sealed partial class ModelCenter : IAsyncDisposable
             EndOperation(cts);
         }
     }
+
+    /// <summary>The model's first finished file: the path "Show in folder" selects in Explorer.</summary>
+    private static string? MainFile(StoredModel? s) =>
+        s?.Files.FirstOrDefault(f => f.State != StoredFileState.Partial)?.Path;
 
     private void ForgetIfGone(string folder)
     {
