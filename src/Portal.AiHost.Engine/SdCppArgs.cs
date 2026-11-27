@@ -100,21 +100,6 @@ public static class SdCppFlags
     public static IEnumerable<Entry> Unverified => Table.Where(e => !e.Verified);
 }
 
-/// <summary>Per-family defaults used when neither the request nor the catalogue sets a value.</summary>
-public sealed record SdCppFamilyDefaults(int Width, int Height, int Steps, double CfgScale, string Sampler, double? FlowShift,
-    int Frames, int Fps)
-{
-    public static SdCppFamilyDefaults For(string family) => family switch
-    {
-        GenerationFamilies.Sdxl => new(1024, 1024, 25, 7, "euler_a", null, 1, 16),
-        GenerationFamilies.Sd3 => new(1024, 1024, 28, 4.5, "euler", null, 1, 16),
-        GenerationFamilies.Flux => new(1024, 1024, 20, 1, "euler", null, 1, 16),
-        GenerationFamilies.Wan => new(832, 480, 20, 6, "euler", 3.0, 33, 16),
-        GenerationFamilies.Sd2 => new(768, 768, 20, 7, "euler_a", null, 1, 16),
-        _ => new(512, 512, 20, 7, "euler_a", null, 1, 16),
-    };
-}
-
 /// <summary>Switches for the sd.cpp argument list.</summary>
 public sealed record SdCppOptions
 {

@@ -293,7 +293,10 @@ public sealed class LanServer : IAsyncDisposable
         if (gate is not null)
         {
             gate.NoteArrival(device, viaBridge);
-            if (IsGated(path))
+            // A new image or video job is gated like a chat call (pause, quiet hours, gaming, daily limit); its model
+            // and the Model control grant are checked by the generation service.
+            var generation = request.Method == "POST" && path is Routes.ImageJobs or Routes.VideoJobs;
+            if (IsGated(path) || generation)
             {
                 // Read again: the owner may have changed the device since it signed in.
                 var current = gate.Find(device.Id) ?? device;
@@ -305,7 +308,7 @@ public sealed class LanServer : IAsyncDisposable
                 }
 
                 var kind = path == Routes.Embeddings ? ModelKinds.Embedding : ModelKinds.Chat;
-                var active = path == Routes.Warmup ? null : _runtime.GetActive(_runtime.SlotFor(kind, ModelNamed(body)));
+                var active = path == Routes.Warmup || generation ? null : _runtime.GetActive(_runtime.SlotFor(kind, ModelNamed(body)));
                 if (active is not null && current.AllowedModels.Count > 0 &&
                     !current.AllowedModels.Contains(active.ModelId, StringComparer.Ordinal))
                 {
@@ -314,7 +317,7 @@ public sealed class LanServer : IAsyncDisposable
                     return;
                 }
 
-                call = gate.Begin(current, app, viaBridge, counts: path is Routes.ChatCompletions or Routes.Embeddings);
+                call = gate.Begin(current, app, viaBridge, counts: path is Routes.ChatCompletions or Routes.Embeddings || generation);
                 sink = counting = new UsageCountingSink(sink, _options.Time ?? TimeProvider.System);
                 if (!current.PriorityEqual)
                 {

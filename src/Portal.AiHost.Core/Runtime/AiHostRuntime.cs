@@ -691,6 +691,18 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         }
 
         ram += _leases.ReservedBytes; // memory the apps' own models hold (POST /host/ease-off reserved_bytes)
+        var (genRam, genVram) = GenerationReserved(); // a running image or video job (AiHostRuntime.Generation.cs)
+        ram += genRam;
+        if (genVram > 0)
+        {
+            if (vram.Count == 0)
+            {
+                vram.Add(0);
+            }
+
+            vram[0] += genVram;
+        }
+
         return ram == 0 && vram.Count == 0 ? CommittedMemory.None : new CommittedMemory(ram, vram);
     }
 
