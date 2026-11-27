@@ -311,7 +311,9 @@ the host re-plans memory; the revision number tells you when.
   "endpoints": ["chat.completions", "embeddings", "models", "tokenize", "warmup", "performance", "ease-off", "health",
                 "voices", "speech"],
   "voice": { "cloning": true, "speech": true, "formats": ["wav"], "sample_formats": ["wav", "mp3"],
-             "max_sample_seconds": 60, "max_text_chars": 20000 }
+             "max_sample_seconds": 30, "max_text_chars": 20000, "max_jobs_per_app": 8,
+             "seconds_per_1000_chars": 12, "seconds_per_1000_chars_cloned": 25,
+             "estimate_source": "hardware", "estimate_source_cloned": "hardware" }
 }
 ```
 `endpoints` lists `"performance"` on hosts that have `GET /host/performance` (1.0.2 and later) and `"ease-off"` on
@@ -536,10 +538,14 @@ user, never fill it in silently, and must not clone a voice without the speaker'
 
 **`POST /host/voices`** creates a voice. Body (JSON, so at most `max_request_bytes`, about 3 MB of audio):
 `{ "name": "Anna", "consent": "own_voice", "sample_base64": "...", "sample_format": "wav" }`. The sample is an MP3 or WAV
-file of 3 to 60 seconds of speech (10 to 30 seconds is best); `sample_format` is optional. For long WAV files send
+file of 3 to 30 seconds of speech (10 to 30 seconds is best); `sample_format` is optional. For long WAV files send
 mono 24 kHz, or MP3. The host stores its own converted copy (mono, 24 kHz, 16 bit) under a new unique id and never
 keeps or changes the original. Answer `201`: `{ "id": "vc_...", "name", "consent", "created_at", "created_by",
 "duration_ms", "sample_rate" }`.
+
+**Sample format.** Send WAV when you can: a client may convert a recording to WAV itself (mono, 16-bit, 24 kHz keeps it
+small) and that always works, whatever the host has installed. MP3 through the host is optional: it works only when
+`sample_formats` in the capabilities lists `"mp3"`, and otherwise the host answers `unsupported_audio`.
 
 **`GET /host/voices`** answers `{ "voices": [ ... ], "builtin": [ { "id": "af_heart", "name": "Heart (US, female)",
 "language": "en-US" } ] }`. The built-in voices are fixed voices that need no sample (empty when that model is not
@@ -552,10 +558,22 @@ own voices (`403 access_denied` otherwise).
 **`POST /host/speech/jobs`** starts reading. Body: `{ "voice_id": "vc_..." | "builtin_voice": "af_heart", "text": "...",
 "speed": 1.0, "format": "wav" }`. Send exactly one of `voice_id` and `builtin_voice`. `speed` is 0.5 to 2.0 (default 1);
 `text` is at most `max_text_chars`. Answer `202` with the job: `{ "id": "sp_...", "status": "queued", "progress": 0,
-"created_at" }`. Jobs run one at a time; each app may have 8 waiting (`429 queue_full`).
+"created_at", "estimated_seconds" }`. Jobs run one at a time; each app may have `max_jobs_per_app` waiting or running
+(`429 queue_full`).
+
+**Limits and estimates.** The host sets the voice limits from the PC that generates the speech, so show these values
+instead of hard-coding your own. Three tiers: low (4 cores or fewer, or under 8 GB RAM) 15,000 characters and 4 jobs per
+app; mid 20,000 and 8; high (12 cores or more and 32 GB or more) 40,000 and 12. `max_sample_seconds` is 30 on every PC
+because it is what the model needs, not what the hardware can do (a sample must be at least 3 seconds). A sample is sent
+base64 encoded inside the 4 MB request cap, so 30 seconds fits as a mono 24 kHz 16-bit WAV (about 1.4 MB, 1.9 MB encoded);
+a stereo 48 kHz WAV of the same length does not. `seconds_per_1000_chars` (built-in voices) and
+`seconds_per_1000_chars_cloned` say how long reading takes. `estimate_source` and `estimate_source_cloned` are
+`"hardware"` (a rough default for the PC's tier) until the host has timed a few jobs, then `"measured"` (the median of the
+last 20 completed jobs, kept across restarts). `estimated_seconds` on a job is the rough time left until it is done,
+including the jobs ahead of it; it is present only while the job is queued or running.
 
 **`GET /host/speech/jobs/{id}`** returns `status` (`queued`, `running`, `completed`, `failed`, `cancelled`), `progress`
-(0 to 1), `queue_position` while queued, and when completed `result`: `{ "format": "wav", "file_name", "bytes",
+(0 to 1), `queue_position` and `estimated_seconds` while queued (or running), and when completed `result`: `{ "format": "wav", "file_name", "bytes",
 "duration_ms", "sample_rate", "path" }`. `path` is the file on the host PC and is set only for apps on that PC; every app
 can fetch the audio itself with **`GET /host/speech/jobs/{id}/audio`** (`audio/wav`). A failed job has
 `error: { "code", "message" }`. Jobs are visible only to the app that made them.

@@ -13,7 +13,12 @@ public sealed class VoiceServiceOptions
     public required string OutputDirectory { get; init; }
 
     public VoiceLibraryOptions Library { get; init; } = new();
-    public int MaxTextChars { get; init; } = 20_000;
+
+    /// <summary>Limits for this PC, from <see cref="VoiceLimits.ForHardware(HardwareProfile?)"/>. The mid tier when not set.</summary>
+    public VoiceLimits Limits { get; init; } = VoiceLimits.ForTier(VoiceLimits.Mid);
+
+    /// <summary>File in the host state folder that keeps the measured speed between runs. Null keeps it in memory only.</summary>
+    public string? EstimatesPath { get; init; }
 }
 
 /// <summary>
@@ -35,12 +40,28 @@ public sealed class VoiceService : IAsyncDisposable
         _engine = engine;
         _decoder = decoder;
         _owned = owned;
-        Library = new VoiceLibrary(options.VoicesDirectory, options.Library, time);
+        var limits = options.Limits;
+        Estimator = new VoiceEstimator(limits, options.EstimatesPath);
+        Library = new VoiceLibrary(options.VoicesDirectory, new VoiceLibraryOptions
+        {
+            SampleRate = options.Library.SampleRate,
+            MinSampleSeconds = options.Library.MinSampleSeconds,
+            MaxSampleSeconds = limits.MaxSampleSeconds,
+            MaxVoices = options.Library.MaxVoices,
+        }, time);
         Jobs = new SpeechJobManager(Library, engine,
-            new SpeechJobOptions { OutputDirectory = options.OutputDirectory, MaxTextChars = options.MaxTextChars }, time);
+            new SpeechJobOptions
+            {
+                OutputDirectory = options.OutputDirectory,
+                MaxTextChars = limits.MaxTextChars,
+                MaxQueuedPerApp = limits.MaxJobsPerApp,
+                Estimator = Estimator,
+            }, time);
     }
 
     public VoiceLibrary Library { get; }
+
+    public VoiceEstimator Estimator { get; }
 
     public SpeechJobManager Jobs { get; }
 
@@ -53,6 +74,8 @@ public sealed class VoiceService : IAsyncDisposable
             sampleFormats.AddRange(_decoder.Formats.Where(f => !sampleFormats.Contains(f)));
         }
 
+        var speech = Estimator.For(false);
+        var cloned = Estimator.For(true);
         return new VoiceCapabilities
         {
             Cloning = a.Cloning,
@@ -61,7 +84,12 @@ public sealed class VoiceService : IAsyncDisposable
             Reason = a.Speech ? null : a.Reason ?? UnavailableReasons.NoModel,
             SampleFormats = sampleFormats,
             MaxSampleSeconds = (int)Library.MaxSampleSeconds,
-            MaxTextChars = _options.MaxTextChars,
+            MaxTextChars = _options.Limits.MaxTextChars,
+            MaxJobsPerApp = _options.Limits.MaxJobsPerApp,
+            SecondsPer1000Chars = Math.Round(speech.SecondsPer1000, 1),
+            SecondsPer1000CharsCloned = Math.Round(cloned.SecondsPer1000, 1),
+            EstimateSource = speech.Source,
+            EstimateSourceCloned = cloned.Source,
         };
     }
 

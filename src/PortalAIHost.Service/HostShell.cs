@@ -65,7 +65,7 @@ public sealed class HostShellOptions
     public Func<HostSettings, IModelStore?, IReadOnlyList<IModelStore>>? OpenPreviousStores { get; init; }
 
     /// <summary>Creates the voice feature (library, speech jobs) under the data root; null leaves the voice routes out.</summary>
-    public Func<string, Portal.AiHost.Core.Voice.VoiceService?>? CreateVoice { get; init; }
+    public Func<string, Portal.AiHost.Core.Abstractions.HardwareProfile?, Portal.AiHost.Core.Voice.VoiceService?>? CreateVoice { get; init; }
 
     /// <summary>Verified catalogue entries, or null when no trusted model list could be loaded (fail closed).</summary>
     public IReadOnlyList<CatalogueEntry>? Catalogue { get; init; }
@@ -318,7 +318,20 @@ public sealed class HostShell : IAsyncDisposable
         };
         _registry = new ClientRegistry(new ClientRegistryOptions { DataDirectory = root }, _o.KeyProtector);
         _scheduler = new FairScheduler(new FairSchedulerOptions { AppControls = _registry });
-        _voice = _o.CreateVoice?.Invoke(root);
+        Portal.AiHost.Core.Abstractions.HardwareProfile? voiceHardware = null;
+        if (_o.CreateVoice is not null && _o.Hardware is { } voiceProbe)
+        {
+            try
+            {
+                voiceHardware = await voiceProbe.ProbeAsync(CancellationToken.None).ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                voiceHardware = null; // The mid tier is used when the probe fails.
+            }
+        }
+
+        _voice = _o.CreateVoice?.Invoke(root, voiceHardware);
         Runtime = await AiHostRuntime.StartAsync(new AiHostRuntimeOptions
         {
             Registry = _registry,

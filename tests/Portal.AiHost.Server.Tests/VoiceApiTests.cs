@@ -268,6 +268,11 @@ public sealed class VoiceApiTests : IAsyncLifetime
         Assert.True(voice.GetProperty("cloning").GetBoolean());
         Assert.True(voice.GetProperty("speech").GetBoolean());
         Assert.Equal("wav", Assert.Single(voice.GetProperty("formats").EnumerateArray()).GetString());
+        Assert.Equal(30, voice.GetProperty("max_sample_seconds").GetInt32());
+        Assert.Equal(8, voice.GetProperty("max_jobs_per_app").GetInt32());
+        Assert.Equal("hardware", voice.GetProperty("estimate_source").GetString());
+        Assert.True(voice.GetProperty("seconds_per_1000_chars").GetDouble() > 0);
+        Assert.True(voice.GetProperty("seconds_per_1000_chars_cloned").GetDouble() > 0);
         Assert.Contains("voices", caps.GetProperty("endpoints").EnumerateArray().Select(e => e.GetString()));
 
         _engine.Availability = VoiceAvailability.None;

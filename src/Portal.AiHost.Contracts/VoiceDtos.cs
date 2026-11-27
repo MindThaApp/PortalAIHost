@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Portal.AiHost.Contracts;
 
 /// <summary>Consent values a caller must send when it creates a voice from a sample.</summary>
@@ -49,6 +51,23 @@ public sealed class VoiceCapabilities
 
     public int? MaxSampleSeconds { get; init; }
     public int? MaxTextChars { get; init; }
+
+    /// <summary>How many speech jobs one app may have waiting or running at once on this PC.</summary>
+    public int? MaxJobsPerApp { get; init; }
+
+    /// <summary>Rough time to read 1000 characters with a built-in voice.</summary>
+    [JsonPropertyName("seconds_per_1000_chars")]
+    public double? SecondsPer1000Chars { get; init; }
+
+    /// <summary>The same for a cloned voice.</summary>
+    [JsonPropertyName("seconds_per_1000_chars_cloned")]
+    public double? SecondsPer1000CharsCloned { get; init; }
+
+    /// <summary>"measured" (median of the last 20 jobs on this PC) or "hardware" (a rough default for its tier). For the built-in voices.</summary>
+    public string? EstimateSource { get; init; }
+
+    /// <summary>The same for cloned voices.</summary>
+    public string? EstimateSourceCloned { get; init; }
 }
 
 /// <summary>POST /host/voices.</summary>
@@ -59,7 +78,7 @@ public sealed class VoiceCreateRequest
     /// <summary>"own_voice" or "permission". Required.</summary>
     public string? Consent { get; set; }
 
-    /// <summary>The MP3 or WAV file, base64 encoded. 3 to 60 seconds of speech; 10 to 30 seconds works best.</summary>
+    /// <summary>The MP3 or WAV file, base64 encoded. 3 to 30 seconds of speech; 10 to 30 seconds works best.</summary>
     public string SampleBase64 { get; set; } = "";
 
     /// <summary>"wav" or "mp3". Optional: the host looks at the file itself.</summary>
@@ -149,6 +168,10 @@ public sealed class SpeechJobInfo
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset? FinishedAt { get; set; }
     public int? QueuePosition { get; set; }
+
+    /// <summary>Rough seconds until this job is finished, while it is queued or running (the jobs ahead of it included).</summary>
+    public int? EstimatedSeconds { get; set; }
+
     public SpeechJobResult? Result { get; set; }
     public SpeechJobError? Error { get; set; }
 }
