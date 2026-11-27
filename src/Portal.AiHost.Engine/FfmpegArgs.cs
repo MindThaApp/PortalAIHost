@@ -55,7 +55,8 @@ public static partial class FfmpegArgs
     /// <summary>Probe: first video stream width, height and rate plus the container duration, as key=value lines.</summary>
     public static IReadOnlyList<string> Probe(string input) =>
     [
-        "-v", "error", "-select_streams", "v:0",
+        // Uploaded files are untrusted: local files only, never network protocols a crafted container could name.
+        "-v", "error", "-protocol_whitelist", "file", "-select_streams", "v:0",
         "-show_entries", "stream=width,height,r_frame_rate", "-show_entries", "format=duration",
         "-of", "default=noprint_wrappers=1", Full(input),
     ];
