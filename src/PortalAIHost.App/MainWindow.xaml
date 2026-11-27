@@ -37,7 +37,9 @@
         <Grid Grid.Row="1">
         <NavigationView
             x:Name="Nav"
-            PaneDisplayMode="Left"
+            PaneDisplayMode="Auto"
+            CompactModeThresholdWidth="640"
+            ExpandedModeThresholdWidth="900"
             IsBackButtonVisible="Collapsed"
             IsSettingsVisible="False"
             OpenPaneLength="240"

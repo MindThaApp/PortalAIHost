@@ -902,4 +902,80 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="ModelsSearch.PlaceholderText" xml:space="preserve"><value>Search models</value></data>
   <data name="ModelsSearch.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Search models</value></data>
   <data name="ModelsNoMatches.Text" xml:space="preserve"><value>No models match. Clear the search or choose All.</value></data>
+  <data name="HomeSeeAppsLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>See which apps are connected to this host</value></data>
+  <data name="HomeSeeAppsLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>See which apps are connected to this host</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Copy the pairing link to the clipboard</value></data>
+  <data name="HomeLoadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Load the model into memory so it answers faster</value></data>
+  <data name="HomeLoadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Load the model into memory so it answers faster</value></data>
+  <data name="SettingsNotifyDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Show a notice when a device pairs or connects</value></data>
+  <data name="SettingsCorners.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>How round the corners are</value></data>
+  <data name="HomeChangeFolderButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Open Settings to pick a folder with more free space</value></data>
+  <data name="HomeChangeFolderButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Open Settings to pick a folder with more free space</value></data>
+  <data name="SettingsMoveButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Move the models to the chosen folder. Files are copied and checked before the old ones are removed.</value></data>
+  <data name="SettingsMoveButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Move the models to the chosen folder. Files are copied and checked before the old ones are removed.</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Cancel pairing</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Cancel pairing</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Show or hide the health checks</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Show or hide the health checks</value></data>
+  <data name="SettingsMaterial.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>The background style of the window</value></data>
+  <data name="HomeDownloadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Download the recommended model</value></data>
+  <data name="HomeDownloadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Download the recommended model</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>See exactly what a crash report contains</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>See exactly what a crash report contains</value></data>
+  <data name="SettingsEaseOffFullscreen.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Free memory while a full-screen app or game is running</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Open the Models page to see better models</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Open the Models page to see better models</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Put the Performance settings back to their defaults</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Put the Performance settings back to their defaults</value></data>
+  <data name="SettingsEaseOffBattery.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Free memory while the PC runs on battery</value></data>
+  <data name="SettingsPreset.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Choose a ready-made balance of speed and memory use</value></data>
+  <data name="SettingsRemoteRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Let paired devices reach this PC from outside your home network</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Create a code to pair a new device</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Create a code to pair a new device</value></data>
+  <data name="SettingsCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Send crash reports to help fix problems</value></data>
+  <data name="SettingsAllowReplace.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Allow a device to replace an existing pairing</value></data>
+  <data name="SettingsMotion.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>How much animation is used</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Go back to the default models folder</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Go back to the default models folder</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Allow reaching the home PC through the relay when you are away</value></data>
+  <data name="HomeTryAgainButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Try loading the model list again</value></data>
+  <data name="HomeTryAgainButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Try loading the model list again</value></data>
+  <data name="SettingsStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Start Portal AI Host when you sign in to Windows</value></data>
+  <data name="SettingsHomeMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Choose whether this PC runs models itself or uses your home PC</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Start the host so apps can use it</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Start the host so apps can use it</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Put the General settings back to their defaults</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Put the General settings back to their defaults</value></data>
+  <data name="SettingsHomeFallback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>What to do when the home PC cannot be reached</value></data>
+  <data name="SettingsDensity.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>How much space there is between items</value></data>
+  <data name="SettingsTextSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>How large the text is</value></data>
+  <data name="SettingsIdle.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>How long the host waits with no requests before it frees the model memory</value></data>
+  <data name="SettingsEaseOffAppBusy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Free memory while another app is working hard</value></data>
+  <data name="SettingsRemoveDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Remove this device. It must pair again to connect.</value></data>
+  <data name="SettingsRemoveDevice.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Remove this device. It must pair again to connect.</value></data>
+  <data name="SettingsMoveCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Stop moving the models</value></data>
+  <data name="SettingsMoveCancel.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Stop moving the models</value></data>
+  <data name="SettingsNotifyDownloads.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Show a notice when a download finishes or fails</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Put the privacy settings back to their defaults</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Put the privacy settings back to their defaults</value></data>
+  <data name="HealthCheckAgainButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Run the health checks again</value></data>
+  <data name="HealthCheckAgainButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Run the health checks again</value></data>
+  <data name="SettingsMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>How much memory models may use</value></data>
+  <data name="SettingsTheme.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Light, dark, or follow Windows</value></data>
+  <data name="SettingsRemoteEnabled.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Let your other devices use this PC</value></data>
+  <data name="SettingsNotifyProblems.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Show a notice when something needs your attention</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Open the chat page to try the active model</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Open the chat page to try the active model</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Put the notification settings back to their defaults</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Put the notification settings back to their defaults</value></data>
+  <data name="SettingsRelayAdmission.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Require the relay to check devices before they connect</value></data>
+  <data name="HomeUnloadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Free the memory used by the model. The model file stays on disk.</value></data>
+  <data name="HomeUnloadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Free the memory used by the model. The model file stays on disk.</value></data>
+  <data name="HomeSeeAllModelsLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Browse every model that can be downloaded</value></data>
+  <data name="HomeSeeAllModelsLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Browse every model that can be downloaded</value></data>
+  <data name="SettingsNotifyApprovals.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Show a notice when an app asks for permission</value></data>
+  <data name="SettingsHomeRelayMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Choose when the relay is used to reach the home PC</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Put the appearance settings back to their defaults</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Put the appearance settings back to their defaults</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Health checks</value></data>
 </root>

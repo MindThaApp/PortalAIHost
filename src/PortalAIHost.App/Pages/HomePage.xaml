@@ -19,7 +19,7 @@
                 IsOpen="{x:Bind ViewModel.HasStoreProblem, Mode=OneWay}" />
 
             <!-- Health: one line when all is well, the checks and one-click fixes behind the expander. -->
-            <Expander
+            <Expander x:Uid="HomeHealthExpander"
                 HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Stretch"
                 Visibility="{x:Bind ViewModel.Health.HasReport, Mode=OneWay}">
