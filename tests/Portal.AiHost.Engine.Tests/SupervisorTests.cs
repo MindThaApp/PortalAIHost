@@ -85,6 +85,25 @@ internal static class Stub
     }
 }
 
+/// <summary>A file the stub child watches (--crash-file): creating it makes the child exit, so a test crashes the engine at a chosen moment.</summary>
+internal sealed class CrashTrigger : IDisposable
+{
+    public string Path { get; } = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "stub-crash-" + Guid.NewGuid().ToString("N"));
+
+    public void Crash() => File.WriteAllText(Path, "x");
+
+    public void Dispose()
+    {
+        try
+        {
+            File.Delete(Path); // only the trigger file this object created
+        }
+        catch (IOException)
+        {
+        }
+    }
+}
+
 public class SupervisorTests
 {
     private static EngineSupervisor Make(StubAdapter a, EngineSupervisorOptions? o = null) =>
@@ -159,7 +178,8 @@ public class SupervisorTests
     [Fact]
     public async Task CrashRestartsWithBackoffAndInFlightGetsCrashed()
     {
-        var a = new StubAdapter { Extra = n => n == 1 ? new[] { "--crash-ms", "700" } : Array.Empty<string>() };
+        using var trigger = new CrashTrigger();
+        var a = new StubAdapter { Extra = n => n == 1 ? new[] { "--crash-file", trigger.Path } : Array.Empty<string>() };
         await using var s = Make(a);
         await s.StartAsync(Stub.Spec(), CancellationToken.None);
         var firstPid = s.ProcessId!.Value;
@@ -168,6 +188,7 @@ public class SupervisorTests
         {
             await foreach (var _ in s.StreamChatAsync(Stub.Chat(), CancellationToken.None))
             {
+                trigger.Crash(); // the stream is open and delivering: now the engine dies under it
             }
         });
 
@@ -201,12 +222,14 @@ public class SupervisorTests
     [Fact]
     public async Task VulkanCrashRestartsOnCpuAndMarksVulkanBad()
     {
-        var a = new StubAdapter { Extra = n => n == 1 ? new[] { "--crash-ms", "500" } : Array.Empty<string>() };
+        using var trigger = new CrashTrigger();
+        var a = new StubAdapter { Extra = n => n == 1 ? new[] { "--crash-file", trigger.Path } : Array.Empty<string>() };
         await using var s = Make(a, Stub.Options((_, forceCpu) => new EngineBinary(forceCpu ? "cpu" : "vulkan", Stub.Exe)));
         string? notice = null;
         s.BackendFallback += (_, m) => notice = m;
         await s.StartAsync(Stub.Spec("vulkan"), CancellationToken.None);
         Assert.Equal("vulkan", s.Current!.Placement.Backend);
+        trigger.Crash();
 
         await Stub.WaitFor(() => s.VulkanMarkedBad);
         await Stub.WaitFor(() => s.State == EngineState.Ready && a.Launches == 2);
@@ -229,27 +252,41 @@ public class SupervisorTests
     public async Task CrashRestartWhileIdleKeepsTheIdleClock()
     {
         // An engine killed during the quiet period is restarted, but the restart is not use: it must still
-        // unload on the clock of the last request, not a fresh idle period from the restart.
-        var idle = TimeSpan.FromSeconds(4);
+        // unload on the clock of the last request, not a fresh idle period from the restart. Event timestamps
+        // are compared with each other, so a slow machine stretches both sides alike.
+        var idle = TimeSpan.FromSeconds(6);
         var a = new StubAdapter();
         await using var s = Make(a, Stub.Options(idle: idle));
+        long readyAfterRestart = 0, stopped = 0;
+        s.StateChanged += (_, e) =>
+        {
+            if (e.State == EngineState.Ready && a.Launches == 2)
+            {
+                Volatile.Write(ref readyAfterRestart, Stopwatch.GetTimestamp());
+            }
+            else if (e.State == EngineState.Stopped)
+            {
+                Volatile.Write(ref stopped, Stopwatch.GetTimestamp());
+            }
+        };
         await s.StartAsync(Stub.Spec(), CancellationToken.None);
         Assert.Equal("hello", (await s.ChatAsync(Stub.Chat(), CancellationToken.None)).Choices[0].Message.Content);
-        var lastRequest = Stopwatch.StartNew();
         Assert.Equal(0, s.ActiveRequests);
 
-        await Task.Delay(TimeSpan.FromSeconds(2.5));
-        var firstPid = s.ProcessId!.Value;
-        using (var p = Process.GetProcessById(firstPid))
+        await Task.Delay(TimeSpan.FromSeconds(3)); // a lower bound only: slow machines wait longer, which is harmless
+        using (var p = Process.GetProcessById(s.ProcessId!.Value))
         {
             p.Kill();
         }
 
-        await Stub.WaitFor(() => a.Launches == 2 || s.State == EngineState.Stopped, 8000);
-        await Stub.WaitFor(() => s.State == EngineState.Stopped, 10000);
+        await Stub.WaitFor(() => Volatile.Read(ref stopped) != 0, 30000);
         Assert.Equal(2, a.Launches);
-        // Restarting the clock would put the unload at about 2.5 + 4 = 6.5 s; the last request's clock gives about 4-5 s.
-        Assert.True(lastRequest.Elapsed < TimeSpan.FromSeconds(5.8), $"unloaded {lastRequest.Elapsed.TotalSeconds:F1}s after the last request");
+        Assert.NotEqual(0, Volatile.Read(ref readyAfterRestart));
+        // A clock restarted by the restart would unload a full idle period after the restart became ready.
+        // The last request's clock unloads at most one idle-check tick (a quarter period) after the idle
+        // period, which is at least 3 s before that moment.
+        var afterRestart = Stopwatch.GetElapsedTime(Volatile.Read(ref readyAfterRestart), Volatile.Read(ref stopped));
+        Assert.True(afterRestart < idle, $"unloaded {afterRestart.TotalSeconds:F1}s after the restart; the idle clock was restarted");
     }
 
     [Fact]
