@@ -367,6 +367,11 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         foreach (var (kind, sup) in _o.Supervisors)
         {
             var active = GetActive(kind);
+            if (active is null && ModelSlots.IsSecond(kind))
+            {
+                continue; // the second slot shows up in status only while a device's model is in it
+            }
+
             var ks = _kinds[kind];
             var idle = _o.IdlePolicy?.Invoke(kind) ?? (false, 600);
             anyActive |= active is not null;
@@ -505,6 +510,51 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
 
     private IEngineSupervisor? Supervisor(string kind) => _o.Supervisors.TryGetValue(kind, out var s) ? s : null;
 
+    /// <summary>True when this host has an engine for the second concurrent slot of a kind.</summary>
+    public bool HasSecondSlot(string kind) => _o.Supervisors.ContainsKey(ModelSlots.Second(kind));
+
+    /// <summary>
+    /// The slot a request is served from: the second slot when the request names the model that sits there (and not the
+    /// one in the first slot), else the first. A name that matches nothing goes to the first slot, as before.
+    /// </summary>
+    public string SlotFor(string kind, string? requestedModel)
+    {
+        if (string.IsNullOrEmpty(requestedModel) || _stopping)
+        {
+            return kind;
+        }
+
+        var second = ModelSlots.Second(kind);
+        return GetActive(second) is { } m2 && m2.ModelId == requestedModel && GetActive(kind)?.ModelId != requestedModel
+            ? second
+            : kind;
+    }
+
+    /// <summary>
+    /// Set by the "Other devices" part: loads the installed model a granted device named when it is not loaded in any slot
+    /// (device id, model id, kind). A refusal never reaches the request: it is then served as it would have been.
+    /// </summary>
+    public Func<string, string, string, CancellationToken, Task>? DeviceAutoLoad { get; set; }
+
+    private async Task AutoLoadNamedModelAsync(ApiContext ctx, string kind, string? requestedModel)
+    {
+        if (string.IsNullOrEmpty(requestedModel) || DeviceAutoLoad is not { } load ||
+            ctx.Request.Caller?.Remote?.Id is not { } deviceId || _stopping ||
+            GetActive(kind)?.ModelId == requestedModel || GetActive(ModelSlots.Second(kind))?.ModelId == requestedModel)
+        {
+            return;
+        }
+
+        try
+        {
+            await load(deviceId, requestedModel, kind, ctx.Aborted).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is ApiException or EngineException or EngineCrashedException)
+        {
+            // Refused (no grant, conflict, memory): the request is served as it would have been.
+        }
+    }
+
     private volatile string? _maintenance;
 
     /// <summary>
@@ -620,7 +670,21 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
     private async Task LoadCoreAsync(string kind, ActiveModel model, IEngineSupervisor sup, KindState ks)
     {
         await Task.Yield();
-        var (placement, plan) = await DecidePlacementAsync(model, _lifetime.Token).ConfigureAwait(false);
+        (Placement Placement, PlanResult? Plan) decided;
+        try
+        {
+            decided = await DecidePlacementAsync(model, _lifetime.Token).ConfigureAwait(false);
+        }
+        catch (ApiException ex) when (ex.Code == ErrorCodes.InsufficientMemory && !ModelSlots.IsSecond(kind) &&
+            Supervisor(ModelSlots.Second(kind)) is { State: not EngineState.Stopped } secondSup)
+        {
+            // The PC's own model needs the memory a device's second model holds: the PC's limits and apps win, so the
+            // device's engine stops (memory only, model files untouched) and the load is planned again.
+            await secondSup.StopAsync(_lifetime.Token).ConfigureAwait(false);
+            decided = await DecidePlacementAsync(model, _lifetime.Token).ConfigureAwait(false);
+        }
+
+        var (placement, plan) = decided;
         void OnState(object? s, EngineStateChange c)
         {
             if (c.State == EngineState.Loading)
@@ -647,7 +711,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
             }, kind).ConfigureAwait(false);
             ks.LastPlan = plan;
             ks.LoadedSince = _o.Time.GetUtcNow();
-            if (kind == ModelKinds.Chat)
+            if (ModelSlots.KindOf(kind) == ModelKinds.Chat)
             {
                 _o.Scheduler.SetSlots(kind, Math.Max(1, placement.ParallelSlots));
             }
@@ -905,10 +969,11 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
                 list.Data.Add(new ModelEntry
                 {
                     Id = m.ModelId,
-                    Kind = kind,
+                    Kind = ModelSlots.KindOf(kind),
                     Active = true,
                     Loaded = IsLoaded(sup, m),
-                    ContextTokens = kind == ModelKinds.Chat ? BuildCapabilities().Chat.ContextTokens : null,
+                    ContextTokens = kind == ModelKinds.Chat ? BuildCapabilities().Chat.ContextTokens
+                        : ModelSlots.IsSecond(kind) && ModelSlots.KindOf(kind) == ModelKinds.Chat ? m.ContextTokens : null,
                 });
             }
         }
@@ -946,9 +1011,10 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
             throw new ApiException(ErrorCodes.InvalidRequest, "Send either messages or text.", "text");
         }
 
-        var (model, sup) = Require(ModelKinds.Chat);
+        var slot = SlotFor(ModelKinds.Chat, body.Model);
+        var (model, sup) = Require(slot);
         using var deadline = DeadlineToken(ctx);
-        await LoadForRequestAsync(ctx, ModelKinds.Chat, deadline.Token, null).ConfigureAwait(false);
+        await LoadForRequestAsync(ctx, slot, deadline.Token, null).ConfigureAwait(false);
         var tokens = await sup.CountTokensAsync(body, deadline.Token).ConfigureAwait(false);
         ctx.ResponseHeaders[HeaderNames.Model] = model.ModelId;
         await ctx.WriteJsonAsync(200, new TokenizeResponse
@@ -961,6 +1027,7 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
     {
         var body = ctx.ReadJson(AiHostJsonContext.Default.EmbeddingsRequest);
         RequestValidator.ValidateEmbeddings(body, _o.MaxBatchInputs);
+        await AutoLoadNamedModelAsync(ctx, ModelKinds.Embedding, body.Model).ConfigureAwait(false);
         var (model, sup) = Require(ModelKinds.Embedding);
         ctx.ResponseHeaders[HeaderNames.Model] = model.ModelId;
         using var deadline = DeadlineToken(ctx);
@@ -977,7 +1044,9 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
     {
         var body = ctx.ReadJson(AiHostJsonContext.Default.ChatCompletionRequest);
         RequestValidator.ValidateChat(body);
-        var (model, sup) = Require(ModelKinds.Chat);
+        await AutoLoadNamedModelAsync(ctx, ModelKinds.Chat, body.Model).ConfigureAwait(false);
+        var slot = SlotFor(ModelKinds.Chat, body.Model);
+        var (model, sup) = Require(slot);
         ApplyContextLimit(ctx, body, model);
         ctx.ResponseHeaders[HeaderNames.Model] = model.ModelId;
         using var deadline = DeadlineToken(ctx);
@@ -985,13 +1054,13 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
 
         if (ctx.Options.FailIfLoading && !IsLoaded(sup, model))
         {
-            _ = EnsureLoadedAsync(ModelKinds.Chat, _lifetime.Token).ContinueWith(static t => _ = t.Exception,
+            _ = EnsureLoadedAsync(slot, _lifetime.Token).ContinueWith(static t => _ = t.Exception,
                 CancellationToken.None, TaskContinuationOptions.OnlyOnFaulted, TaskScheduler.Default);
             throw new ApiException(ErrorCodes.ModelLoading, "The model is loading. Try again shortly.", retryAfterMs: 3000)
             {
                 Details = new()
                 {
-                    ["progress"] = JsonSerializer.SerializeToElement(_kinds[ModelKinds.Chat].Progress,
+                    ["progress"] = JsonSerializer.SerializeToElement(_kinds[slot].Progress,
                         AiHostJsonContext.Default.Double),
                 },
             };
@@ -999,9 +1068,9 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
 
         if (body.Stream != true)
         {
-            await using var lease = await AcquireAsync(ctx, ModelKinds.Chat, deadline.Token, null).ConfigureAwait(false);
+            await using var lease = await AcquireAsync(ctx, slot, deadline.Token, null).ConfigureAwait(false);
             ctx.SetQueueWait(lease.QueueWait);
-            await LoadForRequestAsync(ctx, ModelKinds.Chat, deadline.Token, null).ConfigureAwait(false);
+            await LoadForRequestAsync(ctx, slot, deadline.Token, null).ConfigureAwait(false);
             activity?.StartGeneration();
             var result = await Generate(ctx, deadline, () => sup.ChatAsync(body, deadline.Token)).ConfigureAwait(false);
             activity?.AddTokens(result.Usage?.CompletionTokens ?? 0);
@@ -1012,9 +1081,9 @@ public sealed partial class AiHostRuntime : IAsyncDisposable
         // Streaming: headers go out as soon as the request is accepted; later failures are in-stream errors.
         await ctx.StartStreamAsync().ConfigureAwait(false);
         await using var pump = new ProgressPump(ctx, _o.ProgressInterval);
-        await using (var lease = await AcquireAsync(ctx, ModelKinds.Chat, deadline.Token, pump).ConfigureAwait(false))
+        await using (var lease = await AcquireAsync(ctx, slot, deadline.Token, pump).ConfigureAwait(false))
         {
-            await LoadForRequestAsync(ctx, ModelKinds.Chat, deadline.Token, pump).ConfigureAwait(false);
+            await LoadForRequestAsync(ctx, slot, deadline.Token, pump).ConfigureAwait(false);
             await pump.StopAsync(new PortalProgressEvent { Event = ProgressEvents.Started }).ConfigureAwait(false);
             activity?.StartGeneration();
             long usageTokens = 0, streamed = 0;

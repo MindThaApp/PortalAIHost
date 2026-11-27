@@ -305,7 +305,7 @@ public sealed class LanServer : IAsyncDisposable
                 }
 
                 var kind = path == Routes.Embeddings ? ModelKinds.Embedding : ModelKinds.Chat;
-                var active = path == Routes.Warmup ? null : _runtime.GetActive(kind);
+                var active = path == Routes.Warmup ? null : _runtime.GetActive(_runtime.SlotFor(kind, ModelNamed(body)));
                 if (active is not null && current.AllowedModels.Count > 0 &&
                     !current.AllowedModels.Contains(active.ModelId, StringComparer.Ordinal))
                 {
@@ -341,10 +341,25 @@ public sealed class LanServer : IAsyncDisposable
         {
             if (call is not null)
             {
-                var model = path == Routes.ChatCompletions ? _runtime.GetActive(ModelKinds.Chat) : null;
+                var model = path == Routes.ChatCompletions ? _runtime.GetActive(_runtime.SlotFor(ModelKinds.Chat, ModelNamed(body))) : null;
                 call.Complete(counting?.Tokens ?? 0, counting?.FirstByte, model?.ModelId, model?.DisplayName);
                 call.Dispose();
             }
+        }
+    }
+
+    /// <summary>The <c>model</c> a JSON request body names, or null (not JSON, no name). Read only to pick the engine slot.</summary>
+    private static string? ModelNamed(byte[] body)
+    {
+        try
+        {
+            using var doc = JsonDocument.Parse(body);
+            return doc.RootElement.ValueKind == JsonValueKind.Object && doc.RootElement.TryGetProperty("model", out var m) &&
+                m.ValueKind == JsonValueKind.String ? m.GetString() : null;
+        }
+        catch (JsonException)
+        {
+            return null;
         }
     }
 

@@ -46,6 +46,9 @@ internal static class Program
         {
             [ModelKinds.Chat] = CreateSupervisor(ModelKinds.Chat, () => shell?.IdleUnloadFor(ModelKinds.Chat)),
             [ModelKinds.Embedding] = CreateSupervisor(ModelKinds.Embedding, () => shell?.IdleUnloadFor(ModelKinds.Embedding)),
+            // The second chat engine: a second llama-server process (own port, own Job object) that only a device with Model control fills.
+            [ModelSlots.Second(ModelKinds.Chat)] = CreateSupervisor(ModelSlots.Second(ModelKinds.Chat),
+                () => shell?.IdleUnloadFor(ModelSlots.Second(ModelKinds.Chat))),
         };
         var catalogue = CatalogueSource.Load(AppContext.BaseDirectory, Environment.GetEnvironmentVariable);
         try

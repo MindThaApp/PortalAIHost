@@ -72,6 +72,9 @@ public sealed class TestHost : IAsyncDisposable
 
     public FakeEngineSupervisor Chat { get; private set; } = null!;
     public FakeEngineSupervisor Embed { get; private set; } = null!;
+
+    /// <summary>The second chat engine slot (only when started with <c>secondSlot: true</c>).</summary>
+    public FakeEngineSupervisor? Chat2 { get; private set; }
     public ClientRegistry Registry { get; private set; } = null!;
     public FairScheduler Scheduler { get; private set; } = null!;
     public AiHostRuntime Runtime { get; private set; } = null!;
@@ -82,22 +85,27 @@ public sealed class TestHost : IAsyncDisposable
     public string DiscoveryPath => DiscoveryFileWriter.PathFor(_root.Path);
 
     public static async Task<TestHost> StartAsync(FakeEngineOptions? chat = null, int maxRequestBytes = ApiLimits.MaxRequestBytes,
-        bool withModels = true, int parallelSlots = 1, HostSettings? settings = null, IEaseOffSensors? sensors = null)
+        bool withModels = true, int parallelSlots = 1, HostSettings? settings = null, IEaseOffSensors? sensors = null,
+        bool secondSlot = false, FakeEngineOptions? chat2 = null)
     {
         var host = new TestHost();
         host.Chat = new FakeEngineSupervisor(ModelKinds.Chat, chat);
         host.Embed = new FakeEngineSupervisor(ModelKinds.Embedding);
+        if (secondSlot)
+        {
+            host.Chat2 = new FakeEngineSupervisor(ModelSlots.Second(ModelKinds.Chat), chat2);
+        }
+
         host.Registry = new ClientRegistry(new ClientRegistryOptions { DataDirectory = host._root.Path }, new TestKeyProtector());
         host.Scheduler = new FairScheduler(new FairSchedulerOptions { DefaultSlots = parallelSlots });
         host.Runtime = await AiHostRuntime.StartAsync(new AiHostRuntimeOptions
         {
             Registry = host.Registry,
             Scheduler = host.Scheduler,
-            Supervisors = new Dictionary<string, IEngineSupervisor>
-            {
-                [ModelKinds.Chat] = host.Chat,
-                [ModelKinds.Embedding] = host.Embed,
-            },
+            Supervisors = new Dictionary<string, IEngineSupervisor>(
+                host.Chat2 is null
+                    ? [new(ModelKinds.Chat, host.Chat), new(ModelKinds.Embedding, host.Embed)]
+                    : [new(ModelKinds.Chat, host.Chat), new(ModelKinds.Embedding, host.Embed), new(ModelSlots.Second(ModelKinds.Chat), host.Chat2)]),
             InstanceId = "6f1c2a9e4b7d4c0f9a51d3e8b2c47a10",
             ProgressInterval = TimeSpan.FromMilliseconds(200),
             Pipeline = new() { MaxRequestBytes = maxRequestBytes },

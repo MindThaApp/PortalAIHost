@@ -103,6 +103,7 @@ public sealed class RemoteAccess : IAsyncDisposable
         ModelControl.MapRoutes(runtime.Pipeline);
         ModelControl.Changed += RaiseChanged;
         runtime.DeviceModelControl = id => Devices.Find(id)?.ModelControl == true;
+        runtime.DeviceAutoLoad = (device, model, kind, ct) => ModelControl.AutoLoadAsync(device, model, kind, ct);
         Sessions = new DeviceSessions(Devices);
         Stats = new DeviceStatsStore(options.DataDirectory, id => Devices.Find(id) is not null, _time, options.Zone);
         Gate = new DeviceGate(Devices, Stats, _time, options.Zone, () => _settings.GamingMode, options.BusyDetector);
