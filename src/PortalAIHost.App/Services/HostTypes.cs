@@ -232,6 +232,9 @@ public interface IModelFilePicker
 public interface IFolderOpener
 {
     void Open(string path);
+
+    /// <summary>Opens the folder that holds <paramref name="filePath"/> with that file selected.</summary>
+    void ShowFile(string filePath) => Open(Path.GetDirectoryName(filePath) ?? filePath);
 }
 
 /// <summary>Starts the host process when the control pipe is absent.</summary>

@@ -38,6 +38,8 @@ public sealed partial class ModelRowViewModel : ObservableObject
         ExistingCopy = existingCopy;
         UserAdded = m.UserAdded;
         StoreFolder = m.StoreFolder;
+        FilePath = m.FilePath;
+        LocationText = m.FilePath is { Length: > 0 } fp ? Fmt.PrivatePath(Path.GetDirectoryName(fp) ?? fp) : "";
         State = m.Installed ? "done" : m.DownloadState ?? "none";
         if (!m.Installed && m.DownloadState is not null && m.SizeBytes > 0)
         {
@@ -107,13 +109,15 @@ public sealed partial class ModelRowViewModel : ObservableObject
     {
         get
         {
+            if (ExistingCopy) return _s.Format("Vm_StopUsingBody", Name, LocationText);
             var body = _s.Format(UserAdded ? "Vm_RemoveUserBody" : Active ? "Vm_RemoveActiveBody" : "Vm_RemoveBody", Name);
+            body += "\n\n" + _s.Format("Vm_RemoveDetails", SizeText, LocationText);
             return FreesText.Length == 0 ? body : body + "\n\n" + FreesText;
         }
     }
 
     /// <summary>The confirm button names what happens: "Remove Name (4.2 GB)".</summary>
-    public string RemoveVerb => FreesText.Length == 0 ? _s.Format("Vm_RemoveVerbNoSize", Name) : _s.Format("Vm_RemoveVerb", Name, SizeText);
+    public string RemoveVerb => ExistingCopy ? _s.Get("Vm_StopUsingVerb") : FreesText.Length == 0 ? _s.Format("Vm_RemoveVerbNoSize", Name) : _s.Format("Vm_RemoveVerb", Name, SizeText);
 
     public string QualityText { get; }
     public string QualityName { get; }
@@ -129,6 +133,15 @@ public sealed partial class ModelRowViewModel : ObservableObject
     public string? StoreFolder { get; }
 
     public bool InOldFolder => StoreFolder is not null;
+
+    /// <summary>Full path of the model's file, from the host. Null when nothing is on disk.</summary>
+    public string? FilePath { get; }
+
+    /// <summary>The folder that holds the model file, shown privacy-safe.</summary>
+    public string LocationText { get; }
+    public bool HasLocation => LocationText.Length > 0;
+    public string AutoShowInFolder => _s.Format("Vm_AutoShowInFolder", Name);
+    public string AutoStopUsing => _s.Format("Vm_AutoStopUsing", Name);
     public string AutoDownload => _s.Format("Vm_AutoDownload", Name);
     public string AutoPause => _s.Format("Vm_AutoPause", Name);
     public string AutoResume => _s.Format("Vm_AutoResume", Name);
@@ -150,6 +163,7 @@ public sealed partial class ModelRowViewModel : ObservableObject
     [ObservableProperty] private bool _canCancel;
     [ObservableProperty] private bool _canActivate;
     [ObservableProperty] private bool _canRemove;
+    [ObservableProperty] private bool _canStopUsing;
     [ObservableProperty] private bool _showProgress;
     [ObservableProperty] private bool _tooBig;
 
@@ -230,7 +244,9 @@ public sealed partial class ModelRowViewModel : ObservableObject
         CanDownload = !InOldFolder && !Installed && !ComingSoon && State == "none";
         CanActivate = !InOldFolder && Installed && !Active && !Removing && !Damaged;
         // The model in use can be removed too: the host unloads it first.
-        CanRemove = InOldFolder || (Installed && !busy && !Removing && !Checking);
+        CanRemove = InOldFolder || (Installed && !ExistingCopy && !busy && !Removing && !Checking);
+        // A copy the host found in another place is never deleted: the host only stops using it.
+        CanStopUsing = !InOldFolder && Installed && ExistingCopy && !busy && !Removing && !Checking;
         CanCheck = !InOldFolder && Installed && !ExistingCopy && !UserAdded && !Checking && !Removing;
         CanRedownload = !InOldFolder && Installed && Damaged && !Checking && !Removing && !ExistingCopy && !UserAdded;
         if (InOldFolder)
@@ -276,6 +292,7 @@ public sealed partial class ModelRowViewModel : ObservableObject
     [RelayCommand] private Task ResumeAsync() => _owner.ResumeAsync(this);
     [RelayCommand] private Task RemoveAsync() => _owner.RemoveAsync(this);
     [RelayCommand] private Task CancelAsync() => _owner.CancelAsync(this);
+    [RelayCommand] private Task ShowInFolderAsync() => _owner.ShowInFolderAsync(this);
     [RelayCommand] private Task ActivateAsync() => _owner.ActivateAsync(this);
     [RelayCommand] private Task CheckAsync() => _owner.CheckAsync(this);
     [RelayCommand] private Task CancelCheckAsync() => _owner.CancelStoreOperationAsync();
@@ -466,7 +483,7 @@ public sealed partial class ModelsViewModel : ObservableObject, IDisposable
     public async Task RemoveAsync(ModelRowViewModel row)
     {
         // The host deletes only files it downloaded (store rules); the window only asks, after a confirmation.
-        var ok = await _dialogs.ConfirmAsync(_s.Get("Vm_RemoveTitle"), row.RemoveBody, row.RemoveVerb, _s.Get("Vm_Cancel"));
+        var ok = await _dialogs.ConfirmAsync(_s.Get(row.ExistingCopy ? "Vm_StopUsingTitle" : "Vm_RemoveTitle"), row.RemoveBody, row.RemoveVerb, _s.Get("Vm_Cancel"));
         if (!ok) return;
         string? switchTo = null;
         if (row.Active && !row.InOldFolder && AlternativeFor(row) is { } other)
@@ -555,6 +572,21 @@ public sealed partial class ModelsViewModel : ObservableObject, IDisposable
         if (!await RemoveRowAsync(row, null, damaged: true)) return;
         if (wasActive) _reactivate.Add(row.Id);
         if (!await Run(() => _shell.Host.StartDownloadAsync(row.Id))) _reactivate.Remove(row.Id);
+    }
+
+    /// <summary>Opens Explorer with the model's file selected. The path comes from the host; off the UI thread.</summary>
+    public async Task ShowInFolderAsync(ModelRowViewModel row)
+    {
+        if (row.FilePath is not { Length: > 0 } file) return;
+        try
+        {
+            await Task.Run(() => _folders?.ShowFile(file)).ConfigureAwait(false);
+            _ui.Post(() => ErrorLine = "");
+        }
+        catch (Exception ex) when (ex is IOException or InvalidOperationException or System.ComponentModel.Win32Exception)
+        {
+            _ui.Post(() => ErrorLine = ex.Message);
+        }
     }
 
     public Task CancelStoreOperationAsync() => Run(() => _shell.Host.CancelStoreOperationAsync());
