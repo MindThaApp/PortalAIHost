@@ -1,0 +1,986 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="NavHome.Content" xml:space="preserve"><value>Trang chủ</value></data>
+  <data name="NavHome.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Trang chủ</value></data>
+  <data name="NavModels.Content" xml:space="preserve"><value>Mô hình</value></data>
+  <data name="NavModels.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Mô hình</value></data>
+  <data name="NavApps.Content" xml:space="preserve"><value>Thiết bị và ứng dụng</value></data>
+  <data name="NavApps.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Thiết bị và ứng dụng</value></data>
+  <data name="NavTryIt.Content" xml:space="preserve"><value>Dùng thử</value></data>
+  <data name="NavTryIt.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Dùng thử</value></data>
+  <data name="NavSettings.Content" xml:space="preserve"><value>Cài đặt</value></data>
+  <data name="NavSettings.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Cài đặt</value></data>
+  <data name="HomeTitle.Text" xml:space="preserve"><value>Trang chủ</value></data>
+  <data name="HomeSafeModeBar.Title" xml:space="preserve"><value>Chế độ an toàn</value></data>
+  <data name="HomeStoreProblemBar.Title" xml:space="preserve"><value>Không truy cập được thư mục mô hình</value></data>
+  <data name="Vm_OldFolderBadge" xml:space="preserve"><value>Thư mục cũ</value></data>
+  <data name="Vm_OldFolderRow" xml:space="preserve"><value>Nằm trong thư mục mô hình cũ: {0}. Hãy xóa để giải phóng dung lượng.</value></data>
+  <data name="HomeSafeModeBar.Message" xml:space="preserve"><value>Máy chủ đã đóng bất ngờ nhiều hơn một lần, nên đã khởi động với cài đặt thận trọng. Các ứng dụng của bạn vẫn hoạt động. Nếu tình trạng này tiếp diễn, hãy khởi động lại PC.</value></data>
+  <data name="HomeStartButton.Content" xml:space="preserve"><value>Khởi động Portal AI Host</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Khởi động Portal AI Host</value></data>
+  <data name="HomeUpgradeText.Text" xml:space="preserve"><value>Đã có mô hình tốt hơn cho PC của bạn. Mô hình hiện tại vẫn được giữ cho đến khi mô hình mới sẵn sàng.</value></data>
+  <data name="HomeSeeModelsButton.Content" xml:space="preserve"><value>Xem mô hình</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Xem mô hình</value></data>
+  <data name="ModelsTitle.Text" xml:space="preserve"><value>Mô hình</value></data>
+  <data name="ModelsExistingBar.Title" xml:space="preserve"><value>Đã tìm thấy bản sao có sẵn</value></data>
+  <data name="ModelsUpgradeBar.Title" xml:space="preserve"><value>Có mô hình tốt hơn</value></data>
+  <data name="ModelTooBig.Text" xml:space="preserve"><value>Mô hình này có thể quá lớn đối với PC này.</value></data>
+  <data name="ModelDownload.Content" xml:space="preserve"><value>Tải xuống</value></data>
+  <data name="ModelPause.Content" xml:space="preserve"><value>Tạm dừng</value></data>
+  <data name="ModelResume.Content" xml:space="preserve"><value>Tiếp tục</value></data>
+  <data name="ModelCancel.Content" xml:space="preserve"><value>Dừng</value></data>
+  <data name="ModelUse.Content" xml:space="preserve"><value>Dùng mô hình này</value></data>
+  <data name="ModelRemove.Content" xml:space="preserve"><value>Xóa</value></data>
+  <data name="ModelsCatalogueBar.Title" xml:space="preserve"><value>Không có danh sách mô hình</value></data>
+  <data name="ModelsCatalogueBar.Message" xml:space="preserve"><value>Máy chủ không tải được danh sách mô hình đáng tin cậy, nên chưa thể tải mô hình mới lúc này. Các mô hình đã có trên PC này vẫn hoạt động.</value></data>
+  <data name="AppsTitle.Text" xml:space="preserve"><value>Thiết bị và ứng dụng</value></data>
+  <data name="AppsWaitingHeader.Text" xml:space="preserve"><value>Đang chờ bạn trả lời</value></data>
+  <data name="AppsApprovedHeader.Text" xml:space="preserve"><value>Ứng dụng có thể dùng máy chủ AI</value></data>
+  <data name="AppsNone.Text" xml:space="preserve"><value>Chưa cho phép ứng dụng nào. Khi có ứng dụng yêu cầu dùng máy chủ, bạn sẽ được hỏi tại đây.</value></data>
+  <data name="AppAllow.Content" xml:space="preserve"><value>Cho phép</value></data>
+  <data name="AppDeny.Content" xml:space="preserve"><value>Từ chối</value></data>
+  <data name="Vm_AppTodayNone" xml:space="preserve"><value>Hôm nay chưa có yêu cầu</value></data>
+  <data name="Vm_AppToday1" xml:space="preserve"><value>{0} yêu cầu hôm nay</value></data>
+  <data name="Vm_AppToday" xml:space="preserve"><value>{0} yêu cầu hôm nay</value></data>
+  <data name="Vm_PriorityHigh" xml:space="preserve"><value>Cao</value></data>
+  <data name="Vm_PriorityNormal" xml:space="preserve"><value>Bình thường</value></data>
+  <data name="Vm_PriorityLow" xml:space="preserve"><value>Thấp</value></data>
+  <data name="Vm_AutoPriority" xml:space="preserve"><value>Mức ưu tiên cho {0}</value></data>
+  <data name="Vm_AppPausedBadge" xml:space="preserve"><value>Đã tạm dừng</value></data>
+  <data name="Vm_AppPausedHint" xml:space="preserve"><value>{0} đang tạm dừng. Các yêu cầu mới sẽ bị từ chối cho đến khi bạn tiếp tục. Ứng dụng vẫn giữ quyền truy cập.</value></data>
+  <data name="Vm_AppPause" xml:space="preserve"><value>Tạm dừng</value></data>
+  <data name="Vm_AppResume" xml:space="preserve"><value>Tiếp tục</value></data>
+  <data name="Vm_AutoPause" xml:space="preserve"><value>Tạm dừng {0}</value></data>
+  <data name="Vm_AutoResume" xml:space="preserve"><value>Tiếp tục {0}</value></data>
+  <data name="AppPriority.Header" xml:space="preserve"><value>Mức ưu tiên</value></data>
+  <data name="AppRevoke.Content" xml:space="preserve"><value>Gỡ quyền truy cập</value></data>
+  <data name="SettingsTitle.Text" xml:space="preserve"><value>Cài đặt</value></data>
+  <data name="SettingsStartWithWindows.Header" xml:space="preserve"><value>Khởi động cùng Windows</value></data>
+  <data name="SettingsStartWithWindows.OnContent" xml:space="preserve"><value>Bật</value></data>
+  <data name="SettingsStartWithWindows.OffContent" xml:space="preserve"><value>Tắt</value></data>
+  <data name="SettingsStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Khởi động cùng Windows</value></data>
+  <data name="SettingsIdle.Header" xml:space="preserve"><value>Giải phóng bộ nhớ khi rảnh</value></data>
+  <data name="SettingsIdle.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Giải phóng bộ nhớ khi rảnh</value></data>
+  <data name="SettingsIdleHelp.Text" xml:space="preserve"><value>Mô hình sẽ hoạt động lại vào lần tiếp theo có ứng dụng yêu cầu. Giữ mô hình tải sẵn sẽ trả lời nhanh hơn nhưng luôn tốn bộ nhớ.</value></data>
+  <data name="SettingsFolder.Header" xml:space="preserve"><value>Thư mục lưu mô hình đã tải</value></data>
+  <data name="SettingsFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Thư mục lưu mô hình đã tải</value></data>
+  <data name="TryItTitle.Text" xml:space="preserve"><value>Dùng thử</value></data>
+  <data name="TryItIntro.Text" xml:space="preserve"><value>Hãy hỏi mô hình một câu ngắn để kiểm tra xem nó có hoạt động không và xem tốc độ trả lời. Nội dung bạn nhập ở đây không được lưu. Nhấn Ctrl+Enter để gửi câu hỏi.</value></data>
+  <data name="TryItPrompt.Header" xml:space="preserve"><value>Câu hỏi của bạn</value></data>
+  <data name="TryItPrompt.PlaceholderText" xml:space="preserve"><value>Ví dụ: Viết một câu về biển.</value></data>
+  <data name="TryItPrompt.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Câu hỏi của bạn</value></data>
+  <data name="TryItSend.Content" xml:space="preserve"><value>Hỏi</value></data>
+  <data name="TryItSend.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Hỏi</value></data>
+  <data name="TryItStop.Content" xml:space="preserve"><value>Dừng</value></data>
+  <data name="TryItStop.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Dừng</value></data>
+  <data name="TryItReply.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Câu trả lời</value></data>
+  <data name="WelcomeTitle.Text" xml:space="preserve"><value>Chào mừng đến với Portal AI Host</value></data>
+  <data name="WelcomeLead.Text" xml:space="preserve"><value>AI luôn ở lại trên PC của bạn</value></data>
+  <data name="WelcomeIntro.Text" xml:space="preserve"><value>Portal AI Host chạy các mô hình AI trên PC này cho các ứng dụng Portal của bạn. Không cần thiết lập gì thêm: chúng tôi sẽ chọn mô hình phù hợp với PC của bạn.</value></data>
+  <data name="WelcomePoint1Title.Text" xml:space="preserve"><value>Chạy trên PC này</value></data>
+  <data name="WelcomePoint1Body.Text" xml:space="preserve"><value>Mô hình dùng card đồ họa và bộ nhớ của chính bạn, nên vẫn hoạt động ngay cả khi không có kết nối internet.</value></data>
+  <data name="WelcomePoint2Title.Text" xml:space="preserve"><value>Luôn riêng tư</value></data>
+  <data name="WelcomePoint2Body.Text" xml:space="preserve"><value>Câu hỏi và tệp của bạn không bao giờ rời khỏi PC này.</value></data>
+  <data name="WelcomePoint3Title.Text" xml:space="preserve"><value>Dành cho các ứng dụng Portal</value></data>
+  <data name="WelcomePoint3Body.Text" xml:space="preserve"><value>Các ứng dụng Portal của bạn có thể dùng để viết, tóm tắt và trả lời mà không cần thêm tài khoản nào.</value></data>
+  <data name="WelcomeModelTitle.Text" xml:space="preserve"><value>Chọn mô hình</value></data>
+  <data name="WelcomeModelIntro.Text" xml:space="preserve"><value>Mô hình là AI thực hiện công việc. Đây là mô hình chúng tôi cho là phù hợp nhất với PC của bạn.</value></data>
+  <data name="WelcomeNoModel.Text" xml:space="preserve"><value>Hiện chúng tôi chưa tìm được mô hình phù hợp với PC này. Bạn có thể xem lại sau ở trang Mô hình.</value></data>
+  <data name="WelcomeDownload.Content" xml:space="preserve"><value>Tải xuống</value></data>
+  <data name="WelcomeDownload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Tải mô hình được đề xuất</value></data>
+  <data name="WelcomeChooseLater.Content" xml:space="preserve"><value>Chọn sau</value></data>
+  <data name="WelcomeChooseLater.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Chọn sau, chọn mô hình trong Mô hình</value></data>
+  <data name="WelcomeKeepGoing.Text" xml:space="preserve"><value>Bạn có thể tiếp tục. Quá trình tải vẫn chạy ở nền.</value></data>
+  <data name="WelcomeRetry.Content" xml:space="preserve"><value>Thử lại</value></data>
+  <data name="WelcomeRetry.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Thử lại, tải lại từ đầu</value></data>
+  <data name="WelcomeWhereTitle.Text" xml:space="preserve"><value>Tìm ở gần đồng hồ</value></data>
+  <data name="WelcomeTrayTitle.Text" xml:space="preserve"><value>Tìm biểu tượng khay hệ thống</value></data>
+  <data name="WelcomeTrayBody.Text" xml:space="preserve"><value>Portal AI Host chạy âm thầm trong khay hệ thống, khu vực có các biểu tượng nhỏ gần đồng hồ. Nhấp vào biểu tượng để mở. Nếu không thấy, hãy nhấp vào mũi tên để hiện các biểu tượng ẩn.</value></data>
+  <data name="WelcomeAskTitle.Text" xml:space="preserve"><value>Ứng dụng luôn hỏi trước</value></data>
+  <data name="WelcomeAskBody.Text" xml:space="preserve"><value>Lần đầu tiên một ứng dụng Portal muốn dùng AI trên PC này, bạn sẽ được hỏi. Bạn có thể từ chối và có thể gỡ quyền truy cập bất cứ lúc nào.</value></data>
+  <data name="WelcomeStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Khởi động cùng Windows, mở Portal AI Host khi tôi đăng nhập</value></data>
+  <data name="WelcomeSkip.Content" xml:space="preserve"><value>Bỏ qua</value></data>
+  <data name="WelcomeSkip.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Bỏ qua bây giờ, đóng phần chào mừng</value></data>
+  <data name="WelcomeBack.Content" xml:space="preserve"><value>Quay lại</value></data>
+  <data name="WelcomeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Quay lại</value></data>
+  <data name="Vm_VerifiedShort" xml:space="preserve"><value>Ứng dụng Portal đã xác minh</value></data>
+  <data name="Vm_ApprovalDetails" xml:space="preserve"><value>Chi tiết</value></data>
+  <data name="Vm_WelcomeRecommended" xml:space="preserve"><value>Được đề xuất: mô hình {0}</value></data>
+  <data name="Vm_WelcomeSmall" xml:space="preserve"><value>Nhỏ</value></data>
+  <data name="Vm_WelcomeMedium" xml:space="preserve"><value>Vừa</value></data>
+  <data name="Vm_WelcomeLarge" xml:space="preserve"><value>Lớn</value></data>
+  <data name="Vm_WelcomeDetail" xml:space="preserve"><value>{0}, {1}</value></data>
+  <data name="WelcomeLaterNote.Text" xml:space="preserve"><value>Bạn có thể chọn mô hình sau trong mục Mô hình.</value></data>
+  <data name="WelcomeStartRec.Content" xml:space="preserve"><value>Bắt đầu với cài đặt được đề xuất</value></data>
+  <data name="WelcomeStartRec.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Bắt đầu với cài đặt được đề xuất</value></data>
+  <data name="WelcomeWhereIntro.Text" xml:space="preserve"><value>Có hai điều cần biết trước khi bắt đầu.</value></data>
+  <data name="WelcomeStartTitle.Text" xml:space="preserve"><value>Khởi động cùng Windows</value></data>
+  <data name="WelcomeStartBody.Text" xml:space="preserve"><value>Giữ Portal AI Host sẵn sàng trong khay hệ thống khi bạn đăng nhập, để các ứng dụng có thể dùng ngay.</value></data>
+  <data name="Vm_WelcomeRecommendedTip" xml:space="preserve"><value>Tải mô hình được đề xuất ({0}) ở nền, giữ Portal AI Host khởi động cùng Windows, rồi đóng cửa sổ này. Bạn có thể thay đổi tất cả sau.</value></data>
+  <data name="Vm_WelcomeRecommendedTipNoModel" xml:space="preserve"><value>Giữ Portal AI Host khởi động cùng Windows rồi đóng cửa sổ này. Bạn có thể thay đổi tất cả sau.</value></data>
+  <data name="Vm_WelcomeTitle" xml:space="preserve"><value>Chào mừng đến với Portal AI Host</value></data>
+  <data name="Vm_WelcomeNext" xml:space="preserve"><value>Tiếp theo</value></data>
+  <data name="Vm_WelcomeFinish" xml:space="preserve"><value>Bắt đầu</value></data>
+  <data name="Vm_WelcomeSize" xml:space="preserve"><value>Dung lượng tải: {0}</value></data>
+  <data name="Vm_AppTitle" xml:space="preserve"><value>Portal AI Host</value></data>
+  <data name="Vm_NoHostTitle" xml:space="preserve"><value>Portal AI Host chưa chạy</value></data>
+  <data name="Vm_NoHostBody" xml:space="preserve"><value>Tiến trình chạy mô hình AI đang tắt. Hãy khởi động để các ứng dụng có thể dùng AI.</value></data>
+  <data name="Vm_Starting" xml:space="preserve"><value>Đang khởi động...</value></data>
+  <data name="Vm_StartFailed" xml:space="preserve"><value>Không thể khởi động máy chủ. Hãy thử mở lại Portal AI Host từ menu Start.</value></data>
+  <data name="Vm_StateReady" xml:space="preserve"><value>Sẵn sàng</value></data>
+  <data name="Vm_StateBusy" xml:space="preserve"><value>Đang trả lời</value></data>
+  <data name="Vm_StateLoading" xml:space="preserve"><value>Đang chuẩn bị mô hình</value></data>
+  <data name="Vm_StateIdle" xml:space="preserve"><value>Đang nghỉ. Mô hình sẽ hoạt động khi có ứng dụng yêu cầu.</value></data>
+  <data name="Vm_StateNoModel" xml:space="preserve"><value>Chưa có mô hình</value></data>
+  <data name="Vm_StateDownloading" xml:space="preserve"><value>Đang tải mô hình</value></data>
+  <data name="Vm_StateError" xml:space="preserve"><value>Đã xảy ra lỗi</value></data>
+  <data name="Vm_HostVersion" xml:space="preserve"><value>Phiên bản máy chủ {0}</value></data>
+  <data name="Vm_ModelNone" xml:space="preserve"><value>Chưa cài mô hình nào</value></data>
+  <data name="Vm_ModelLoaded" xml:space="preserve"><value>{0} đã được tải và sẵn sàng</value></data>
+  <data name="Vm_ModelLoading" xml:space="preserve"><value>Đang tải {0}...</value></data>
+  <data name="Vm_ModelUnloaded" xml:space="preserve"><value>{0} đã được cài. Mô hình sẽ tải khi có ứng dụng yêu cầu.</value></data>
+  <data name="Vm_QueueEmpty" xml:space="preserve"><value>Không có yêu cầu nào đang chờ</value></data>
+  <data name="Vm_QueueSome" xml:space="preserve"><value>Đang chạy {0}, đang chờ {1}</value></data>
+  <data name="Vm_QualityName" xml:space="preserve"><value>Chất lượng {0} trên 5</value></data>
+  <data name="Vm_DownloadProgress" xml:space="preserve"><value>{0} trên {1}</value></data>
+  <data name="Vm_DownloadEta" xml:space="preserve"><value>{0} trên {1}, còn khoảng {2} phút</value></data>
+  <data name="Vm_Paused" xml:space="preserve"><value>Đã tạm dừng ở {0}%</value></data>
+  <data name="Vm_Verifying" xml:space="preserve"><value>Đang kiểm tra tệp đã tải...</value></data>
+  <data name="Vm_Queued" xml:space="preserve"><value>Đang chờ bắt đầu...</value></data>
+  <data name="Vm_DownloadFailed" xml:space="preserve"><value>Quá trình tải chưa hoàn tất. {0}</value></data>
+  <data name="Vm_DownloadDone" xml:space="preserve"><value>Tải xong.</value></data>
+  <data name="Vm_InUse" xml:space="preserve"><value>Đang dùng</value></data>
+  <data name="Vm_Installed" xml:space="preserve"><value>Đã cài</value></data>
+  <data name="Vm_BestForYou" xml:space="preserve"><value>Phù hợp nhất với PC của bạn</value></data>
+  <data name="Vm_StorageLine" xml:space="preserve"><value>Mô hình dùng {2} trong {0}. Còn trống {1} trên ổ đĩa đó.</value></data>
+  <data name="Vm_ExistingCopy" xml:space="preserve"><value>Đã có bản sao của {0} trên PC này. Máy chủ sẽ dùng bản đó thay vì tải lại.</value></data>
+  <data name="Vm_UpgradeOffer" xml:space="preserve"><value>{0} phù hợp hơn. Mô hình hiện tại vẫn được giữ cho đến khi mô hình mới sẵn sàng.</value></data>
+  <data name="Vm_CancelDlTitle" xml:space="preserve"><value>Dừng tải xuống này?</value></data>
+  <data name="Vm_CancelDlBody" xml:space="preserve"><value>Phần đã tải sẽ bị hủy.</value></data>
+  <data name="Vm_CancelDlYes" xml:space="preserve"><value>Dừng tải</value></data>
+  <data name="Vm_CancelDlKeep" xml:space="preserve"><value>Tiếp tục tải</value></data>
+  <data name="Vm_AutoDownload" xml:space="preserve"><value>Tải {0}</value></data>
+  <data name="Vm_AutoCancel" xml:space="preserve"><value>Dừng tải {0}</value></data>
+  <data name="Vm_AutoUse" xml:space="preserve"><value>Dùng {0}</value></data>
+  <data name="Vm_Added" xml:space="preserve"><value>Đã thêm {0}</value></data>
+  <data name="Vm_LastUsed" xml:space="preserve"><value>Dùng lần cuối {0}</value></data>
+  <data name="Vm_NeverUsed" xml:space="preserve"><value>Chưa dùng</value></data>
+  <data name="Vm_AutoRevoke" xml:space="preserve"><value>Gỡ quyền truy cập của {0}</value></data>
+  <data name="Vm_AutoAllow" xml:space="preserve"><value>Cho phép {0}</value></data>
+  <data name="Vm_AutoDeny" xml:space="preserve"><value>Từ chối {0}</value></data>
+  <data name="Vm_RevokeTitle" xml:space="preserve"><value>Gỡ quyền truy cập của {0}?</value></data>
+  <data name="Vm_RevokeBody" xml:space="preserve"><value>{0} sẽ không còn dùng được máy chủ AI cho đến khi bạn cho phép lại.</value></data>
+  <data name="Vm_RevokeYes" xml:space="preserve"><value>Gỡ quyền truy cập</value></data>
+  <data name="Vm_Cancel" xml:space="preserve"><value>Hủy</value></data>
+  <data name="Vm_Verified" xml:space="preserve"><value>Ứng dụng đã cài ({0}). Không phải ứng dụng Portal.</value></data>
+  <data name="Vm_VerifiedPortal" xml:space="preserve"><value>Ứng dụng Portal đã xác minh ({0})</value></data>
+  <data name="Vm_Unverified" xml:space="preserve"><value>Chưa xác minh. Chạy từ {0}. Chỉ cho phép nếu chính bạn đã khởi động ứng dụng này.</value></data>
+  <data name="Vm_ApprovalTitle" xml:space="preserve"><value>Cho phép {0} dùng AI trên PC này?</value></data>
+  <data name="Vm_ApprovalBody" xml:space="preserve"><value>{0} muốn dùng mô hình AI trên PC này.</value></data>
+  <data name="Vm_ApprovalReason" xml:space="preserve"><value>Lý do được nêu: {0}</value></data>
+  <data name="Vm_Allow" xml:space="preserve"><value>Cho phép</value></data>
+  <data name="Vm_Deny" xml:space="preserve"><value>Không cho phép</value></data>
+  <data name="Vm_Later" xml:space="preserve"><value>Quyết định sau</value></data>
+  <data name="Vm_Idle_Keep" xml:space="preserve"><value>Giữ mô hình được tải</value></data>
+  <data name="Vm_Idle_5" xml:space="preserve"><value>Sau 5 phút</value></data>
+  <data name="Vm_Idle_10" xml:space="preserve"><value>Sau 10 phút</value></data>
+  <data name="Vm_Saved" xml:space="preserve"><value>Đã lưu</value></data>
+  <data name="Vm_SaveFailed" xml:space="preserve"><value>Không thể lưu. Máy chủ có đang chạy không?</value></data>
+  <data name="Vm_FolderTitle" xml:space="preserve"><value>Dùng thư mục này để lưu mô hình?</value></data>
+  <data name="Vm_FolderBody" xml:space="preserve"><value>Máy chủ sẽ dùng {0} để lưu mô hình. Các mô hình bạn đã có sẽ không bị di chuyển hay xóa.</value></data>
+  <data name="Vm_FolderYes" xml:space="preserve"><value>Dùng thư mục</value></data>
+  <data name="TryItClear.Content" xml:space="preserve"><value>Xóa</value></data>
+  <data name="TryItClear.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Xóa cuộc trò chuyện</value></data>
+  <data name="TryItSuggestLabel.Text" xml:space="preserve"><value>Chưa biết nên hỏi gì? Hãy thử một trong các câu sau.</value></data>
+  <data name="HomeTryItButton.Content" xml:space="preserve"><value>Dùng thử</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Dùng thử mô hình bằng một câu hỏi</value></data>
+  <data name="Vm_TrySuggest1" xml:space="preserve"><value>Viết một câu thân thiện về biển.</value></data>
+  <data name="Vm_TrySuggest2" xml:space="preserve"><value>Giải thích trong hai câu bộ định tuyến (router) làm gì.</value></data>
+  <data name="Vm_TrySuggest3" xml:space="preserve"><value>Gợi ý giúp tôi ba cái tên cho một con mèo.</value></data>
+  <data name="Vm_TryStats" xml:space="preserve"><value>Những từ đầu tiên sau {0} giây, sau đó {1} token mỗi giây.</value></data>
+  <data name="Vm_TryStatsShort" xml:space="preserve"><value>Những từ đầu tiên sau {0} giây.</value></data>
+  <data name="Vm_TryStatsStopped" xml:space="preserve"><value>Đã dừng. {0}</value></data>
+  <data name="TryItThinking.Header" xml:space="preserve"><value>Mô hình đã suy nghĩ gì trước</value></data>
+  <data name="Vm_TryWorking" xml:space="preserve"><value>Đang xử lý. Trên PC yếu có thể mất một phút.</value></data>
+  <data name="Vm_TryThinking" xml:space="preserve"><value>Đang suy nghĩ...</value></data>
+  <data name="Vm_TryOnlyThinking" xml:space="preserve"><value>Mô hình đã dùng hết thời gian cho phần suy nghĩ và không đưa ra câu trả lời. Hãy thử câu hỏi ngắn hơn.</value></data>
+  <data name="Vm_TryEmpty" xml:space="preserve"><value>Mô hình gửi về câu trả lời trống. Hãy thử hỏi lại.</value></data>
+  <data name="Vm_TryFailed" xml:space="preserve"><value>Máy chủ không thể trả lời: {0}</value></data>
+  <data name="Vm_HwChecking" xml:space="preserve"><value>Đang kiểm tra PC của bạn...</value></data>
+  <data name="Vm_HwUnknown" xml:space="preserve"><value>không đọc được</value></data>
+  <data name="Vm_HwMemory" xml:space="preserve"><value>Bộ nhớ: {0}</value></data>
+  <data name="Vm_HwGraphics" xml:space="preserve"><value>Card đồ họa: {0}</value></data>
+  <data name="Vm_HwCores" xml:space="preserve"><value>Số nhân CPU: {0}</value></data>
+  <data name="Vm_HwDisk" xml:space="preserve"><value>Dung lượng ổ đĩa còn trống: {0}</value></data>
+  <data name="HomeWelcomeTitle.Text" xml:space="preserve"><value>Thiết lập AI riêng tư trên PC này</value></data>
+  <data name="HomeWelcomeBody.Text" xml:space="preserve"><value>Portal AI Host giữ một mô hình AI trên PC này và chia sẻ cho các ứng dụng Portal, nên mỗi ứng dụng không cần bản sao riêng. Mọi thứ đều chạy tại đây: nội dung bạn nhập không rời khỏi PC này, và không cần tài khoản đám mây.</value></data>
+  <data name="HomeCatalogueBar.Title" xml:space="preserve"><value>Không có danh sách mô hình</value></data>
+  <data name="HomeCatalogueBar.Message" xml:space="preserve"><value>Máy chủ không tải được danh sách mô hình đáng tin cậy nên lúc này chưa có gì để đề xuất. Hãy kiểm tra kết nối internet và thử lại.</value></data>
+  <data name="HomeTryAgainButton.Content" xml:space="preserve"><value>Thử lại</value></data>
+  <data name="HomeRecommendedLabel.Text" xml:space="preserve"><value>ĐƯỢC ĐỀ XUẤT CHO PC NÀY</value></data>
+  <data name="HomeNoSpaceBar.Title" xml:space="preserve"><value>Không đủ dung lượng ổ đĩa</value></data>
+  <data name="HomeChangeFolderButton.Content" xml:space="preserve"><value>Đổi thư mục trong Cài đặt</value></data>
+  <data name="HomeDownloadButton.Content" xml:space="preserve"><value>Tải xuống</value></data>
+  <data name="HomeSeeAllModelsLink.Content" xml:space="preserve"><value>Xem tất cả mô hình</value></data>
+  <data name="HomeSeeAllModelsLink2.Content" xml:space="preserve"><value>Xem tất cả mô hình</value></data>
+  <data name="HomeActiveModelLabel.Text" xml:space="preserve"><value>MÔ HÌNH ĐANG DÙNG</value></data>
+  <data name="HomeAppsLabel.Text" xml:space="preserve"><value>ỨNG DỤNG ĐÃ KẾT NỐI</value></data>
+  <data name="HomeSeeAppsLink.Content" xml:space="preserve"><value>Xem thiết bị và ứng dụng</value></data>
+  <data name="HomeRequestsLabel.Text" xml:space="preserve"><value>YÊU CẦU</value></data>
+  <data name="Vm_HomeLoaded" xml:space="preserve"><value>Đã tải và sẵn sàng</value></data>
+  <data name="Vm_HomeLoading" xml:space="preserve"><value>Đang chuẩn bị...</value></data>
+  <data name="Vm_HomeUnloaded" xml:space="preserve"><value>Chưa tải. Mô hình sẽ tải khi có ứng dụng yêu cầu.</value></data>
+  <data name="Vm_HomeKeepLoaded" xml:space="preserve"><value>Luôn được tải sẵn để trả lời nhanh.</value></data>
+  <data name="Vm_HomeIdleUnload" xml:space="preserve"><value>Giải phóng bộ nhớ sau {0} phút không có yêu cầu.</value></data>
+  <data name="Vm_HomeApps" xml:space="preserve"><value>{0} ứng dụng có thể dùng mô hình này</value></data>
+  <data name="Vm_HomeApps1" xml:space="preserve"><value>1 ứng dụng có thể dùng mô hình này</value></data>
+  <data name="Vm_HomeAppsNone" xml:space="preserve"><value>Chưa có ứng dụng nào được kết nối. Lần đầu tiên, các ứng dụng sẽ xin phép bạn.</value></data>
+  <data name="Vm_HomeNoSpace" xml:space="preserve"><value>Mô hình này cần {0} nhưng chỉ còn trống {1}. Hãy giải phóng bớt dung lượng, hoặc chọn thư mục mô hình khác trong Cài đặt.</value></data>
+  <data name="Vm_NoGpu" xml:space="preserve"><value>không tìm thấy</value></data>
+  <data name="Vm_HostMissing" xml:space="preserve"><value>Thiếu chương trình máy chủ trong bản cài đặt này. Hãy cài lại Portal AI Host để khắc phục.</value></data>
+  <data name="Vm_HostMissingTestRun" xml:space="preserve"><value>Đây là lần chạy thử và không tìm thấy chương trình máy chủ cạnh ứng dụng. Máy chủ đã cài sẽ không khởi động trong lần chạy thử.</value></data>
+  <data name="Vm_StartTimedOut" xml:space="preserve"><value>Máy chủ đã khởi động nhưng không phản hồi kịp thời. Hãy đợi một lát rồi thử lại.</value></data>
+  <data name="Vm_HostExitTestRoot" xml:space="preserve"><value>Máy chủ từ chối khởi động: thư mục dữ liệu thử nghiệm bị thiếu hoặc chưa được đánh dấu là thư mục thử nghiệm.</value></data>
+  <data name="Vm_HostExitStartFailed" xml:space="preserve"><value>Máy chủ không khởi động được. Hãy khởi động lại PC và thử lại. Nếu vẫn lỗi, hãy cài lại Portal AI Host.</value></data>
+  <data name="Vm_HostExitOtherUser" xml:space="preserve"><value>Một người dùng Windows khác trên PC này đang chạy Portal AI Host. Hãy nhờ họ thoát ứng dụng, hoặc đăng nhập bằng tài khoản đó.</value></data>
+  <data name="Vm_CatalogueUnavailable" xml:space="preserve"><value>Không có danh sách mô hình: máy chủ không tải được danh sách mô hình đáng tin cậy. Các mô hình đã có trên PC này vẫn hoạt động.</value></data>
+  <data name="Vm_RemoveTitle" xml:space="preserve"><value>Xóa mô hình này?</value></data>
+  <data name="Vm_RemoveBody" xml:space="preserve"><value>{0} sẽ bị xóa khỏi PC này. Chỉ các tệp do máy chủ tải về mới bị xóa; tệp mô hình do bạn tự thêm chỉ bị gỡ khỏi danh sách và vẫn nằm nguyên tại chỗ.</value></data>
+  <data name="Vm_RemoveYes" xml:space="preserve"><value>Xóa</value></data>
+  <data name="Vm_AutoRemove" xml:space="preserve"><value>Xóa {0}</value></data>
+  <data name="Vm_FolderSavedNote" xml:space="preserve"><value>Đã lưu. Sau khi máy chủ khởi động lại, các lần tải mới sẽ vào {1}. Mô hình đã tải trước đó không bị di chuyển hay xóa; chúng vẫn ở {0} và vẫn hiện trên trang Mô hình, nên bạn có thể xóa tại đó.</value></data>
+  <data name="Vm_FolderRefused" xml:space="preserve"><value>Các cài đặt khác đã được lưu, nhưng thư mục mô hình đó không dùng được: {0}</value></data>
+  <data name="Vm_Startup_Unavailable" xml:space="preserve"><value>Khởi động cùng Windows chỉ dùng được trong ứng dụng đã cài.</value></data>
+  <data name="Vm_Startup_DisabledByUser" xml:space="preserve"><value>Khởi động cùng Windows đã bị tắt trong Task Manager. Hãy bật lại ở đó (mục Startup apps).</value></data>
+  <data name="Vm_Startup_Policy" xml:space="preserve"><value>Khởi động cùng Windows do tổ chức của bạn quy định.</value></data>
+  <data name="Vm_DefaultFolder" xml:space="preserve"><value>thư mục mặc định</value></data>
+  <data name="Vm_Publisher" xml:space="preserve"><value>Nhà phát hành: {0}</value></data>
+  <data name="Vm_PublisherUnknown" xml:space="preserve"><value>Nhà phát hành: không rõ</value></data>
+  <data name="NavAbout.Content" xml:space="preserve"><value>Giới thiệu</value></data>
+  <data name="NavAbout.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Giới thiệu</value></data>
+  <data name="AppMenuButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Menu ứng dụng</value></data>
+  <data name="Vm_AppMenuTip" xml:space="preserve"><value>Menu ứng dụng</value></data>
+  <data name="MenuSettings.Text" xml:space="preserve"><value>Cài đặt</value></data>
+  <data name="MenuShortcuts.Text" xml:space="preserve"><value>Phím tắt</value></data>
+  <data name="MenuWhatsNew.Text" xml:space="preserve"><value>Có gì mới</value></data>
+  <data name="MenuAbout.Text" xml:space="preserve"><value>Giới thiệu Portal AI Host</value></data>
+  <data name="Vm_ShortcutsTitle" xml:space="preserve"><value>Phím tắt</value></data>
+  <data name="Vm_ShortcutsBody" xml:space="preserve"><value>Ctrl+1: Trang chủ
+Ctrl+2: Mô hình
+Ctrl+3: Thiết bị và ứng dụng
+Ctrl+4: Dùng thử
+Ctrl+, : Cài đặt
+F1: Giới thiệu
+Esc: đóng Có gì mới hoặc hộp thoại</value></data>
+  <data name="Vm_Close" xml:space="preserve"><value>Đóng</value></data>
+  <data name="SettingsGeneralHeader.Text" xml:space="preserve"><value>Chung</value></data>
+  <data name="SettingsResetGeneral.Content" xml:space="preserve"><value>Khôi phục mặc định</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Khôi phục cài đặt chung về mặc định</value></data>
+  <data name="SettingsNotificationsHeader.Text" xml:space="preserve"><value>Thông báo</value></data>
+  <data name="SettingsResetNotifications.Content" xml:space="preserve"><value>Khôi phục mặc định</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Khôi phục mặc định, cài đặt thông báo</value></data>
+  <data name="SettingsNotificationsHelp.Text" xml:space="preserve"><value>Thông báo ngắn từ Windows khi có việc cần bạn và cửa sổ này đang đóng. Thông báo sẽ im lặng khi có chương trình toàn màn hình ở phía trước, và không lặp lại quá một lần mỗi vài phút.</value></data>
+  <data name="SettingsNotifyDownloads.Header" xml:space="preserve"><value>Khi tải mô hình xong hoặc lỗi</value></data>
+  <data name="SettingsNotifyDownloads.OnContent" xml:space="preserve"><value>Bật</value></data>
+  <data name="SettingsNotifyDownloads.OffContent" xml:space="preserve"><value>Tắt</value></data>
+  <data name="SettingsNotifyDownloads.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Thông báo khi tải mô hình xong hoặc lỗi</value></data>
+  <data name="SettingsNotifyApprovals.Header" xml:space="preserve"><value>Khi ứng dụng xin phê duyệt</value></data>
+  <data name="SettingsNotifyApprovals.OnContent" xml:space="preserve"><value>Bật</value></data>
+  <data name="SettingsNotifyApprovals.OffContent" xml:space="preserve"><value>Tắt</value></data>
+  <data name="SettingsNotifyApprovals.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Thông báo khi ứng dụng xin phê duyệt</value></data>
+  <data name="SettingsNotifyProblems.Header" xml:space="preserve"><value>Khi bộ máy AI dừng hoặc kiểm tra lỗi</value></data>
+  <data name="SettingsNotifyProblems.OnContent" xml:space="preserve"><value>Bật</value></data>
+  <data name="SettingsNotifyProblems.OffContent" xml:space="preserve"><value>Tắt</value></data>
+  <data name="SettingsNotifyProblems.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Thông báo khi bộ máy AI dừng hoặc kiểm tra lỗi</value></data>
+  <data name="SettingsPrivacyHeader.Text" xml:space="preserve"><value>Quyền riêng tư</value></data>
+  <data name="SettingsResetPrivacy.Content" xml:space="preserve"><value>Khôi phục mặc định</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Khôi phục mặc định, cài đặt quyền riêng tư</value></data>
+  <data name="SettingsCrashReports.Header" xml:space="preserve"><value>Gửi báo cáo lỗi</value></data>
+  <data name="SettingsCrashReports.OnContent" xml:space="preserve"><value>Bật</value></data>
+  <data name="SettingsCrashReports.OffContent" xml:space="preserve"><value>Tắt</value></data>
+  <data name="SettingsCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Gửi báo cáo lỗi</value></data>
+  <data name="SettingsCrashReportsHelp.Text" xml:space="preserve"><value>Nếu Portal AI Host gặp sự cố, một báo cáo ngắn sẽ giúp chúng tôi sửa lỗi nhanh hơn. Báo cáo không bao giờ chứa tệp hay nội dung bạn nhập. Tắt tùy chọn này sẽ dừng việc gửi ngay lập tức.</value></data>
+  <data name="CrashWhatsSent.Content" xml:space="preserve"><value>Dữ liệu được gửi</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Dữ liệu được gửi, mở trang quyền riêng tư</value></data>
+  <data name="WelcomeCrashReports.Content" xml:space="preserve"><value>Gửi báo cáo lỗi để chúng tôi sửa sự cố nhanh hơn. Báo cáo không bao giờ chứa tệp hay nội dung bạn nhập.</value></data>
+  <data name="WelcomeCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Gửi báo cáo lỗi để chúng tôi sửa sự cố nhanh hơn. Báo cáo không bao giờ chứa tệp hay nội dung bạn nhập.</value></data>
+  <data name="SettingsModelsHeader.Text" xml:space="preserve"><value>Thư mục mô hình</value></data>
+  <data name="SettingsResetFolder.Content" xml:space="preserve"><value>Khôi phục mặc định</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Khôi phục thư mục mô hình về mặc định</value></data>
+  <data name="SettingsFolderHelp.Text" xml:space="preserve"><value>Áp dụng khi bạn nhấn Enter hoặc rời khỏi ô nhập. Để trống để dùng thư mục mặc định. Các mô hình bạn đã có sẽ ở nguyên vị trí trừ khi bạn chọn chuyển đi.</value></data>
+  <data name="SettingsAppearanceHeader.Text" xml:space="preserve"><value>Giao diện</value></data>
+  <data name="SettingsResetAppearance.Content" xml:space="preserve"><value>Khôi phục mặc định</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Khôi phục giao diện về mặc định</value></data>
+  <data name="SettingsTheme.Header" xml:space="preserve"><value>Chủ đề</value></data>
+  <data name="SettingsTheme.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Chủ đề</value></data>
+  <data name="SettingsMaterial.Header" xml:space="preserve"><value>Chất liệu cửa sổ</value></data>
+  <data name="SettingsMaterial.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Chất liệu cửa sổ</value></data>
+  <data name="SettingsCorners.Header" xml:space="preserve"><value>Góc</value></data>
+  <data name="SettingsCorners.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Góc</value></data>
+  <data name="SettingsDensity.Header" xml:space="preserve"><value>Mật độ</value></data>
+  <data name="SettingsDensity.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Mật độ</value></data>
+  <data name="SettingsTextSize.Header" xml:space="preserve"><value>Cỡ chữ</value></data>
+  <data name="SettingsTextSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Cỡ chữ</value></data>
+  <data name="SettingsMotion.Header" xml:space="preserve"><value>Hiệu ứng chuyển động</value></data>
+  <data name="SettingsMotion.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Hiệu ứng chuyển động</value></data>
+  <data name="SettingsAppearanceHelp.Text" xml:space="preserve"><value>Thay đổi có hiệu lực ngay. Chế độ tương phản cao của Windows luôn dùng màu hệ thống đặc, bất kể bạn chọn gì ở đây. Cỡ chữ được cộng thêm vào tỷ lệ chữ của Windows.</value></data>
+  <data name="Vm_Theme_System" xml:space="preserve"><value>Theo cài đặt Windows của tôi (mặc định)</value></data>
+  <data name="Vm_Theme_Light" xml:space="preserve"><value>Sáng</value></data>
+  <data name="Vm_Theme_Dark" xml:space="preserve"><value>Tối</value></data>
+  <data name="Vm_Material_Mica" xml:space="preserve"><value>Mica (mặc định)</value></data>
+  <data name="Vm_Material_Acrylic" xml:space="preserve"><value>Acrylic</value></data>
+  <data name="Vm_Material_Solid" xml:space="preserve"><value>Đặc</value></data>
+  <data name="Vm_Corners_Rounded" xml:space="preserve"><value>Bo tròn (mặc định)</value></data>
+  <data name="Vm_Corners_Square" xml:space="preserve"><value>Vuông</value></data>
+  <data name="Vm_Corners_ExtraRound" xml:space="preserve"><value>Bo tròn nhiều</value></data>
+  <data name="Vm_Density_Compact" xml:space="preserve"><value>Gọn</value></data>
+  <data name="Vm_Density_Standard" xml:space="preserve"><value>Tiêu chuẩn (mặc định)</value></data>
+  <data name="Vm_Density_Comfortable" xml:space="preserve"><value>Thoải mái</value></data>
+  <data name="Vm_Text_Normal" xml:space="preserve"><value>Bình thường (mặc định)</value></data>
+  <data name="Vm_Text_Larger" xml:space="preserve"><value>Lớn hơn</value></data>
+  <data name="Vm_Text_Largest" xml:space="preserve"><value>Lớn nhất</value></data>
+  <data name="Vm_Motion_Follow" xml:space="preserve"><value>Theo Windows (mặc định)</value></data>
+  <data name="Vm_Motion_Reduced" xml:space="preserve"><value>Giảm</value></data>
+  <data name="Vm_Motion_Off" xml:space="preserve"><value>Tắt</value></data>
+  <data name="Vm_FolderNotFull" xml:space="preserve"><value>Hãy nhập đường dẫn thư mục đầy đủ, ví dụ D:\Models.</value></data>
+  <data name="AboutTitle.Text" xml:space="preserve"><value>Giới thiệu Portal AI Host</value></data>
+  <data name="Vm_AboutVersion" xml:space="preserve"><value>Phiên bản Portal AI Host {0}</value></data>
+  <data name="Vm_AboutLicenceState" xml:space="preserve"><value>Miễn phí. Không cần tài khoản hay mua hàng.</value></data>
+  <data name="Vm_AboutCopyText" xml:space="preserve"><value>Portal AI Host {0}</value></data>
+  <data name="Vm_AboutCopied" xml:space="preserve"><value>Đã sao chép phiên bản.</value></data>
+  <data name="AboutCopyVersion.Content" xml:space="preserve"><value>Sao chép phiên bản</value></data>
+  <data name="AboutWhatsNew.Content" xml:space="preserve"><value>Có gì mới</value></data>
+  <data name="AboutHelpHeader.Text" xml:space="preserve"><value>Trợ giúp và quyền riêng tư</value></data>
+  <data name="AboutFeedback.Content" xml:space="preserve"><value>Gửi phản hồi hoặc đề xuất ý tưởng</value></data>
+  <data name="AboutPrivacy.Content" xml:space="preserve"><value>Chính sách quyền riêng tư</value></data>
+  <data name="AboutDataFolder.Content" xml:space="preserve"><value>Mở thư mục dữ liệu</value></data>
+  <data name="AboutLicencesHeader.Text" xml:space="preserve"><value>Giấy phép</value></data>
+  <data name="Vm_ThirdParty" xml:space="preserve"><value>Portal AI Host bao gồm llama.cpp (giấy phép MIT), dùng để chạy các mô hình AI trên PC của bạn. Các mô hình được tải từ Hugging Face theo giấy phép riêng của chúng (Apache 2.0, MIT hoặc CreativeML OpenRAIL-M, có các hạn chế sử dụng riêng). Tạo ảnh và video dùng stable-diffusion.cpp (giấy phép MIT) và ggml (giấy phép MIT). Các công cụ video dùng FFmpeg (LGPL 3.0 trở lên). Tính năng giọng nói dùng sherpa-onnx (Apache 2.0), giọng Kokoro (Apache 2.0) và Pocket TTS của Kyutai (CC-BY 4.0, ghi công: Kyutai). Ứng dụng được xây dựng với Windows App SDK, .NET và thư viện Community Toolkit MVVM, tất cả theo giấy phép MIT.</value></data>
+  <data name="AboutLlamaLink.Content" xml:space="preserve"><value>llama.cpp trên GitHub</value></data>
+  <data name="AboutLlamaExpander.Header" xml:space="preserve"><value>Nội dung giấy phép llama.cpp</value></data>
+  <data name="Vm_LlamaLicence" xml:space="preserve"><value>MIT License
+
+Copyright (c) 2023-2026 The ggml authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</value></data>
+  <data name="Vm_WhatsNewHeading" xml:space="preserve"><value>Có gì mới trong Portal AI Host {0}</value></data>
+  <data name="Vm_Wn1Title" xml:space="preserve"><value>Cảm ơn bạn</value></data>
+  <data name="Vm_Wn1Body" xml:space="preserve"><value>Cảm ơn bạn đã góp ý và gửi báo cáo. Chúng đã góp phần định hình bản cập nhật này.</value></data>
+  <data name="Vm_Wn2Title" xml:space="preserve"><value>Video dạng MP4 và ghép clip</value></data>
+  <data name="Vm_Wn2Body" xml:space="preserve"><value>Các tác vụ video giờ có thể cho bạn tệp MP4, ảnh khung hình cuối cùng và nhiều clip được ghép thành một video.</value></data>
+  <data name="Vm_Wn3Title" xml:space="preserve"><value>Cài đặt chất lượng video</value></data>
+  <data name="Vm_Wn3Body" xml:space="preserve"><value>Chọn cách PC mã hóa video MP4, ví dụ chất lượng và bộ mã hóa video sử dụng.</value></data>
+  <data name="Vm_Wn4Title" xml:space="preserve"><value>Tải lên cho ứng dụng cục bộ</value></data>
+  <data name="Vm_Wn4Body" xml:space="preserve"><value>Các ứng dụng trên PC này giờ có thể chuyển trực tiếp các tệp lớn, thay vì gửi kèm trong yêu cầu. Tệp tải lên sẽ được xóa sau một thời gian.</value></data>
+  <data name="Vm_Wn5Title" xml:space="preserve"><value>Thẻ Home PC luôn đồng bộ</value></data>
+  <data name="Vm_Wn5Body" xml:space="preserve"><value>Khi bạn thay đổi nhiều cài đặt Home PC liên tiếp, một phản hồi chậm không còn hiển thị giá trị cũ nữa.</value></data>
+  <data name="Vm_Wn6Title" xml:space="preserve"><value>Hiển thị tốt hơn trong cửa sổ hẹp</value></data>
+  <data name="Vm_Wn6Body" xml:space="preserve"><value>Menu bên sẽ thu gọn khi cửa sổ hẹp, và các liên kết khôi phục trong Cài đặt sẽ xuống dòng dưới tiêu đề.</value></data>
+  <data name="Vm_Wn7Title" xml:space="preserve"><value>Rõ ràng hơn cho trình đọc màn hình</value></data>
+  <data name="Vm_Wn7Body" xml:space="preserve"><value>Mục tình trạng trên trang Trang chủ và các nút ở Trang chủ và Cài đặt giờ đã có tên và văn bản trợ giúp cho trình đọc màn hình và chú giải công cụ.</value></data>
+  <data name="Vm_Wn8Title" xml:space="preserve"><value>Dùng PC ở nhà từ laptop</value></data>
+  <data name="Vm_Wn8Body" xml:space="preserve"><value>Ghép laptop với PC ở nhà một lần. Sau đó, các ứng dụng trên laptop sẽ dùng AI của PC ở nhà, dù ở nhà hay ở ngoài, và có thể quay về mô hình của chính laptop nếu bạn chọn.</value></data>
+  <data name="Vm_Wn9Title" xml:space="preserve"><value>Thiết bị trên PC này</value></data>
+  <data name="Vm_Wn9Body" xml:space="preserve"><value>Xem từng laptop đã ghép trên thẻ riêng. Tạm dừng, đặt giới hạn hằng ngày và giờ yên tĩnh, chọn mô hình được phép dùng, hoặc thu hồi mô hình mà laptop đã tải.</value></data>
+  <data name="Vm_Wn10Title" xml:space="preserve"><value>Hai mô hình cùng lúc</value></data>
+  <data name="Vm_Wn10Body" xml:space="preserve"><value>Một laptop đáng tin cậy có thể giữ mô hình thứ hai được tải trên PC của bạn, ví dụ một mô hình trên card đồ họa và một mô hình trong bộ nhớ. Mô hình của chính bạn không bao giờ bị đẩy ra.</value></data>
+  <data name="Vm_Wn11Title" xml:space="preserve"><value>Xử lý thiết bị an toàn hơn</value></data>
+  <data name="Vm_Wn11Body" xml:space="preserve"><value>Gỡ một thiết bị sẽ dừng mọi yêu cầu nó còn đang chờ, và việc ghép laptop với PC ở nhà mới không còn làm rủi ro gửi mã truy cập của PC cũ sang laptop.</value></data>
+  <data name="Vm_Wn12Title" xml:space="preserve"><value>Chế độ game hoạt động trong game cửa sổ</value></data>
+  <data name="Vm_Wn12Body" xml:space="preserve"><value>Bật chế độ game để các thiết bị khác biết PC của bạn đang bận trong lúc chơi game, kể cả game chạy trong cửa sổ.</value></data>
+  <data name="Vm_Wn13Title" xml:space="preserve"><value>Khóa truy cập relay</value></data>
+  <data name="Vm_Wn13Body" xml:space="preserve"><value>Chỉ các thiết bị đã ghép với khóa của bạn mới truy cập được PC này khi ở ngoài nhà. Bạn có thể tạo khóa mới bất cứ lúc nào.</value></data>
+  <data name="Vm_Wn14Title" xml:space="preserve"><value>Xem bộ nhớ đang dùng trong nháy mắt</value></data>
+  <data name="Vm_Wn14Body" xml:space="preserve"><value>Các thanh trên trang Mô hình cho thấy mô hình đã tải đang dùng bao nhiêu bộ nhớ và bộ nhớ đồ họa, so với giới hạn của bạn.</value></data>
+  <data name="Vm_WnShowMe" xml:space="preserve"><value>Hiển thị cho tôi</value></data>
+  <data name="Vm_WnShowMeName" xml:space="preserve"><value>Hiển thị cho tôi: {0}</value></data>
+  <data name="WhatsNewDone.Content" xml:space="preserve"><value>Đã hiểu</value></data>
+  <data name="Vm_RevokedBar" xml:space="preserve"><value>Đã gỡ quyền truy cập của {0}.</value></data>
+  <data name="Vm_AutoUndo" xml:space="preserve"><value>Hoàn tác việc gỡ quyền truy cập của {0}</value></data>
+  <data name="AppsUndo.Content" xml:space="preserve"><value>Hoàn tác</value></data>
+  <data name="Vm_RemoveFrees" xml:space="preserve"><value>Thao tác này giải phóng {0}.</value></data>
+  <data name="Vm_StepOf" xml:space="preserve"><value>Bước {0} trên {1}</value></data>
+  <data name="Vm_LiveIdle" xml:space="preserve"><value>Hiện không có gì đang được tạo</value></data>
+  <data name="Vm_LiveBusy" xml:space="preserve"><value>Đang viết câu trả lời</value></data>
+  <data name="Vm_LiveGenerating" xml:space="preserve"><value>{0} đang tạo câu trả lời</value></data>
+  <data name="Vm_LiveSpeed" xml:space="preserve"><value>Khoảng {0} từ mỗi giây</value></data>
+  <data name="Vm_LiveMemory" xml:space="preserve"><value>{0} trên {1}</value></data>
+  <data name="Vm_LiveMemoryNoTotal" xml:space="preserve"><value>{0}</value></data>
+  <data name="Vm_LivePendingLoad" xml:space="preserve"><value>Đang tải...</value></data>
+  <data name="Vm_LivePendingUnload" xml:space="preserve"><value>Đang gỡ khỏi bộ nhớ...</value></data>
+  <data name="Vm_LiveLoadFailed" xml:space="preserve"><value>Không thể tải mô hình. {0}</value></data>
+  <data name="Vm_LiveUnloadFailed" xml:space="preserve"><value>Không thể gỡ mô hình khỏi bộ nhớ. {0}</value></data>
+  <data name="Vm_TodayNone" xml:space="preserve"><value>Hôm nay chưa có yêu cầu nào.</value></data>
+  <data name="Vm_TodayRow1" xml:space="preserve"><value>{0} yêu cầu, lần cuối lúc {1}</value></data>
+  <data name="Vm_TodayRow" xml:space="preserve"><value>{0} yêu cầu, lần cuối lúc {1}</value></data>
+  <data name="Vm_SeenNever" xml:space="preserve"><value>chưa bao giờ</value></data>
+  <data name="Vm_SeenNow" xml:space="preserve"><value>vừa xong</value></data>
+  <data name="Vm_SeenMinutes" xml:space="preserve"><value>{0} phút trước</value></data>
+  <data name="Vm_SeenHours" xml:space="preserve"><value>{0} giờ trước</value></data>
+  <data name="HomeLiveTitle.Text" xml:space="preserve"><value>NGAY BÂY GIỜ</value></data>
+  <data name="Vm_LiveRamName" xml:space="preserve"><value>Bộ nhớ mô hình đang dùng: {0}</value></data>
+  <data name="Vm_LiveVramName" xml:space="preserve"><value>Bộ nhớ đồ họa mô hình đang dùng: {0}</value></data>
+  <data name="HomeRamLabel.Text" xml:space="preserve"><value>Bộ nhớ mô hình đang dùng</value></data>
+  <data name="HomeVramLabel.Text" xml:space="preserve"><value>Bộ nhớ đồ họa mô hình đang dùng</value></data>
+  <data name="HomeUnloadButton.Content" xml:space="preserve"><value>Gỡ ngay</value></data>
+  <data name="HomeLoadButton.Content" xml:space="preserve"><value>Tải ngay</value></data>
+  <data name="HomeActionErrorBar.Title" xml:space="preserve"><value>Thao tác không thành công</value></data>
+  <data name="HomeTodayLabel.Text" xml:space="preserve"><value>HÔM NAY</value></data>
+  <data name="Vm_TrayReady" xml:space="preserve"><value>Sẵn sàng · đã tải {0}</value></data>
+  <data name="Vm_TrayBusy" xml:space="preserve"><value>Đang bận · {0}</value></data>
+  <data name="Vm_TrayBusyOther" xml:space="preserve"><value>Đang bận</value></data>
+  <data name="Vm_TrayLoading" xml:space="preserve"><value>Đang tải · {0}</value></data>
+  <data name="Vm_TrayIdle" xml:space="preserve"><value>Sẵn sàng · {0} sẽ tải khi được yêu cầu</value></data>
+  <data name="Vm_TrayNoModel" xml:space="preserve"><value>Chưa có mô hình</value></data>
+  <data name="Vm_TrayOff" xml:space="preserve"><value>Tắt</value></data>
+  <data name="Vm_TrayLastNone" xml:space="preserve"><value>Hôm nay chưa có yêu cầu</value></data>
+  <data name="Vm_TrayLast" xml:space="preserve"><value>{0}, {1}</value></data>
+  <data name="TrayModelLabel.Text" xml:space="preserve"><value>Mô hình</value></data>
+  <data name="TrayMemoryLabel.Text" xml:space="preserve"><value>Bộ nhớ</value></data>
+  <data name="TrayLastLabel.Text" xml:space="preserve"><value>Yêu cầu gần nhất</value></data>
+  <data name="TrayQueueLabel.Text" xml:space="preserve"><value>Hàng đợi</value></data>
+  <data name="TrayOpenButton.Content" xml:space="preserve"><value>Mở ứng dụng</value></data>
+  <data name="TrayUnloadButton.Content" xml:space="preserve"><value>Gỡ mô hình</value></data>
+  <data name="TrayWindowTitle" xml:space="preserve"><value>Trạng thái Portal AI Host</value></data>
+  <data name="ModelsDownloadedHeader.Text" xml:space="preserve"><value>Đã tải</value></data>
+  <data name="ModelsMoreHeader.Text" xml:space="preserve"><value>Mô hình bạn có thể thêm</value></data>
+  <data name="ModelCheck.Content" xml:space="preserve"><value>Kiểm tra tệp</value></data>
+  <data name="ModelRedownload.Content" xml:space="preserve"><value>Tải lại</value></data>
+  <data name="ModelCancelCheck.Content" xml:space="preserve"><value>Dừng kiểm tra</value></data>
+  <data name="ModelDetails.Header" xml:space="preserve"><value>Chi tiết</value></data>
+  <data name="ModelsOpenFolder.Content" xml:space="preserve"><value>Mở thư mục</value></data>
+  <data name="ModelsAddOwn.Content" xml:space="preserve"><value>Thêm mô hình của bạn...</value></data>
+  <data name="ModelsAddOwnHint.Text" xml:space="preserve"><value>Chọn một tệp .gguf bạn đã có. Máy chủ sẽ tạo bản sao riêng trong thư mục mô hình. Đây là bản sao; tệp gốc của bạn không bị thay đổi hay di chuyển.</value></data>
+  <data name="Vm_UserAddedBadge" xml:space="preserve"><value>Do bạn thêm</value></data>
+  <data name="Vm_UserAddedReason" xml:space="preserve"><value>Không rõ mức phù hợp: máy chủ không xác định được mô hình này cần bao nhiêu bộ nhớ trên PC của bạn. Hãy thử và xem.</value></data>
+  <data name="Vm_RemoveUserBody" xml:space="preserve"><value>{0} sẽ bị xóa khỏi thư mục mô hình của máy chủ. Đó là bản sao riêng của máy chủ: tệp gốc bạn đã chọn không bị động đến.</value></data>
+  <data name="Vm_ImportRunning" xml:space="preserve"><value>Đang sao chép mô hình của bạn vào thư mục mô hình, {0}%</value></data>
+  <data name="Vm_ImportDone" xml:space="preserve"><value>Đã thêm mô hình của bạn.</value></data>
+  <data name="Vm_ImportCancelled" xml:space="preserve"><value>Đã hủy việc thêm mô hình. Không có gì được giữ lại, và tệp gốc của bạn không bị thay đổi.</value></data>
+  <data name="Vm_ImportFailed" xml:space="preserve"><value>Chưa thêm được mô hình. {0}</value></data>
+  <data name="ModelsMoveHint.Text" xml:space="preserve"><value>Để chuyển mô hình sang ổ đĩa khác, hãy chọn thư mục mới trong Cài đặt, mục Thư mục mô hình.</value></data>
+  <data name="ModelsMoveCancel.Content" xml:space="preserve"><value>Hủy</value></data>
+  <data name="ModelsFreeUp.Content" xml:space="preserve"><value>Giải phóng dung lượng</value></data>
+  <data name="ModelsCleanupTitle.Text" xml:space="preserve"><value>Giải phóng dung lượng</value></data>
+  <data name="ModelsCleanupPartialHeader.Text" xml:space="preserve"><value>Các lần tải chưa xong và không tiếp tục được</value></data>
+  <data name="ModelsCleanupOldHeader.Text" xml:space="preserve"><value>Bản sao cũ còn sót lại sau khi chuyển mô hình</value></data>
+  <data name="ModelsCleanupDamagedHeader.Text" xml:space="preserve"><value>Mô hình bị phát hiện hỏng khi kiểm tra</value></data>
+  <data name="ModelsCleanupClose.Content" xml:space="preserve"><value>Đóng</value></data>
+  <data name="ModelsCleanupHint.Text" xml:space="preserve"><value>Chỉ liệt kê các tệp do ứng dụng này tạo ra. Mô hình bạn đang dùng và tệp do chính bạn thêm sẽ không bao giờ bị xóa.</value></data>
+  <data name="Vm_CleanupButton" xml:space="preserve"><value>Giải phóng {0}</value></data>
+  <data name="Vm_CleanupNothing" xml:space="preserve"><value>Không có gì để giải phóng. Các lần tải chưa xong mà bạn vẫn có thể tiếp tục sẽ được giữ trong một tuần.</value></data>
+  <data name="Vm_CleanupRunning" xml:space="preserve"><value>Đang giải phóng dung lượng...</value></data>
+  <data name="Vm_CleanupConfirmTitle" xml:space="preserve"><value>Xóa các tệp này?</value></data>
+  <data name="Vm_CleanupConfirmBody" xml:space="preserve"><value>Thao tác này xóa vĩnh viễn:&#10;{0}&#10;Các mô hình khác của bạn không bị động đến.</value></data>
+  <data name="Vm_CleanupDone" xml:space="preserve"><value>Đã giải phóng {0}.</value></data>
+  <data name="Vm_CleanupDoneSkipped" xml:space="preserve"><value>Đã giải phóng {0}. Một số mục được giữ nguyên vị trí:&#10;{1}</value></data>
+  <data name="Vm_CleanupFailed" xml:space="preserve"><value>Chưa giải phóng được dung lượng: {0}</value></data>
+  <data name="ModelsRemoveFailedBar.Title" xml:space="preserve"><value>Không thể xóa mô hình</value></data>
+  <data name="SettingsMoveButton.Content" xml:space="preserve"><value>Chuyển mô hình của tôi đến đó</value></data>
+  <data name="SettingsMoveCancel.Content" xml:space="preserve"><value>Hủy chuyển</value></data>
+  <data name="Vm_UsedToday" xml:space="preserve"><value>Dùng lần cuối hôm nay</value></data>
+  <data name="Vm_UsedYesterday" xml:space="preserve"><value>Dùng lần cuối hôm qua</value></data>
+  <data name="Vm_UsedDays" xml:space="preserve"><value>Dùng lần cuối {0} ngày trước</value></data>
+  <data name="Vm_UsedMonths" xml:space="preserve"><value>Dùng lần cuối {0} tháng trước</value></data>
+  <data name="Vm_GoodFor" xml:space="preserve"><value>Phù hợp với: {0}</value></data>
+  <data name="Vm_Caveats" xml:space="preserve"><value>Lưu ý: {0}</value></data>
+  <data name="Vm_MemoryNeeded" xml:space="preserve"><value>Cần khoảng {0} bộ nhớ trên PC này.</value></data>
+  <data name="Vm_Licence" xml:space="preserve"><value>Giấy phép: {0}</value></data>
+  <data name="Vm_RemoveActiveBody" xml:space="preserve"><value>{0} đang được sử dụng. Máy chủ sẽ gỡ nó khỏi bộ nhớ trước, rồi xóa khỏi PC này. Chỉ các tệp do máy chủ tải về mới bị xóa; tệp mô hình do bạn tự thêm chỉ bị gỡ khỏi danh sách và vẫn nằm nguyên tại chỗ.</value></data>
+  <data name="Vm_RemoveVerb" xml:space="preserve"><value>Xóa {0} ({1})</value></data>
+  <data name="Vm_RemoveVerbNoSize" xml:space="preserve"><value>Xóa {0}</value></data>
+  <data name="Vm_AutoCheck" xml:space="preserve"><value>Kiểm tra tệp của {0}</value></data>
+  <data name="Vm_AutoRedownload" xml:space="preserve"><value>Tải lại {0}</value></data>
+  <data name="Vm_Removing" xml:space="preserve"><value>Đang xóa...</value></data>
+  <data name="Vm_RemovingBadge" xml:space="preserve"><value>Đang xóa</value></data>
+  <data name="Vm_DamagedBadge" xml:space="preserve"><value>Bị hỏng</value></data>
+  <data name="Vm_Checking" xml:space="preserve"><value>Đang kiểm tra tệp, {0}%</value></data>
+  <data name="Vm_CheckOk" xml:space="preserve"><value>Tất cả tệp đều nguyên vẹn.</value></data>
+  <data name="Vm_CheckDamaged" xml:space="preserve"><value>Bị hỏng: {0} Không có tệp nào bị xóa.</value></data>
+  <data name="Vm_CheckFailed" xml:space="preserve"><value>Không thể hoàn tất kiểm tra: {0}</value></data>
+  <data name="Vm_SwitchTitle" xml:space="preserve"><value>Dùng mô hình khác?</value></data>
+  <data name="Vm_SwitchBody" xml:space="preserve"><value>{0} đang được sử dụng. Chuyển sang {1} sau đó, hay tạm thời không dùng mô hình nào?</value></data>
+  <data name="Vm_SwitchYes" xml:space="preserve"><value>Chuyển sang {0}</value></data>
+  <data name="Vm_SwitchNo" xml:space="preserve"><value>Tạm thời không dùng mô hình nào</value></data>
+  <data name="Vm_RemoveFailed" xml:space="preserve"><value>{0} chưa được xóa và vẫn còn ở đây. {1}</value></data>
+  <data name="Vm_RedownloadTitle" xml:space="preserve"><value>Tải lại mô hình này?</value></data>
+  <data name="Vm_RedownloadBody" xml:space="preserve"><value>{0} có một tệp bị hỏng. Tệp sẽ được xóa khỏi PC này và tải lại. Không có gì khác bị xóa.</value></data>
+  <data name="Vm_RedownloadActiveBody" xml:space="preserve"><value>{0} có một tệp bị hỏng và đang được sử dụng. Máy chủ sẽ gỡ nó khỏi bộ nhớ, xóa khỏi PC này rồi tải lại. Hãy chọn lại khi tải xong.</value></data>
+  <data name="Vm_RedownloadYes" xml:space="preserve"><value>Xóa và tải lại {0}</value></data>
+  <data name="Vm_MoveRunning" xml:space="preserve"><value>Đang chuyển mô hình của bạn, {0}%</value></data>
+  <data name="Vm_MoveRemovingOld" xml:space="preserve"><value>Mô hình của bạn đã nằm trong thư mục mới. Đang xóa các bản sao cũ.</value></data>
+  <data name="Vm_MoveDone" xml:space="preserve"><value>Đã chuyển mô hình của bạn.</value></data>
+  <data name="Vm_MoveCancelled" xml:space="preserve"><value>Đã hủy việc chuyển. Mô hình của bạn vẫn ở chỗ cũ.</value></data>
+  <data name="Vm_MoveFailed" xml:space="preserve"><value>Việc chuyển chưa hoàn tất. {0}</value></data>
+  <data name="Vm_MoveOffer" xml:space="preserve"><value>Cũng chuyển {0} mô hình của bạn sang thư mục mới?</value></data>
+  <data name="Vm_MoveTitle" xml:space="preserve"><value>Chuyển mô hình của bạn?</value></data>
+  <data name="Vm_MoveBody" xml:space="preserve"><value>Mô hình của bạn sẽ được sao chép sang {0}, kiểm tra, và chỉ sau đó các bản sao cũ mới bị xóa. Mô hình đang dùng sẽ được gỡ khỏi bộ nhớ trong lúc này. Các tệp trong thư mục cũ mà máy chủ không tạo ra sẽ không bao giờ bị động đến.</value></data>
+  <data name="Vm_MoveYes" xml:space="preserve"><value>Chuyển mô hình của tôi</value></data>
+  <data name="Vm_MoveSettingsRunning" xml:space="preserve"><value>Đang chuyển mô hình của bạn, {0}%</value></data>
+  <data name="SettingsPerformanceHeader.Text" xml:space="preserve"><value>Hiệu năng</value></data>
+  <data name="SettingsResetPerformance.Content" xml:space="preserve"><value>Khôi phục mặc định</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Khôi phục cài đặt hiệu năng về mặc định</value></data>
+  <data name="SettingsPreset.Header" xml:space="preserve"><value>Hiệu năng</value></data>
+  <data name="SettingsPreset.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Hiệu năng</value></data>
+  <data name="SettingsMemory.Header" xml:space="preserve"><value>Bộ nhớ tối đa cho AI</value></data>
+  <data name="SettingsMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Bộ nhớ tối đa cho AI</value></data>
+  <data name="SettingsKeepFree.Header" xml:space="preserve"><value>Luôn để trống</value></data>
+  <data name="SettingsKeepFree.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Luôn để trống</value></data>
+  <data name="SettingsRunOn.Header" xml:space="preserve"><value>Chạy trên</value></data>
+  <data name="SettingsRunOn.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Chạy trên</value></data>
+  <data name="SettingsGpuMemory.Header" xml:space="preserve"><value>Bộ nhớ đồ họa cho AI</value></data>
+  <data name="SettingsGpuMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Bộ nhớ đồ họa cho AI</value></data>
+  <data name="SettingsCores.Header" xml:space="preserve"><value>Nhân xử lý</value></data>
+  <data name="SettingsCores.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Nhân xử lý</value></data>
+  <data name="SettingsPriority.Header" xml:space="preserve"><value>Mức ưu tiên</value></data>
+  <data name="SettingsPriority.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Mức ưu tiên</value></data>
+  <data name="SettingsMemoryHelp.Text" xml:space="preserve"><value>AI không bao giờ dùng nhiều hơn mức này. Đặt thấp hơn nghĩa là dùng mô hình nhỏ hơn hoặc trả lời chậm hơn.</value></data>
+  <data name="SettingsKeepFreeHelp.Text" xml:space="preserve"><value>Bộ nhớ được giữ trống cho các chương trình khác của bạn.</value></data>
+  <data name="SettingsCoresHelp.Text" xml:space="preserve"><value>Dùng ít nhân hơn giúp PC vẫn phản hồi nhanh trong khi AI làm việc.</value></data>
+  <data name="Vm_Perf_Quiet" xml:space="preserve"><value>Êm</value></data>
+  <data name="Vm_Perf_Balanced" xml:space="preserve"><value>Cân bằng</value></data>
+  <data name="Vm_Perf_Fast" xml:space="preserve"><value>Nhanh</value></data>
+  <data name="Vm_Perf_Custom" xml:space="preserve"><value>Tùy chỉnh</value></data>
+  <data name="Vm_Perf_Help_quiet" xml:space="preserve"><value>Tốc độ khoảng một nửa. PC của bạn vẫn phản hồi tốt.</value></data>
+  <data name="Vm_Perf_Help_balanced" xml:space="preserve"><value>Tốc độ tốt, và các chương trình khác của bạn được ưu tiên trước.</value></data>
+  <data name="Vm_Perf_Help_fast" xml:space="preserve"><value>Trả lời nhanh nhất. Các chương trình khác có thể chậm lại.</value></data>
+  <data name="Vm_Perf_Help_custom" xml:space="preserve"><value>Cài đặt riêng của bạn.</value></data>
+  <data name="Vm_Perf_Run_Auto" xml:space="preserve"><value>Tự động</value></data>
+  <data name="Vm_Perf_Run_Gpu" xml:space="preserve"><value>Card đồ họa</value></data>
+  <data name="Vm_Perf_Run_Cpu" xml:space="preserve"><value>Bộ xử lý</value></data>
+  <data name="Vm_Perf_RunHelp_auto" xml:space="preserve"><value>Dùng card đồ họa khi thấy hữu ích.</value></data>
+  <data name="Vm_Perf_RunHelp_gpu" xml:space="preserve"><value>Nhanh nhất, nếu mô hình vừa vặn.</value></data>
+  <data name="Vm_Perf_RunHelp_cpu" xml:space="preserve"><value>Chậm hơn, nhưng để card đồ họa rảnh cho game.</value></data>
+  <data name="Vm_Perf_NoGpu" xml:space="preserve"><value>Chỉ dùng bộ xử lý: không tìm thấy card đồ họa được hỗ trợ</value></data>
+  <data name="SettingsCeiling.Header" xml:space="preserve"><value>Mức dùng bộ xử lý tối đa</value></data>
+  <data name="SettingsCeiling.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Mức dùng bộ xử lý tối đa</value></data>
+  <data name="SettingsCeilingHelp.Text" xml:space="preserve"><value>AI không bao giờ dùng bộ xử lý của bạn quá mức này. Đặt thấp hơn giúp PC mượt hơn, nhưng trả lời chậm hơn.</value></data>
+  <data name="Vm_Perf_CeilingNone" xml:space="preserve"><value>Không giới hạn</value></data>
+  <data name="Vm_Perf_Percent" xml:space="preserve"><value>{0}%</value></data>
+  <data name="SettingsEaseOffHeader.Text" xml:space="preserve"><value>Giảm tải khi</value></data>
+  <data name="SettingsEaseOffFullscreen.Content" xml:space="preserve"><value>Đang chạy game hoặc chương trình toàn màn hình</value></data>
+  <data name="SettingsEaseOffBattery.Content" xml:space="preserve"><value>PC đang dùng pin</value></data>
+  <data name="SettingsEaseOffAppBusy.Content" xml:space="preserve"><value>Một ứng dụng Portal đang làm việc trực tiếp, chẳng hạn như đọc chính tả</value></data>
+  <data name="SettingsEaseOffHelp.Text" xml:space="preserve"><value>Khi đó AI chạy ở mức ưu tiên thấp nhất và dùng tối đa một nửa bộ xử lý, rồi trở lại bình thường khi kết thúc.</value></data>
+  <data name="Vm_Perf_Prio_Low" xml:space="preserve"><value>Thấp</value></data>
+  <data name="Vm_Perf_Prio_Normal" xml:space="preserve"><value>Bình thường</value></data>
+  <data name="Vm_Perf_PrioHelp_Low" xml:space="preserve"><value>Công việc của bạn luôn được ưu tiên trước.</value></data>
+  <data name="Vm_Perf_PrioHelp_Normal" xml:space="preserve"><value>Nhanh hơn, nhưng có thể làm chậm các chương trình khác.</value></data>
+  <data name="Vm_Perf_Gb" xml:space="preserve"><value>{0} GB</value></data>
+  <data name="Vm_Perf_Cores" xml:space="preserve"><value>{0} trên {1} nhân</value></data>
+  <data name="Vm_Perf_MemoryRange" xml:space="preserve"><value>Từ {0} GB đến {1} GB</value></data>
+  <data name="Vm_Perf_StopFull" xml:space="preserve"><value>{0} GB · vừa đủ chạy {1} hoàn toàn</value></data>
+  <data name="Vm_Perf_StopPartial" xml:space="preserve"><value>{0} GB · vừa đủ chạy {1}, một phần trên bộ xử lý</value></data>
+  <data name="Vm_Perf_StopCpu" xml:space="preserve"><value>{0} GB · vừa đủ chạy {1} trên bộ xử lý</value></data>
+  <data name="Vm_Perf_StopNone" xml:space="preserve"><value>{0} GB · quá nhỏ cho các mô hình trong danh sách</value></data>
+  <data name="Vm_Perf_Fit_Full" xml:space="preserve"><value>Chạy hoàn toàn trên card đồ họa</value></data>
+  <data name="Vm_Perf_Fit_Partial" xml:space="preserve"><value>Một phần trên card đồ họa, một phần trên bộ xử lý: chậm hơn</value></data>
+  <data name="Vm_Perf_Fit_Cpu" xml:space="preserve"><value>Chạy trên bộ xử lý: chậm nhất</value></data>
+  <data name="Vm_Perf_Fit_Smaller" xml:space="preserve"><value>Không đủ bộ nhớ cho {0}. Chuyển sang {1}?</value></data>
+  <data name="Vm_Perf_Fit_LittleMemory" xml:space="preserve"><value>Không đủ bộ nhớ cho {0}.</value></data>
+  <data name="Vm_Perf_Fit_TooBig" xml:space="preserve"><value>Quá lớn đối với PC này</value></data>
+  <data name="Vm_Perf_TheModel" xml:space="preserve"><value>Mô hình</value></data>
+  <data name="Vm_Perf_Applied" xml:space="preserve"><value>Đã áp dụng. Các giới hạn mới đã có hiệu lực.</value></data>
+  <data name="Vm_Perf_Reloading" xml:space="preserve"><value>Đã áp dụng. {0} đang tải lại với các giới hạn mới.</value></data>
+  <data name="Vm_Perf_Unloaded" xml:space="preserve"><value>Đã áp dụng. {0} không còn vừa và đã được gỡ khỏi bộ nhớ. Mô hình vẫn còn trên đĩa; hãy chọn mô hình nhỏ hơn trên trang Mô hình.</value></data>
+  <data name="HealthIconOk.AutomationProperties.Name" xml:space="preserve"><value>Ổn</value></data>
+  <data name="HealthIconWarn.AutomationProperties.Name" xml:space="preserve"><value>Cần chú ý</value></data>
+  <data name="HealthIconFail.AutomationProperties.Name" xml:space="preserve"><value>Có sự cố</value></data>
+  <data name="HealthWordOk.Text" xml:space="preserve"><value>Ổn</value></data>
+  <data name="HealthWordWarn.Text" xml:space="preserve"><value>Cần chú ý</value></data>
+  <data name="HealthWordFail.Text" xml:space="preserve"><value>Có sự cố</value></data>
+  <data name="HealthCheckAgainButton.Content" xml:space="preserve"><value>Kiểm tra lại</value></data>
+  <data name="HealthFixErrorBar.Title" xml:space="preserve"><value>Thao tác không thành công</value></data>
+  <data name="Vm_HealthAllGood" xml:space="preserve"><value>Mọi thứ đều ổn</value></data>
+  <data name="Vm_HealthOne" xml:space="preserve"><value>1 mục cần chú ý</value></data>
+  <data name="Vm_HealthMany" xml:space="preserve"><value>{0} mục cần chú ý</value></data>
+  <data name="Vm_HealthFixLoad" xml:space="preserve"><value>Tải mô hình</value></data>
+  <data name="Vm_HealthFixRestart" xml:space="preserve"><value>Khởi động lại bộ máy</value></data>
+  <data name="Vm_HealthFixCheckFiles" xml:space="preserve"><value>Kiểm tra tệp</value></data>
+  <data name="Vm_HealthFixPerformance" xml:space="preserve"><value>Mở cài đặt hiệu năng</value></data>
+  <data name="Vm_HealthFixModels" xml:space="preserve"><value>Chọn mô hình</value></data>
+  <data name="Vm_HealthFixFailed" xml:space="preserve"><value>Không thể khắc phục. {0}</value></data>
+  <data name="SettingsRemoteHeader.Text" xml:space="preserve"><value>Thiết bị khác</value></data>
+  <data name="SettingsRemoteEnabled.Header" xml:space="preserve"><value>Cho phép thiết bị khác dùng AI của PC này</value></data>
+  <data name="SettingsRemoteEnabled.OnContent" xml:space="preserve"><value>Bật</value></data>
+  <data name="SettingsRemoteEnabled.OffContent" xml:space="preserve"><value>Tắt</value></data>
+  <data name="SettingsRemoteEnabled.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Cho phép thiết bị khác dùng AI của PC này</value></data>
+  <data name="SettingsRemoteHelp.Text" xml:space="preserve"><value>Mặc định là tắt. Khi bật, điện thoại, laptop hoặc máy tính bảng của chính bạn trong mạng gia đình có thể yêu cầu dùng AI của PC này. Thiết bị phải được ghép bằng mã trước, và mỗi ứng dụng trên đó vẫn cần bạn phê duyệt. Bạn có thể xóa thiết bị bất cứ lúc nào.</value></data>
+  <data name="SettingsPairDevice.Content" xml:space="preserve"><value>Ghép thiết bị</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ghép thiết bị</value></data>
+  <data name="SettingsPairingSteps.Text" xml:space="preserve"><value>Trên thiết bị kia, mở ứng dụng Portal của thiết bị đó, chọn kết nối tới PC, rồi quét mã này hoặc nhập các chữ và số. Thiết bị sẽ kiểm tra đang nói chuyện với đúng PC này trước khi gửi bất cứ thứ gì. Mã chỉ dùng được một lần, trong 5 phút.</value></data>
+  <data name="SettingsPairingQr.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Mã QR ghép nối</value></data>
+  <data name="SettingsPairingCancel.Content" xml:space="preserve"><value>Hủy ghép nối</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Hủy ghép nối</value></data>
+  <data name="SettingsDevicesHeader.Text" xml:space="preserve"><value>Thiết bị đã ghép</value></data>
+  <data name="SettingsNoDevices.Text" xml:space="preserve"><value>Chưa có thiết bị nào được ghép.</value></data>
+  <data name="SettingsRemoveDevice.Content" xml:space="preserve"><value>Xóa</value></data>
+  <data name="SettingsDeviceModelControl.Header" xml:space="preserve"><value>Điều khiển mô hình</value></data>
+  <data name="SettingsDeviceModelControl.OnContent" xml:space="preserve"><value>Bật</value></data>
+  <data name="SettingsDeviceModelControl.OffContent" xml:space="preserve"><value>Tắt</value></data>
+  <data name="SettingsDeviceModelControl.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Cho phép thiết bị này tải và gỡ mô hình, đồng thời chọn mô hình mà mỗi ứng dụng trên đó sử dụng</value></data>
+  <data name="SettingsDeviceModelControl.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Cho phép thiết bị này tải và gỡ mô hình, đồng thời chọn mô hình mà mỗi ứng dụng trên đó sử dụng</value></data>
+  <data name="SettingsTakeBackLabel.Text" xml:space="preserve"><value>Thu hồi</value></data>
+  <data name="SettingsTakeBack.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Gỡ mô hình mà thiết bị này đã tải. Lựa chọn của chính PC này sẽ được khôi phục. Không tệp mô hình nào bị động đến.</value></data>
+  <data name="SettingsTakeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Gỡ mô hình mà thiết bị này đã tải. Lựa chọn của chính PC này sẽ được khôi phục. Không tệp mô hình nào bị động đến.</value></data>
+  <data name="SettingsAllowReplace.Header" xml:space="preserve"><value>Thiết bị được thay thế mô hình</value></data>
+  <data name="SettingsAllowReplace.OnContent" xml:space="preserve"><value>Bật</value></data>
+  <data name="SettingsAllowReplace.OffContent" xml:space="preserve"><value>Tắt</value></data>
+  <data name="SettingsAllowReplace.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Thiết bị được thay thế mô hình</value></data>
+  <data name="SettingsAllowReplaceHelp.Text" xml:space="preserve"><value>Chỉ có tác dụng với thiết bị có Điều khiển mô hình. Tắt: thiết bị không thể gỡ mô hình mà các ứng dụng của bạn đang dùng. Bật: có thể gỡ, và ứng dụng của bạn sẽ tải lại mô hình ở yêu cầu tiếp theo.</value></data>
+  <data name="Vm_AutoModelControl" xml:space="preserve"><value>Điều khiển mô hình cho {0}</value></data>
+  <data name="Vm_AutoTakeBack" xml:space="preserve"><value>Thu hồi mô hình {0} đã tải</value></data>
+  <data name="Vm_LoadedBy" xml:space="preserve"><value>Được tải bởi {0}: {1} ({2})</value></data>
+  <data name="Vm_PlacementAuto" xml:space="preserve"><value>tự động phân bổ</value></data>
+  <data name="Vm_PlacementGpu" xml:space="preserve"><value>card đồ họa</value></data>
+  <data name="Vm_PlacementCpu" xml:space="preserve"><value>bộ nhớ hệ thống</value></data>
+  <data name="Vm_PlacementCpuOnly" xml:space="preserve"><value>chỉ bộ xử lý</value></data>
+  <data name="SettingsRemoteRelay.Header" xml:space="preserve"><value>Cũng truy cập PC này khi ở ngoài nhà</value></data>
+  <data name="SettingsRemoteRelay.OnContent" xml:space="preserve"><value>Bật</value></data>
+  <data name="SettingsRemoteRelay.OffContent" xml:space="preserve"><value>Tắt</value></data>
+  <data name="SettingsRemoteRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Cũng truy cập PC này khi ở ngoài nhà</value></data>
+  <data name="SettingsRelayAdmission.Header" xml:space="preserve"><value>Khóa truy cập relay</value></data>
+  <data name="SettingsRelayAdmission.OnContent" xml:space="preserve"><value>Bật</value></data>
+  <data name="SettingsRelayAdmission.OffContent" xml:space="preserve"><value>Tắt</value></data>
+  <data name="SettingsRelayAdmission.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Khóa truy cập relay</value></data>
+  <data name="SettingsRelayAdmissionHelp.Text" xml:space="preserve"><value>Chỉ những thiết bị được ghép bằng khóa trong mã ghép nối mới truy cập được PC này qua relay. Hãy bật trước khi ghép: các thiết bị đã ghép trước đó phải ghép lại để dùng relay. Relay phải được cập nhật.</value></data>
+  <data name="SettingsRotateRelayKeyText.Text" xml:space="preserve"><value>Khóa mới</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Tạo khóa truy cập relay mới. Mọi thiết bị đã ghép phải ghép lại để dùng relay. Xóa một thiết bị không làm thay đổi khóa, nên hãy làm việc này sau khi xóa thiết bị bạn không tin cậy.</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Tạo khóa truy cập relay mới. Mọi thiết bị đã ghép phải ghép lại để dùng relay. Xóa một thiết bị không làm thay đổi khóa, nên hãy làm việc này sau khi xóa thiết bị bạn không tin cậy.</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Khóa mới</value></data>
+  <data name="Vm_RotateKeyTitle" xml:space="preserve"><value>Tạo khóa truy cập relay mới?</value></data>
+  <data name="Vm_RotateKeyBody" xml:space="preserve"><value>Mọi thiết bị đã ghép phải ghép lại để dùng PC này qua relay. Khi ở nhà thì không có gì thay đổi.</value></data>
+  <data name="Vm_RotateKeyConfirm" xml:space="preserve"><value>Tạo khóa mới</value></data>
+  <data name="SettingsRemoteRelayHelp.Text" xml:space="preserve"><value>PC này kết nối ra một relay nhỏ, nên thiết bị đã ghép có thể truy cập từ bất cứ đâu. Relay chỉ chuyển tiếp các byte đã được mã hóa mà nó không đọc được, và mỗi thiết bị vẫn phải được ghép và ký mọi yêu cầu.</value></data>
+  <data name="Vm_RelayAway" xml:space="preserve"><value>Có thể truy cập khi ở ngoài nhà</value></data>
+  <data name="Vm_RelayHomeOnly" xml:space="preserve"><value>Chỉ trong mạng gia đình</value></data>
+  <data name="Vm_RelayUnreachable" xml:space="preserve"><value>Không kết nối được tới relay</value></data>
+  <data name="Vm_RelayConnecting" xml:space="preserve"><value>Đang kết nối tới relay...</value></data>
+  <data name="Vm_RemoteAddress" xml:space="preserve"><value>Có thể truy cập PC này tại {0}, cổng {1}.</value></data>
+  <data name="Vm_RemoteLastSeen" xml:space="preserve"><value>Dùng lần cuối {0}</value></data>
+  <data name="Vm_RemoteNeverSeen" xml:space="preserve"><value>Chưa dùng</value></data>
+  <data name="Vm_AutoRemoveDevice" xml:space="preserve"><value>Xóa {0}</value></data>
+  <data name="Vm_PairingExpires" xml:space="preserve"><value>Mã có hiệu lực đến {0}.</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Sao chép liên kết</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Gửi liên kết này tới PC kia. Liên kết dùng được trong 5 phút và cho một thiết bị.</value></data>
+  <data name="SettingsPairingCopyLinkText.Text" xml:space="preserve"><value>Sao chép liên kết</value></data>
+  <data name="Vm_PairingAddress" xml:space="preserve"><value>Địa chỉ: {0}:{1}</value></data>
+  <data name="Vm_PairingFingerprint" xml:space="preserve"><value>Kiểm tra chứng chỉ: {0}</value></data>
+  <data name="Vm_RemoveDeviceTitle" xml:space="preserve"><value>Xóa {0}?</value></data>
+  <data name="Vm_RemoveDeviceBody" xml:space="preserve"><value>{0} mất quyền truy cập AI của PC này ngay lập tức. Các ứng dụng của thiết bị đó sẽ ngừng hoạt động cho đến khi bạn ghép lại.</value></data>
+  <data name="Vm_RemoveDeviceConfirm" xml:space="preserve"><value>Xóa thiết bị</value></data>
+  <data name="Vm_AppOnDevice" xml:space="preserve"><value>{0} trên {1}</value></data>
+  <data name="NavDevices.Content" xml:space="preserve"><value>Thiết bị của PC này</value></data>
+  <data name="NavDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Thiết bị của PC này</value></data>
+  <data name="DevicesTitle.Text" xml:space="preserve"><value>Thiết bị trên PC này</value></data>
+  <data name="DevicesGamingTitle.Text" xml:space="preserve"><value>Chế độ game</value></data>
+  <data name="DevicesGamingText.Text" xml:space="preserve"><value>Khi đang chạy game toàn màn hình, các yêu cầu từ thiết bị khác sẽ được thông báo rằng PC này đang bận. Mặc định là tắt.</value></data>
+  <data name="DevicesGaming.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Chế độ game</value></data>
+  <data name="DevicesNone.Text" xml:space="preserve"><value>Chưa có thiết bị nào được ghép. Hãy ghép một thiết bị trong Cài đặt, mục Thiết bị khác.</value></data>
+  <data name="DevicesForgetLabel.Text" xml:space="preserve"><value>Quên</value></data>
+  <data name="DevicesForget.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Xóa thiết bị này. Quyền truy cập của nó dừng ngay và lịch sử sử dụng bị xóa. Mô hình không bị động đến.</value></data>
+  <data name="DevicesForget.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Xóa thiết bị này. Quyền truy cập của nó dừng ngay và lịch sử sử dụng bị xóa. Mô hình không bị động đến.</value></data>
+  <data name="DevicesTakeBackLabel.Text" xml:space="preserve"><value>Thu hồi</value></data>
+  <data name="DevicesTakeBack.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Gỡ mô hình mà thiết bị này đã tải. Lựa chọn của chính PC này sẽ được khôi phục. Không tệp mô hình nào bị động đến.</value></data>
+  <data name="DevicesTakeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Gỡ mô hình mà thiết bị này đã tải. Lựa chọn của chính PC này sẽ được khôi phục. Không tệp mô hình nào bị động đến.</value></data>
+  <data name="DevicesRenameLabel.Text" xml:space="preserve"><value>Đổi tên</value></data>
+  <data name="DevicesRename.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Đổi tên hiển thị của thiết bị này</value></data>
+  <data name="DevicesRename.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Đổi tên hiển thị của thiết bị này</value></data>
+  <data name="DevicesNewName.Header" xml:space="preserve"><value>Tên thiết bị</value></data>
+  <data name="DevicesRenameSave.Content" xml:space="preserve"><value>Đổi tên</value></data>
+  <data name="DevicesLimitsLabel.Text" xml:space="preserve"><value>Giới hạn</value></data>
+  <data name="DevicesLimits.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Mức ưu tiên, giới hạn hằng ngày, giờ yên tĩnh và các mô hình thiết bị này được dùng</value></data>
+  <data name="DevicesLimits.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Mức ưu tiên, giới hạn hằng ngày, giờ yên tĩnh và các mô hình thiết bị này được dùng</value></data>
+  <data name="DevicesPriorityEqual.Header" xml:space="preserve"><value>Cùng mức ưu tiên với các ứng dụng của PC này</value></data>
+  <data name="DevicesPriorityEqual.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Tắt: các ứng dụng của PC này được xử lý trước. Bật: thiết bị này xếp chung hàng đợi.</value></data>
+  <data name="DevicesRequestLimit.Header" xml:space="preserve"><value>Yêu cầu mỗi ngày</value></data>
+  <data name="DevicesTokenLimit.Header" xml:space="preserve"><value>Token mỗi ngày</value></data>
+  <data name="DevicesQuiet.Header" xml:space="preserve"><value>Giờ yên tĩnh</value></data>
+  <data name="DevicesQuiet.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Thiết bị không nhận được câu trả lời trong khoảng thời gian này (theo giờ của PC này)</value></data>
+  <data name="DevicesQuietFrom.Header" xml:space="preserve"><value>Từ</value></data>
+  <data name="DevicesQuietTo.Header" xml:space="preserve"><value>Đến</value></data>
+  <data name="DevicesModelsHeader.Text" xml:space="preserve"><value>Các mô hình thiết bị này được dùng</value></data>
+  <data name="DevicesSaveLabel.Text" xml:space="preserve"><value>Lưu</value></data>
+  <data name="DevicesSave.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Lưu các cài đặt này cho thiết bị này</value></data>
+  <data name="DevicesSave.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Lưu các cài đặt này cho thiết bị này</value></data>
+  <data name="Vm_DevOnline" xml:space="preserve"><value>Trực tuyến</value></data>
+  <data name="Vm_DevIdle" xml:space="preserve"><value>Rảnh</value></data>
+  <data name="Vm_DevOffline" xml:space="preserve"><value>Ngoại tuyến</value></data>
+  <data name="Vm_DevRouteLan" xml:space="preserve"><value>Mạng gia đình</value></data>
+  <data name="Vm_DevRouteRelay" xml:space="preserve"><value>Relay (ở ngoài)</value></data>
+  <data name="Vm_DevRouteNone" xml:space="preserve"><value>Chưa có đường kết nối</value></data>
+  <data name="Vm_DevRunning" xml:space="preserve"><value>Đang chạy: {0}</value></data>
+  <data name="Vm_DevRunningQueued" xml:space="preserve"><value>Đang chạy: {0}, đang chờ: {1}</value></data>
+  <data name="Vm_DevToday" xml:space="preserve"><value>Hôm nay: {0} yêu cầu, {1} token</value></data>
+  <data name="Vm_DevBar" xml:space="preserve"><value>{0} yêu cầu, cách đây {1} ngày</value></data>
+  <data name="Vm_DevModel" xml:space="preserve"><value>Mô hình: {0}</value></data>
+  <data name="Vm_DevModelNone" xml:space="preserve"><value>Chưa có lượt gọi nào</value></data>
+  <data name="Vm_DevLoadedByPc" xml:space="preserve"><value>{0}, được tải bởi PC này</value></data>
+  <data name="Vm_DevLoadedByDevice" xml:space="preserve"><value>{1}, được tải bởi {0}</value></data>
+  <data name="Vm_DevSpeed" xml:space="preserve"><value>Tốc độ: {0} token/giây, {1} ms đến byte đầu tiên</value></data>
+  <data name="Vm_DevSpeedNone" xml:space="preserve"><value>Tốc độ: chưa đo</value></data>
+  <data name="Vm_DevPause" xml:space="preserve"><value>Tạm dừng</value></data>
+  <data name="Vm_DevResume" xml:space="preserve"><value>Tiếp tục</value></data>
+  <data name="Vm_DevPauseTip" xml:space="preserve"><value>Tạm dừng thiết bị này. Các lượt gọi của nó sẽ nhận câu trả lời tạm dừng và laptop sẽ dùng phương án dự phòng của chính nó.</value></data>
+  <data name="Vm_DevResumeTip" xml:space="preserve"><value>Cho phép thiết bị này dùng PC này trở lại</value></data>
+  <data name="Vm_DevAppPauseTip" xml:space="preserve"><value>Chỉ tạm dừng ứng dụng này trên thiết bị này</value></data>
+  <data name="Vm_DevAppResumeTip" xml:space="preserve"><value>Cho phép ứng dụng này dùng PC này trở lại</value></data>
+  <data name="Vm_DevGamingBusy" xml:space="preserve"><value>Đang chạy game: các thiết bị được thông báo rằng PC này đang bận.</value></data>
+  <data name="Vm_AutoDevPause" xml:space="preserve"><value>Tạm dừng {0}</value></data>
+  <data name="Vm_AutoDevResume" xml:space="preserve"><value>Tiếp tục {0}</value></data>
+  <data name="Vm_AutoDevAppPause" xml:space="preserve"><value>Tạm dừng {0} trên {1}</value></data>
+  <data name="Vm_AutoDevAppResume" xml:space="preserve"><value>Tiếp tục {0} trên {1}</value></data>
+  <data name="Vm_AutoDevRename" xml:space="preserve"><value>Đổi tên {0}</value></data>
+  <data name="RemoteModelLoadLabel.Text" xml:space="preserve"><value>Tải</value></data>
+  <data name="RemoteModelUnloadLabel.Text" xml:space="preserve"><value>Gỡ</value></data>
+  <data name="RemoteModelLoad.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Tải mô hình này trên PC. Mô hình sẽ ở trong bộ nhớ đến khi bạn gỡ hoặc chủ PC thay đổi.</value></data>
+  <data name="RemoteModelLoad.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Tải mô hình này trên PC. Mô hình sẽ ở trong bộ nhớ đến khi bạn gỡ hoặc chủ PC thay đổi.</value></data>
+  <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Gỡ mô hình mà laptop này đã tải trên PC. Không tệp mô hình nào bị động đến.</value></data>
+  <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Gỡ mô hình mà laptop này đã tải trên PC. Không tệp mô hình nào bị động đến.</value></data>
+  <data name="RemoteModelPlacement.Header" xml:space="preserve"><value>Chạy trên</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Nơi PC chạy mô hình này: do PC tự quyết định, trên card đồ họa, trong bộ nhớ hệ thống, hoặc chỉ trên bộ xử lý với giới hạn luồng (một nửa số nhân). Giới hạn riêng của PC vẫn được áp dụng.</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Nơi PC chạy mô hình này: do PC tự quyết định, trên card đồ họa, trong bộ nhớ hệ thống, hoặc chỉ trên bộ xử lý với giới hạn luồng (một nửa số nhân). Giới hạn riêng của PC vẫn được áp dụng.</value></data>
+  <data name="RemoteModelTooBig.Text" xml:space="preserve"><value>Quá lớn đối với PC</value></data>
+  <data name="SettingsAppModelsHeader.Text" xml:space="preserve"><value>Mô hình PC cho từng ứng dụng</value></data>
+  <data name="SettingsAppModelsHelp.Text" xml:space="preserve"><value>Chọn mô hình nào trong các mô hình của PC mà mỗi ứng dụng trên laptop này sẽ dùng. Chọn "Lựa chọn của PC" để PC tự quyết định.</value></data>
+  <data name="Vm_RemTitle" xml:space="preserve"><value>Mô hình trên {0}</value></data>
+  <data name="Vm_RemAskOwner" xml:space="preserve"><value>Hãy nhờ chủ của {0} bật Điều khiển mô hình cho laptop này.</value></data>
+  <data name="Vm_RemPlacementAuto" xml:space="preserve"><value>Tự động</value></data>
+  <data name="Vm_RemPlacementGpu" xml:space="preserve"><value>Card đồ họa</value></data>
+  <data name="Vm_RemPlacementCpu" xml:space="preserve"><value>Bộ nhớ hệ thống</value></data>
+  <data name="Vm_RemPlacementCpuOnly" xml:space="preserve"><value>Chỉ bộ xử lý</value></data>
+  <data name="Vm_RemStateLoaded" xml:space="preserve"><value>Đã tải</value></data>
+  <data name="Vm_RemStateLoading" xml:space="preserve"><value>Đang tải</value></data>
+  <data name="Vm_RemByLaptop" xml:space="preserve"><value>Được tải bởi laptop này</value></data>
+  <data name="Vm_RemByPc" xml:space="preserve"><value>Được tải bởi PC</value></data>
+  <data name="Vm_RemByOther" xml:space="preserve"><value>Được tải bởi thiết bị khác</value></data>
+  <data name="Vm_RemAutoLoad" xml:space="preserve"><value>Tải {0} trên PC</value></data>
+  <data name="Vm_RemAutoUnload" xml:space="preserve"><value>Gỡ {0} khỏi PC</value></data>
+  <data name="Vm_RemHostGone" xml:space="preserve"><value>Máy chủ không chạy.</value></data>
+  <data name="Vm_AppModelPcChoice" xml:space="preserve"><value>Lựa chọn của PC</value></data>
+  <data name="Vm_AppModelAutomation" xml:space="preserve"><value>Mô hình PC cho {0}</value></data>
+  <data name="SettingsHomePcHeader.Text" xml:space="preserve"><value>PC ở nhà</value></data>
+  <data name="SettingsHomePcHelp.Text" xml:space="preserve"><value>Dùng AI trên một PC khác của bạn thay vì chạy trên PC này. Hãy ghép laptop này với PC đó một lần; sau đó các ứng dụng ở đây sẽ hỏi PC kia.</value></data>
+  <data name="SettingsHomeMode.Header" xml:space="preserve"><value>AI chạy ở đâu</value></data>
+  <data name="SettingsHomeMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>AI chạy ở đâu</value></data>
+  <data name="SettingsHomeFallback.Header" xml:space="preserve"><value>Nếu không kết nối được PC ở nhà</value></data>
+  <data name="SettingsHomeFallback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Nếu không kết nối được PC ở nhà</value></data>
+  <data name="SettingsHomeRelayMode.Header" xml:space="preserve"><value>Kết nối khi ở ngoài nhà</value></data>
+  <data name="SettingsHomeRelayMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Kết nối khi ở ngoài nhà</value></data>
+  <data name="SettingsHomeUseRelay.Header" xml:space="preserve"><value>Dùng relay</value></data>
+  <data name="SettingsHomeUseRelay.OnContent" xml:space="preserve"><value>Bật</value></data>
+  <data name="SettingsHomeUseRelay.OffContent" xml:space="preserve"><value>Tắt</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Dùng relay</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Chỉ bật relay cho phiên này. Tùy chọn sẽ đặt lại khi ứng dụng đóng.</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ghép PC</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Ghép laptop này với một PC ở nhà bằng liên kết ghép nối</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Ghép laptop này với một PC ở nhà bằng liên kết ghép nối</value></data>
+  <data name="SettingsHomePairText.Text" xml:space="preserve"><value>Ghép PC</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Hủy ghép</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Quên PC đã ghép. Mô hình và các lần tải giữ nguyên.</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Quên PC đã ghép. Mô hình và các lần tải giữ nguyên.</value></data>
+  <data name="SettingsHomeUnpairText.Text" xml:space="preserve"><value>Hủy ghép</value></data>
+  <data name="SettingsNotifyDevices.Header" xml:space="preserve"><value>Một thiết bị ghép nối hoặc kết nối từ bên ngoài</value></data>
+  <data name="SettingsNotifyDevices.OnContent" xml:space="preserve"><value>Bật</value></data>
+  <data name="SettingsNotifyDevices.OffContent" xml:space="preserve"><value>Tắt</value></data>
+  <data name="SettingsNotifyDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Một thiết bị ghép nối hoặc kết nối từ bên ngoài</value></data>
+  <data name="HomeClientEmpty.Text" xml:space="preserve"><value>AI chạy trên PC khác của bạn. Mô hình, mức dùng bộ nhớ và thời gian khởi động được hiển thị ở đó.</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Đổi PC</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Mở cài đặt PC ở nhà để ghép một PC khác</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Mở cài đặt PC ở nhà để ghép một PC khác</value></data>
+  <data name="HomeChangePcText.Text" xml:space="preserve"><value>Đổi PC</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Chạy AI tại đây</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Thoát chế độ khách và chạy AI trên PC này trở lại. Thông tin ghép nối vẫn được lưu.</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Thoát chế độ khách và chạy AI trên PC này trở lại. Thông tin ghép nối vẫn được lưu.</value></data>
+  <data name="HomeRunHereText.Text" xml:space="preserve"><value>Chạy AI tại đây</value></data>
+  <data name="ModelsLocalNote.Text" xml:space="preserve"><value>Các lần tải trên trang này dành cho khi PC này chạy AI.</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Dùng PC ở nhà của tôi</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bỏ qua việc tải xuống và dùng AI trên một PC khác của bạn. Bạn sẽ ghép với PC đó ngay sau đây.</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Bỏ qua việc tải xuống và dùng AI trên một PC khác của bạn. Bạn sẽ ghép với PC đó ngay sau đây.</value></data>
+  <data name="WelcomeHomePcText.Text" xml:space="preserve"><value>Dùng PC ở nhà của tôi</value></data>
+  <data name="Vm_LinkConnectedLan" xml:space="preserve"><value>Đã kết nối - mạng gia đình</value></data>
+  <data name="Vm_LinkConnectedRelay" xml:space="preserve"><value>Đã kết nối - qua relay</value></data>
+  <data name="Vm_LinkConnecting" xml:space="preserve"><value>Đang kết nối...</value></data>
+  <data name="Vm_LinkUnreachable" xml:space="preserve"><value>Không kết nối được</value></data>
+  <data name="Vm_LinkRevoked" xml:space="preserve"><value>Laptop này đã bị xóa khỏi PC</value></data>
+  <data name="Vm_LinkRepair" xml:space="preserve"><value>Ghép lại</value></data>
+  <data name="Vm_LinkRtt" xml:space="preserve"><value>{0} - {1} ms</value></data>
+  <data name="Vm_LinkLastSeen" xml:space="preserve"><value>Lần cuối thấy {0}</value></data>
+  <data name="Vm_LinkUsingLaptop" xml:space="preserve"><value>Đang dùng mô hình của laptop này</value></data>
+  <data name="Vm_LinkUnreachableHelp" xml:space="preserve"><value>Không kết nối được {0}. Hãy kiểm tra xem PC đã bật và cùng mạng chưa, hoặc bật relay.</value></data>
+  <data name="Vm_LinkRevokedHelp" xml:space="preserve"><value>{0} không còn cho laptop này vào. Hãy ghép lại để tiếp tục dùng.</value></data>
+  <data name="Vm_LinkRepairHelp" xml:space="preserve"><value>Danh tính của {0} đã thay đổi, nên laptop này không còn tin cậy nó nữa. Nếu bạn không dự đoán điều này, đừng ghép lại. Nếu không, hãy hủy ghép rồi ghép lại.</value></data>
+  <data name="Vm_TrayLink" xml:space="preserve"><value>{0} - {1}</value></data>
+  <data name="Vm_DeviceAlertPaired" xml:space="preserve"><value>{0} đã được ghép và giờ có thể dùng AI của PC này.</value></data>
+  <data name="Vm_DeviceAlertRelay" xml:space="preserve"><value>{0} đã kết nối qua relay từ bên ngoài.</value></data>
+  <data name="Vm_HomeModeThisPc" xml:space="preserve"><value>PC này</value></data>
+  <data name="Vm_HomeModeHomePc" xml:space="preserve"><value>Dùng PC ở nhà của tôi</value></data>
+  <data name="Vm_HomeFallbackNone" xml:space="preserve"><value>Không</value></data>
+  <data name="Vm_HomeFallbackLocal" xml:space="preserve"><value>Dùng mô hình của laptop này</value></data>
+  <data name="Vm_HomeRelayAuto" xml:space="preserve"><value>Tự động</value></data>
+  <data name="Vm_HomeRelayManual" xml:space="preserve"><value>Thủ công</value></data>
+  <data name="Vm_HomeNeedsPair" xml:space="preserve"><value>Hãy ghép một PC trước.</value></data>
+  <data name="Vm_UnpairTitle" xml:space="preserve"><value>Hủy ghép PC này?</value></data>
+  <data name="Vm_UnpairBody" xml:space="preserve"><value>Laptop này sẽ quên {0} và ngừng dùng PC đó. Mô hình và các lần tải không bị động đến. Bạn có thể ghép lại sau.</value></data>
+  <data name="Vm_UnpairConfirm" xml:space="preserve"><value>Hủy ghép</value></data>
+  <data name="Vm_UnpairCancel" xml:space="preserve"><value>Hủy</value></data>
+  <data name="Vm_FallbackTitle" xml:space="preserve"><value>Không kết nối được PC ở nhà</value></data>
+  <data name="Vm_FallbackBody" xml:space="preserve"><value>Hiện không kết nối được {0}. Trong lúc PC đó vắng mặt, laptop này có nên trả lời bằng mô hình của chính nó không? Bạn có thể đổi điều này trong Cài đặt, mục PC ở nhà.</value></data>
+  <data name="Vm_FallbackLocal" xml:space="preserve"><value>Dùng mô hình của laptop này</value></data>
+  <data name="Vm_FallbackNone" xml:space="preserve"><value>Không</value></data>
+  <data name="Vm_PairTitle" xml:space="preserve"><value>Dùng PC ở nhà của tôi</value></data>
+  <data name="Vm_PairIntro" xml:space="preserve"><value>Trên PC kia, mở Cài đặt và chọn Ghép thiết bị, rồi sao chép liên kết. Dán liên kết vào đây.</value></data>
+  <data name="Vm_PairLinkPlaceholder" xml:space="preserve"><value>portalai://pair?...</value></data>
+  <data name="Vm_PairLinkName" xml:space="preserve"><value>Liên kết ghép nối</value></data>
+  <data name="Vm_PairPaste" xml:space="preserve"><value>Dán liên kết</value></data>
+  <data name="Vm_PairPasteTip" xml:space="preserve"><value>Dán liên kết ghép nối từ bộ nhớ tạm</value></data>
+  <data name="Vm_PairNext" xml:space="preserve"><value>Tiếp theo</value></data>
+  <data name="Vm_PairConfirm" xml:space="preserve"><value>Ghép</value></data>
+  <data name="Vm_PairBack" xml:space="preserve"><value>Quay lại</value></data>
+  <data name="Vm_PairCancel" xml:space="preserve"><value>Hủy</value></data>
+  <data name="Vm_PairWorking" xml:space="preserve"><value>Đang kết nối tới PC...</value></data>
+  <data name="Vm_PairDeviceName" xml:space="preserve"><value>Tên của laptop này</value></data>
+  <data name="Vm_PairConfirmPc" xml:space="preserve"><value>Ghép với {0}?</value></data>
+  <data name="Vm_PairFingerprint" xml:space="preserve"><value>Dấu vân tay: {0}</value></data>
+  <data name="Vm_PairErr_invalid_input" xml:space="preserve"><value>Liên kết không hợp lệ. Hãy sao chép lại từ PC kia.</value></data>
+  <data name="Vm_PairErr_address_not_allowed" xml:space="preserve"><value>Địa chỉ đó không nằm trong mạng gia đình của bạn. Khi ở ngoài nhà, hãy ghép một lần ở nhà trước.</value></data>
+  <data name="Vm_PairErr_unreachable" xml:space="preserve"><value>Không kết nối được tới địa chỉ đó.</value></data>
+  <data name="Vm_PairErr_certificate_mismatch" xml:space="preserve"><value>Không thể xác minh PC này.</value></data>
+  <data name="Vm_PairErr_host_proof_invalid" xml:space="preserve"><value>Không thể xác minh PC này.</value></data>
+  <data name="Vm_PairErr_refused" xml:space="preserve"><value>PC đó đã từ chối việc ghép.</value></data>
+  <data name="Vm_PairErr_protocol_error" xml:space="preserve"><value>PC đó gửi về một phản hồi không mong đợi.</value></data>
+  <data name="Vm_PairErr_save_failed" xml:space="preserve"><value>Việc ghép đã thành công, nhưng không thể lưu trên PC này.</value></data>
+  <data name="Vm_PairErr_already_paired" xml:space="preserve"><value>Đã có một PC được ghép. Hãy hủy ghép trong Cài đặt trước.</value></data>
+  <data name="Vm_PairErr_not_available" xml:space="preserve"><value>Tính năng ghép nối không khả dụng trên bản cài đặt này.</value></data>
+  <data name="Vm_PairErr_host" xml:space="preserve"><value>Ứng dụng không chạy.</value></data>
+  <data name="Vm_PairReason_expired" xml:space="preserve"><value>Mã đã hết hạn. Hãy yêu cầu mã mới.</value></data>
+  <data name="Vm_PairReason_code_voided" xml:space="preserve"><value>Mã đó đã hết lượt do nhập sai quá nhiều. Hãy yêu cầu mã mới.</value></data>
+  <data name="Vm_PairReason_no_offer" xml:space="preserve"><value>PC đó không chờ thiết bị nào. Hãy mở mã mới trên PC đó.</value></data>
+  <data name="Vm_PairReason_too_many_devices" xml:space="preserve"><value>PC đó đã có 16 thiết bị. Hãy xóa bớt một thiết bị trước.</value></data>
+  <data name="Vm_PairReason_wrong_code" xml:space="preserve"><value>Mã không đúng.</value></data>
+  <data name="ModelsMemoryTitle.Text" xml:space="preserve"><value>Ngân sách bộ nhớ</value></data>
+  <data name="ModelsMemoryTitle.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Mức bộ nhớ dự kiến mà các mô hình đã tải và đang tải sẽ dùng, so với giới hạn RAM và bộ nhớ card đồ họa. Mô hình nào không vừa sẽ bị từ chối.</value></data>
+  <data name="Vm_MemRam" xml:space="preserve"><value>RAM</value></data>
+  <data name="Vm_MemVram" xml:space="preserve"><value>Bộ nhớ đồ họa</value></data>
+  <data name="Vm_MemLine" xml:space="preserve"><value>{0}: đã dùng {1}, giữ chỗ {2} khi đang tải, còn trống {3} trên {4}</value></data>
+  <data name="UpdateBar.Title" xml:space="preserve"><value>Có bản cập nhật</value></data>
+  <data name="UpdateBar.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Đã có phiên bản Portal AI Host mới hơn trên Microsoft Store</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Cập nhật</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Mở trang Microsoft Store để cập nhật Portal AI Host</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Mở trang Microsoft Store để cập nhật Portal AI Host</value></data>
+  <data name="UpdateButtonText.Text" xml:space="preserve"><value>Cập nhật</value></data>
+  <data name="Vm_ComingSoon" xml:space="preserve"><value>Sắp có</value></data>
+  <data name="Vm_VramBoth" xml:space="preserve"><value>Cần {0} GB bộ nhớ đồ họa khi có CPU hỗ trợ; khuyến nghị {1} GB.</value></data>
+  <data name="Vm_VramMin" xml:space="preserve"><value>Cần {0} GB bộ nhớ đồ họa khi có CPU hỗ trợ.</value></data>
+  <data name="Vm_VramRec" xml:space="preserve"><value>Khuyến nghị {0} GB bộ nhớ đồ họa.</value></data>
+  <data name="Vm_GroupCount" xml:space="preserve"><value>{0} mô hình</value></data>
+  <data name="Vm_ShowAll" xml:space="preserve"><value>Hiện tất cả {0}</value></data>
+  <data name="Vm_ShowFewer" xml:space="preserve"><value>Hiện ít hơn</value></data>
+  <data name="Vm_CatAllTip" xml:space="preserve"><value>Hiện mô hình thuộc mọi loại</value></data>
+  <data name="Vm_CatChip_all" xml:space="preserve"><value>Tất cả</value></data>
+  <data name="Vm_CatChip_chat" xml:space="preserve"><value>Trò chuyện</value></data>
+  <data name="Vm_CatChip_coding" xml:space="preserve"><value>Lập trình</value></data>
+  <data name="Vm_CatChip_reasoning" xml:space="preserve"><value>Suy luận</value></data>
+  <data name="Vm_CatChip_vision" xml:space="preserve"><value>Thị giác</value></data>
+  <data name="Vm_CatChip_search" xml:space="preserve"><value>Tìm kiếm</value></data>
+  <data name="Vm_CatChip_image" xml:space="preserve"><value>Hình ảnh</value></data>
+  <data name="Vm_CatChip_video" xml:space="preserve"><value>Video</value></data>
+  <data name="Vm_CatChip_speech" xml:space="preserve"><value>Giọng nói</value></data>
+  <data name="Vm_CatChip_other" xml:space="preserve"><value>Khác</value></data>
+  <data name="Vm_Cat_chat" xml:space="preserve"><value>Trò chuyện và viết</value></data>
+  <data name="Vm_Cat_coding" xml:space="preserve"><value>Lập trình</value></data>
+  <data name="Vm_Cat_reasoning" xml:space="preserve"><value>Suy luận</value></data>
+  <data name="Vm_Cat_vision" xml:space="preserve"><value>Hiểu hình ảnh</value></data>
+  <data name="Vm_Cat_search" xml:space="preserve"><value>Tìm kiếm và embedding</value></data>
+  <data name="Vm_Cat_image" xml:space="preserve"><value>Tạo hình ảnh</value></data>
+  <data name="Vm_Cat_video" xml:space="preserve"><value>Tạo video</value></data>
+  <data name="Vm_Cat_speech" xml:space="preserve"><value>Giọng nói</value></data>
+  <data name="Vm_Cat_other" xml:space="preserve"><value>Mô hình khác</value></data>
+  <data name="ModelsSearch.PlaceholderText" xml:space="preserve"><value>Tìm mô hình</value></data>
+  <data name="ModelsSearch.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Tìm mô hình</value></data>
+  <data name="ModelsNoMatches.Text" xml:space="preserve"><value>Không có mô hình nào khớp. Hãy xóa tìm kiếm hoặc chọn Tất cả.</value></data>
+  <data name="HomeSeeAppsLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Xem ứng dụng nào đang kết nối với máy chủ này</value></data>
+  <data name="HomeSeeAppsLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Xem ứng dụng nào đang kết nối với máy chủ này</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Sao chép liên kết ghép nối vào bộ nhớ tạm</value></data>
+  <data name="HomeLoadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Tải mô hình vào bộ nhớ để trả lời nhanh hơn</value></data>
+  <data name="HomeLoadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Tải mô hình vào bộ nhớ để trả lời nhanh hơn</value></data>
+  <data name="SettingsNotifyDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hiện thông báo khi có thiết bị ghép nối hoặc kết nối</value></data>
+  <data name="SettingsCorners.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Độ bo tròn của các góc</value></data>
+  <data name="HomeChangeFolderButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Mở Cài đặt để chọn thư mục có nhiều dung lượng trống hơn</value></data>
+  <data name="HomeChangeFolderButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Mở Cài đặt để chọn thư mục có nhiều dung lượng trống hơn</value></data>
+  <data name="SettingsMoveButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Chuyển mô hình đến thư mục đã chọn. Tệp được sao chép và kiểm tra trước khi xóa bản cũ.</value></data>
+  <data name="SettingsMoveButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Chuyển mô hình đến thư mục đã chọn. Tệp được sao chép và kiểm tra trước khi xóa bản cũ.</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hủy ghép nối</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Hủy ghép nối</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hiện hoặc ẩn các kiểm tra tình trạng</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Hiện hoặc ẩn các kiểm tra tình trạng</value></data>
+  <data name="SettingsMaterial.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Kiểu nền của cửa sổ</value></data>
+  <data name="HomeDownloadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Tải mô hình được đề xuất</value></data>
+  <data name="HomeDownloadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Tải mô hình được đề xuất</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Xem chính xác nội dung của báo cáo lỗi</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Xem chính xác nội dung của báo cáo lỗi</value></data>
+  <data name="SettingsEaseOffFullscreen.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Giải phóng bộ nhớ khi đang chạy ứng dụng hoặc game toàn màn hình</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Mở trang Mô hình để xem các mô hình tốt hơn</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Mở trang Mô hình để xem các mô hình tốt hơn</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Đưa cài đặt Hiệu năng về mặc định</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Đưa cài đặt Hiệu năng về mặc định</value></data>
+  <data name="SettingsEaseOffBattery.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Giải phóng bộ nhớ khi PC đang dùng pin</value></data>
+  <data name="SettingsPreset.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Chọn mức cân bằng sẵn giữa tốc độ và mức dùng bộ nhớ</value></data>
+  <data name="SettingsRemoteRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Cho phép các thiết bị đã ghép truy cập PC này từ bên ngoài mạng gia đình</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Tạo mã để ghép một thiết bị mới</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Tạo mã để ghép một thiết bị mới</value></data>
+  <data name="SettingsCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Gửi báo cáo lỗi để giúp sửa sự cố</value></data>
+  <data name="SettingsAllowReplace.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Cho phép một thiết bị thay thế việc ghép nối hiện có</value></data>
+  <data name="SettingsMotion.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Mức độ sử dụng hoạt ảnh</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Quay về thư mục mô hình mặc định</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Quay về thư mục mô hình mặc định</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Cho phép truy cập PC ở nhà qua relay khi bạn ở ngoài</value></data>
+  <data name="HomeTryAgainButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Thử tải lại danh sách mô hình</value></data>
+  <data name="HomeTryAgainButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Thử tải lại danh sách mô hình</value></data>
+  <data name="SettingsStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Khởi động Portal AI Host khi bạn đăng nhập Windows</value></data>
+  <data name="SettingsHomeMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Chọn PC này tự chạy mô hình hay dùng PC ở nhà của bạn</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Khởi động máy chủ để các ứng dụng có thể dùng</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Khởi động máy chủ để các ứng dụng có thể dùng</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Đưa cài đặt Chung về mặc định</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Đưa cài đặt Chung về mặc định</value></data>
+  <data name="SettingsHomeFallback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Cần làm gì khi không kết nối được PC ở nhà</value></data>
+  <data name="SettingsDensity.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Khoảng cách giữa các mục</value></data>
+  <data name="SettingsTextSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Kích thước chữ</value></data>
+  <data name="SettingsIdle.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Máy chủ chờ bao lâu khi không có yêu cầu trước khi giải phóng bộ nhớ mô hình</value></data>
+  <data name="SettingsEaseOffAppBusy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Giải phóng bộ nhớ khi ứng dụng khác đang làm việc nặng</value></data>
+  <data name="SettingsRemoveDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Xóa thiết bị này. Thiết bị phải ghép lại để kết nối.</value></data>
+  <data name="SettingsRemoveDevice.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Xóa thiết bị này. Thiết bị phải ghép lại để kết nối.</value></data>
+  <data name="SettingsMoveCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Dừng việc chuyển mô hình</value></data>
+  <data name="SettingsMoveCancel.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Dừng việc chuyển mô hình</value></data>
+  <data name="SettingsNotifyDownloads.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hiện thông báo khi tải xong hoặc lỗi</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Đưa cài đặt Quyền riêng tư về mặc định</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Đưa cài đặt Quyền riêng tư về mặc định</value></data>
+  <data name="HealthCheckAgainButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Chạy lại các kiểm tra tình trạng</value></data>
+  <data name="HealthCheckAgainButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Chạy lại các kiểm tra tình trạng</value></data>
+  <data name="SettingsMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Mô hình được dùng tối đa bao nhiêu bộ nhớ</value></data>
+  <data name="SettingsTheme.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Sáng, tối, hoặc theo Windows</value></data>
+  <data name="SettingsRemoteEnabled.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Cho phép các thiết bị khác dùng PC này</value></data>
+  <data name="SettingsNotifyProblems.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hiện thông báo khi có việc cần bạn chú ý</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Mở trang trò chuyện để thử mô hình đang dùng</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Mở trang trò chuyện để thử mô hình đang dùng</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Đưa cài đặt thông báo về mặc định</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Đưa cài đặt thông báo về mặc định</value></data>
+  <data name="SettingsRelayAdmission.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Yêu cầu relay kiểm tra thiết bị trước khi chúng kết nối</value></data>
+  <data name="HomeUnloadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Giải phóng bộ nhớ đang dùng bởi mô hình. Tệp mô hình vẫn nằm trên đĩa.</value></data>
+  <data name="HomeUnloadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Giải phóng bộ nhớ đang dùng bởi mô hình. Tệp mô hình vẫn nằm trên đĩa.</value></data>
+  <data name="HomeSeeAllModelsLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Xem mọi mô hình có thể tải xuống</value></data>
+  <data name="HomeSeeAllModelsLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Xem mọi mô hình có thể tải xuống</value></data>
+  <data name="SettingsNotifyApprovals.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hiện thông báo khi một ứng dụng xin quyền</value></data>
+  <data name="SettingsHomeRelayMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Chọn khi nào dùng relay để truy cập PC ở nhà</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Đưa cài đặt Giao diện về mặc định</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Đưa cài đặt Giao diện về mặc định</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Kiểm tra tình trạng</value></data>
+</root>

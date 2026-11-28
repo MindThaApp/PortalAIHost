@@ -1,0 +1,972 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="NavHome.Content" xml:space="preserve"><value>ホーム</value></data>
+  <data name="NavHome.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ホーム</value></data>
+  <data name="NavModels.Content" xml:space="preserve"><value>モデル</value></data>
+  <data name="NavModels.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>モデル</value></data>
+  <data name="NavApps.Content" xml:space="preserve"><value>デバイスとアプリ</value></data>
+  <data name="NavApps.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>デバイスとアプリ</value></data>
+  <data name="NavTryIt.Content" xml:space="preserve"><value>試す</value></data>
+  <data name="NavTryIt.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>試す</value></data>
+  <data name="NavSettings.Content" xml:space="preserve"><value>設定</value></data>
+  <data name="NavSettings.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>設定</value></data>
+  <data name="HomeTitle.Text" xml:space="preserve"><value>ホーム</value></data>
+  <data name="HomeSafeModeBar.Title" xml:space="preserve"><value>セーフ モード</value></data>
+  <data name="HomeStoreProblemBar.Title" xml:space="preserve"><value>モデル フォルダーを利用できません</value></data>
+  <data name="Vm_OldFolderBadge" xml:space="preserve"><value>以前のフォルダー</value></data>
+  <data name="Vm_OldFolderRow" xml:space="preserve"><value>以前のモデル フォルダーにあります: {0}。空き領域を増やすには削除してください。</value></data>
+  <data name="HomeSafeModeBar.Message" xml:space="preserve"><value>ホストが複数回予期せず終了したため、慎重な設定で起動しました。アプリは引き続き使用できます。この状態が続く場合は、PC を再起動してください。</value></data>
+  <data name="HomeStartButton.Content" xml:space="preserve"><value>Portal AI Host を開始</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Portal AI Host を開始</value></data>
+  <data name="HomeUpgradeText.Text" xml:space="preserve"><value>お使いの PC に適したモデルが利用可能です。新しいモデルの準備ができるまで、現在のモデルは維持されます。</value></data>
+  <data name="HomeSeeModelsButton.Content" xml:space="preserve"><value>モデルを見る</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>モデルを見る</value></data>
+  <data name="ModelsTitle.Text" xml:space="preserve"><value>モデル</value></data>
+  <data name="ModelsExistingBar.Title" xml:space="preserve"><value>既存のコピーが見つかりました</value></data>
+  <data name="ModelsUpgradeBar.Title" xml:space="preserve"><value>より適したモデルが利用可能です</value></data>
+  <data name="ModelTooBig.Text" xml:space="preserve"><value>このモデルは、この PC には大きすぎる可能性があります。</value></data>
+  <data name="ModelDownload.Content" xml:space="preserve"><value>ダウンロード</value></data>
+  <data name="ModelPause.Content" xml:space="preserve"><value>一時停止</value></data>
+  <data name="ModelResume.Content" xml:space="preserve"><value>再開</value></data>
+  <data name="ModelCancel.Content" xml:space="preserve"><value>停止</value></data>
+  <data name="ModelUse.Content" xml:space="preserve"><value>このモデルを使う</value></data>
+  <data name="ModelRemove.Content" xml:space="preserve"><value>削除</value></data>
+  <data name="ModelsCatalogueBar.Title" xml:space="preserve"><value>モデル一覧を利用できません</value></data>
+  <data name="ModelsCatalogueBar.Message" xml:space="preserve"><value>ホストが信頼できるモデル一覧を読み込めなかったため、現在は新しいモデルをダウンロードできません。この PC にあるモデルは引き続き使用できます。</value></data>
+  <data name="AppsTitle.Text" xml:space="preserve"><value>デバイスとアプリ</value></data>
+  <data name="AppsWaitingHeader.Text" xml:space="preserve"><value>応答を待っています</value></data>
+  <data name="AppsApprovedHeader.Text" xml:space="preserve"><value>AI ホストを使用できるアプリ</value></data>
+  <data name="AppsNone.Text" xml:space="preserve"><value>許可されているアプリはまだありません。アプリがホストの使用を求めると、ここで確認されます。</value></data>
+  <data name="AppAllow.Content" xml:space="preserve"><value>許可</value></data>
+  <data name="AppDeny.Content" xml:space="preserve"><value>拒否</value></data>
+  <data name="Vm_AppTodayNone" xml:space="preserve"><value>今日のリクエストはありません</value></data>
+  <data name="Vm_AppToday1" xml:space="preserve"><value>今日のリクエスト: {0} 件</value></data>
+  <data name="Vm_AppToday" xml:space="preserve"><value>今日のリクエスト: {0} 件</value></data>
+  <data name="Vm_PriorityHigh" xml:space="preserve"><value>高</value></data>
+  <data name="Vm_PriorityNormal" xml:space="preserve"><value>標準</value></data>
+  <data name="Vm_PriorityLow" xml:space="preserve"><value>低</value></data>
+  <data name="Vm_AutoPriority" xml:space="preserve"><value>{0} の優先度</value></data>
+  <data name="Vm_AppPausedBadge" xml:space="preserve"><value>一時停止中</value></data>
+  <data name="Vm_AppPausedHint" xml:space="preserve"><value>{0} は一時停止中です。再開するまで、新しいリクエストは拒否されます。アクセス権は保持されます。</value></data>
+  <data name="Vm_AppPause" xml:space="preserve"><value>一時停止</value></data>
+  <data name="Vm_AppResume" xml:space="preserve"><value>再開</value></data>
+  <data name="Vm_AutoPause" xml:space="preserve"><value>{0} を一時停止</value></data>
+  <data name="Vm_AutoResume" xml:space="preserve"><value>{0} を再開</value></data>
+  <data name="AppPriority.Header" xml:space="preserve"><value>優先度</value></data>
+  <data name="AppRevoke.Content" xml:space="preserve"><value>アクセス権を削除</value></data>
+  <data name="SettingsTitle.Text" xml:space="preserve"><value>設定</value></data>
+  <data name="SettingsStartWithWindows.Header" xml:space="preserve"><value>Windows の起動時に開始</value></data>
+  <data name="SettingsStartWithWindows.OnContent" xml:space="preserve"><value>オン</value></data>
+  <data name="SettingsStartWithWindows.OffContent" xml:space="preserve"><value>オフ</value></data>
+  <data name="SettingsStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Windows の起動時に開始</value></data>
+  <data name="SettingsIdle.Header" xml:space="preserve"><value>アイドル時にメモリを解放する</value></data>
+  <data name="SettingsIdle.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>アイドル時にメモリを解放する</value></data>
+  <data name="SettingsIdleHelp.Text" xml:space="preserve"><value>モデルは、次にアプリが要求したときに再び起動します。読み込んだままにすると応答は速くなりますが、常にメモリを使用します。</value></data>
+  <data name="SettingsFolder.Header" xml:space="preserve"><value>ダウンロードしたモデルのフォルダー</value></data>
+  <data name="SettingsFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ダウンロードしたモデルのフォルダー</value></data>
+  <data name="TryItTitle.Text" xml:space="preserve"><value>試す</value></data>
+  <data name="TryItIntro.Text" xml:space="preserve"><value>モデルに短い質問をして、動作と応答の速さを確認します。ここに入力した内容は保存されません。Ctrl+Enter キーで送信できます。</value></data>
+  <data name="TryItPrompt.Header" xml:space="preserve"><value>質問</value></data>
+  <data name="TryItPrompt.PlaceholderText" xml:space="preserve"><value>例: 海について 1 文で書いてください。</value></data>
+  <data name="TryItPrompt.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>質問</value></data>
+  <data name="TryItSend.Content" xml:space="preserve"><value>質問する</value></data>
+  <data name="TryItSend.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>質問する</value></data>
+  <data name="TryItStop.Content" xml:space="preserve"><value>停止</value></data>
+  <data name="TryItStop.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>停止</value></data>
+  <data name="TryItReply.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>応答</value></data>
+  <data name="WelcomeTitle.Text" xml:space="preserve"><value>Portal AI Host へようこそ</value></data>
+  <data name="WelcomeLead.Text" xml:space="preserve"><value>AI は PC の中だけで動作します</value></data>
+  <data name="WelcomeIntro.Text" xml:space="preserve"><value>Portal AI Host は、Portal アプリ用の AI モデルをこの PC で実行します。設定は不要です。お使いの PC に合ったモデルを選びます。</value></data>
+  <data name="WelcomePoint1Title.Text" xml:space="preserve"><value>この PC で実行</value></data>
+  <data name="WelcomePoint1Body.Text" xml:space="preserve"><value>モデルはお使いのグラフィックス カードとメモリを使用するため、インターネットに接続していなくても動作します。</value></data>
+  <data name="WelcomePoint2Title.Text" xml:space="preserve"><value>プライバシーを保護</value></data>
+  <data name="WelcomePoint2Body.Text" xml:space="preserve"><value>質問やファイルがこの PC の外に出ることはありません。</value></data>
+  <data name="WelcomePoint3Title.Text" xml:space="preserve"><value>Portal アプリのために設計</value></data>
+  <data name="WelcomePoint3Body.Text" xml:space="preserve"><value>Portal アプリで、文章の作成、要約、質問への回答に使用できます。追加のアカウントは不要です。</value></data>
+  <data name="WelcomeModelTitle.Text" xml:space="preserve"><value>モデルを選択</value></data>
+  <data name="WelcomeModelIntro.Text" xml:space="preserve"><value>モデルとは、実際に処理を行う AI のことです。こちらがお使いの PC に最適と思われるモデルです。</value></data>
+  <data name="WelcomeNoModel.Text" xml:space="preserve"><value>現在、この PC に適したモデルが見つかりませんでした。後で [モデル] ページからもう一度確認できます。</value></data>
+  <data name="WelcomeDownload.Content" xml:space="preserve"><value>ダウンロード</value></data>
+  <data name="WelcomeDownload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>推奨モデルをダウンロード</value></data>
+  <data name="WelcomeChooseLater.Content" xml:space="preserve"><value>後で選ぶ</value></data>
+  <data name="WelcomeChooseLater.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>後で選ぶ。[モデル] でモデルを選択します</value></data>
+  <data name="WelcomeKeepGoing.Text" xml:space="preserve"><value>このまま続行できます。ダウンロードはバックグラウンドで続行されます。</value></data>
+  <data name="WelcomeRetry.Content" xml:space="preserve"><value>再試行</value></data>
+  <data name="WelcomeRetry.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>再試行。ダウンロードを再開します</value></data>
+  <data name="WelcomeWhereTitle.Text" xml:space="preserve"><value>時計の近くにあります</value></data>
+  <data name="WelcomeTrayTitle.Text" xml:space="preserve"><value>トレイ アイコンを探してください</value></data>
+  <data name="WelcomeTrayBody.Text" xml:space="preserve"><value>Portal AI Host は、時計の近くにある小さなアイコンのトレイで静かに待機します。アイコンをクリックすると開きます。表示されていない場合は、矢印をクリックして隠れているアイコンを表示してください。</value></data>
+  <data name="WelcomeAskTitle.Text" xml:space="preserve"><value>アプリは必ず先に確認します</value></data>
+  <data name="WelcomeAskBody.Text" xml:space="preserve"><value>Portal アプリがこの PC で初めて AI を使用しようとしたときに、確認が表示されます。許可しないこともでき、アクセス権はいつでも取り消せます。</value></data>
+  <data name="WelcomeStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Windows の起動時に開始。サインイン時に Portal AI Host を開始します</value></data>
+  <data name="WelcomeSkip.Content" xml:space="preserve"><value>今はスキップ</value></data>
+  <data name="WelcomeSkip.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>今はスキップ。ようこそ画面を閉じます</value></data>
+  <data name="WelcomeBack.Content" xml:space="preserve"><value>戻る</value></data>
+  <data name="WelcomeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>戻る</value></data>
+  <data name="Vm_VerifiedShort" xml:space="preserve"><value>確認済みの Portal アプリ</value></data>
+  <data name="Vm_ApprovalDetails" xml:space="preserve"><value>詳細</value></data>
+  <data name="Vm_WelcomeRecommended" xml:space="preserve"><value>推奨: {0} モデル</value></data>
+  <data name="Vm_WelcomeSmall" xml:space="preserve"><value>小</value></data>
+  <data name="Vm_WelcomeMedium" xml:space="preserve"><value>中</value></data>
+  <data name="Vm_WelcomeLarge" xml:space="preserve"><value>大</value></data>
+  <data name="Vm_WelcomeDetail" xml:space="preserve"><value>{0}、{1}</value></data>
+  <data name="WelcomeLaterNote.Text" xml:space="preserve"><value>モデルは後で [モデル] で選択できます。</value></data>
+  <data name="WelcomeStartRec.Content" xml:space="preserve"><value>推奨設定で開始</value></data>
+  <data name="WelcomeStartRec.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>推奨設定で開始</value></data>
+  <data name="WelcomeWhereIntro.Text" xml:space="preserve"><value>開始前にご確認いただきたい 2 点です。</value></data>
+  <data name="WelcomeStartTitle.Text" xml:space="preserve"><value>Windows の起動時に開始</value></data>
+  <data name="WelcomeStartBody.Text" xml:space="preserve"><value>サインイン時に Portal AI Host をトレイで待機させ、アプリがすぐに使えるようにします。</value></data>
+  <data name="Vm_WelcomeRecommendedTip" xml:space="preserve"><value>推奨モデル ({0}) をバックグラウンドでダウンロードし、Windows の起動時に Portal AI Host が開始されるようにして、このウィンドウを閉じます。これらはすべて後から変更できます。</value></data>
+  <data name="Vm_WelcomeRecommendedTipNoModel" xml:space="preserve"><value>Windows の起動時に Portal AI Host が開始されるようにして、このウィンドウを閉じます。これらはすべて後から変更できます。</value></data>
+  <data name="Vm_WelcomeTitle" xml:space="preserve"><value>Portal AI Host へようこそ</value></data>
+  <data name="Vm_WelcomeNext" xml:space="preserve"><value>次へ</value></data>
+  <data name="Vm_WelcomeFinish" xml:space="preserve"><value>開始</value></data>
+  <data name="Vm_WelcomeSize" xml:space="preserve"><value>ダウンロード サイズ: {0}</value></data>
+  <data name="Vm_AppTitle" xml:space="preserve"><value>Portal AI Host</value></data>
+  <data name="Vm_NoHostTitle" xml:space="preserve"><value>Portal AI Host は実行されていません</value></data>
+  <data name="Vm_NoHostBody" xml:space="preserve"><value>AI モデルを実行するヘルパーがオフになっています。アプリで AI を使用できるように、開始してください。</value></data>
+  <data name="Vm_Starting" xml:space="preserve"><value>開始しています...</value></data>
+  <data name="Vm_StartFailed" xml:space="preserve"><value>ホストを開始できませんでした。スタート メニューから Portal AI Host をもう一度開いてみてください。</value></data>
+  <data name="Vm_StateReady" xml:space="preserve"><value>準備完了</value></data>
+  <data name="Vm_StateBusy" xml:space="preserve"><value>応答中</value></data>
+  <data name="Vm_StateLoading" xml:space="preserve"><value>モデルを準備中</value></data>
+  <data name="Vm_StateIdle" xml:space="preserve"><value>待機中です。アプリが要求するとモデルが起動します。</value></data>
+  <data name="Vm_StateNoModel" xml:space="preserve"><value>モデルがまだありません</value></data>
+  <data name="Vm_StateDownloading" xml:space="preserve"><value>モデルをダウンロード中</value></data>
+  <data name="Vm_StateError" xml:space="preserve"><value>問題が発生しました</value></data>
+  <data name="Vm_HostVersion" xml:space="preserve"><value>ホスト バージョン {0}</value></data>
+  <data name="Vm_ModelNone" xml:space="preserve"><value>モデルがまだインストールされていません</value></data>
+  <data name="Vm_ModelLoaded" xml:space="preserve"><value>{0} は読み込まれ、使用できます</value></data>
+  <data name="Vm_ModelLoading" xml:space="preserve"><value>{0} を読み込んでいます...</value></data>
+  <data name="Vm_ModelUnloaded" xml:space="preserve"><value>{0} がインストールされています。アプリが要求すると読み込まれます。</value></data>
+  <data name="Vm_QueueEmpty" xml:space="preserve"><value>待機中のリクエストはありません</value></data>
+  <data name="Vm_QueueSome" xml:space="preserve"><value>{0} 件を実行中、{1} 件が待機中</value></data>
+  <data name="Vm_QualityName" xml:space="preserve"><value>品質 {0} (5 段階)</value></data>
+  <data name="Vm_DownloadProgress" xml:space="preserve"><value>{0} / {1}</value></data>
+  <data name="Vm_DownloadEta" xml:space="preserve"><value>{0} / {1}、残り約 {2} 分</value></data>
+  <data name="Vm_Paused" xml:space="preserve"><value>{0}% で一時停止</value></data>
+  <data name="Vm_Verifying" xml:space="preserve"><value>ダウンロードを確認しています...</value></data>
+  <data name="Vm_Queued" xml:space="preserve"><value>開始を待っています...</value></data>
+  <data name="Vm_DownloadFailed" xml:space="preserve"><value>ダウンロードが完了しませんでした。{0}</value></data>
+  <data name="Vm_DownloadDone" xml:space="preserve"><value>ダウンロードが完了しました。</value></data>
+  <data name="Vm_InUse" xml:space="preserve"><value>使用中</value></data>
+  <data name="Vm_Installed" xml:space="preserve"><value>インストール済み</value></data>
+  <data name="Vm_BestForYou" xml:space="preserve"><value>お使いの PC に最適</value></data>
+  <data name="Vm_StorageLine" xml:space="preserve"><value>モデルは {0} の {2} を使用します。そのドライブの空き容量は {1} です。</value></data>
+  <data name="Vm_ExistingCopy" xml:space="preserve"><value>{0} のコピーは、すでにこの PC にあります。ホストは再ダウンロードせずに、それを使用します。</value></data>
+  <data name="Vm_UpgradeOffer" xml:space="preserve"><value>{0} の方が適しています。新しいモデルの準備ができるまで、現在のモデルは維持されます。</value></data>
+  <data name="Vm_CancelDlTitle" xml:space="preserve"><value>このダウンロードを停止しますか?</value></data>
+  <data name="Vm_CancelDlBody" xml:space="preserve"><value>すでにダウンロードされた部分は破棄されます。</value></data>
+  <data name="Vm_CancelDlYes" xml:space="preserve"><value>ダウンロードを停止</value></data>
+  <data name="Vm_CancelDlKeep" xml:space="preserve"><value>ダウンロードを続行</value></data>
+  <data name="Vm_AutoDownload" xml:space="preserve"><value>{0} をダウンロード</value></data>
+  <data name="Vm_AutoCancel" xml:space="preserve"><value>{0} のダウンロードを停止</value></data>
+  <data name="Vm_AutoUse" xml:space="preserve"><value>{0} を使用</value></data>
+  <data name="Vm_Added" xml:space="preserve"><value>{0} を追加しました</value></data>
+  <data name="Vm_LastUsed" xml:space="preserve"><value>最終使用: {0}</value></data>
+  <data name="Vm_NeverUsed" xml:space="preserve"><value>未使用</value></data>
+  <data name="Vm_AutoRevoke" xml:space="preserve"><value>{0} のアクセス権を削除</value></data>
+  <data name="Vm_AutoAllow" xml:space="preserve"><value>{0} を許可</value></data>
+  <data name="Vm_AutoDeny" xml:space="preserve"><value>{0} を拒否</value></data>
+  <data name="Vm_RevokeTitle" xml:space="preserve"><value>{0} のアクセス権を削除しますか?</value></data>
+  <data name="Vm_RevokeBody" xml:space="preserve"><value>再び許可するまで、{0} は AI ホストを使用できなくなります。</value></data>
+  <data name="Vm_RevokeYes" xml:space="preserve"><value>アクセス権を削除</value></data>
+  <data name="Vm_Cancel" xml:space="preserve"><value>キャンセル</value></data>
+  <data name="Vm_Verified" xml:space="preserve"><value>インストール済みのアプリ ({0})。Portal アプリではありません。</value></data>
+  <data name="Vm_VerifiedPortal" xml:space="preserve"><value>確認済みの Portal アプリ ({0})</value></data>
+  <data name="Vm_Unverified" xml:space="preserve"><value>未確認です。{0} から実行されています。ご自身で起動した場合にのみ許可してください。</value></data>
+  <data name="Vm_ApprovalTitle" xml:space="preserve"><value>{0} にこの PC での AI の使用を許可しますか?</value></data>
+  <data name="Vm_ApprovalBody" xml:space="preserve"><value>{0} が、この PC の AI モデルを使用しようとしています。</value></data>
+  <data name="Vm_ApprovalReason" xml:space="preserve"><value>理由: {0}</value></data>
+  <data name="Vm_Allow" xml:space="preserve"><value>許可</value></data>
+  <data name="Vm_Deny" xml:space="preserve"><value>許可しない</value></data>
+  <data name="Vm_Later" xml:space="preserve"><value>後で決める</value></data>
+  <data name="Vm_Idle_Keep" xml:space="preserve"><value>モデルを読み込んだままにする</value></data>
+  <data name="Vm_Idle_5" xml:space="preserve"><value>5 分後</value></data>
+  <data name="Vm_Idle_10" xml:space="preserve"><value>10 分後</value></data>
+  <data name="Vm_Saved" xml:space="preserve"><value>保存しました</value></data>
+  <data name="Vm_SaveFailed" xml:space="preserve"><value>保存できませんでした。ホストは実行されていますか?</value></data>
+  <data name="Vm_FolderTitle" xml:space="preserve"><value>このフォルダーをモデルに使用しますか?</value></data>
+  <data name="Vm_FolderBody" xml:space="preserve"><value>ホストはモデルに {0} を使用します。すでにあるモデルは移動も削除もされません。</value></data>
+  <data name="Vm_FolderYes" xml:space="preserve"><value>フォルダーを使用</value></data>
+  <data name="TryItClear.Content" xml:space="preserve"><value>クリア</value></data>
+  <data name="TryItClear.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>会話をクリア</value></data>
+  <data name="TryItSuggestLabel.Text" xml:space="preserve"><value>何を質問すればよいかわからない場合は、次のいずれかをお試しください。</value></data>
+  <data name="HomeTryItButton.Content" xml:space="preserve"><value>試す</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>モデルに質問してみる</value></data>
+  <data name="Vm_TrySuggest1" xml:space="preserve"><value>海について、親しみやすい文を 1 文書いてください。</value></data>
+  <data name="Vm_TrySuggest2" xml:space="preserve"><value>ルーターの役割を 2 文で説明してください。</value></data>
+  <data name="Vm_TrySuggest3" xml:space="preserve"><value>猫の名前を 3 つ考えてください。</value></data>
+  <data name="Vm_TryStats" xml:space="preserve"><value>最初の応答まで {0} 秒、その後は毎秒 {1} トークンです。</value></data>
+  <data name="Vm_TryStatsShort" xml:space="preserve"><value>最初の応答まで {0} 秒です。</value></data>
+  <data name="Vm_TryStatsStopped" xml:space="preserve"><value>停止しました。{0}</value></data>
+  <data name="TryItThinking.Header" xml:space="preserve"><value>モデルが最初に考えたこと</value></data>
+  <data name="Vm_TryWorking" xml:space="preserve"><value>処理中です。低スペックの PC では 1 分ほどかかることがあります。</value></data>
+  <data name="Vm_TryThinking" xml:space="preserve"><value>考えています...</value></data>
+  <data name="Vm_TryOnlyThinking" xml:space="preserve"><value>モデルが制限時間をすべて考えることに使い、応答しませんでした。もっと短い質問をお試しください。</value></data>
+  <data name="Vm_TryEmpty" xml:space="preserve"><value>モデルから空の応答が返されました。もう一度質問してみてください。</value></data>
+  <data name="Vm_TryFailed" xml:space="preserve"><value>ホストが応答できませんでした: {0}</value></data>
+  <data name="Vm_HwChecking" xml:space="preserve"><value>PC を確認しています...</value></data>
+  <data name="Vm_HwUnknown" xml:space="preserve"><value>読み取れませんでした</value></data>
+  <data name="Vm_HwMemory" xml:space="preserve"><value>メモリ: {0}</value></data>
+  <data name="Vm_HwGraphics" xml:space="preserve"><value>グラフィックス: {0}</value></data>
+  <data name="Vm_HwCores" xml:space="preserve"><value>プロセッサ コア数: {0}</value></data>
+  <data name="Vm_HwDisk" xml:space="preserve"><value>ディスクの空き容量: {0}</value></data>
+  <data name="HomeWelcomeTitle.Text" xml:space="preserve"><value>この PC にプライベート AI をセットアップ</value></data>
+  <data name="HomeWelcomeBody.Text" xml:space="preserve"><value>Portal AI Host は、この PC に AI モデルを 1 つ保持し、Portal アプリ間で共有するため、アプリごとにコピーを用意する必要がありません。すべてこの PC 上で実行されるので、入力内容が PC の外に出ることはなく、クラウド アカウントも不要です。</value></data>
+  <data name="HomeCatalogueBar.Title" xml:space="preserve"><value>モデル一覧を利用できません</value></data>
+  <data name="HomeCatalogueBar.Message" xml:space="preserve"><value>ホストが信頼できるモデル一覧を読み込めなかったため、現在は推奨できるものがありません。インターネット接続を確認して、もう一度お試しください。</value></data>
+  <data name="HomeTryAgainButton.Content" xml:space="preserve"><value>再試行</value></data>
+  <data name="HomeRecommendedLabel.Text" xml:space="preserve"><value>この PC のおすすめ</value></data>
+  <data name="HomeNoSpaceBar.Title" xml:space="preserve"><value>ディスクの空き容量が不足しています</value></data>
+  <data name="HomeChangeFolderButton.Content" xml:space="preserve"><value>設定でフォルダーを変更</value></data>
+  <data name="HomeDownloadButton.Content" xml:space="preserve"><value>ダウンロード</value></data>
+  <data name="HomeSeeAllModelsLink.Content" xml:space="preserve"><value>すべてのモデルを見る</value></data>
+  <data name="HomeSeeAllModelsLink2.Content" xml:space="preserve"><value>すべてのモデルを見る</value></data>
+  <data name="HomeActiveModelLabel.Text" xml:space="preserve"><value>アクティブなモデル</value></data>
+  <data name="HomeAppsLabel.Text" xml:space="preserve"><value>接続済みのアプリ</value></data>
+  <data name="HomeSeeAppsLink.Content" xml:space="preserve"><value>デバイスとアプリを見る</value></data>
+  <data name="HomeRequestsLabel.Text" xml:space="preserve"><value>リクエスト</value></data>
+  <data name="Vm_HomeLoaded" xml:space="preserve"><value>読み込み済みで使用可能</value></data>
+  <data name="Vm_HomeLoading" xml:space="preserve"><value>準備中...</value></data>
+  <data name="Vm_HomeUnloaded" xml:space="preserve"><value>読み込まれていません。アプリが要求すると読み込まれます。</value></data>
+  <data name="Vm_HomeKeepLoaded" xml:space="preserve"><value>応答がすばやく始まるように、読み込んだままにします。</value></data>
+  <data name="Vm_HomeIdleUnload" xml:space="preserve"><value>リクエストがない状態が {0} 分続くと、メモリを解放します。</value></data>
+  <data name="Vm_HomeApps" xml:space="preserve"><value>{0} 個のアプリがこのモデルを使用できます</value></data>
+  <data name="Vm_HomeApps1" xml:space="preserve"><value>このモデルを使用できるアプリ: 1 個</value></data>
+  <data name="Vm_HomeAppsNone" xml:space="preserve"><value>接続済みのアプリはまだありません。最初に使用するときに、アクセス許可が求められます。</value></data>
+  <data name="Vm_HomeNoSpace" xml:space="preserve"><value>このモデルには {0} が必要ですが、空き容量は {1} しかありません。空き領域を増やすか、[設定] で別のモデル フォルダーを選択してください。</value></data>
+  <data name="Vm_NoGpu" xml:space="preserve"><value>見つかりません</value></data>
+  <data name="Vm_HostMissing" xml:space="preserve"><value>このインストールにホスト プログラムがありません。Portal AI Host を再インストールして修復してください。</value></data>
+  <data name="Vm_HostMissingTestRun" xml:space="preserve"><value>これはテスト実行で、アプリの隣にホスト プログラムが見つかりませんでした。テスト実行では、インストールされているホストは起動されません。</value></data>
+  <data name="Vm_StartTimedOut" xml:space="preserve"><value>ホストは起動しましたが、時間内に応答しませんでした。しばらく待ってから、もう一度お試しください。</value></data>
+  <data name="Vm_HostExitTestRoot" xml:space="preserve"><value>ホストの起動が拒否されました。テスト データ フォルダーがないか、テスト フォルダーとして設定されていません。</value></data>
+  <data name="Vm_HostExitStartFailed" xml:space="preserve"><value>ホストを起動できませんでした。PC を再起動して、もう一度お試しください。問題が続く場合は、Portal AI Host を再インストールしてください。</value></data>
+  <data name="Vm_HostExitOtherUser" xml:space="preserve"><value>この PC の別の Windows ユーザーがすでに Portal AI Host を実行しています。そのユーザーに終了してもらうか、そのユーザーでサインインしてください。</value></data>
+  <data name="Vm_CatalogueUnavailable" xml:space="preserve"><value>モデル一覧を利用できません。ホストが信頼できるモデル一覧を読み込めませんでした。この PC にあるモデルは引き続き使用できます。</value></data>
+  <data name="Vm_RemoveTitle" xml:space="preserve"><value>このモデルを削除しますか?</value></data>
+  <data name="Vm_RemoveBody" xml:space="preserve"><value>{0} をこの PC から削除します。削除されるのはホストがダウンロードしたファイルのみです。ご自身で追加したモデル ファイルは一覧から外されるだけで、元の場所に残ります。</value></data>
+  <data name="Vm_RemoveYes" xml:space="preserve"><value>削除</value></data>
+  <data name="Vm_AutoRemove" xml:space="preserve"><value>{0} を削除</value></data>
+  <data name="Vm_FolderSavedNote" xml:space="preserve"><value>保存しました。ホストの再起動後、新しいダウンロードは {1} に保存されます。ダウンロード済みのモデルは移動も削除もされず、{0} に残り、[モデル] ページの一覧にも表示されるため、そこから削除できます。</value></data>
+  <data name="Vm_FolderRefused" xml:space="preserve"><value>その他の設定は保存されましたが、そのモデル フォルダーは使用できません: {0}</value></data>
+  <data name="Vm_Startup_Unavailable" xml:space="preserve"><value>[Windows の起動時に開始] は、インストールされたアプリでのみ使用できます。</value></data>
+  <data name="Vm_Startup_DisabledByUser" xml:space="preserve"><value>[Windows の起動時に開始] はタスク マネージャーでオフにされました。タスク マネージャー ([スタートアップ アプリ]) でオンに戻してください。</value></data>
+  <data name="Vm_Startup_Policy" xml:space="preserve"><value>[Windows の起動時に開始] は組織によって設定されています。</value></data>
+  <data name="Vm_DefaultFolder" xml:space="preserve"><value>既定のフォルダー</value></data>
+  <data name="Vm_Publisher" xml:space="preserve"><value>発行元: {0}</value></data>
+  <data name="Vm_PublisherUnknown" xml:space="preserve"><value>発行元: 不明</value></data>
+  <data name="NavAbout.Content" xml:space="preserve"><value>情報</value></data>
+  <data name="NavAbout.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>情報</value></data>
+  <data name="AppMenuButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>アプリ メニュー</value></data>
+  <data name="Vm_AppMenuTip" xml:space="preserve"><value>アプリ メニュー</value></data>
+  <data name="MenuSettings.Text" xml:space="preserve"><value>設定</value></data>
+  <data name="MenuShortcuts.Text" xml:space="preserve"><value>キーボード ショートカット</value></data>
+  <data name="MenuWhatsNew.Text" xml:space="preserve"><value>新機能</value></data>
+  <data name="MenuAbout.Text" xml:space="preserve"><value>Portal AI Host について</value></data>
+  <data name="Vm_ShortcutsTitle" xml:space="preserve"><value>キーボード ショートカット</value></data>
+  <data name="Vm_ShortcutsBody" xml:space="preserve"><value>Ctrl+1: ホーム&#10;Ctrl+2: モデル&#10;Ctrl+3: デバイスとアプリ&#10;Ctrl+4: 試す&#10;Ctrl+, : 設定&#10;F1: 情報&#10;Esc: [新機能] またはダイアログを閉じる</value></data>
+  <data name="Vm_Close" xml:space="preserve"><value>閉じる</value></data>
+  <data name="SettingsGeneralHeader.Text" xml:space="preserve"><value>全般</value></data>
+  <data name="SettingsResetGeneral.Content" xml:space="preserve"><value>既定値に戻す</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>全般設定を既定値に戻す</value></data>
+  <data name="SettingsNotificationsHeader.Text" xml:space="preserve"><value>通知</value></data>
+  <data name="SettingsResetNotifications.Content" xml:space="preserve"><value>既定値に戻す</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>既定値に戻す、通知設定</value></data>
+  <data name="SettingsNotificationsHelp.Text" xml:space="preserve"><value>ウィンドウを閉じているときに対応が必要になると、Windows から短いメッセージが届きます。全画面表示のプログラムが前面にある間は表示されず、数分に 1 回を超えて繰り返されることもありません。</value></data>
+  <data name="SettingsNotifyDownloads.Header" xml:space="preserve"><value>モデルのダウンロードが完了または失敗したとき</value></data>
+  <data name="SettingsNotifyDownloads.OnContent" xml:space="preserve"><value>オン</value></data>
+  <data name="SettingsNotifyDownloads.OffContent" xml:space="preserve"><value>オフ</value></data>
+  <data name="SettingsNotifyDownloads.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>モデルのダウンロードが完了または失敗したときに通知する</value></data>
+  <data name="SettingsNotifyApprovals.Header" xml:space="preserve"><value>アプリが承認を求めたとき</value></data>
+  <data name="SettingsNotifyApprovals.OnContent" xml:space="preserve"><value>オン</value></data>
+  <data name="SettingsNotifyApprovals.OffContent" xml:space="preserve"><value>オフ</value></data>
+  <data name="SettingsNotifyApprovals.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>アプリが承認を求めたときに通知する</value></data>
+  <data name="SettingsNotifyProblems.Header" xml:space="preserve"><value>AI エンジンが停止したとき、またはチェックに失敗したとき</value></data>
+  <data name="SettingsNotifyProblems.OnContent" xml:space="preserve"><value>オン</value></data>
+  <data name="SettingsNotifyProblems.OffContent" xml:space="preserve"><value>オフ</value></data>
+  <data name="SettingsNotifyProblems.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>AI エンジンが停止したとき、またはチェックに失敗したときに通知する</value></data>
+  <data name="SettingsPrivacyHeader.Text" xml:space="preserve"><value>プライバシー</value></data>
+  <data name="SettingsResetPrivacy.Content" xml:space="preserve"><value>既定値に戻す</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>既定値に戻す、プライバシー設定</value></data>
+  <data name="SettingsCrashReports.Header" xml:space="preserve"><value>クラッシュ レポートを送信</value></data>
+  <data name="SettingsCrashReports.OnContent" xml:space="preserve"><value>オン</value></data>
+  <data name="SettingsCrashReports.OffContent" xml:space="preserve"><value>オフ</value></data>
+  <data name="SettingsCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>クラッシュ レポートを送信</value></data>
+  <data name="SettingsCrashReportsHelp.Text" xml:space="preserve"><value>Portal AI Host がクラッシュした場合、短いレポートが問題の迅速な修正に役立ちます。レポートにファイルや入力内容が含まれることはありません。オフにすると、すぐに送信が停止します。</value></data>
+  <data name="CrashWhatsSent.Content" xml:space="preserve"><value>送信される内容</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>送信される内容、プライバシー ページを開きます</value></data>
+  <data name="WelcomeCrashReports.Content" xml:space="preserve"><value>問題を迅速に修正できるよう、クラッシュ レポートを送信します。ファイルや入力内容は含まれません。</value></data>
+  <data name="WelcomeCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>問題を迅速に修正できるよう、クラッシュ レポートを送信します。ファイルや入力内容は含まれません。</value></data>
+  <data name="SettingsModelsHeader.Text" xml:space="preserve"><value>モデル フォルダー</value></data>
+  <data name="SettingsResetFolder.Content" xml:space="preserve"><value>既定値に戻す</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>モデル フォルダーを既定値に戻す</value></data>
+  <data name="SettingsFolderHelp.Text" xml:space="preserve"><value>Enter キーを押すか、ボックスからフォーカスを移すと適用されます。既定のフォルダーを使う場合は空のままにしてください。すでにあるモデルは、移動を選択しない限りそのまま残ります。</value></data>
+  <data name="SettingsAppearanceHeader.Text" xml:space="preserve"><value>外観</value></data>
+  <data name="SettingsResetAppearance.Content" xml:space="preserve"><value>既定値に戻す</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>外観を既定値に戻す</value></data>
+  <data name="SettingsTheme.Header" xml:space="preserve"><value>テーマ</value></data>
+  <data name="SettingsTheme.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>テーマ</value></data>
+  <data name="SettingsMaterial.Header" xml:space="preserve"><value>ウィンドウの素材</value></data>
+  <data name="SettingsMaterial.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ウィンドウの素材</value></data>
+  <data name="SettingsCorners.Header" xml:space="preserve"><value>角</value></data>
+  <data name="SettingsCorners.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>角</value></data>
+  <data name="SettingsDensity.Header" xml:space="preserve"><value>密度</value></data>
+  <data name="SettingsDensity.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>密度</value></data>
+  <data name="SettingsTextSize.Header" xml:space="preserve"><value>文字サイズ</value></data>
+  <data name="SettingsTextSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>文字サイズ</value></data>
+  <data name="SettingsMotion.Header" xml:space="preserve"><value>モーション</value></data>
+  <data name="SettingsMotion.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>モーション</value></data>
+  <data name="SettingsAppearanceHelp.Text" xml:space="preserve"><value>変更はすぐに適用されます。Windows のハイ コントラストでは、ここでの選択に関係なく、常にソリッドなシステム カラーが使用されます。文字サイズは、Windows のテキスト スケーリングに加算されます。</value></data>
+  <data name="Vm_Theme_System" xml:space="preserve"><value>Windows の設定を使用する (既定)</value></data>
+  <data name="Vm_Theme_Light" xml:space="preserve"><value>ライト</value></data>
+  <data name="Vm_Theme_Dark" xml:space="preserve"><value>ダーク</value></data>
+  <data name="Vm_Material_Mica" xml:space="preserve"><value>Mica (既定)</value></data>
+  <data name="Vm_Material_Acrylic" xml:space="preserve"><value>アクリル</value></data>
+  <data name="Vm_Material_Solid" xml:space="preserve"><value>ソリッド</value></data>
+  <data name="Vm_Corners_Rounded" xml:space="preserve"><value>丸み (既定)</value></data>
+  <data name="Vm_Corners_Square" xml:space="preserve"><value>四角</value></data>
+  <data name="Vm_Corners_ExtraRound" xml:space="preserve"><value>より丸く</value></data>
+  <data name="Vm_Density_Compact" xml:space="preserve"><value>コンパクト</value></data>
+  <data name="Vm_Density_Standard" xml:space="preserve"><value>標準 (既定)</value></data>
+  <data name="Vm_Density_Comfortable" xml:space="preserve"><value>ゆったり</value></data>
+  <data name="Vm_Text_Normal" xml:space="preserve"><value>標準 (既定)</value></data>
+  <data name="Vm_Text_Larger" xml:space="preserve"><value>大きめ</value></data>
+  <data name="Vm_Text_Largest" xml:space="preserve"><value>最大</value></data>
+  <data name="Vm_Motion_Follow" xml:space="preserve"><value>Windows に従う (既定)</value></data>
+  <data name="Vm_Motion_Reduced" xml:space="preserve"><value>軽減</value></data>
+  <data name="Vm_Motion_Off" xml:space="preserve"><value>オフ</value></data>
+  <data name="Vm_FolderNotFull" xml:space="preserve"><value>フォルダーのフル パスを入力してください。例: D:\Models</value></data>
+  <data name="AboutTitle.Text" xml:space="preserve"><value>Portal AI Host について</value></data>
+  <data name="Vm_AboutVersion" xml:space="preserve"><value>Portal AI Host バージョン {0}</value></data>
+  <data name="Vm_AboutLicenceState" xml:space="preserve"><value>無料です。アカウントや購入は不要です。</value></data>
+  <data name="Vm_AboutCopyText" xml:space="preserve"><value>Portal AI Host {0}</value></data>
+  <data name="Vm_AboutCopied" xml:space="preserve"><value>バージョンをコピーしました。</value></data>
+  <data name="AboutCopyVersion.Content" xml:space="preserve"><value>バージョンをコピー</value></data>
+  <data name="AboutWhatsNew.Content" xml:space="preserve"><value>新機能</value></data>
+  <data name="AboutHelpHeader.Text" xml:space="preserve"><value>ヘルプとプライバシー</value></data>
+  <data name="AboutFeedback.Content" xml:space="preserve"><value>フィードバックを送信またはアイデアを提案</value></data>
+  <data name="AboutPrivacy.Content" xml:space="preserve"><value>プライバシー ポリシー</value></data>
+  <data name="AboutDataFolder.Content" xml:space="preserve"><value>データ フォルダーを開く</value></data>
+  <data name="AboutLicencesHeader.Text" xml:space="preserve"><value>ライセンス</value></data>
+  <data name="Vm_ThirdParty" xml:space="preserve"><value>Portal AI Host には、PC 上で AI モデルを実行する llama.cpp (MIT ライセンス) が含まれています。モデルは Hugging Face から、それぞれのライセンス (Apache 2.0、MIT、または使用制限が適用される CreativeML OpenRAIL-M) に基づいてダウンロードされます。画像と動画の生成には、stable-diffusion.cpp (MIT ライセンス) と ggml (MIT ライセンス) を使用します。動画ツールには FFmpeg (LGPL 3.0 以降) を使用します。音声機能には、sherpa-onnx (Apache 2.0)、Kokoro の音声 (Apache 2.0)、Kyutai の Pocket TTS (CC-BY 4.0、クレジット: Kyutai) を使用します。このアプリは、Windows App SDK、.NET、Community Toolkit MVVM ライブラリを使用して構築されており、いずれも MIT ライセンスです。</value></data>
+  <data name="AboutLlamaLink.Content" xml:space="preserve"><value>GitHub の llama.cpp</value></data>
+  <data name="AboutLlamaExpander.Header" xml:space="preserve"><value>llama.cpp のライセンス テキスト</value></data>
+  <data name="Vm_LlamaLicence" xml:space="preserve"><value>MIT License&#10;&#10;Copyright (c) 2023-2026 The ggml authors&#10;&#10;Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:&#10;&#10;The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.&#10;&#10;THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</value></data>
+  <data name="Vm_WhatsNewHeading" xml:space="preserve"><value>Portal AI Host {0} の新機能</value></data>
+  <data name="Vm_Wn1Title" xml:space="preserve"><value>ありがとうございます</value></data>
+  <data name="Vm_Wn1Body" xml:space="preserve"><value>フィードバックやレポートをお寄せいただき、ありがとうございます。今回の更新に役立ちました。</value></data>
+  <data name="Vm_Wn2Title" xml:space="preserve"><value>MP4 形式の動画とクリップの結合</value></data>
+  <data name="Vm_Wn2Body" xml:space="preserve"><value>動画ジョブで、MP4 ファイル、最後のフレームの画像、複数のクリップを結合した 1 本の動画を出力できるようになりました。</value></data>
+  <data name="Vm_Wn3Title" xml:space="preserve"><value>動画の品質設定</value></data>
+  <data name="Vm_Wn3Body" xml:space="preserve"><value>MP4 動画のエンコード方法 (品質など) と、使用する動画エンコーダーを選択できます。</value></data>
+  <data name="Vm_Wn4Title" xml:space="preserve"><value>ローカル アプリ向けのアップロード</value></data>
+  <data name="Vm_Wn4Body" xml:space="preserve"><value>この PC のアプリが、リクエストに含めて送信する代わりに、大きなファイルを直接渡せるようになりました。アップロードされたファイルは一定時間後に削除されます。</value></data>
+  <data name="Vm_Wn5Title" xml:space="preserve"><value>ホームの PC カードが常に最新に</value></data>
+  <data name="Vm_Wn5Body" xml:space="preserve"><value>ホームの PC 設定をすばやく続けて変更しても、応答が遅れて古い値が表示されることがなくなりました。</value></data>
+  <data name="Vm_Wn6Title" xml:space="preserve"><value>狭いウィンドウでの表示を改善</value></data>
+  <data name="Vm_Wn6Body" xml:space="preserve"><value>ウィンドウの幅が狭いときはサイド メニューが折りたたまれ、設定のリセット リンクは見出しの下に折り返されます。</value></data>
+  <data name="Vm_Wn7Title" xml:space="preserve"><value>スクリーン リーダーでの読み上げを改善</value></data>
+  <data name="Vm_Wn7Body" xml:space="preserve"><value>ホームの正常性セクションと、ホームおよび設定のボタンに、スクリーン リーダーとヒント用の名前とヘルプ テキストが追加されました。</value></data>
+  <data name="Vm_Wn8Title" xml:space="preserve"><value>ノート PC から自宅の PC を使う</value></data>
+  <data name="Vm_Wn8Body" xml:space="preserve"><value>ノート PC を自宅の PC と一度ペアリングします。以降、ノート PC のアプリは、外出先でも自宅の PC の AI を使用します。選択した場合は、ノート PC 自身のモデルに切り替えることもできます。</value></data>
+  <data name="Vm_Wn9Title" xml:space="preserve"><value>この PC のデバイス</value></data>
+  <data name="Vm_Wn9Body" xml:space="preserve"><value>ペアリングした各ノート PC を、それぞれのカードで確認できます。一時停止、1 日の制限や休止時間の設定、使用できるモデルの選択、読み込まれたモデルの取り戻しができます。</value></data>
+  <data name="Vm_Wn10Title" xml:space="preserve"><value>2 つのモデルを同時に使用</value></data>
+  <data name="Vm_Wn10Body" xml:space="preserve"><value>信頼できるノート PC は、PC に 2 つ目のモデルを読み込んだままにできます。たとえば、1 つはグラフィックス カード、もう 1 つはメモリに読み込みます。ご自身のモデルが押し出されることはありません。</value></data>
+  <data name="Vm_Wn11Title" xml:space="preserve"><value>デバイスの処理を安全に</value></data>
+  <data name="Vm_Wn11Body" xml:space="preserve"><value>デバイスを削除すると、そのデバイスが要求していた処理がすべて停止します。また、ノート PC を新しい自宅の PC とペアリングしても、以前の PC のアクセス トークンが送信されるおそれはなくなりました。</value></data>
+  <data name="Vm_Wn12Title" xml:space="preserve"><value>ウィンドウ表示のゲームでもゲーム モードが動作</value></data>
+  <data name="Vm_Wn12Body" xml:space="preserve"><value>ゲーム モードをオンにすると、ゲームの実行中は、ウィンドウ表示のゲームも含め、PC がビジー状態であることが他のデバイスに通知されます。</value></data>
+  <data name="Vm_Wn13Title" xml:space="preserve"><value>リレー アクセス キー</value></data>
+  <data name="Vm_Wn13Body" xml:space="preserve"><value>このキーでペアリングされたデバイスのみが、外出先からこの PC に接続できます。新しいキーはいつでも作成できます。</value></data>
+  <data name="Vm_Wn14Title" xml:space="preserve"><value>メモリの状況を一目で確認</value></data>
+  <data name="Vm_Wn14Body" xml:space="preserve"><value>[モデル] ページのバーに、読み込まれたモデルが使用しているメモリとグラフィックス メモリの量が、上限と比較して表示されます。</value></data>
+  <data name="Vm_WnShowMe" xml:space="preserve"><value>表示</value></data>
+  <data name="Vm_WnShowMeName" xml:space="preserve"><value>表示: {0}</value></data>
+  <data name="WhatsNewDone.Content" xml:space="preserve"><value>了解</value></data>
+  <data name="Vm_RevokedBar" xml:space="preserve"><value>{0} のアクセス権を削除しました。</value></data>
+  <data name="Vm_AutoUndo" xml:space="preserve"><value>{0} のアクセス権の削除を元に戻す</value></data>
+  <data name="AppsUndo.Content" xml:space="preserve"><value>元に戻す</value></data>
+  <data name="Vm_RemoveFrees" xml:space="preserve"><value>これにより {0} を解放できます。</value></data>
+  <data name="Vm_StepOf" xml:space="preserve"><value>手順 {0}/{1}</value></data>
+  <data name="Vm_LiveIdle" xml:space="preserve"><value>現在、書き込み中の応答はありません</value></data>
+  <data name="Vm_LiveBusy" xml:space="preserve"><value>応答を書き込み中</value></data>
+  <data name="Vm_LiveGenerating" xml:space="preserve"><value>{0} が応答を取得しています</value></data>
+  <data name="Vm_LiveSpeed" xml:space="preserve"><value>毎秒約 {0} 語</value></data>
+  <data name="Vm_LiveMemory" xml:space="preserve"><value>{0} / {1}</value></data>
+  <data name="Vm_LiveMemoryNoTotal" xml:space="preserve"><value>{0}</value></data>
+  <data name="Vm_LivePendingLoad" xml:space="preserve"><value>読み込み中...</value></data>
+  <data name="Vm_LivePendingUnload" xml:space="preserve"><value>アンロード中...</value></data>
+  <data name="Vm_LiveLoadFailed" xml:space="preserve"><value>モデルを読み込めませんでした。{0}</value></data>
+  <data name="Vm_LiveUnloadFailed" xml:space="preserve"><value>モデルをアンロードできませんでした。{0}</value></data>
+  <data name="Vm_TodayNone" xml:space="preserve"><value>今日はまだリクエストがありません。</value></data>
+  <data name="Vm_TodayRow1" xml:space="preserve"><value>{0} 件のリクエスト、最終確認 {1}</value></data>
+  <data name="Vm_TodayRow" xml:space="preserve"><value>{0} 件のリクエスト、最終確認 {1}</value></data>
+  <data name="Vm_SeenNever" xml:space="preserve"><value>なし</value></data>
+  <data name="Vm_SeenNow" xml:space="preserve"><value>たった今</value></data>
+  <data name="Vm_SeenMinutes" xml:space="preserve"><value>{0} 分前</value></data>
+  <data name="Vm_SeenHours" xml:space="preserve"><value>{0} 時間前</value></data>
+  <data name="HomeLiveTitle.Text" xml:space="preserve"><value>現在</value></data>
+  <data name="Vm_LiveRamName" xml:space="preserve"><value>モデルが使用しているメモリ: {0}</value></data>
+  <data name="Vm_LiveVramName" xml:space="preserve"><value>モデルが使用しているグラフィックス メモリ: {0}</value></data>
+  <data name="HomeRamLabel.Text" xml:space="preserve"><value>モデルが使用しているメモリ</value></data>
+  <data name="HomeVramLabel.Text" xml:space="preserve"><value>モデルが使用しているグラフィックス メモリ</value></data>
+  <data name="HomeUnloadButton.Content" xml:space="preserve"><value>今すぐアンロード</value></data>
+  <data name="HomeLoadButton.Content" xml:space="preserve"><value>今すぐ読み込む</value></data>
+  <data name="HomeActionErrorBar.Title" xml:space="preserve"><value>失敗しました</value></data>
+  <data name="HomeTodayLabel.Text" xml:space="preserve"><value>今日</value></data>
+  <data name="Vm_TrayReady" xml:space="preserve"><value>準備完了 · {0} を読み込み済み</value></data>
+  <data name="Vm_TrayBusy" xml:space="preserve"><value>ビジー · {0}</value></data>
+  <data name="Vm_TrayBusyOther" xml:space="preserve"><value>ビジー</value></data>
+  <data name="Vm_TrayLoading" xml:space="preserve"><value>読み込み中 · {0}</value></data>
+  <data name="Vm_TrayIdle" xml:space="preserve"><value>準備完了 · {0} は要求時に読み込まれます</value></data>
+  <data name="Vm_TrayNoModel" xml:space="preserve"><value>モデルがまだありません</value></data>
+  <data name="Vm_TrayOff" xml:space="preserve"><value>オフ</value></data>
+  <data name="Vm_TrayLastNone" xml:space="preserve"><value>今日のリクエストはありません</value></data>
+  <data name="Vm_TrayLast" xml:space="preserve"><value>{0}、{1}</value></data>
+  <data name="TrayModelLabel.Text" xml:space="preserve"><value>モデル</value></data>
+  <data name="TrayMemoryLabel.Text" xml:space="preserve"><value>メモリ</value></data>
+  <data name="TrayLastLabel.Text" xml:space="preserve"><value>最後のリクエスト</value></data>
+  <data name="TrayQueueLabel.Text" xml:space="preserve"><value>キュー</value></data>
+  <data name="TrayOpenButton.Content" xml:space="preserve"><value>アプリを開く</value></data>
+  <data name="TrayUnloadButton.Content" xml:space="preserve"><value>モデルをアンロード</value></data>
+  <data name="TrayWindowTitle" xml:space="preserve"><value>Portal AI Host の状態</value></data>
+  <data name="ModelsDownloadedHeader.Text" xml:space="preserve"><value>ダウンロード済み</value></data>
+  <data name="ModelsMoreHeader.Text" xml:space="preserve"><value>追加できるモデル</value></data>
+  <data name="ModelCheck.Content" xml:space="preserve"><value>ファイルを確認</value></data>
+  <data name="ModelRedownload.Content" xml:space="preserve"><value>再ダウンロード</value></data>
+  <data name="ModelCancelCheck.Content" xml:space="preserve"><value>確認を停止</value></data>
+  <data name="ModelDetails.Header" xml:space="preserve"><value>詳細</value></data>
+  <data name="ModelsOpenFolder.Content" xml:space="preserve"><value>フォルダーを開く</value></data>
+  <data name="ModelsAddOwn.Content" xml:space="preserve"><value>独自のモデルを追加...</value></data>
+  <data name="ModelsAddOwnHint.Text" xml:space="preserve"><value>すでにお持ちの .gguf ファイルを選択します。ホストがモデル フォルダー内に独自のコピーを作成します。コピーが作成されるだけで、元のファイルは変更も移動もされません。</value></data>
+  <data name="Vm_UserAddedBadge" xml:space="preserve"><value>ユーザーが追加</value></data>
+  <data name="Vm_UserAddedReason" xml:space="preserve"><value>不明な適合性: ホストは、このモデルがお使いの PC でどれだけのメモリを必要とするか判断できません。実際に試してみてください。</value></data>
+  <data name="Vm_RemoveUserBody" xml:space="preserve"><value>{0} をホストのモデル フォルダーから削除します。これはホスト自身のコピーであり、選択した元のファイルには影響しません。</value></data>
+  <data name="Vm_ImportRunning" xml:space="preserve"><value>モデルをモデル フォルダーにコピーしています ({0}%)</value></data>
+  <data name="Vm_ImportDone" xml:space="preserve"><value>モデルを追加しました。</value></data>
+  <data name="Vm_ImportCancelled" xml:space="preserve"><value>モデルの追加がキャンセルされました。何も保持されず、元のファイルは変更されていません。</value></data>
+  <data name="Vm_ImportFailed" xml:space="preserve"><value>モデルは追加されませんでした。{0}</value></data>
+  <data name="ModelsMoveHint.Text" xml:space="preserve"><value>モデルを別のドライブに移動するには、[設定] の [モデル フォルダー] で新しいフォルダーを選択します。</value></data>
+  <data name="ModelsMoveCancel.Content" xml:space="preserve"><value>キャンセル</value></data>
+  <data name="ModelsFreeUp.Content" xml:space="preserve"><value>空き領域を増やす</value></data>
+  <data name="ModelsCleanupTitle.Text" xml:space="preserve"><value>空き領域を増やす</value></data>
+  <data name="ModelsCleanupPartialHeader.Text" xml:space="preserve"><value>再開されない未完了のダウンロード</value></data>
+  <data name="ModelsCleanupOldHeader.Text" xml:space="preserve"><value>モデルの移動後に残った古いコピー</value></data>
+  <data name="ModelsCleanupDamagedHeader.Text" xml:space="preserve"><value>チェックで破損が見つかったモデル</value></data>
+  <data name="ModelsCleanupClose.Content" xml:space="preserve"><value>閉じる</value></data>
+  <data name="ModelsCleanupHint.Text" xml:space="preserve"><value>一覧に表示されるのは、このアプリが作成したファイルのみです。使用中のモデルや、ご自身で追加したファイルが削除されることはありません。</value></data>
+  <data name="Vm_CleanupButton" xml:space="preserve"><value>{0} を解放</value></data>
+  <data name="Vm_CleanupNothing" xml:space="preserve"><value>解放できるものはありません。再開できる未完了のダウンロードは 1 週間保持されます。</value></data>
+  <data name="Vm_CleanupRunning" xml:space="preserve"><value>空き領域を増やしています...</value></data>
+  <data name="Vm_CleanupConfirmTitle" xml:space="preserve"><value>これらのファイルを削除しますか?</value></data>
+  <data name="Vm_CleanupConfirmBody" xml:space="preserve"><value>次のファイルが完全に削除されます。&#10;{0}&#10;その他のモデルには影響しません。</value></data>
+  <data name="Vm_CleanupDone" xml:space="preserve"><value>{0} を解放しました。</value></data>
+  <data name="Vm_CleanupDoneSkipped" xml:space="preserve"><value>{0} を解放しました。一部の項目はそのまま残されました。&#10;{1}</value></data>
+  <data name="Vm_CleanupFailed" xml:space="preserve"><value>空き領域を増やせませんでした: {0}</value></data>
+  <data name="ModelsRemoveFailedBar.Title" xml:space="preserve"><value>モデルを削除できませんでした</value></data>
+  <data name="SettingsMoveButton.Content" xml:space="preserve"><value>モデルをそこへ移動</value></data>
+  <data name="SettingsMoveCancel.Content" xml:space="preserve"><value>移動をキャンセル</value></data>
+  <data name="Vm_UsedToday" xml:space="preserve"><value>最終使用: 今日</value></data>
+  <data name="Vm_UsedYesterday" xml:space="preserve"><value>最終使用: 昨日</value></data>
+  <data name="Vm_UsedDays" xml:space="preserve"><value>最終使用: {0} 日前</value></data>
+  <data name="Vm_UsedMonths" xml:space="preserve"><value>最終使用: {0} か月前</value></data>
+  <data name="Vm_GoodFor" xml:space="preserve"><value>おすすめの用途: {0}</value></data>
+  <data name="Vm_Caveats" xml:space="preserve"><value>ご注意: {0}</value></data>
+  <data name="Vm_MemoryNeeded" xml:space="preserve"><value>この PC で約 {0} のメモリが必要です。</value></data>
+  <data name="Vm_Licence" xml:space="preserve"><value>ライセンス: {0}</value></data>
+  <data name="Vm_RemoveActiveBody" xml:space="preserve"><value>{0} は使用中です。ホストはまずアンロードしてから、この PC から削除します。削除されるのはホストがダウンロードしたファイルのみです。ご自身で追加したモデル ファイルは一覧から外されるだけで、元の場所に残ります。</value></data>
+  <data name="Vm_RemoveVerb" xml:space="preserve"><value>{0} ({1}) を削除</value></data>
+  <data name="Vm_RemoveVerbNoSize" xml:space="preserve"><value>{0} を削除</value></data>
+  <data name="Vm_AutoCheck" xml:space="preserve"><value>{0} のファイルを確認</value></data>
+  <data name="Vm_AutoRedownload" xml:space="preserve"><value>{0} を再ダウンロード</value></data>
+  <data name="Vm_Removing" xml:space="preserve"><value>削除しています...</value></data>
+  <data name="Vm_RemovingBadge" xml:space="preserve"><value>削除中</value></data>
+  <data name="Vm_DamagedBadge" xml:space="preserve"><value>破損</value></data>
+  <data name="Vm_Checking" xml:space="preserve"><value>ファイルを確認しています ({0}%)</value></data>
+  <data name="Vm_CheckOk" xml:space="preserve"><value>すべてのファイルは正常です。</value></data>
+  <data name="Vm_CheckDamaged" xml:space="preserve"><value>破損しています: {0} 何も削除されていません。</value></data>
+  <data name="Vm_CheckFailed" xml:space="preserve"><value>確認を完了できませんでした: {0}</value></data>
+  <data name="Vm_SwitchTitle" xml:space="preserve"><value>別のモデルを使用しますか?</value></data>
+  <data name="Vm_SwitchBody" xml:space="preserve"><value>{0} は使用中です。その後 {1} に切り替えますか? それとも、しばらくモデルを使用しませんか?</value></data>
+  <data name="Vm_SwitchYes" xml:space="preserve"><value>{0} に切り替える</value></data>
+  <data name="Vm_SwitchNo" xml:space="preserve"><value>しばらくモデルを使用しない</value></data>
+  <data name="Vm_RemoveFailed" xml:space="preserve"><value>{0} は削除されず、そのまま残っています。{1}</value></data>
+  <data name="Vm_RedownloadTitle" xml:space="preserve"><value>このモデルを再ダウンロードしますか?</value></data>
+  <data name="Vm_RedownloadBody" xml:space="preserve"><value>{0} に破損したファイルがあります。この PC から削除して、再ダウンロードします。その他のものは削除されません。</value></data>
+  <data name="Vm_RedownloadActiveBody" xml:space="preserve"><value>{0} に破損したファイルがあり、使用中です。ホストはアンロードして、この PC から削除し、再ダウンロードします。ダウンロードが完了したら、もう一度選択してください。</value></data>
+  <data name="Vm_RedownloadYes" xml:space="preserve"><value>{0} を削除して再ダウンロード</value></data>
+  <data name="Vm_MoveRunning" xml:space="preserve"><value>モデルを移動しています ({0}%)</value></data>
+  <data name="Vm_MoveRemovingOld" xml:space="preserve"><value>モデルは新しいフォルダーにあります。古いコピーを削除しています。</value></data>
+  <data name="Vm_MoveDone" xml:space="preserve"><value>モデルを移動しました。</value></data>
+  <data name="Vm_MoveCancelled" xml:space="preserve"><value>移動はキャンセルされました。モデルは元の場所にあります。</value></data>
+  <data name="Vm_MoveFailed" xml:space="preserve"><value>移動を完了できませんでした。{0}</value></data>
+  <data name="Vm_MoveOffer" xml:space="preserve"><value>{0} 分のモデルも新しいフォルダーに移動しますか?</value></data>
+  <data name="Vm_MoveTitle" xml:space="preserve"><value>モデルを移動しますか?</value></data>
+  <data name="Vm_MoveBody" xml:space="preserve"><value>モデルを {0} にコピーして確認し、その後で古いコピーを削除します。実行中は、使用中のモデルがアンロードされます。古いフォルダーにあるファイルのうち、ホストが置いたものではないファイルには一切触れません。</value></data>
+  <data name="Vm_MoveYes" xml:space="preserve"><value>モデルを移動</value></data>
+  <data name="Vm_MoveSettingsRunning" xml:space="preserve"><value>モデルを移動しています ({0}%)</value></data>
+  <data name="SettingsPerformanceHeader.Text" xml:space="preserve"><value>パフォーマンス</value></data>
+  <data name="SettingsResetPerformance.Content" xml:space="preserve"><value>既定値に戻す</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>パフォーマンス設定を既定値に戻す</value></data>
+  <data name="SettingsPreset.Header" xml:space="preserve"><value>パフォーマンス</value></data>
+  <data name="SettingsPreset.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>パフォーマンス</value></data>
+  <data name="SettingsMemory.Header" xml:space="preserve"><value>AI に使用する最大メモリ</value></data>
+  <data name="SettingsMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>AI に使用する最大メモリ</value></data>
+  <data name="SettingsKeepFree.Header" xml:space="preserve"><value>常に空けておく量</value></data>
+  <data name="SettingsKeepFree.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>常に空けておく量</value></data>
+  <data name="SettingsRunOn.Header" xml:space="preserve"><value>実行場所</value></data>
+  <data name="SettingsRunOn.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>実行場所</value></data>
+  <data name="SettingsGpuMemory.Header" xml:space="preserve"><value>AI に使用するグラフィックス メモリ</value></data>
+  <data name="SettingsGpuMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>AI に使用するグラフィックス メモリ</value></data>
+  <data name="SettingsCores.Header" xml:space="preserve"><value>プロセッサ コア</value></data>
+  <data name="SettingsCores.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>プロセッサ コア</value></data>
+  <data name="SettingsPriority.Header" xml:space="preserve"><value>優先度</value></data>
+  <data name="SettingsPriority.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>優先度</value></data>
+  <data name="SettingsMemoryHelp.Text" xml:space="preserve"><value>AI がこれ以上使用することはありません。小さくすると、モデルが小さくなるか、応答が遅くなります。</value></data>
+  <data name="SettingsKeepFreeHelp.Text" xml:space="preserve"><value>他のプログラムのために空けておくメモリです。</value></data>
+  <data name="SettingsCoresHelp.Text" xml:space="preserve"><value>コア数を減らすと、AI の動作中も PC の応答性が保たれます。</value></data>
+  <data name="Vm_Perf_Quiet" xml:space="preserve"><value>静音</value></data>
+  <data name="Vm_Perf_Balanced" xml:space="preserve"><value>バランス</value></data>
+  <data name="Vm_Perf_Fast" xml:space="preserve"><value>高速</value></data>
+  <data name="Vm_Perf_Custom" xml:space="preserve"><value>カスタム</value></data>
+  <data name="Vm_Perf_Help_quiet" xml:space="preserve"><value>速度は約半分になります。PC の応答性は保たれます。</value></data>
+  <data name="Vm_Perf_Help_balanced" xml:space="preserve"><value>十分な速度で、他のプログラムが優先されます。</value></data>
+  <data name="Vm_Perf_Help_fast" xml:space="preserve"><value>最速の応答です。他のプログラムが遅くなることがあります。</value></data>
+  <data name="Vm_Perf_Help_custom" xml:space="preserve"><value>ユーザー設定です。</value></data>
+  <data name="Vm_Perf_Run_Auto" xml:space="preserve"><value>自動</value></data>
+  <data name="Vm_Perf_Run_Gpu" xml:space="preserve"><value>グラフィックス カード</value></data>
+  <data name="Vm_Perf_Run_Cpu" xml:space="preserve"><value>プロセッサ</value></data>
+  <data name="Vm_Perf_RunHelp_auto" xml:space="preserve"><value>有効な場合はグラフィックス カードを使用します。</value></data>
+  <data name="Vm_Perf_RunHelp_gpu" xml:space="preserve"><value>モデルが収まる場合は最速です。</value></data>
+  <data name="Vm_Perf_RunHelp_cpu" xml:space="preserve"><value>速度は遅くなりますが、グラフィックス カードをゲーム用に空けておけます。</value></data>
+  <data name="Vm_Perf_NoGpu" xml:space="preserve"><value>プロセッサのみ: 対応するグラフィックス カードが見つかりません</value></data>
+  <data name="SettingsCeiling.Header" xml:space="preserve"><value>最大プロセッサ使用率</value></data>
+  <data name="SettingsCeiling.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>最大プロセッサ使用率</value></data>
+  <data name="SettingsCeilingHelp.Text" xml:space="preserve"><value>AI がプロセッサをこれ以上使用することはありません。小さくすると、PC の動作は滑らかになりますが、応答は遅くなります。</value></data>
+  <data name="Vm_Perf_CeilingNone" xml:space="preserve"><value>制限なし</value></data>
+  <data name="Vm_Perf_Percent" xml:space="preserve"><value>{0}%</value></data>
+  <data name="SettingsEaseOffHeader.Text" xml:space="preserve"><value>負荷を下げる条件</value></data>
+  <data name="SettingsEaseOffFullscreen.Content" xml:space="preserve"><value>ゲームまたは全画面表示のプログラムの実行中</value></data>
+  <data name="SettingsEaseOffBattery.Content" xml:space="preserve"><value>PC がバッテリで動作しているとき</value></data>
+  <data name="SettingsEaseOffAppBusy.Content" xml:space="preserve"><value>音声入力など、Portal アプリがリアルタイムの処理でビジー状態のとき</value></data>
+  <data name="SettingsEaseOffHelp.Text" xml:space="preserve"><value>その場合、AI は最も低い優先度で実行され、プロセッサの使用は最大でも半分までになり、終了すると通常に戻ります。</value></data>
+  <data name="Vm_Perf_Prio_Low" xml:space="preserve"><value>低</value></data>
+  <data name="Vm_Perf_Prio_Normal" xml:space="preserve"><value>標準</value></data>
+  <data name="Vm_Perf_PrioHelp_Low" xml:space="preserve"><value>ご自身の作業が常に優先されます。</value></data>
+  <data name="Vm_Perf_PrioHelp_Normal" xml:space="preserve"><value>高速ですが、他のプログラムが遅くなることがあります。</value></data>
+  <data name="Vm_Perf_Gb" xml:space="preserve"><value>{0} GB</value></data>
+  <data name="Vm_Perf_Cores" xml:space="preserve"><value>{1} コア中 {0} コア</value></data>
+  <data name="Vm_Perf_MemoryRange" xml:space="preserve"><value>{0} GB ～ {1} GB</value></data>
+  <data name="Vm_Perf_StopFull" xml:space="preserve"><value>{0} GB · {1} に完全に収まります</value></data>
+  <data name="Vm_Perf_StopPartial" xml:space="preserve"><value>{0} GB · {1} に収まります (一部はプロセッサ上)</value></data>
+  <data name="Vm_Perf_StopCpu" xml:space="preserve"><value>{0} GB · {1} のプロセッサ上に収まります</value></data>
+  <data name="Vm_Perf_StopNone" xml:space="preserve"><value>{0} GB · 一覧のモデルには小さすぎます</value></data>
+  <data name="Vm_Perf_Fit_Full" xml:space="preserve"><value>グラフィックス カード上で完全に実行されます</value></data>
+  <data name="Vm_Perf_Fit_Partial" xml:space="preserve"><value>一部はグラフィックス カード、一部はプロセッサ上で実行されます (低速)</value></data>
+  <data name="Vm_Perf_Fit_Cpu" xml:space="preserve"><value>プロセッサ上で実行されます (最も低速)</value></data>
+  <data name="Vm_Perf_Fit_Smaller" xml:space="preserve"><value>{0} にはメモリが不足しています。{1} に切り替えますか?</value></data>
+  <data name="Vm_Perf_Fit_LittleMemory" xml:space="preserve"><value>{0} にはメモリが不足しています。</value></data>
+  <data name="Vm_Perf_Fit_TooBig" xml:space="preserve"><value>この PC には大きすぎます</value></data>
+  <data name="Vm_Perf_TheModel" xml:space="preserve"><value>モデル</value></data>
+  <data name="Vm_Perf_Applied" xml:space="preserve"><value>適用しました。新しい制限が有効になっています。</value></data>
+  <data name="Vm_Perf_Reloading" xml:space="preserve"><value>適用しました。{0} を新しい制限で再読み込みしています。</value></data>
+  <data name="Vm_Perf_Unloaded" xml:space="preserve"><value>適用しました。{0} は収まらなくなったため、アンロードされました。ディスクには残っています。[モデル] ページで、より小さいモデルを選択してください。</value></data>
+  <data name="HealthIconOk.AutomationProperties.Name" xml:space="preserve"><value>問題なし</value></data>
+  <data name="HealthIconWarn.AutomationProperties.Name" xml:space="preserve"><value>要対応</value></data>
+  <data name="HealthIconFail.AutomationProperties.Name" xml:space="preserve"><value>問題</value></data>
+  <data name="HealthWordOk.Text" xml:space="preserve"><value>問題なし</value></data>
+  <data name="HealthWordWarn.Text" xml:space="preserve"><value>要対応</value></data>
+  <data name="HealthWordFail.Text" xml:space="preserve"><value>問題</value></data>
+  <data name="HealthCheckAgainButton.Content" xml:space="preserve"><value>再確認</value></data>
+  <data name="HealthFixErrorBar.Title" xml:space="preserve"><value>失敗しました</value></data>
+  <data name="Vm_HealthAllGood" xml:space="preserve"><value>すべて正常</value></data>
+  <data name="Vm_HealthOne" xml:space="preserve"><value>1 件の項目に対応が必要です</value></data>
+  <data name="Vm_HealthMany" xml:space="preserve"><value>{0} 件の項目に対応が必要です</value></data>
+  <data name="Vm_HealthFixLoad" xml:space="preserve"><value>モデルを読み込む</value></data>
+  <data name="Vm_HealthFixRestart" xml:space="preserve"><value>エンジンを再起動</value></data>
+  <data name="Vm_HealthFixCheckFiles" xml:space="preserve"><value>ファイルを確認</value></data>
+  <data name="Vm_HealthFixPerformance" xml:space="preserve"><value>パフォーマンス設定を開く</value></data>
+  <data name="Vm_HealthFixModels" xml:space="preserve"><value>モデルを選択</value></data>
+  <data name="Vm_HealthFixFailed" xml:space="preserve"><value>修正を実行できませんでした。{0}</value></data>
+  <data name="SettingsRemoteHeader.Text" xml:space="preserve"><value>その他のデバイス</value></data>
+  <data name="SettingsRemoteEnabled.Header" xml:space="preserve"><value>他のデバイスにこの PC の AI の使用を許可する</value></data>
+  <data name="SettingsRemoteEnabled.OnContent" xml:space="preserve"><value>オン</value></data>
+  <data name="SettingsRemoteEnabled.OffContent" xml:space="preserve"><value>オフ</value></data>
+  <data name="SettingsRemoteEnabled.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>他のデバイスにこの PC の AI の使用を許可する</value></data>
+  <data name="SettingsRemoteHelp.Text" xml:space="preserve"><value>既定ではオフです。オンにすると、このホーム ネットワーク上のご自身のスマートフォン、ノート PC、タブレットが、この PC の AI の使用を要求できます。デバイスは最初にコードでペアリングする必要があり、そのデバイスの各アプリにもあなたの承認が必要です。デバイスはいつでも削除できます。</value></data>
+  <data name="SettingsPairDevice.Content" xml:space="preserve"><value>デバイスをペアリング</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>デバイスをペアリング</value></data>
+  <data name="SettingsPairingSteps.Text" xml:space="preserve"><value>もう一方のデバイスで Portal アプリを開き、PC に接続するを選んで、このコードをスキャンするか、文字と数字を入力します。何かを送信する前に、この PC と通信していることを確認します。コードは 5 分間、1 回のみ使用できます。</value></data>
+  <data name="SettingsPairingQr.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ペアリング QR コード</value></data>
+  <data name="SettingsPairingCancel.Content" xml:space="preserve"><value>ペアリングをキャンセル</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ペアリングをキャンセル</value></data>
+  <data name="SettingsDevicesHeader.Text" xml:space="preserve"><value>ペアリング済みのデバイス</value></data>
+  <data name="SettingsNoDevices.Text" xml:space="preserve"><value>ペアリングされたデバイスはまだありません。</value></data>
+  <data name="SettingsRemoveDevice.Content" xml:space="preserve"><value>削除</value></data>
+  <data name="SettingsDeviceModelControl.Header" xml:space="preserve"><value>モデル制御</value></data>
+  <data name="SettingsDeviceModelControl.OnContent" xml:space="preserve"><value>オン</value></data>
+  <data name="SettingsDeviceModelControl.OffContent" xml:space="preserve"><value>オフ</value></data>
+  <data name="SettingsDeviceModelControl.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>このデバイスに、モデルの読み込みとアンロード、および各アプリで使用するモデルの選択を許可します</value></data>
+  <data name="SettingsDeviceModelControl.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>このデバイスに、モデルの読み込みとアンロード、および各アプリで使用するモデルの選択を許可します</value></data>
+  <data name="SettingsTakeBackLabel.Text" xml:space="preserve"><value>取り戻す</value></data>
+  <data name="SettingsTakeBack.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>このデバイスが読み込んだモデルをアンロードします。この PC 自身の選択に戻ります。モデル ファイルには影響しません。</value></data>
+  <data name="SettingsTakeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>このデバイスが読み込んだモデルをアンロードします。この PC 自身の選択に戻ります。モデル ファイルには影響しません。</value></data>
+  <data name="SettingsAllowReplace.Header" xml:space="preserve"><value>デバイスによるモデルの置き換えを許可</value></data>
+  <data name="SettingsAllowReplace.OnContent" xml:space="preserve"><value>オン</value></data>
+  <data name="SettingsAllowReplace.OffContent" xml:space="preserve"><value>オフ</value></data>
+  <data name="SettingsAllowReplace.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>デバイスによるモデルの置き換えを許可</value></data>
+  <data name="SettingsAllowReplaceHelp.Text" xml:space="preserve"><value>モデル制御を持つデバイスにのみ関係します。オフ: デバイスは、ご自身のアプリが使用中のモデルをアンロードできません。オン: アンロードできます。その場合、ご自身のアプリは次のリクエスト時にモデルを再読み込みします。</value></data>
+  <data name="Vm_AutoModelControl" xml:space="preserve"><value>{0} のモデル制御</value></data>
+  <data name="Vm_AutoTakeBack" xml:space="preserve"><value>{0} が読み込んだモデルを取り戻す</value></data>
+  <data name="Vm_LoadedBy" xml:space="preserve"><value>{0} が読み込みました: {1} ({2})</value></data>
+  <data name="Vm_PlacementAuto" xml:space="preserve"><value>自動配置</value></data>
+  <data name="Vm_PlacementGpu" xml:space="preserve"><value>グラフィックス カード</value></data>
+  <data name="Vm_PlacementCpu" xml:space="preserve"><value>システム メモリ</value></data>
+  <data name="Vm_PlacementCpuOnly" xml:space="preserve"><value>プロセッサのみ</value></data>
+  <data name="SettingsRemoteRelay.Header" xml:space="preserve"><value>外出先からもこの PC に接続する</value></data>
+  <data name="SettingsRemoteRelay.OnContent" xml:space="preserve"><value>オン</value></data>
+  <data name="SettingsRemoteRelay.OffContent" xml:space="preserve"><value>オフ</value></data>
+  <data name="SettingsRemoteRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>外出先からもこの PC に接続する</value></data>
+  <data name="SettingsRelayAdmission.Header" xml:space="preserve"><value>リレー アクセス キー</value></data>
+  <data name="SettingsRelayAdmission.OnContent" xml:space="preserve"><value>オン</value></data>
+  <data name="SettingsRelayAdmission.OffContent" xml:space="preserve"><value>オフ</value></data>
+  <data name="SettingsRelayAdmission.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>リレー アクセス キー</value></data>
+  <data name="SettingsRelayAdmissionHelp.Text" xml:space="preserve"><value>ペアリング コードのキーでペアリングされたデバイスのみが、リレー経由でこの PC に接続できます。ペアリングの前にオンにしてください。以前にペアリングしたデバイスは、リレーを使用するには再ペアリングが必要です。リレーは最新の状態である必要があります。</value></data>
+  <data name="SettingsRotateRelayKeyText.Text" xml:space="preserve"><value>新しいキー</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>新しいリレー アクセス キーを作成します。ペアリング済みのすべてのデバイスは、リレーを使用するには再ペアリングが必要です。デバイスを削除してもキーは変わらないため、信頼できないデバイスを削除した後にこの操作を行ってください。</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>新しいリレー アクセス キーを作成します。ペアリング済みのすべてのデバイスは、リレーを使用するには再ペアリングが必要です。デバイスを削除してもキーは変わらないため、信頼できないデバイスを削除した後にこの操作を行ってください。</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>新しいキー</value></data>
+  <data name="Vm_RotateKeyTitle" xml:space="preserve"><value>新しいリレー アクセス キーを作成しますか?</value></data>
+  <data name="Vm_RotateKeyBody" xml:space="preserve"><value>ペアリング済みのすべてのデバイスは、リレー経由でこの PC を使用するには再ペアリングが必要です。自宅では何も変わりません。</value></data>
+  <data name="Vm_RotateKeyConfirm" xml:space="preserve"><value>新しいキーを作成</value></data>
+  <data name="SettingsRemoteRelayHelp.Text" xml:space="preserve"><value>この PC は小さなリレーに外向きに接続するため、ペアリング済みのデバイスはどこからでも接続できます。リレーは読み取れない暗号化されたバイトを受け渡すだけで、各デバイスはペアリングされ、すべてのリクエストに署名する必要があります。</value></data>
+  <data name="Vm_RelayAway" xml:space="preserve"><value>外出先から接続可能</value></data>
+  <data name="Vm_RelayHomeOnly" xml:space="preserve"><value>ホーム ネットワークのみ</value></data>
+  <data name="Vm_RelayUnreachable" xml:space="preserve"><value>リレーに接続できません</value></data>
+  <data name="Vm_RelayConnecting" xml:space="preserve"><value>リレーに接続しています...</value></data>
+  <data name="Vm_RemoteAddress" xml:space="preserve"><value>この PC には {0}、ポート {1} で接続できます。</value></data>
+  <data name="Vm_RemoteLastSeen" xml:space="preserve"><value>最終使用: {0}</value></data>
+  <data name="Vm_RemoteNeverSeen" xml:space="preserve"><value>未使用</value></data>
+  <data name="Vm_AutoRemoveDevice" xml:space="preserve"><value>{0} を削除</value></data>
+  <data name="Vm_PairingExpires" xml:space="preserve"><value>コードの有効期限: {0}</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>リンクをコピー</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>これをもう一方の PC に送信してください。5 分間、1 台のデバイスのみ有効です。</value></data>
+  <data name="SettingsPairingCopyLinkText.Text" xml:space="preserve"><value>リンクをコピー</value></data>
+  <data name="Vm_PairingAddress" xml:space="preserve"><value>アドレス: {0}:{1}</value></data>
+  <data name="Vm_PairingFingerprint" xml:space="preserve"><value>証明書の確認: {0}</value></data>
+  <data name="Vm_RemoveDeviceTitle" xml:space="preserve"><value>{0} を削除しますか?</value></data>
+  <data name="Vm_RemoveDeviceBody" xml:space="preserve"><value>{0} は、この PC の AI にすぐにアクセスできなくなります。再度ペアリングするまで、そのアプリは動作しません。</value></data>
+  <data name="Vm_RemoveDeviceConfirm" xml:space="preserve"><value>デバイスを削除</value></data>
+  <data name="Vm_AppOnDevice" xml:space="preserve"><value>{1} の {0}</value></data>
+  <data name="NavDevices.Content" xml:space="preserve"><value>この PC のデバイス</value></data>
+  <data name="NavDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>この PC のデバイス</value></data>
+  <data name="DevicesTitle.Text" xml:space="preserve"><value>この PC のデバイス</value></data>
+  <data name="DevicesGamingTitle.Text" xml:space="preserve"><value>ゲーム モード</value></data>
+  <data name="DevicesGamingText.Text" xml:space="preserve"><value>全画面表示のゲームの実行中は、他のデバイスからの呼び出しに対して、この PC がビジー状態であると通知されます。既定ではオフです。</value></data>
+  <data name="DevicesGaming.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ゲーム モード</value></data>
+  <data name="DevicesNone.Text" xml:space="preserve"><value>ペアリングされたデバイスはまだありません。[設定] の [その他のデバイス] でペアリングしてください。</value></data>
+  <data name="DevicesForgetLabel.Text" xml:space="preserve"><value>削除</value></data>
+  <data name="DevicesForget.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>このデバイスを削除します。アクセスはすぐに停止し、使用履歴は削除されます。モデルには影響しません。</value></data>
+  <data name="DevicesForget.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>このデバイスを削除します。アクセスはすぐに停止し、使用履歴は削除されます。モデルには影響しません。</value></data>
+  <data name="DevicesTakeBackLabel.Text" xml:space="preserve"><value>取り戻す</value></data>
+  <data name="DevicesTakeBack.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>このデバイスが読み込んだモデルをアンロードします。この PC 自身の選択に戻ります。モデル ファイルには影響しません。</value></data>
+  <data name="DevicesTakeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>このデバイスが読み込んだモデルをアンロードします。この PC 自身の選択に戻ります。モデル ファイルには影響しません。</value></data>
+  <data name="DevicesRenameLabel.Text" xml:space="preserve"><value>名前の変更</value></data>
+  <data name="DevicesRename.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>このデバイスに表示される名前を変更します</value></data>
+  <data name="DevicesRename.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>このデバイスに表示される名前を変更します</value></data>
+  <data name="DevicesNewName.Header" xml:space="preserve"><value>デバイス名</value></data>
+  <data name="DevicesRenameSave.Content" xml:space="preserve"><value>名前の変更</value></data>
+  <data name="DevicesLimitsLabel.Text" xml:space="preserve"><value>制限</value></data>
+  <data name="DevicesLimits.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>優先度、1 日の制限、休止時間、このデバイスが使用できるモデル</value></data>
+  <data name="DevicesLimits.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>優先度、1 日の制限、休止時間、このデバイスが使用できるモデル</value></data>
+  <data name="DevicesPriorityEqual.Header" xml:space="preserve"><value>この PC のアプリと同じ優先度</value></data>
+  <data name="DevicesPriorityEqual.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>オフ: この PC のアプリが先に処理されます。オン: このデバイスは同じ待ち行列で待機します。</value></data>
+  <data name="DevicesRequestLimit.Header" xml:space="preserve"><value>1 日あたりのリクエスト数</value></data>
+  <data name="DevicesTokenLimit.Header" xml:space="preserve"><value>1 日あたりのトークン数</value></data>
+  <data name="DevicesQuiet.Header" xml:space="preserve"><value>休止時間</value></data>
+  <data name="DevicesQuiet.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>この時間帯 (この PC の時刻) は、デバイスに応答しません</value></data>
+  <data name="DevicesQuietFrom.Header" xml:space="preserve"><value>開始</value></data>
+  <data name="DevicesQuietTo.Header" xml:space="preserve"><value>終了</value></data>
+  <data name="DevicesModelsHeader.Text" xml:space="preserve"><value>このデバイスが使用できるモデル</value></data>
+  <data name="DevicesSaveLabel.Text" xml:space="preserve"><value>保存</value></data>
+  <data name="DevicesSave.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>このデバイスの設定を保存します</value></data>
+  <data name="DevicesSave.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>このデバイスの設定を保存します</value></data>
+  <data name="Vm_DevOnline" xml:space="preserve"><value>オンライン</value></data>
+  <data name="Vm_DevIdle" xml:space="preserve"><value>アイドル</value></data>
+  <data name="Vm_DevOffline" xml:space="preserve"><value>オフライン</value></data>
+  <data name="Vm_DevRouteLan" xml:space="preserve"><value>ホーム ネットワーク</value></data>
+  <data name="Vm_DevRouteRelay" xml:space="preserve"><value>リレー (外出先)</value></data>
+  <data name="Vm_DevRouteNone" xml:space="preserve"><value>経路がまだありません</value></data>
+  <data name="Vm_DevRunning" xml:space="preserve"><value>実行中: {0}</value></data>
+  <data name="Vm_DevRunningQueued" xml:space="preserve"><value>実行中: {0}、待機中: {1}</value></data>
+  <data name="Vm_DevToday" xml:space="preserve"><value>今日: {0} 件のリクエスト、{1} トークン</value></data>
+  <data name="Vm_DevBar" xml:space="preserve"><value>{0} 件のリクエスト、{1} 日前</value></data>
+  <data name="Vm_DevModel" xml:space="preserve"><value>モデル: {0}</value></data>
+  <data name="Vm_DevModelNone" xml:space="preserve"><value>呼び出しはまだありません</value></data>
+  <data name="Vm_DevLoadedByPc" xml:space="preserve"><value>{0}、この PC が読み込みました</value></data>
+  <data name="Vm_DevLoadedByDevice" xml:space="preserve"><value>{1}、{0} が読み込みました</value></data>
+  <data name="Vm_DevSpeed" xml:space="preserve"><value>速度: 毎秒 {0} トークン、最初のバイトまで {1} ミリ秒</value></data>
+  <data name="Vm_DevSpeedNone" xml:space="preserve"><value>速度: 未測定</value></data>
+  <data name="Vm_DevPause" xml:space="preserve"><value>一時停止</value></data>
+  <data name="Vm_DevResume" xml:space="preserve"><value>再開</value></data>
+  <data name="Vm_DevPauseTip" xml:space="preserve"><value>このデバイスを一時停止します。呼び出しには一時停止の応答が返され、ノート PC は独自のフォールバックを使用します。</value></data>
+  <data name="Vm_DevResumeTip" xml:space="preserve"><value>このデバイスに再びこの PC の使用を許可</value></data>
+  <data name="Vm_DevAppPauseTip" xml:space="preserve"><value>このデバイスでこのアプリのみを一時停止</value></data>
+  <data name="Vm_DevAppResumeTip" xml:space="preserve"><value>このアプリに再びこの PC の使用を許可</value></data>
+  <data name="Vm_DevGamingBusy" xml:space="preserve"><value>ゲームを実行中です。デバイスには、この PC がビジー状態であることが通知されます。</value></data>
+  <data name="Vm_AutoDevPause" xml:space="preserve"><value>{0} を一時停止</value></data>
+  <data name="Vm_AutoDevResume" xml:space="preserve"><value>{0} を再開</value></data>
+  <data name="Vm_AutoDevAppPause" xml:space="preserve"><value>{1} の {0} を一時停止</value></data>
+  <data name="Vm_AutoDevAppResume" xml:space="preserve"><value>{1} の {0} を再開</value></data>
+  <data name="Vm_AutoDevRename" xml:space="preserve"><value>{0} の名前を変更</value></data>
+  <data name="RemoteModelLoadLabel.Text" xml:space="preserve"><value>読み込む</value></data>
+  <data name="RemoteModelUnloadLabel.Text" xml:space="preserve"><value>アンロード</value></data>
+  <data name="RemoteModelLoad.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>このモデルを PC に読み込みます。アンロードするか、PC の所有者が変更するまで、読み込まれたままになります。</value></data>
+  <data name="RemoteModelLoad.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>このモデルを PC に読み込みます。アンロードするか、PC の所有者が変更するまで、読み込まれたままになります。</value></data>
+  <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>このノート PC が PC に読み込んだモデルをアンロードします。モデル ファイルには影響しません。</value></data>
+  <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>このノート PC が PC に読み込んだモデルをアンロードします。モデル ファイルには影響しません。</value></data>
+  <data name="RemoteModelPlacement.Header" xml:space="preserve"><value>実行場所</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>PC がこのモデルを実行する場所は PC が決定します。グラフィックス カード、システム メモリ、またはスレッド数の上限 (コア数の半分) を設定したプロセッサのみのいずれかです。PC 自身の制限も引き続き適用されます。</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>PC がこのモデルを実行する場所は PC が決定します。グラフィックス カード、システム メモリ、またはスレッド数の上限 (コア数の半分) を設定したプロセッサのみのいずれかです。PC 自身の制限も引き続き適用されます。</value></data>
+  <data name="RemoteModelTooBig.Text" xml:space="preserve"><value>PC には大きすぎます</value></data>
+  <data name="SettingsAppModelsHeader.Text" xml:space="preserve"><value>各アプリで使用する PC のモデル</value></data>
+  <data name="SettingsAppModelsHelp.Text" xml:space="preserve"><value>このノート PC の各アプリが使用する PC のモデルを選択します。[PC の選択] を選ぶと、PC に任せます。</value></data>
+  <data name="Vm_RemTitle" xml:space="preserve"><value>{0} のモデル</value></data>
+  <data name="Vm_RemAskOwner" xml:space="preserve"><value>{0} の所有者に、このノート PC のモデル制御をオンにするよう依頼してください。</value></data>
+  <data name="Vm_RemPlacementAuto" xml:space="preserve"><value>自動</value></data>
+  <data name="Vm_RemPlacementGpu" xml:space="preserve"><value>グラフィックス カード</value></data>
+  <data name="Vm_RemPlacementCpu" xml:space="preserve"><value>システム メモリ</value></data>
+  <data name="Vm_RemPlacementCpuOnly" xml:space="preserve"><value>プロセッサのみ</value></data>
+  <data name="Vm_RemStateLoaded" xml:space="preserve"><value>読み込み済み</value></data>
+  <data name="Vm_RemStateLoading" xml:space="preserve"><value>読み込み中</value></data>
+  <data name="Vm_RemByLaptop" xml:space="preserve"><value>このノート PC が読み込みました</value></data>
+  <data name="Vm_RemByPc" xml:space="preserve"><value>PC が読み込みました</value></data>
+  <data name="Vm_RemByOther" xml:space="preserve"><value>別のデバイスが読み込みました</value></data>
+  <data name="Vm_RemAutoLoad" xml:space="preserve"><value>{0} を PC に読み込む</value></data>
+  <data name="Vm_RemAutoUnload" xml:space="preserve"><value>{0} を PC からアンロード</value></data>
+  <data name="Vm_RemHostGone" xml:space="preserve"><value>ホストは実行されていません。</value></data>
+  <data name="Vm_AppModelPcChoice" xml:space="preserve"><value>PC の選択</value></data>
+  <data name="Vm_AppModelAutomation" xml:space="preserve"><value>{0} の PC モデル</value></data>
+  <data name="SettingsHomePcHeader.Text" xml:space="preserve"><value>自宅の PC</value></data>
+  <data name="SettingsHomePcHelp.Text" xml:space="preserve"><value>この PC ではなく、お持ちの別の PC で AI を実行します。このノート PC を PC と一度ペアリングすると、ここのアプリはその PC に要求します。</value></data>
+  <data name="SettingsHomeMode.Header" xml:space="preserve"><value>AI の実行場所</value></data>
+  <data name="SettingsHomeMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>AI の実行場所</value></data>
+  <data name="SettingsHomeFallback.Header" xml:space="preserve"><value>自宅の PC に接続できない場合</value></data>
+  <data name="SettingsHomeFallback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>自宅の PC に接続できない場合</value></data>
+  <data name="SettingsHomeRelayMode.Header" xml:space="preserve"><value>外出先からの接続</value></data>
+  <data name="SettingsHomeRelayMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>外出先からの接続</value></data>
+  <data name="SettingsHomeUseRelay.Header" xml:space="preserve"><value>リレーを使用</value></data>
+  <data name="SettingsHomeUseRelay.OnContent" xml:space="preserve"><value>オン</value></data>
+  <data name="SettingsHomeUseRelay.OffContent" xml:space="preserve"><value>オフ</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>リレーを使用</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>このセッションのみリレーをオンにします。アプリを閉じるとリセットされます。</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>PC をペアリング</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ペアリング リンクを使って、このノート PC を自宅の PC とペアリングします</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ペアリング リンクを使って、このノート PC を自宅の PC とペアリングします</value></data>
+  <data name="SettingsHomePairText.Text" xml:space="preserve"><value>PC をペアリング</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ペアリング解除</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ペアリング済みの PC を削除します。モデルとダウンロードはそのまま残ります。</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ペアリング済みの PC を削除します。モデルとダウンロードはそのまま残ります。</value></data>
+  <data name="SettingsHomeUnpairText.Text" xml:space="preserve"><value>ペアリング解除</value></data>
+  <data name="SettingsNotifyDevices.Header" xml:space="preserve"><value>デバイスが外出先からペアリングまたは接続したとき</value></data>
+  <data name="SettingsNotifyDevices.OnContent" xml:space="preserve"><value>オン</value></data>
+  <data name="SettingsNotifyDevices.OffContent" xml:space="preserve"><value>オフ</value></data>
+  <data name="SettingsNotifyDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>デバイスが外出先からペアリングまたは接続したとき</value></data>
+  <data name="HomeClientEmpty.Text" xml:space="preserve"><value>AI はお持ちの別の PC で実行されます。モデル、メモリ使用量、ウォームアップはそちらで表示されます。</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>PC を変更</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ホーム PC の設定を開いて、別の PC をペアリングします</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ホーム PC の設定を開いて、別の PC をペアリングします</value></data>
+  <data name="HomeChangePcText.Text" xml:space="preserve"><value>PC を変更</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ここで AI を実行</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>クライアント モードを終了し、この PC で再び AI を実行します。ペアリングは保存されたままです。</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>クライアント モードを終了し、この PC で再び AI を実行します。ペアリングは保存されたままです。</value></data>
+  <data name="HomeRunHereText.Text" xml:space="preserve"><value>ここで AI を実行</value></data>
+  <data name="ModelsLocalNote.Text" xml:space="preserve"><value>このページのダウンロードは、この PC で AI を実行する場合のものです。</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>自宅の PC を使う</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ダウンロードを省略して、お持ちの別の PC で AI を使用します。次にその PC とペアリングします。</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ダウンロードを省略して、お持ちの別の PC で AI を使用します。次にその PC とペアリングします。</value></data>
+  <data name="WelcomeHomePcText.Text" xml:space="preserve"><value>自宅の PC を使う</value></data>
+  <data name="Vm_LinkConnectedLan" xml:space="preserve"><value>接続済み - ホーム ネットワーク</value></data>
+  <data name="Vm_LinkConnectedRelay" xml:space="preserve"><value>接続済み - リレー経由</value></data>
+  <data name="Vm_LinkConnecting" xml:space="preserve"><value>接続しています...</value></data>
+  <data name="Vm_LinkUnreachable" xml:space="preserve"><value>接続できません</value></data>
+  <data name="Vm_LinkRevoked" xml:space="preserve"><value>このノート PC は PC から削除されました</value></data>
+  <data name="Vm_LinkRepair" xml:space="preserve"><value>再ペアリング</value></data>
+  <data name="Vm_LinkRtt" xml:space="preserve"><value>{0} - {1} ミリ秒</value></data>
+  <data name="Vm_LinkLastSeen" xml:space="preserve"><value>最終確認: {0}</value></data>
+  <data name="Vm_LinkUsingLaptop" xml:space="preserve"><value>このノート PC のモデルを使用中</value></data>
+  <data name="Vm_LinkUnreachableHelp" xml:space="preserve"><value>{0} に接続できません。電源が入っていて同じネットワーク上にあることを確認するか、リレーをオンにしてください。</value></data>
+  <data name="Vm_LinkRevokedHelp" xml:space="preserve"><value>{0} は、このノート PC を受け付けなくなりました。引き続き使用するには、再ペアリングしてください。</value></data>
+  <data name="Vm_LinkRepairHelp" xml:space="preserve"><value>{0} の ID が変更されたため、このノート PC は信頼を停止しました。心当たりがない場合は、再ペアリングしないでください。そうでない場合は、ペアリングを解除してから再ペアリングしてください。</value></data>
+  <data name="Vm_TrayLink" xml:space="preserve"><value>{0} - {1}</value></data>
+  <data name="Vm_DeviceAlertPaired" xml:space="preserve"><value>{0} がペアリングされ、この PC の AI を使用できるようになりました。</value></data>
+  <data name="Vm_DeviceAlertRelay" xml:space="preserve"><value>{0} が外出先からリレー経由で接続しました。</value></data>
+  <data name="Vm_HomeModeThisPc" xml:space="preserve"><value>この PC</value></data>
+  <data name="Vm_HomeModeHomePc" xml:space="preserve"><value>自宅の PC を使う</value></data>
+  <data name="Vm_HomeFallbackNone" xml:space="preserve"><value>なし</value></data>
+  <data name="Vm_HomeFallbackLocal" xml:space="preserve"><value>このノート PC のモデルを使用</value></data>
+  <data name="Vm_HomeRelayAuto" xml:space="preserve"><value>自動</value></data>
+  <data name="Vm_HomeRelayManual" xml:space="preserve"><value>手動</value></data>
+  <data name="Vm_HomeNeedsPair" xml:space="preserve"><value>先に PC をペアリングしてください。</value></data>
+  <data name="Vm_UnpairTitle" xml:space="preserve"><value>この PC のペアリングを解除しますか?</value></data>
+  <data name="Vm_UnpairBody" xml:space="preserve"><value>このノート PC は {0} を削除し、使用を停止します。モデルとダウンロードには影響しません。後で再びペアリングできます。</value></data>
+  <data name="Vm_UnpairConfirm" xml:space="preserve"><value>ペアリング解除</value></data>
+  <data name="Vm_UnpairCancel" xml:space="preserve"><value>キャンセル</value></data>
+  <data name="Vm_FallbackTitle" xml:space="preserve"><value>自宅の PC に接続できません</value></data>
+  <data name="Vm_FallbackBody" xml:space="preserve"><value>現在 {0} に接続できません。接続できない間は、このノート PC が自身のモデルで応答しますか? この設定は、[設定] の [ホーム PC] で変更できます。</value></data>
+  <data name="Vm_FallbackLocal" xml:space="preserve"><value>このノート PC のモデルを使用</value></data>
+  <data name="Vm_FallbackNone" xml:space="preserve"><value>なし</value></data>
+  <data name="Vm_PairTitle" xml:space="preserve"><value>自宅の PC を使う</value></data>
+  <data name="Vm_PairIntro" xml:space="preserve"><value>もう一方の PC で [設定] を開き、[デバイスをペアリング] を選んでリンクをコピーし、ここに貼り付けてください。</value></data>
+  <data name="Vm_PairLinkPlaceholder" xml:space="preserve"><value>portalai://pair?...</value></data>
+  <data name="Vm_PairLinkName" xml:space="preserve"><value>ペアリング リンク</value></data>
+  <data name="Vm_PairPaste" xml:space="preserve"><value>リンクを貼り付け</value></data>
+  <data name="Vm_PairPasteTip" xml:space="preserve"><value>クリップボードからペアリング リンクを貼り付けます</value></data>
+  <data name="Vm_PairNext" xml:space="preserve"><value>次へ</value></data>
+  <data name="Vm_PairConfirm" xml:space="preserve"><value>ペアリング</value></data>
+  <data name="Vm_PairBack" xml:space="preserve"><value>戻る</value></data>
+  <data name="Vm_PairCancel" xml:space="preserve"><value>キャンセル</value></data>
+  <data name="Vm_PairWorking" xml:space="preserve"><value>PC に接続しています...</value></data>
+  <data name="Vm_PairDeviceName" xml:space="preserve"><value>このノート PC の名前</value></data>
+  <data name="Vm_PairConfirmPc" xml:space="preserve"><value>{0} とペアリングしますか?</value></data>
+  <data name="Vm_PairFingerprint" xml:space="preserve"><value>フィンガープリント: {0}</value></data>
+  <data name="Vm_PairErr_invalid_input" xml:space="preserve"><value>リンクが無効です。もう一方の PC からもう一度コピーしてください。</value></data>
+  <data name="Vm_PairErr_address_not_allowed" xml:space="preserve"><value>そのアドレスはホーム ネットワーク上にありません。外出先からペアリングする場合は、先に自宅で一度ペアリングしてください。</value></data>
+  <data name="Vm_PairErr_unreachable" xml:space="preserve"><value>そのアドレスに接続できませんでした。</value></data>
+  <data name="Vm_PairErr_certificate_mismatch" xml:space="preserve"><value>この PC を確認できませんでした。</value></data>
+  <data name="Vm_PairErr_host_proof_invalid" xml:space="preserve"><value>この PC を確認できませんでした。</value></data>
+  <data name="Vm_PairErr_refused" xml:space="preserve"><value>その PC がペアリングを拒否しました。</value></data>
+  <data name="Vm_PairErr_protocol_error" xml:space="preserve"><value>その PC から予期しない応答が返されました。</value></data>
+  <data name="Vm_PairErr_save_failed" xml:space="preserve"><value>ペアリングは成功しましたが、この PC に保存できませんでした。</value></data>
+  <data name="Vm_PairErr_already_paired" xml:space="preserve"><value>すでに PC がペアリングされています。先に [設定] でペアリングを解除してください。</value></data>
+  <data name="Vm_PairErr_not_available" xml:space="preserve"><value>このインストールではペアリングを使用できません。</value></data>
+  <data name="Vm_PairErr_host" xml:space="preserve"><value>アプリは実行されていません。</value></data>
+  <data name="Vm_PairReason_expired" xml:space="preserve"><value>コードの有効期限が切れました。新しいコードを要求してください。</value></data>
+  <data name="Vm_PairReason_code_voided" xml:space="preserve"><value>間違った入力が続いたため、そのコードは使用できなくなりました。新しいコードを要求してください。</value></data>
+  <data name="Vm_PairReason_no_offer" xml:space="preserve"><value>その PC はデバイスを待機していません。その PC で新しいコードを開いてください。</value></data>
+  <data name="Vm_PairReason_too_many_devices" xml:space="preserve"><value>その PC にはすでに 16 台のデバイスがあります。先に 1 台削除してください。</value></data>
+  <data name="Vm_PairReason_wrong_code" xml:space="preserve"><value>コードが正しくありません。</value></data>
+  <data name="ModelsMemoryTitle.Text" xml:space="preserve"><value>メモリ予算</value></data>
+  <data name="ModelsMemoryTitle.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>読み込み済みおよび読み込み中のモデルが使用する予定の量を、RAM の上限とグラフィックス カードのメモリに対して示します。収まらないモデルは拒否されます。</value></data>
+  <data name="Vm_MemRam" xml:space="preserve"><value>RAM</value></data>
+  <data name="Vm_MemVram" xml:space="preserve"><value>グラフィックス メモリ</value></data>
+  <data name="Vm_MemLine" xml:space="preserve"><value>{0}: 使用中 {1}、読み込み中に予約 {2}、空き {3} (全体 {4})</value></data>
+  <data name="UpdateBar.Title" xml:space="preserve"><value>更新プログラムがあります</value></data>
+  <data name="UpdateBar.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Portal AI Host の新しいバージョンが Microsoft Store で利用できます</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>更新</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Microsoft Store のページを開いて Portal AI Host を更新します</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Microsoft Store のページを開いて Portal AI Host を更新します</value></data>
+  <data name="UpdateButtonText.Text" xml:space="preserve"><value>更新</value></data>
+  <data name="Vm_ComingSoon" xml:space="preserve"><value>近日公開</value></data>
+  <data name="Vm_VramBoth" xml:space="preserve"><value>CPU オフロードを使用する場合、{0} GB のグラフィックス メモリが必要です。推奨は {1} GB です。</value></data>
+  <data name="Vm_VramMin" xml:space="preserve"><value>CPU オフロードを使用する場合、{0} GB のグラフィックス メモリが必要です。</value></data>
+  <data name="Vm_VramRec" xml:space="preserve"><value>{0} GB のグラフィックス メモリを推奨します。</value></data>
+  <data name="Vm_GroupCount" xml:space="preserve"><value>{0} 個のモデル</value></data>
+  <data name="Vm_ShowAll" xml:space="preserve"><value>{0} 個すべてを表示</value></data>
+  <data name="Vm_ShowFewer" xml:space="preserve"><value>表示を減らす</value></data>
+  <data name="Vm_CatAllTip" xml:space="preserve"><value>すべての種類のモデルを表示</value></data>
+  <data name="Vm_CatChip_all" xml:space="preserve"><value>すべて</value></data>
+  <data name="Vm_CatChip_chat" xml:space="preserve"><value>チャット</value></data>
+  <data name="Vm_CatChip_coding" xml:space="preserve"><value>コーディング</value></data>
+  <data name="Vm_CatChip_reasoning" xml:space="preserve"><value>推論</value></data>
+  <data name="Vm_CatChip_vision" xml:space="preserve"><value>ビジョン</value></data>
+  <data name="Vm_CatChip_search" xml:space="preserve"><value>検索</value></data>
+  <data name="Vm_CatChip_image" xml:space="preserve"><value>画像</value></data>
+  <data name="Vm_CatChip_video" xml:space="preserve"><value>動画</value></data>
+  <data name="Vm_CatChip_speech" xml:space="preserve"><value>音声</value></data>
+  <data name="Vm_CatChip_other" xml:space="preserve"><value>その他</value></data>
+  <data name="Vm_Cat_chat" xml:space="preserve"><value>チャットと文章作成</value></data>
+  <data name="Vm_Cat_coding" xml:space="preserve"><value>コーディング</value></data>
+  <data name="Vm_Cat_reasoning" xml:space="preserve"><value>推論</value></data>
+  <data name="Vm_Cat_vision" xml:space="preserve"><value>画像の理解</value></data>
+  <data name="Vm_Cat_search" xml:space="preserve"><value>検索と埋め込み</value></data>
+  <data name="Vm_Cat_image" xml:space="preserve"><value>画像生成</value></data>
+  <data name="Vm_Cat_video" xml:space="preserve"><value>動画生成</value></data>
+  <data name="Vm_Cat_speech" xml:space="preserve"><value>音声</value></data>
+  <data name="Vm_Cat_other" xml:space="preserve"><value>その他のモデル</value></data>
+  <data name="ModelsSearch.PlaceholderText" xml:space="preserve"><value>モデルを検索</value></data>
+  <data name="ModelsSearch.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>モデルを検索</value></data>
+  <data name="ModelsNoMatches.Text" xml:space="preserve"><value>一致するモデルがありません。検索をクリアするか、[すべて] を選択してください。</value></data>
+  <data name="HomeSeeAppsLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>このホストに接続されているアプリを確認します</value></data>
+  <data name="HomeSeeAppsLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>このホストに接続されているアプリを確認します</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ペアリング リンクをクリップボードにコピーします</value></data>
+  <data name="HomeLoadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>モデルをメモリに読み込んで、応答を速くします</value></data>
+  <data name="HomeLoadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>モデルをメモリに読み込んで、応答を速くします</value></data>
+  <data name="SettingsNotifyDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>デバイスがペアリングまたは接続したときに通知を表示します</value></data>
+  <data name="SettingsCorners.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>角の丸みの度合いです</value></data>
+  <data name="HomeChangeFolderButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>[設定] を開いて、空き容量の多いフォルダーを選択します</value></data>
+  <data name="HomeChangeFolderButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>[設定] を開いて、空き容量の多いフォルダーを選択します</value></data>
+  <data name="SettingsMoveButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>モデルを選択したフォルダーに移動します。ファイルはコピーして確認してから、古いファイルが削除されます。</value></data>
+  <data name="SettingsMoveButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>モデルを選択したフォルダーに移動します。ファイルはコピーして確認してから、古いファイルが削除されます。</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ペアリングをキャンセル</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ペアリングをキャンセル</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>正常性チェックを表示または非表示にします</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>正常性チェックを表示または非表示にします</value></data>
+  <data name="SettingsMaterial.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ウィンドウの背景のスタイルです</value></data>
+  <data name="HomeDownloadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>推奨モデルをダウンロード</value></data>
+  <data name="HomeDownloadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>推奨モデルをダウンロード</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>クラッシュ レポートに含まれる内容を正確に確認します</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>クラッシュ レポートに含まれる内容を正確に確認します</value></data>
+  <data name="SettingsEaseOffFullscreen.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>全画面表示のアプリやゲームの実行中にメモリを解放します</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>[モデル] ページを開いて、より適したモデルを確認します</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>[モデル] ページを開いて、より適したモデルを確認します</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>パフォーマンス設定を既定値に戻します</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>パフォーマンス設定を既定値に戻します</value></data>
+  <data name="SettingsEaseOffBattery.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>PC がバッテリで動作している間、メモリを解放します</value></data>
+  <data name="SettingsPreset.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>速度とメモリ使用量のバランスを、用意された設定から選択します</value></data>
+  <data name="SettingsRemoteRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ペアリング済みのデバイスが、ホーム ネットワークの外からこの PC に接続できるようにします</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>新しいデバイスをペアリングするためのコードを作成します</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>新しいデバイスをペアリングするためのコードを作成します</value></data>
+  <data name="SettingsCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>問題の修正に役立てるため、クラッシュ レポートを送信します</value></data>
+  <data name="SettingsAllowReplace.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>デバイスが既存のペアリングを置き換えることを許可します</value></data>
+  <data name="SettingsMotion.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>アニメーションの使用量です</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>既定のモデル フォルダーに戻します</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>既定のモデル フォルダーに戻します</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>外出先からリレー経由で自宅の PC に接続できるようにします</value></data>
+  <data name="HomeTryAgainButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>モデル一覧をもう一度読み込みます</value></data>
+  <data name="HomeTryAgainButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>モデル一覧をもう一度読み込みます</value></data>
+  <data name="SettingsStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Windows へのサインイン時に Portal AI Host を開始します</value></data>
+  <data name="SettingsHomeMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>この PC でモデルを実行するか、自宅の PC を使用するかを選択します</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>アプリが使用できるように、ホストを開始します</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>アプリが使用できるように、ホストを開始します</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>全般設定を既定値に戻します</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>全般設定を既定値に戻します</value></data>
+  <data name="SettingsHomeFallback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>自宅の PC に接続できない場合の動作です</value></data>
+  <data name="SettingsDensity.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>項目間の余白の大きさです</value></data>
+  <data name="SettingsTextSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>文字の大きさです</value></data>
+  <data name="SettingsIdle.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>リクエストがない状態が続いたあと、ホストがモデルのメモリを解放するまでの時間です</value></data>
+  <data name="SettingsEaseOffAppBusy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>他のアプリが高負荷で動作している間、メモリを解放します</value></data>
+  <data name="SettingsRemoveDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>このデバイスを削除します。接続するには、再ペアリングが必要です。</value></data>
+  <data name="SettingsRemoveDevice.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>このデバイスを削除します。接続するには、再ペアリングが必要です。</value></data>
+  <data name="SettingsMoveCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>モデルの移動を停止</value></data>
+  <data name="SettingsMoveCancel.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>モデルの移動を停止</value></data>
+  <data name="SettingsNotifyDownloads.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ダウンロードが完了または失敗したときに通知を表示します</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>プライバシー設定を既定値に戻します</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>プライバシー設定を既定値に戻します</value></data>
+  <data name="HealthCheckAgainButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>正常性チェックをもう一度実行します</value></data>
+  <data name="HealthCheckAgainButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>正常性チェックをもう一度実行します</value></data>
+  <data name="SettingsMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>モデルが使用できるメモリの量です</value></data>
+  <data name="SettingsTheme.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ライト、ダーク、または Windows に従います</value></data>
+  <data name="SettingsRemoteEnabled.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>他のデバイスにこの PC の使用を許可します</value></data>
+  <data name="SettingsNotifyProblems.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>対応が必要なときに通知を表示します</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>チャット ページを開いて、アクティブなモデルを試します</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>チャット ページを開いて、アクティブなモデルを試します</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>通知設定を既定値に戻します</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>通知設定を既定値に戻します</value></data>
+  <data name="SettingsRelayAdmission.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>デバイスが接続する前に、リレーによる確認を必須にします</value></data>
+  <data name="HomeUnloadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>モデルが使用しているメモリを解放します。モデル ファイルはディスクに残ります。</value></data>
+  <data name="HomeUnloadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>モデルが使用しているメモリを解放します。モデル ファイルはディスクに残ります。</value></data>
+  <data name="HomeSeeAllModelsLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ダウンロード可能なすべてのモデルを参照します</value></data>
+  <data name="HomeSeeAllModelsLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ダウンロード可能なすべてのモデルを参照します</value></data>
+  <data name="SettingsNotifyApprovals.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>アプリがアクセス許可を求めたときに通知を表示します</value></data>
+  <data name="SettingsHomeRelayMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>自宅の PC への接続にリレーを使用するタイミングを選択します</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>外観設定を既定値に戻します</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>外観設定を既定値に戻します</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>正常性チェック</value></data>
+</root>

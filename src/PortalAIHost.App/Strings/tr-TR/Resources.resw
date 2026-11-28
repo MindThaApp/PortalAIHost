@@ -1,0 +1,986 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="NavHome.Content" xml:space="preserve"><value>Ana sayfa</value></data>
+  <data name="NavHome.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ana sayfa</value></data>
+  <data name="NavModels.Content" xml:space="preserve"><value>Modeller</value></data>
+  <data name="NavModels.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Modeller</value></data>
+  <data name="NavApps.Content" xml:space="preserve"><value>Cihazlar ve uygulamalar</value></data>
+  <data name="NavApps.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Cihazlar ve uygulamalar</value></data>
+  <data name="NavTryIt.Content" xml:space="preserve"><value>Deneyin</value></data>
+  <data name="NavTryIt.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Deneyin</value></data>
+  <data name="NavSettings.Content" xml:space="preserve"><value>Ayarlar</value></data>
+  <data name="NavSettings.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ayarlar</value></data>
+  <data name="HomeTitle.Text" xml:space="preserve"><value>Ana sayfa</value></data>
+  <data name="HomeSafeModeBar.Title" xml:space="preserve"><value>Güvenli mod</value></data>
+  <data name="HomeStoreProblemBar.Title" xml:space="preserve"><value>Modeller klasörü kullanılamıyor</value></data>
+  <data name="Vm_OldFolderBadge" xml:space="preserve"><value>Önceki klasör</value></data>
+  <data name="Vm_OldFolderRow" xml:space="preserve"><value>Önceki bir modeller klasöründe: {0}. Yer açmak için kaldırın.</value></data>
+  <data name="HomeSafeModeBar.Message" xml:space="preserve"><value>Ana bilgisayar beklenmedik şekilde birden fazla kez kapandığı için dikkatli ayarlarla başladı. Uygulamalarınız hâlâ çalışıyor. Bu sürerse bilgisayarınızı yeniden başlatın.</value></data>
+  <data name="HomeStartButton.Content" xml:space="preserve"><value>Portal AI Host'u başlat</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Portal AI Host'u başlat</value></data>
+  <data name="HomeUpgradeText.Text" xml:space="preserve"><value>Bu PC için daha iyi bir model var. Yeni model hazır olana kadar mevcut modeliniz kullanılmaya devam eder.</value></data>
+  <data name="HomeSeeModelsButton.Content" xml:space="preserve"><value>Modelleri gör</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Modelleri gör</value></data>
+  <data name="ModelsTitle.Text" xml:space="preserve"><value>Modeller</value></data>
+  <data name="ModelsExistingBar.Title" xml:space="preserve"><value>Mevcut bir kopya bulundu</value></data>
+  <data name="ModelsUpgradeBar.Title" xml:space="preserve"><value>Daha iyi bir model var</value></data>
+  <data name="ModelTooBig.Text" xml:space="preserve"><value>Bu model bu PC için fazla büyük olabilir.</value></data>
+  <data name="ModelDownload.Content" xml:space="preserve"><value>İndir</value></data>
+  <data name="ModelPause.Content" xml:space="preserve"><value>Duraklat</value></data>
+  <data name="ModelResume.Content" xml:space="preserve"><value>Devam et</value></data>
+  <data name="ModelCancel.Content" xml:space="preserve"><value>Durdur</value></data>
+  <data name="ModelUse.Content" xml:space="preserve"><value>Bu modeli kullan</value></data>
+  <data name="ModelRemove.Content" xml:space="preserve"><value>Kaldır</value></data>
+  <data name="ModelsCatalogueBar.Title" xml:space="preserve"><value>Model listesi kullanılamıyor</value></data>
+  <data name="ModelsCatalogueBar.Message" xml:space="preserve"><value>Ana bilgisayar güvenilir bir model listesi yükleyemedi, bu yüzden şu an yeni modeller indirilemiyor. Bu PC'de zaten bulunan modeller çalışmaya devam eder.</value></data>
+  <data name="AppsTitle.Text" xml:space="preserve"><value>Cihazlar ve uygulamalar</value></data>
+  <data name="AppsWaitingHeader.Text" xml:space="preserve"><value>Yanıtınız bekleniyor</value></data>
+  <data name="AppsApprovedHeader.Text" xml:space="preserve"><value>Yapay zekâ ana bilgisayarınızı kullanabilen uygulamalar</value></data>
+  <data name="AppsNone.Text" xml:space="preserve"><value>Henüz hiçbir uygulamaya izin verilmedi. Bir uygulama ana bilgisayarı kullanmak istediğinde burada size sorulacak.</value></data>
+  <data name="AppAllow.Content" xml:space="preserve"><value>İzin ver</value></data>
+  <data name="AppDeny.Content" xml:space="preserve"><value>Reddet</value></data>
+  <data name="Vm_AppTodayNone" xml:space="preserve"><value>Bugün istek yok</value></data>
+  <data name="Vm_AppToday1" xml:space="preserve"><value>Bugün {0} istek</value></data>
+  <data name="Vm_AppToday" xml:space="preserve"><value>Bugün {0} istek</value></data>
+  <data name="Vm_PriorityHigh" xml:space="preserve"><value>Yüksek</value></data>
+  <data name="Vm_PriorityNormal" xml:space="preserve"><value>Normal</value></data>
+  <data name="Vm_PriorityLow" xml:space="preserve"><value>Düşük</value></data>
+  <data name="Vm_AutoPriority" xml:space="preserve"><value>{0} için öncelik</value></data>
+  <data name="Vm_AppPausedBadge" xml:space="preserve"><value>Duraklatıldı</value></data>
+  <data name="Vm_AppPausedHint" xml:space="preserve"><value>{0} duraklatıldı. Devam ettirene kadar yeni istekler reddedilir. Erişim izni korunur.</value></data>
+  <data name="Vm_AppPause" xml:space="preserve"><value>Duraklat</value></data>
+  <data name="Vm_AppResume" xml:space="preserve"><value>Devam et</value></data>
+  <data name="Vm_AutoPause" xml:space="preserve"><value>{0} uygulamasını duraklat</value></data>
+  <data name="Vm_AutoResume" xml:space="preserve"><value>{0} uygulamasına devam et</value></data>
+  <data name="AppPriority.Header" xml:space="preserve"><value>Öncelik</value></data>
+  <data name="AppRevoke.Content" xml:space="preserve"><value>Erişimi kaldır</value></data>
+  <data name="SettingsTitle.Text" xml:space="preserve"><value>Ayarlar</value></data>
+  <data name="SettingsStartWithWindows.Header" xml:space="preserve"><value>Windows ile başlat</value></data>
+  <data name="SettingsStartWithWindows.OnContent" xml:space="preserve"><value>Açık</value></data>
+  <data name="SettingsStartWithWindows.OffContent" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="SettingsStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Windows ile başlat</value></data>
+  <data name="SettingsIdle.Header" xml:space="preserve"><value>Boştayken belleği boşalt</value></data>
+  <data name="SettingsIdle.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Boştayken belleği boşalt</value></data>
+  <data name="SettingsIdleHelp.Text" xml:space="preserve"><value>Bir uygulama modeli tekrar istediğinde model yeniden uyanır. Modeli yüklü tutmak yanıtları hızlandırır ama sürekli bellek kullanır.</value></data>
+  <data name="SettingsFolder.Header" xml:space="preserve"><value>İndirilen modeller için klasör</value></data>
+  <data name="SettingsFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>İndirilen modeller için klasör</value></data>
+  <data name="TryItTitle.Text" xml:space="preserve"><value>Deneyin</value></data>
+  <data name="TryItIntro.Text" xml:space="preserve"><value>Modelin çalıştığını kontrol etmek ve yanıt hızını görmek için ona kısa bir soru sorun. Buraya yazdıklarınız kaydedilmez. Sormak için Ctrl+Enter tuşlarına basın.</value></data>
+  <data name="TryItPrompt.Header" xml:space="preserve"><value>Sorunuz</value></data>
+  <data name="TryItPrompt.PlaceholderText" xml:space="preserve"><value>Örnek: Deniz hakkında bir cümle yazın.</value></data>
+  <data name="TryItPrompt.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Sorunuz</value></data>
+  <data name="TryItSend.Content" xml:space="preserve"><value>Sor</value></data>
+  <data name="TryItSend.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Sor</value></data>
+  <data name="TryItStop.Content" xml:space="preserve"><value>Durdur</value></data>
+  <data name="TryItStop.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Durdur</value></data>
+  <data name="TryItReply.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Yanıt</value></data>
+  <data name="WelcomeTitle.Text" xml:space="preserve"><value>Portal AI Host'a hoş geldiniz</value></data>
+  <data name="WelcomeLead.Text" xml:space="preserve"><value>Bu bilgisayarda kalan yapay zekâ</value></data>
+  <data name="WelcomeIntro.Text" xml:space="preserve"><value>Portal AI Host, Portal uygulamalarınız için bu bilgisayarda yapay zekâ modelleri çalıştırır. Kurulacak bir şey yok: bilgisayarınıza uygun bir model seçeceğiz.</value></data>
+  <data name="WelcomePoint1Title.Text" xml:space="preserve"><value>Bu bilgisayarda çalışır</value></data>
+  <data name="WelcomePoint1Body.Text" xml:space="preserve"><value>Model kendi ekran kartınızı ve belleğinizi kullanır, bu yüzden internet bağlantısı olmadan da çalışır.</value></data>
+  <data name="WelcomePoint2Title.Text" xml:space="preserve"><value>Gizli kalır</value></data>
+  <data name="WelcomePoint2Body.Text" xml:space="preserve"><value>Sorularınız ve dosyalarınız bu bilgisayardan asla çıkmaz.</value></data>
+  <data name="WelcomePoint3Title.Text" xml:space="preserve"><value>Portal uygulamalarınız için hazırlandı</value></data>
+  <data name="WelcomePoint3Body.Text" xml:space="preserve"><value>Portal uygulamalarınız yazmak, özetlemek ve yanıtlamak için kullanabilir; ek hesap gerekmez.</value></data>
+  <data name="WelcomeModelTitle.Text" xml:space="preserve"><value>Bir model seçin</value></data>
+  <data name="WelcomeModelIntro.Text" xml:space="preserve"><value>Model, işi yapan yapay zekâdır. Bilgisayarınız için en uygun gördüğümüz budur.</value></data>
+  <data name="WelcomeNoModel.Text" xml:space="preserve"><value>Şu an bu PC için uygun bir model bulamadık. Daha sonra Modeller sayfasından tekrar bakabilirsiniz.</value></data>
+  <data name="WelcomeDownload.Content" xml:space="preserve"><value>İndir</value></data>
+  <data name="WelcomeDownload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Önerilen modeli indir</value></data>
+  <data name="WelcomeChooseLater.Content" xml:space="preserve"><value>Daha sonra seç</value></data>
+  <data name="WelcomeChooseLater.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Daha sonra seçin, Modeller'den bir model seçin</value></data>
+  <data name="WelcomeKeepGoing.Text" xml:space="preserve"><value>Devam edebilirsiniz. İndirme arka planda sürer.</value></data>
+  <data name="WelcomeRetry.Content" xml:space="preserve"><value>Yeniden dene</value></data>
+  <data name="WelcomeRetry.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Yeniden dene, indirmeyi baştan başlat</value></data>
+  <data name="WelcomeWhereTitle.Text" xml:space="preserve"><value>Simgeyi saatin yanında bulun</value></data>
+  <data name="WelcomeTrayTitle.Text" xml:space="preserve"><value>Sistem tepsisindeki simgeyi arayın</value></data>
+  <data name="WelcomeTrayBody.Text" xml:space="preserve"><value>Portal AI Host, saatin yanındaki küçük simgelerde, tepside sessizce bekler. Açmak için simgesine tıklayın. Görmüyorsanız gizli simgeleri göstermek için oka tıklayın.</value></data>
+  <data name="WelcomeAskTitle.Text" xml:space="preserve"><value>Uygulamalar her zaman önce sorar</value></data>
+  <data name="WelcomeAskBody.Text" xml:space="preserve"><value>Bir Portal uygulaması bu PC'de ilk kez yapay zekâ kullanmak isterse size sorulur. Hayır diyebilirsiniz ve erişimi istediğiniz zaman geri alabilirsiniz.</value></data>
+  <data name="WelcomeStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Windows ile başlat, oturum açtığımda Portal AI Host'u başlat</value></data>
+  <data name="WelcomeSkip.Content" xml:space="preserve"><value>Şimdilik atla</value></data>
+  <data name="WelcomeSkip.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Şimdilik atla, karşılamayı kapat</value></data>
+  <data name="WelcomeBack.Content" xml:space="preserve"><value>Geri</value></data>
+  <data name="WelcomeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Geri</value></data>
+  <data name="Vm_VerifiedShort" xml:space="preserve"><value>Doğrulanmış Portal uygulaması</value></data>
+  <data name="Vm_ApprovalDetails" xml:space="preserve"><value>Ayrıntılar</value></data>
+  <data name="Vm_WelcomeRecommended" xml:space="preserve"><value>Önerilen: {0} modeli</value></data>
+  <data name="Vm_WelcomeSmall" xml:space="preserve"><value>Küçük</value></data>
+  <data name="Vm_WelcomeMedium" xml:space="preserve"><value>Orta</value></data>
+  <data name="Vm_WelcomeLarge" xml:space="preserve"><value>Büyük</value></data>
+  <data name="Vm_WelcomeDetail" xml:space="preserve"><value>{0}, {1}</value></data>
+  <data name="WelcomeLaterNote.Text" xml:space="preserve"><value>Modeli daha sonra Modeller bölümünden seçebilirsiniz.</value></data>
+  <data name="WelcomeStartRec.Content" xml:space="preserve"><value>Önerilen ayarlarla başlat</value></data>
+  <data name="WelcomeStartRec.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Önerilen ayarlarla başlat</value></data>
+  <data name="WelcomeWhereIntro.Text" xml:space="preserve"><value>Başlamadan önce bilmeniz gereken iki şey var.</value></data>
+  <data name="WelcomeStartTitle.Text" xml:space="preserve"><value>Windows ile başlat</value></data>
+  <data name="WelcomeStartBody.Text" xml:space="preserve"><value>Oturum açtığınızda Portal AI Host tepside hazır bekler, böylece uygulamalarınız hemen kullanabilir.</value></data>
+  <data name="Vm_WelcomeRecommendedTip" xml:space="preserve"><value>Önerilen modeli ({0}) arka planda indirir, Portal AI Host'un Windows ile başlamasını sürdürür ve bu pencereyi kapatır. Her şeyi daha sonra değiştirebilirsiniz.</value></data>
+  <data name="Vm_WelcomeRecommendedTipNoModel" xml:space="preserve"><value>Portal AI Host'un Windows ile başlamasını sürdürür ve bu pencereyi kapatır. Her şeyi daha sonra değiştirebilirsiniz.</value></data>
+  <data name="Vm_WelcomeTitle" xml:space="preserve"><value>Portal AI Host'a hoş geldiniz</value></data>
+  <data name="Vm_WelcomeNext" xml:space="preserve"><value>İleri</value></data>
+  <data name="Vm_WelcomeFinish" xml:space="preserve"><value>Başlayın</value></data>
+  <data name="Vm_WelcomeSize" xml:space="preserve"><value>İndirme boyutu: {0}</value></data>
+  <data name="Vm_AppTitle" xml:space="preserve"><value>Portal AI Host</value></data>
+  <data name="Vm_NoHostTitle" xml:space="preserve"><value>Portal AI Host çalışmıyor</value></data>
+  <data name="Vm_NoHostBody" xml:space="preserve"><value>Yapay zekâ modelinizi çalıştıran yardımcı program kapalı. Uygulamalarınızın yapay zekâyı kullanabilmesi için başlatın.</value></data>
+  <data name="Vm_Starting" xml:space="preserve"><value>Başlatılıyor...</value></data>
+  <data name="Vm_StartFailed" xml:space="preserve"><value>Ana bilgisayar başlatılamadı. Portal AI Host'u Başlat menüsünden yeniden açmayı deneyin.</value></data>
+  <data name="Vm_StateReady" xml:space="preserve"><value>Hazır</value></data>
+  <data name="Vm_StateBusy" xml:space="preserve"><value>Yanıt yazıyor</value></data>
+  <data name="Vm_StateLoading" xml:space="preserve"><value>Model hazırlanıyor</value></data>
+  <data name="Vm_StateIdle" xml:space="preserve"><value>Dinleniyor. Bir uygulama istediğinde model uyanır.</value></data>
+  <data name="Vm_StateNoModel" xml:space="preserve"><value>Henüz model yok</value></data>
+  <data name="Vm_StateDownloading" xml:space="preserve"><value>Bir model indiriliyor</value></data>
+  <data name="Vm_StateError" xml:space="preserve"><value>Bir şeyler ters gitti</value></data>
+  <data name="Vm_HostVersion" xml:space="preserve"><value>Ana bilgisayar sürümü {0}</value></data>
+  <data name="Vm_ModelNone" xml:space="preserve"><value>Henüz yüklü model yok</value></data>
+  <data name="Vm_ModelLoaded" xml:space="preserve"><value>{0} yüklü ve hazır</value></data>
+  <data name="Vm_ModelLoading" xml:space="preserve"><value>{0} yükleniyor...</value></data>
+  <data name="Vm_ModelUnloaded" xml:space="preserve"><value>{0} yüklü. Bir uygulama istediğinde yüklenir.</value></data>
+  <data name="Vm_QueueEmpty" xml:space="preserve"><value>Bekleyen istek yok</value></data>
+  <data name="Vm_QueueSome" xml:space="preserve"><value>{0} çalışıyor, {1} bekliyor</value></data>
+  <data name="Vm_QualityName" xml:space="preserve"><value>Kalite {0} / 5</value></data>
+  <data name="Vm_DownloadProgress" xml:space="preserve"><value>{0} / {1}</value></data>
+  <data name="Vm_DownloadEta" xml:space="preserve"><value>{0} / {1}, yaklaşık {2} dakika kaldı</value></data>
+  <data name="Vm_Paused" xml:space="preserve"><value>%{0} noktasında duraklatıldı</value></data>
+  <data name="Vm_Verifying" xml:space="preserve"><value>İndirme kontrol ediliyor...</value></data>
+  <data name="Vm_Queued" xml:space="preserve"><value>Başlamayı bekliyor...</value></data>
+  <data name="Vm_DownloadFailed" xml:space="preserve"><value>İndirme tamamlanamadı. {0}</value></data>
+  <data name="Vm_DownloadDone" xml:space="preserve"><value>İndirme tamamlandı.</value></data>
+  <data name="Vm_InUse" xml:space="preserve"><value>Kullanımda</value></data>
+  <data name="Vm_Installed" xml:space="preserve"><value>Yüklü</value></data>
+  <data name="Vm_BestForYou" xml:space="preserve"><value>Bu PC için en iyisi</value></data>
+  <data name="Vm_StorageLine" xml:space="preserve"><value>Modeller {0} sürücüsünde {2} yer kaplar. Bu sürücüde {1} boş alan var.</value></data>
+  <data name="Vm_ExistingCopy" xml:space="preserve"><value>{0} modelinin bir kopyası zaten bu PC'de. Ana bilgisayar onu yeniden indirmek yerine bunu kullanacak.</value></data>
+  <data name="Vm_UpgradeOffer" xml:space="preserve"><value>{0} daha uygun bir model. Yeni model hazır olana kadar mevcut modeliniz kullanılmaya devam eder.</value></data>
+  <data name="Vm_CancelDlTitle" xml:space="preserve"><value>Bu indirme durdurulsun mu?</value></data>
+  <data name="Vm_CancelDlBody" xml:space="preserve"><value>Zaten indirilmiş olan kısım silinecek.</value></data>
+  <data name="Vm_CancelDlYes" xml:space="preserve"><value>İndirmeyi durdur</value></data>
+  <data name="Vm_CancelDlKeep" xml:space="preserve"><value>İndirmeye devam et</value></data>
+  <data name="Vm_AutoDownload" xml:space="preserve"><value>{0} indir</value></data>
+  <data name="Vm_AutoCancel" xml:space="preserve"><value>{0} indirmesini durdur</value></data>
+  <data name="Vm_AutoUse" xml:space="preserve"><value>{0} kullan</value></data>
+  <data name="Vm_Added" xml:space="preserve"><value>{0} eklendi</value></data>
+  <data name="Vm_LastUsed" xml:space="preserve"><value>Son kullanım: {0}</value></data>
+  <data name="Vm_NeverUsed" xml:space="preserve"><value>Henüz kullanılmadı</value></data>
+  <data name="Vm_AutoRevoke" xml:space="preserve"><value>{0} için erişimi kaldır</value></data>
+  <data name="Vm_AutoAllow" xml:space="preserve"><value>{0} için izin ver</value></data>
+  <data name="Vm_AutoDeny" xml:space="preserve"><value>{0} için reddet</value></data>
+  <data name="Vm_RevokeTitle" xml:space="preserve"><value>{0} için erişim kaldırılsın mı?</value></data>
+  <data name="Vm_RevokeBody" xml:space="preserve"><value>{0}, siz tekrar izin verene kadar yapay zekâ ana bilgisayarıyla çalışmayı bırakır.</value></data>
+  <data name="Vm_RevokeYes" xml:space="preserve"><value>Erişimi kaldır</value></data>
+  <data name="Vm_Cancel" xml:space="preserve"><value>İptal</value></data>
+  <data name="Vm_Verified" xml:space="preserve"><value>Yüklü uygulama ({0}). Portal uygulaması değil.</value></data>
+  <data name="Vm_VerifiedPortal" xml:space="preserve"><value>Doğrulanmış Portal uygulaması ({0})</value></data>
+  <data name="Vm_Unverified" xml:space="preserve"><value>Doğrulanmadı. {0} konumundan çalışır. Yalnızca kendiniz başlattıysanız izin verin.</value></data>
+  <data name="Vm_ApprovalTitle" xml:space="preserve"><value>{0} bu PC'deki yapay zekâyı kullansın mı?</value></data>
+  <data name="Vm_ApprovalBody" xml:space="preserve"><value>{0}, bu PC'deki yapay zekâ modelini kullanmak istiyor.</value></data>
+  <data name="Vm_ApprovalReason" xml:space="preserve"><value>Verilen neden: {0}</value></data>
+  <data name="Vm_Allow" xml:space="preserve"><value>İzin ver</value></data>
+  <data name="Vm_Deny" xml:space="preserve"><value>İzin verme</value></data>
+  <data name="Vm_Later" xml:space="preserve"><value>Daha sonra karar ver</value></data>
+  <data name="Vm_Idle_Keep" xml:space="preserve"><value>Modeli yüklü tut</value></data>
+  <data name="Vm_Idle_5" xml:space="preserve"><value>5 dakika sonra</value></data>
+  <data name="Vm_Idle_10" xml:space="preserve"><value>10 dakika sonra</value></data>
+  <data name="Vm_Saved" xml:space="preserve"><value>Kaydedildi</value></data>
+  <data name="Vm_SaveFailed" xml:space="preserve"><value>Kaydedilemedi. Ana bilgisayar çalışıyor mu?</value></data>
+  <data name="Vm_FolderTitle" xml:space="preserve"><value>Modeller için bu klasör kullanılsın mı?</value></data>
+  <data name="Vm_FolderBody" xml:space="preserve"><value>Ana bilgisayar modeller için {0} klasörünü kullanacak. Zaten sahip olduğunuz modeller taşınmaz veya silinmez.</value></data>
+  <data name="Vm_FolderYes" xml:space="preserve"><value>Klasörü kullan</value></data>
+  <data name="TryItClear.Content" xml:space="preserve"><value>Temizle</value></data>
+  <data name="TryItClear.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Konuşmayı temizle</value></data>
+  <data name="TryItSuggestLabel.Text" xml:space="preserve"><value>Ne soracağınızdan emin değil misiniz? Bunlardan birini deneyin.</value></data>
+  <data name="HomeTryItButton.Content" xml:space="preserve"><value>Deneyin</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Modele bir soru sorarak deneyin</value></data>
+  <data name="Vm_TrySuggest1" xml:space="preserve"><value>Deniz hakkında samimi bir cümle yazın.</value></data>
+  <data name="Vm_TrySuggest2" xml:space="preserve"><value>Yönlendiricinin ne işe yaradığını iki cümleyle açıklayın.</value></data>
+  <data name="Vm_TrySuggest3" xml:space="preserve"><value>Bir kedi için üç isim verin.</value></data>
+  <data name="Vm_TryStats" xml:space="preserve"><value>İlk kelimeler {0} sn sonra, ardından saniyede {1} token.</value></data>
+  <data name="Vm_TryStatsShort" xml:space="preserve"><value>İlk kelimeler {0} sn sonra.</value></data>
+  <data name="Vm_TryStatsStopped" xml:space="preserve"><value>Durduruldu. {0}</value></data>
+  <data name="TryItThinking.Header" xml:space="preserve"><value>Modelin önce düşündükleri</value></data>
+  <data name="Vm_TryWorking" xml:space="preserve"><value>Üzerinde çalışılıyor. Küçük bir bilgisayar bir dakika sürebilir.</value></data>
+  <data name="Vm_TryThinking" xml:space="preserve"><value>Düşünülüyor...</value></data>
+  <data name="Vm_TryOnlyThinking" xml:space="preserve"><value>Model tüm süre sınırını düşünerek harcadı ve yanıt vermedi. Daha kısa bir soru deneyin.</value></data>
+  <data name="Vm_TryEmpty" xml:space="preserve"><value>Model boş bir yanıt gönderdi. Tekrar sormayı deneyin.</value></data>
+  <data name="Vm_TryFailed" xml:space="preserve"><value>Ana bilgisayar yanıt veremedi: {0}</value></data>
+  <data name="Vm_HwChecking" xml:space="preserve"><value>Bilgisayarınız kontrol ediliyor...</value></data>
+  <data name="Vm_HwUnknown" xml:space="preserve"><value>okunamadı</value></data>
+  <data name="Vm_HwMemory" xml:space="preserve"><value>Bellek: {0}</value></data>
+  <data name="Vm_HwGraphics" xml:space="preserve"><value>Grafik: {0}</value></data>
+  <data name="Vm_HwCores" xml:space="preserve"><value>İşlemci çekirdekleri: {0}</value></data>
+  <data name="Vm_HwDisk" xml:space="preserve"><value>Boş disk alanı: {0}</value></data>
+  <data name="HomeWelcomeTitle.Text" xml:space="preserve"><value>Bu PC'de özel yapay zekânızı kurun</value></data>
+  <data name="HomeWelcomeBody.Text" xml:space="preserve"><value>Portal AI Host, bu PC'de bir yapay zekâ modeli tutar ve bunu Portal uygulamalarınızla paylaşır; böylece her uygulamanın ayrı bir kopyaya ihtiyacı olmaz. Her şey burada çalışır: sözcükleriniz bu PC'den çıkmaz ve bulut hesabı gerekmez.</value></data>
+  <data name="HomeCatalogueBar.Title" xml:space="preserve"><value>Model listesi kullanılamıyor</value></data>
+  <data name="HomeCatalogueBar.Message" xml:space="preserve"><value>Ana bilgisayar güvenilir bir model listesi yükleyemedi, bu yüzden şu an önerilecek bir şey yok. İnternet bağlantınızı kontrol edip tekrar deneyin.</value></data>
+  <data name="HomeTryAgainButton.Content" xml:space="preserve"><value>Yeniden dene</value></data>
+  <data name="HomeRecommendedLabel.Text" xml:space="preserve"><value>BU PC İÇİN ÖNERİLEN</value></data>
+  <data name="HomeNoSpaceBar.Title" xml:space="preserve"><value>Yeterli disk alanı yok</value></data>
+  <data name="HomeChangeFolderButton.Content" xml:space="preserve"><value>Ayarlar'da klasörü değiştir</value></data>
+  <data name="HomeDownloadButton.Content" xml:space="preserve"><value>İndir</value></data>
+  <data name="HomeSeeAllModelsLink.Content" xml:space="preserve"><value>Tüm modelleri gör</value></data>
+  <data name="HomeSeeAllModelsLink2.Content" xml:space="preserve"><value>Tüm modelleri gör</value></data>
+  <data name="HomeActiveModelLabel.Text" xml:space="preserve"><value>ETKİN MODEL</value></data>
+  <data name="HomeAppsLabel.Text" xml:space="preserve"><value>BAĞLI UYGULAMALAR</value></data>
+  <data name="HomeSeeAppsLink.Content" xml:space="preserve"><value>Cihazları ve uygulamaları gör</value></data>
+  <data name="HomeRequestsLabel.Text" xml:space="preserve"><value>İSTEKLER</value></data>
+  <data name="Vm_HomeLoaded" xml:space="preserve"><value>Yüklü ve hazır</value></data>
+  <data name="Vm_HomeLoading" xml:space="preserve"><value>Hazırlanıyor...</value></data>
+  <data name="Vm_HomeUnloaded" xml:space="preserve"><value>Yüklü değil. Bir uygulama istediğinde yüklenir.</value></data>
+  <data name="Vm_HomeKeepLoaded" xml:space="preserve"><value>Yanıtların hızlı başlaması için yüklü kalır.</value></data>
+  <data name="Vm_HomeIdleUnload" xml:space="preserve"><value>{0} dakika istek gelmezse bellek boşaltılır.</value></data>
+  <data name="Vm_HomeApps" xml:space="preserve"><value>{0} uygulama bu modeli kullanabilir</value></data>
+  <data name="Vm_HomeApps1" xml:space="preserve"><value>1 uygulama bu modeli kullanabilir</value></data>
+  <data name="Vm_HomeAppsNone" xml:space="preserve"><value>Henüz bağlı uygulama yok. İlk kez izin ister.</value></data>
+  <data name="Vm_HomeNoSpace" xml:space="preserve"><value>Bu model {0} ister, ama yalnızca {1} boş. Biraz yer açın veya Ayarlar'da başka bir modeller klasörü seçin.</value></data>
+  <data name="Vm_NoGpu" xml:space="preserve"><value>bulunamadı</value></data>
+  <data name="Vm_HostMissing" xml:space="preserve"><value>Ana bilgisayar programı bu kurulumda eksik. Sorunu çözmek için Portal AI Host'u yeniden kurun.</value></data>
+  <data name="Vm_HostMissingTestRun" xml:space="preserve"><value>Bu bir test çalıştırmasıdır ve uygulamanın yanında ana bilgisayar programı bulunamadı. Test çalıştırması için yüklü ana bilgisayar başlatılmaz.</value></data>
+  <data name="Vm_StartTimedOut" xml:space="preserve"><value>Ana bilgisayar başladı ama zamanında yanıt vermedi. Bir an bekleyip tekrar deneyin.</value></data>
+  <data name="Vm_HostExitTestRoot" xml:space="preserve"><value>Ana bilgisayar başlamayı reddetti: test veri klasörü yok veya test klasörü olarak işaretlenmemiş.</value></data>
+  <data name="Vm_HostExitStartFailed" xml:space="preserve"><value>Ana bilgisayar başlatılamadı. Bilgisayarınızı yeniden başlatıp tekrar deneyin. Sorun sürerse Portal AI Host'u yeniden kurun.</value></data>
+  <data name="Vm_HostExitOtherUser" xml:space="preserve"><value>AI ana bilgisayarını bu PC'deki başka bir Windows kullanıcısı zaten çalıştırıyor. Onlardan kapatmalarını isteyin veya o kullanıcıyla oturum açın.</value></data>
+  <data name="Vm_CatalogueUnavailable" xml:space="preserve"><value>Model listesi kullanılamıyor: ana bilgisayar güvenilir bir model listesi yükleyemedi. Bu PC'de zaten bulunan modeller çalışmaya devam eder.</value></data>
+  <data name="Vm_RemoveTitle" xml:space="preserve"><value>Bu model kaldırılsın mı?</value></data>
+  <data name="Vm_RemoveBody" xml:space="preserve"><value>{0} bu PC'den kaldırılacak. Yalnızca ana bilgisayarın indirdiği dosyalar silinir; kendiniz eklediğiniz bir model dosyası yalnızca listeden çıkarılır ve olduğu yerde kalır.</value></data>
+  <data name="Vm_RemoveYes" xml:space="preserve"><value>Kaldır</value></data>
+  <data name="Vm_AutoRemove" xml:space="preserve"><value>{0} kaldır</value></data>
+  <data name="Vm_FolderSavedNote" xml:space="preserve"><value>Kaydedildi. Ana bilgisayar yeniden başladıktan sonra yeni indirmeler {1} klasörüne gider. Zaten indirilmiş modeller taşınmaz veya silinmez; {0} klasöründe kalır ve Modeller sayfasında listelenmeye devam eder, böylece oradan kaldırabilirsiniz.</value></data>
+  <data name="Vm_FolderRefused" xml:space="preserve"><value>Diğer ayarlar kaydedildi, ancak bu modeller klasörü kullanılamıyor: {0}</value></data>
+  <data name="Vm_Startup_Unavailable" xml:space="preserve"><value>Windows ile başlatma yalnızca yüklü uygulamada kullanılabilir.</value></data>
+  <data name="Vm_Startup_DisabledByUser" xml:space="preserve"><value>Windows ile başlatma Görev Yöneticisi'nde kapatılmış. Orada yeniden açın (Başlangıç uygulamaları).</value></data>
+  <data name="Vm_Startup_Policy" xml:space="preserve"><value>Windows ile başlatma kuruluşunuz tarafından ayarlanmış.</value></data>
+  <data name="Vm_DefaultFolder" xml:space="preserve"><value>varsayılan klasör</value></data>
+  <data name="Vm_Publisher" xml:space="preserve"><value>Yayımcı: {0}</value></data>
+  <data name="Vm_PublisherUnknown" xml:space="preserve"><value>Yayımcı: bilinmiyor</value></data>
+  <data name="NavAbout.Content" xml:space="preserve"><value>Hakkında</value></data>
+  <data name="NavAbout.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Hakkında</value></data>
+  <data name="AppMenuButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Uygulama menüsü</value></data>
+  <data name="Vm_AppMenuTip" xml:space="preserve"><value>Uygulama menüsü</value></data>
+  <data name="MenuSettings.Text" xml:space="preserve"><value>Ayarlar</value></data>
+  <data name="MenuShortcuts.Text" xml:space="preserve"><value>Klavye kısayolları</value></data>
+  <data name="MenuWhatsNew.Text" xml:space="preserve"><value>Yenilikler</value></data>
+  <data name="MenuAbout.Text" xml:space="preserve"><value>Portal AI Host hakkında</value></data>
+  <data name="Vm_ShortcutsTitle" xml:space="preserve"><value>Klavye kısayolları</value></data>
+  <data name="Vm_ShortcutsBody" xml:space="preserve"><value>Ctrl+1: Ana sayfa
+Ctrl+2: Modeller
+Ctrl+3: Cihazlar ve uygulamalar
+Ctrl+4: Deneyin
+Ctrl+, : Ayarlar
+F1: Hakkında
+Esc: Yenilikler'i veya bir iletişim kutusunu kapat</value></data>
+  <data name="Vm_Close" xml:space="preserve"><value>Kapat</value></data>
+  <data name="SettingsGeneralHeader.Text" xml:space="preserve"><value>Genel</value></data>
+  <data name="SettingsResetGeneral.Content" xml:space="preserve"><value>Varsayılana sıfırla</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Genel ayarları varsayılana sıfırla</value></data>
+  <data name="SettingsNotificationsHeader.Text" xml:space="preserve"><value>Bildirimler</value></data>
+  <data name="SettingsResetNotifications.Content" xml:space="preserve"><value>Varsayılana sıfırla</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Varsayılana sıfırla, bildirim ayarları</value></data>
+  <data name="SettingsNotificationsHelp.Text" xml:space="preserve"><value>Bir şey dikkatinizi gerektirdiğinde ve bu pencere kapalıyken Windows'tan kısa mesajlar. Tam ekran bir program önde çalışırken sessiz kalırlar ve bir mesaj birkaç dakikada bir kereden fazla tekrarlanmaz.</value></data>
+  <data name="SettingsNotifyDownloads.Header" xml:space="preserve"><value>Bir model indirmesi biter veya başarısız olur</value></data>
+  <data name="SettingsNotifyDownloads.OnContent" xml:space="preserve"><value>Açık</value></data>
+  <data name="SettingsNotifyDownloads.OffContent" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="SettingsNotifyDownloads.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Bir model indirmesi bittiğinde veya başarısız olduğunda bildir</value></data>
+  <data name="SettingsNotifyApprovals.Header" xml:space="preserve"><value>Bir uygulama onay istiyor</value></data>
+  <data name="SettingsNotifyApprovals.OnContent" xml:space="preserve"><value>Açık</value></data>
+  <data name="SettingsNotifyApprovals.OffContent" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="SettingsNotifyApprovals.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Bir uygulama onay istediğinde bildir</value></data>
+  <data name="SettingsNotifyProblems.Header" xml:space="preserve"><value>Yapay zekâ motoru durur veya bir denetim başarısız olur</value></data>
+  <data name="SettingsNotifyProblems.OnContent" xml:space="preserve"><value>Açık</value></data>
+  <data name="SettingsNotifyProblems.OffContent" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="SettingsNotifyProblems.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Yapay zekâ motoru durduğunda veya bir denetim başarısız olduğunda bildir</value></data>
+  <data name="SettingsPrivacyHeader.Text" xml:space="preserve"><value>Gizlilik</value></data>
+  <data name="SettingsResetPrivacy.Content" xml:space="preserve"><value>Varsayılana sıfırla</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Varsayılana sıfırla, gizlilik ayarları</value></data>
+  <data name="SettingsCrashReports.Header" xml:space="preserve"><value>Çökme raporları gönder</value></data>
+  <data name="SettingsCrashReports.OnContent" xml:space="preserve"><value>Açık</value></data>
+  <data name="SettingsCrashReports.OffContent" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="SettingsCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Çökme raporları gönder</value></data>
+  <data name="SettingsCrashReportsHelp.Text" xml:space="preserve"><value>Portal AI Host çökerse kısa bir rapor, sorunu hızla düzeltmemize yardımcı olur. Raporlar dosyalarınızı veya yazdıklarınızı asla içermez. Bunu kapatmak raporları hemen durdurur.</value></data>
+  <data name="CrashWhatsSent.Content" xml:space="preserve"><value>Ne gönderiliyor?</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ne gönderiliyor, gizlilik sayfasını açar</value></data>
+  <data name="WelcomeCrashReports.Content" xml:space="preserve"><value>Sorunları hızla düzeltebilmemiz için çökme raporları gönder. Raporlar dosyalarınızı veya yazdıklarınızı asla içermez.</value></data>
+  <data name="WelcomeCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Sorunları hızla düzeltebilmemiz için çökme raporları gönder. Raporlar dosyalarınızı veya yazdıklarınızı asla içermez.</value></data>
+  <data name="SettingsModelsHeader.Text" xml:space="preserve"><value>Modeller klasörü</value></data>
+  <data name="SettingsResetFolder.Content" xml:space="preserve"><value>Varsayılana sıfırla</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Modeller klasörünü varsayılana sıfırla</value></data>
+  <data name="SettingsFolderHelp.Text" xml:space="preserve"><value>Enter'a bastığınızda veya kutudan ayrıldığınızda uygulanır. Varsayılan klasör için boş bırakın. Zaten sahip olduğunuz modeller, siz taşımayı seçmediğiniz sürece olduğu yerde kalır.</value></data>
+  <data name="SettingsAppearanceHeader.Text" xml:space="preserve"><value>Görünüm</value></data>
+  <data name="SettingsResetAppearance.Content" xml:space="preserve"><value>Varsayılana sıfırla</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Görünümü varsayılana sıfırla</value></data>
+  <data name="SettingsTheme.Header" xml:space="preserve"><value>Tema</value></data>
+  <data name="SettingsTheme.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Tema</value></data>
+  <data name="SettingsMaterial.Header" xml:space="preserve"><value>Pencere malzemesi</value></data>
+  <data name="SettingsMaterial.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Pencere malzemesi</value></data>
+  <data name="SettingsCorners.Header" xml:space="preserve"><value>Köşeler</value></data>
+  <data name="SettingsCorners.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Köşeler</value></data>
+  <data name="SettingsDensity.Header" xml:space="preserve"><value>Yoğunluk</value></data>
+  <data name="SettingsDensity.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Yoğunluk</value></data>
+  <data name="SettingsTextSize.Header" xml:space="preserve"><value>Metin boyutu</value></data>
+  <data name="SettingsTextSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Metin boyutu</value></data>
+  <data name="SettingsMotion.Header" xml:space="preserve"><value>Hareket</value></data>
+  <data name="SettingsMotion.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Hareket</value></data>
+  <data name="SettingsAppearanceHelp.Text" xml:space="preserve"><value>Değişiklikler hemen uygulanır. Windows yüksek karşıtlık her zaman düz sistem renklerini kullanır, burada ne seçerseniz seçin. Metin boyutu, Windows metin ölçeğinize eklenir.</value></data>
+  <data name="Vm_Theme_System" xml:space="preserve"><value>Windows ayarımı kullan (varsayılan)</value></data>
+  <data name="Vm_Theme_Light" xml:space="preserve"><value>Açık</value></data>
+  <data name="Vm_Theme_Dark" xml:space="preserve"><value>Koyu</value></data>
+  <data name="Vm_Material_Mica" xml:space="preserve"><value>Mica (varsayılan)</value></data>
+  <data name="Vm_Material_Acrylic" xml:space="preserve"><value>Akrilik</value></data>
+  <data name="Vm_Material_Solid" xml:space="preserve"><value>Düz</value></data>
+  <data name="Vm_Corners_Rounded" xml:space="preserve"><value>Yuvarlak (varsayılan)</value></data>
+  <data name="Vm_Corners_Square" xml:space="preserve"><value>Kare</value></data>
+  <data name="Vm_Corners_ExtraRound" xml:space="preserve"><value>Çok yuvarlak</value></data>
+  <data name="Vm_Density_Compact" xml:space="preserve"><value>Sıkı</value></data>
+  <data name="Vm_Density_Standard" xml:space="preserve"><value>Standart (varsayılan)</value></data>
+  <data name="Vm_Density_Comfortable" xml:space="preserve"><value>Rahat</value></data>
+  <data name="Vm_Text_Normal" xml:space="preserve"><value>Normal (varsayılan)</value></data>
+  <data name="Vm_Text_Larger" xml:space="preserve"><value>Büyük</value></data>
+  <data name="Vm_Text_Largest" xml:space="preserve"><value>En büyük</value></data>
+  <data name="Vm_Motion_Follow" xml:space="preserve"><value>Windows'u izle (varsayılan)</value></data>
+  <data name="Vm_Motion_Reduced" xml:space="preserve"><value>Azaltılmış</value></data>
+  <data name="Vm_Motion_Off" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="Vm_FolderNotFull" xml:space="preserve"><value>Tam bir klasör yolu yazın, örneğin D:\Models.</value></data>
+  <data name="AboutTitle.Text" xml:space="preserve"><value>Portal AI Host hakkında</value></data>
+  <data name="Vm_AboutVersion" xml:space="preserve"><value>Portal AI Host sürümü {0}</value></data>
+  <data name="Vm_AboutLicenceState" xml:space="preserve"><value>Ücretsiz. Hesap veya satın alma gerekmez.</value></data>
+  <data name="Vm_AboutCopyText" xml:space="preserve"><value>Portal AI Host {0}</value></data>
+  <data name="Vm_AboutCopied" xml:space="preserve"><value>Sürüm kopyalandı.</value></data>
+  <data name="AboutCopyVersion.Content" xml:space="preserve"><value>Sürümü kopyala</value></data>
+  <data name="AboutWhatsNew.Content" xml:space="preserve"><value>Yenilikler</value></data>
+  <data name="AboutHelpHeader.Text" xml:space="preserve"><value>Yardım ve gizlilik</value></data>
+  <data name="AboutFeedback.Content" xml:space="preserve"><value>Geri bildirim gönderin veya bir fikir önerin</value></data>
+  <data name="AboutPrivacy.Content" xml:space="preserve"><value>Gizlilik politikası</value></data>
+  <data name="AboutDataFolder.Content" xml:space="preserve"><value>Veri klasörünü aç</value></data>
+  <data name="AboutLicencesHeader.Text" xml:space="preserve"><value>Lisanslar</value></data>
+  <data name="Vm_ThirdParty" xml:space="preserve"><value>Portal AI Host, yapay zekâ modellerini bilgisayarınızda çalıştıran llama.cpp (MIT lisansı) içerir. Modeller, kendi lisansları altında Hugging Face'ten indirilir (Apache 2.0, MIT veya CreativeML OpenRAIL-M; kullanım kısıtlamaları geçerlidir). Görsel ve video üretimi stable-diffusion.cpp (MIT lisansı) ve ggml (MIT lisansı) kullanır. Video araçları FFmpeg (LGPL 3.0 veya sonrası) kullanır. Ses özellikleri sherpa-onnx (Apache 2.0), Kokoro sesleri (Apache 2.0) ve Kyutai'nin Pocket TTS'i (CC-BY 4.0, kredi: Kyutai) kullanır. Uygulama, hepsi MIT lisansı altındaki Windows App SDK, .NET ve Community Toolkit MVVM kitaplığı ile geliştirilmiştir.</value></data>
+  <data name="AboutLlamaLink.Content" xml:space="preserve"><value>GitHub'da llama.cpp</value></data>
+  <data name="AboutLlamaExpander.Header" xml:space="preserve"><value>llama.cpp lisans metni</value></data>
+  <data name="Vm_LlamaLicence" xml:space="preserve"><value>MIT Lisansı
+
+Copyright (c) 2023-2026 The ggml authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</value></data>
+  <data name="Vm_WhatsNewHeading" xml:space="preserve"><value>Portal AI Host {0} sürümünde yenilikler</value></data>
+  <data name="Vm_Wn1Title" xml:space="preserve"><value>Teşekkürler</value></data>
+  <data name="Vm_Wn1Body" xml:space="preserve"><value>Geri bildirimleriniz ve raporlarınız için teşekkürler. Bu güncellemeyi onlar şekillendirdi.</value></data>
+  <data name="Vm_Wn2Title" xml:space="preserve"><value>MP4 olarak video ve klipleri birleştirme</value></data>
+  <data name="Vm_Wn2Body" xml:space="preserve"><value>Video işleri artık size bir MP4 dosyası, son karenin bir resmini ve birden fazla klibin tek bir videoda birleştirilmiş halini verebilir.</value></data>
+  <data name="Vm_Wn3Title" xml:space="preserve"><value>Video kalitesi ayarları</value></data>
+  <data name="Vm_Wn3Body" xml:space="preserve"><value>Bilgisayarınızın MP4 videoyu nasıl kodlayacağını seçin, örneğin kaliteyi ve hangi video kodlayıcının kullanılacağını.</value></data>
+  <data name="Vm_Wn4Title" xml:space="preserve"><value>Yerel uygulamalar için yüklemeler</value></data>
+  <data name="Vm_Wn4Body" xml:space="preserve"><value>Bu PC'deki uygulamalar artık büyük dosyaları isteğin içinde göndermek yerine doğrudan aktarabilir. Yüklemeler bir süre sonra kaldırılır.</value></data>
+  <data name="Vm_Wn5Title" xml:space="preserve"><value>Ev PC kartı senkron kalır</value></data>
+  <data name="Vm_Wn5Body" xml:space="preserve"><value>Birkaç Ev PC ayarını hızlıca değiştirdiğinizde, yavaş bir yanıt artık eski bir değeri göstermez.</value></data>
+  <data name="Vm_Wn6Title" xml:space="preserve"><value>Dar pencerelerde daha iyi</value></data>
+  <data name="Vm_Wn6Body" xml:space="preserve"><value>Pencere dar olduğunda yan menü katlanır ve Ayarlar'daki sıfırlama bağlantıları başlıklarının altında alt satıra geçer.</value></data>
+  <data name="Vm_Wn7Title" xml:space="preserve"><value>Ekran okuyucular için daha net</value></data>
+  <data name="Vm_Wn7Body" xml:space="preserve"><value>Ana sayfadaki sağlık bölümü ile Ana sayfa ve Ayarlar'daki düğmeler artık ekran okuyucular ve ipuçları için ad ve yardım metnine sahip.</value></data>
+  <data name="Vm_Wn8Title" xml:space="preserve"><value>Ev PC'nizi dizüstü bilgisayardan kullanın</value></data>
+  <data name="Vm_Wn8Body" xml:space="preserve"><value>Bir dizüstü bilgisayarı ev PC'nizle bir kez eşleştirin. Dizüstündeki uygulamalar, evde ya da dışarıdayken ev PC'nin yapay zekâsını kullanır ve isterseniz dizüstünün kendi modeline geri döner.</value></data>
+  <data name="Vm_Wn9Title" xml:space="preserve"><value>Bu PC'deki cihazlar</value></data>
+  <data name="Vm_Wn9Body" xml:space="preserve"><value>Eşleştirilmiş her dizüstü bilgisayarı kendi kartında görün. Duraklatın, günlük sınırlar ve sessiz saatler belirleyin, kullanabileceği modelleri seçin veya yüklediği bir modeli geri alın.</value></data>
+  <data name="Vm_Wn10Title" xml:space="preserve"><value>Aynı anda iki model</value></data>
+  <data name="Vm_Wn10Body" xml:space="preserve"><value>Güvendiğiniz bir dizüstü bilgisayar, bilgisayarınızda ikinci bir modeli yüklü tutabilir; örneğin biri ekran kartında, biri bellekte. Kendi modeliniz asla dışarı itilmez.</value></data>
+  <data name="Vm_Wn11Title" xml:space="preserve"><value>Daha güvenli cihaz yönetimi</value></data>
+  <data name="Vm_Wn11Body" xml:space="preserve"><value>Bir cihazı kaldırmak, o cihazın hâlâ istediği her şeyi durdurur ve bir dizüstü bilgisayarı yeni bir ev PC'siyle eşleştirmek artık eski PC'nin erişim belirtecini ona göndermez.</value></data>
+  <data name="Vm_Wn12Title" xml:space="preserve"><value>Oyun modu pencereli oyunlarda çalışır</value></data>
+  <data name="Vm_Wn12Body" xml:space="preserve"><value>Oyun modunu açın; bir oyun çalışırken, pencerede çalışan oyunlar dahil, diğer cihazlara PC'nizin meşgul olduğu bildirilir.</value></data>
+  <data name="Vm_Wn13Title" xml:space="preserve"><value>Röle erişim anahtarı</value></data>
+  <data name="Vm_Wn13Body" xml:space="preserve"><value>Bu PC'ye evin dışından yalnızca anahtarınızla eşleştirilmiş cihazlar ulaşabilir. İstediğiniz zaman yeni bir anahtar oluşturabilirsiniz.</value></data>
+  <data name="Vm_Wn14Title" xml:space="preserve"><value>Belleğinizi bir bakışta görün</value></data>
+  <data name="Vm_Wn14Body" xml:space="preserve"><value>Modeller sayfasındaki çubuklar, yüklü modellerin ne kadar bellek ve grafik belleği kullandığını sınırlarınıza göre gösterir.</value></data>
+  <data name="Vm_WnShowMe" xml:space="preserve"><value>Göster</value></data>
+  <data name="Vm_WnShowMeName" xml:space="preserve"><value>Göster: {0}</value></data>
+  <data name="WhatsNewDone.Content" xml:space="preserve"><value>Anladım</value></data>
+  <data name="Vm_RevokedBar" xml:space="preserve"><value>{0} için erişim kaldırıldı.</value></data>
+  <data name="Vm_AutoUndo" xml:space="preserve"><value>{0} için erişimi kaldırmayı geri al</value></data>
+  <data name="AppsUndo.Content" xml:space="preserve"><value>Geri al</value></data>
+  <data name="Vm_RemoveFrees" xml:space="preserve"><value>Bu, {0} yer açar.</value></data>
+  <data name="Vm_StepOf" xml:space="preserve"><value>Adım {0} / {1}</value></data>
+  <data name="Vm_LiveIdle" xml:space="preserve"><value>Şu an hiçbir şey yazılmıyor</value></data>
+  <data name="Vm_LiveBusy" xml:space="preserve"><value>Şu an bir yanıt yazılıyor</value></data>
+  <data name="Vm_LiveGenerating" xml:space="preserve"><value>{0} bir yanıt üretiyor</value></data>
+  <data name="Vm_LiveSpeed" xml:space="preserve"><value>Saniyede yaklaşık {0} kelime</value></data>
+  <data name="Vm_LiveMemory" xml:space="preserve"><value>{0} / {1}</value></data>
+  <data name="Vm_LiveMemoryNoTotal" xml:space="preserve"><value>{0}</value></data>
+  <data name="Vm_LivePendingLoad" xml:space="preserve"><value>Yükleniyor...</value></data>
+  <data name="Vm_LivePendingUnload" xml:space="preserve"><value>Boşaltılıyor...</value></data>
+  <data name="Vm_LiveLoadFailed" xml:space="preserve"><value>Model yüklenemedi. {0}</value></data>
+  <data name="Vm_LiveUnloadFailed" xml:space="preserve"><value>Model boşaltılamadı. {0}</value></data>
+  <data name="Vm_TodayNone" xml:space="preserve"><value>Bugün henüz istek yok.</value></data>
+  <data name="Vm_TodayRow1" xml:space="preserve"><value>{0} istek, son görülme {1}</value></data>
+  <data name="Vm_TodayRow" xml:space="preserve"><value>{0} istek, son görülme {1}</value></data>
+  <data name="Vm_SeenNever" xml:space="preserve"><value>hiç</value></data>
+  <data name="Vm_SeenNow" xml:space="preserve"><value>az önce</value></data>
+  <data name="Vm_SeenMinutes" xml:space="preserve"><value>{0} dk önce</value></data>
+  <data name="Vm_SeenHours" xml:space="preserve"><value>{0} sa önce</value></data>
+  <data name="HomeLiveTitle.Text" xml:space="preserve"><value>ŞU AN</value></data>
+  <data name="Vm_LiveRamName" xml:space="preserve"><value>Modelin kullandığı bellek: {0}</value></data>
+  <data name="Vm_LiveVramName" xml:space="preserve"><value>Modelin kullandığı grafik belleği: {0}</value></data>
+  <data name="HomeRamLabel.Text" xml:space="preserve"><value>Modelin kullandığı bellek</value></data>
+  <data name="HomeVramLabel.Text" xml:space="preserve"><value>Modelin kullandığı grafik belleği</value></data>
+  <data name="HomeUnloadButton.Content" xml:space="preserve"><value>Şimdi boşalt</value></data>
+  <data name="HomeLoadButton.Content" xml:space="preserve"><value>Şimdi yükle</value></data>
+  <data name="HomeActionErrorBar.Title" xml:space="preserve"><value>Bu işe yaramadı</value></data>
+  <data name="HomeTodayLabel.Text" xml:space="preserve"><value>BUGÜN</value></data>
+  <data name="Vm_TrayReady" xml:space="preserve"><value>Hazır · {0} yüklü</value></data>
+  <data name="Vm_TrayBusy" xml:space="preserve"><value>Meşgul · {0}</value></data>
+  <data name="Vm_TrayBusyOther" xml:space="preserve"><value>Meşgul</value></data>
+  <data name="Vm_TrayLoading" xml:space="preserve"><value>Yükleniyor · {0}</value></data>
+  <data name="Vm_TrayIdle" xml:space="preserve"><value>Hazır · {0} istendiğinde yüklenir</value></data>
+  <data name="Vm_TrayNoModel" xml:space="preserve"><value>Henüz model yok</value></data>
+  <data name="Vm_TrayOff" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="Vm_TrayLastNone" xml:space="preserve"><value>Bugün istek yok</value></data>
+  <data name="Vm_TrayLast" xml:space="preserve"><value>{0}, {1}</value></data>
+  <data name="TrayModelLabel.Text" xml:space="preserve"><value>Model</value></data>
+  <data name="TrayMemoryLabel.Text" xml:space="preserve"><value>Bellek</value></data>
+  <data name="TrayLastLabel.Text" xml:space="preserve"><value>Son istek</value></data>
+  <data name="TrayQueueLabel.Text" xml:space="preserve"><value>Kuyruk</value></data>
+  <data name="TrayOpenButton.Content" xml:space="preserve"><value>Uygulamayı aç</value></data>
+  <data name="TrayUnloadButton.Content" xml:space="preserve"><value>Modeli boşalt</value></data>
+  <data name="TrayWindowTitle" xml:space="preserve"><value>Portal AI Host durumu</value></data>
+  <data name="ModelsDownloadedHeader.Text" xml:space="preserve"><value>İndirilenler</value></data>
+  <data name="ModelsMoreHeader.Text" xml:space="preserve"><value>Ekleyebileceğiniz modeller</value></data>
+  <data name="ModelCheck.Content" xml:space="preserve"><value>Dosyaları denetle</value></data>
+  <data name="ModelRedownload.Content" xml:space="preserve"><value>Yeniden indir</value></data>
+  <data name="ModelCancelCheck.Content" xml:space="preserve"><value>Denetimi durdur</value></data>
+  <data name="ModelDetails.Header" xml:space="preserve"><value>Ayrıntılar</value></data>
+  <data name="ModelsOpenFolder.Content" xml:space="preserve"><value>Klasörü aç</value></data>
+  <data name="ModelsAddOwn.Content" xml:space="preserve"><value>Kendi modelinizi ekleyin...</value></data>
+  <data name="ModelsAddOwnHint.Text" xml:space="preserve"><value>Zaten sahip olduğunuz bir .gguf dosyası seçin. Ana bilgisayar modeller klasöründe kendi kopyasını oluşturur. Bir kopya oluşturulur; özgün dosyanız değiştirilmez veya taşınmaz.</value></data>
+  <data name="Vm_UserAddedBadge" xml:space="preserve"><value>Sizin eklediğiniz</value></data>
+  <data name="Vm_UserAddedReason" xml:space="preserve"><value>Bilinmeyen uyum: ana bilgisayar bu modelin bilgisayarınızda ne kadar bellek isteyeceğini bilemiyor. Deneyip görün.</value></data>
+  <data name="Vm_RemoveUserBody" xml:space="preserve"><value>{0}, ana bilgisayarın modeller klasöründen kaldırılacak. Bu, ana bilgisayarın kendi kopyasıdır: seçtiğiniz özgün dosyaya dokunulmaz.</value></data>
+  <data name="Vm_ImportRunning" xml:space="preserve"><value>Modeliniz modeller klasörüne kopyalanıyor, %{0}</value></data>
+  <data name="Vm_ImportDone" xml:space="preserve"><value>Modeliniz eklendi.</value></data>
+  <data name="Vm_ImportCancelled" xml:space="preserve"><value>Modelin eklenmesi iptal edildi. Hiçbir şey tutulmadı ve özgün dosyanız değiştirilmedi.</value></data>
+  <data name="Vm_ImportFailed" xml:space="preserve"><value>Model eklenmedi. {0}</value></data>
+  <data name="ModelsMoveHint.Text" xml:space="preserve"><value>Modellerinizi başka bir sürücüye taşımak için Ayarlar'da Modeller klasörü altından yeni bir klasör seçin.</value></data>
+  <data name="ModelsMoveCancel.Content" xml:space="preserve"><value>İptal</value></data>
+  <data name="ModelsFreeUp.Content" xml:space="preserve"><value>Yer aç</value></data>
+  <data name="ModelsCleanupTitle.Text" xml:space="preserve"><value>Yer aç</value></data>
+  <data name="ModelsCleanupPartialHeader.Text" xml:space="preserve"><value>Hiçbiri devam ettirilmeyen yarım indirmeler</value></data>
+  <data name="ModelsCleanupOldHeader.Text" xml:space="preserve"><value>Modellerinizi taşıdıktan sonra kalan eski kopyalar</value></data>
+  <data name="ModelsCleanupDamagedHeader.Text" xml:space="preserve"><value>Bir denetimin bozuk bulduğu modeller</value></data>
+  <data name="ModelsCleanupClose.Content" xml:space="preserve"><value>Kapat</value></data>
+  <data name="ModelsCleanupHint.Text" xml:space="preserve"><value>Yalnızca bu uygulamanın oluşturduğu dosyalar listelenir. Kullandığınız modeller ve kendi eklediğiniz dosyalar asla kaldırılmaz.</value></data>
+  <data name="Vm_CleanupButton" xml:space="preserve"><value>{0} yer aç</value></data>
+  <data name="Vm_CleanupNothing" xml:space="preserve"><value>Açılacak yer yok. Hâlâ devam ettirilebilen yarım indirmeler bir hafta saklanır.</value></data>
+  <data name="Vm_CleanupRunning" xml:space="preserve"><value>Yer açılıyor...</value></data>
+  <data name="Vm_CleanupConfirmTitle" xml:space="preserve"><value>Bu dosyalar kaldırılsın mı?</value></data>
+  <data name="Vm_CleanupConfirmBody" xml:space="preserve"><value>Şunlar kalıcı olarak kaldırılır:&#10;{0}&#10;Diğer modelleriniz etkilenmez.</value></data>
+  <data name="Vm_CleanupDone" xml:space="preserve"><value>{0} yer açıldı.</value></data>
+  <data name="Vm_CleanupDoneSkipped" xml:space="preserve"><value>{0} yer açıldı. Bazı öğeler olduğu yerde bırakıldı:&#10;{1}</value></data>
+  <data name="Vm_CleanupFailed" xml:space="preserve"><value>Yer açılamadı: {0}</value></data>
+  <data name="ModelsRemoveFailedBar.Title" xml:space="preserve"><value>Model kaldırılamadı</value></data>
+  <data name="SettingsMoveButton.Content" xml:space="preserve"><value>Modellerimi oraya taşı</value></data>
+  <data name="SettingsMoveCancel.Content" xml:space="preserve"><value>Taşımayı iptal et</value></data>
+  <data name="Vm_UsedToday" xml:space="preserve"><value>Son kullanım bugün</value></data>
+  <data name="Vm_UsedYesterday" xml:space="preserve"><value>Son kullanım dün</value></data>
+  <data name="Vm_UsedDays" xml:space="preserve"><value>Son kullanım {0} gün önce</value></data>
+  <data name="Vm_UsedMonths" xml:space="preserve"><value>Son kullanım {0} ay önce</value></data>
+  <data name="Vm_GoodFor" xml:space="preserve"><value>Şunun için iyi: {0}</value></data>
+  <data name="Vm_Caveats" xml:space="preserve"><value>Unutmayın: {0}</value></data>
+  <data name="Vm_MemoryNeeded" xml:space="preserve"><value>Bu PC'de yaklaşık {0} bellek ister.</value></data>
+  <data name="Vm_Licence" xml:space="preserve"><value>Lisans: {0}</value></data>
+  <data name="Vm_RemoveActiveBody" xml:space="preserve"><value>{0} kullanımda. Ana bilgisayar önce modeli boşaltır, sonra bu PC'den kaldırır. Yalnızca ana bilgisayarın indirdiği dosyalar silinir; kendiniz eklediğiniz bir model dosyası yalnızca listeden çıkarılır ve olduğu yerde kalır.</value></data>
+  <data name="Vm_RemoveVerb" xml:space="preserve"><value>{0} kaldır ({1})</value></data>
+  <data name="Vm_RemoveVerbNoSize" xml:space="preserve"><value>{0} kaldır</value></data>
+  <data name="Vm_AutoCheck" xml:space="preserve"><value>{0} modelinin dosyalarını denetle</value></data>
+  <data name="Vm_AutoRedownload" xml:space="preserve"><value>{0} modelini yeniden indir</value></data>
+  <data name="Vm_Removing" xml:space="preserve"><value>Kaldırılıyor...</value></data>
+  <data name="Vm_RemovingBadge" xml:space="preserve"><value>Kaldırılıyor</value></data>
+  <data name="Vm_DamagedBadge" xml:space="preserve"><value>Bozuk</value></data>
+  <data name="Vm_Checking" xml:space="preserve"><value>Dosyalar denetleniyor, %{0}</value></data>
+  <data name="Vm_CheckOk" xml:space="preserve"><value>Tüm dosyalar sağlam.</value></data>
+  <data name="Vm_CheckDamaged" xml:space="preserve"><value>Bozuk: {0} Hiçbir şey silinmedi.</value></data>
+  <data name="Vm_CheckFailed" xml:space="preserve"><value>Denetim tamamlanamadı: {0}</value></data>
+  <data name="Vm_SwitchTitle" xml:space="preserve"><value>Başka bir model kullanılsın mı?</value></data>
+  <data name="Vm_SwitchBody" xml:space="preserve"><value>{0} kullanımda. Sonrasında {1} modeline geçilsin mi, yoksa şimdilik hiçbir model kullanılmasın mı?</value></data>
+  <data name="Vm_SwitchYes" xml:space="preserve"><value>{0} modeline geç</value></data>
+  <data name="Vm_SwitchNo" xml:space="preserve"><value>Şimdilik hiçbir model kullanma</value></data>
+  <data name="Vm_RemoveFailed" xml:space="preserve"><value>{0} kaldırılamadı ve hâlâ burada. {1}</value></data>
+  <data name="Vm_RedownloadTitle" xml:space="preserve"><value>Bu model yeniden indirilsin mi?</value></data>
+  <data name="Vm_RedownloadBody" xml:space="preserve"><value>{0} bozuk bir dosyaya sahip. Bu PC'den kaldırılır ve yeniden indirilir. Başka hiçbir şey silinmez.</value></data>
+  <data name="Vm_RedownloadActiveBody" xml:space="preserve"><value>{0} bozuk bir dosyaya sahip ve kullanımda. Ana bilgisayar modeli boşaltır, bu PC'den kaldırır ve yeniden indirir. İndirme bittiğinde yeniden seçin.</value></data>
+  <data name="Vm_RedownloadYes" xml:space="preserve"><value>{0} modelini kaldır ve yeniden indir</value></data>
+  <data name="Vm_MoveRunning" xml:space="preserve"><value>Modelleriniz taşınıyor, %{0}</value></data>
+  <data name="Vm_MoveRemovingOld" xml:space="preserve"><value>Modelleriniz yeni klasörde. Eski kopyalar kaldırılıyor.</value></data>
+  <data name="Vm_MoveDone" xml:space="preserve"><value>Modelleriniz taşındı.</value></data>
+  <data name="Vm_MoveCancelled" xml:space="preserve"><value>Taşıma iptal edildi. Modelleriniz eski yerinde.</value></data>
+  <data name="Vm_MoveFailed" xml:space="preserve"><value>Taşıma tamamlanamadı. {0}</value></data>
+  <data name="Vm_MoveOffer" xml:space="preserve"><value>{0} model dosyanızı da yeni klasöre taşımak ister misiniz?</value></data>
+  <data name="Vm_MoveTitle" xml:space="preserve"><value>Modelleriniz taşınsın mı?</value></data>
+  <data name="Vm_MoveBody" xml:space="preserve"><value>Modelleriniz {0} konumuna kopyalanır, denetlenir ve ancak ondan sonra eski kopyalar kaldırılır. Bu işlem sürerken kullanımdaki model boşaltılır. Ana bilgisayarın oraya koymadığı eski klasördeki dosyalara asla dokunulmaz.</value></data>
+  <data name="Vm_MoveYes" xml:space="preserve"><value>Modellerimi taşı</value></data>
+  <data name="Vm_MoveSettingsRunning" xml:space="preserve"><value>Modelleriniz taşınıyor, %{0}</value></data>
+  <data name="SettingsPerformanceHeader.Text" xml:space="preserve"><value>Performans</value></data>
+  <data name="SettingsResetPerformance.Content" xml:space="preserve"><value>Varsayılana sıfırla</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Performans ayarlarını varsayılana sıfırla</value></data>
+  <data name="SettingsPreset.Header" xml:space="preserve"><value>Performans</value></data>
+  <data name="SettingsPreset.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Performans</value></data>
+  <data name="SettingsMemory.Header" xml:space="preserve"><value>Yapay zekâ için en fazla bellek</value></data>
+  <data name="SettingsMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Yapay zekâ için en fazla bellek</value></data>
+  <data name="SettingsKeepFree.Header" xml:space="preserve"><value>Her zaman boş bırak</value></data>
+  <data name="SettingsKeepFree.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Her zaman boş bırak</value></data>
+  <data name="SettingsRunOn.Header" xml:space="preserve"><value>Çalıştırma yeri</value></data>
+  <data name="SettingsRunOn.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Çalıştırma yeri</value></data>
+  <data name="SettingsGpuMemory.Header" xml:space="preserve"><value>Yapay zekâ için grafik belleği</value></data>
+  <data name="SettingsGpuMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Yapay zekâ için grafik belleği</value></data>
+  <data name="SettingsCores.Header" xml:space="preserve"><value>İşlemci çekirdekleri</value></data>
+  <data name="SettingsCores.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>İşlemci çekirdekleri</value></data>
+  <data name="SettingsPriority.Header" xml:space="preserve"><value>Öncelik</value></data>
+  <data name="SettingsPriority.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Öncelik</value></data>
+  <data name="SettingsMemoryHelp.Text" xml:space="preserve"><value>Yapay zekâ bundan fazlasını asla kullanmaz. Daha düşük değer, daha küçük bir model veya daha yavaş yanıt anlamına gelir.</value></data>
+  <data name="SettingsKeepFreeHelp.Text" xml:space="preserve"><value>Diğer programlarınız için boş tutulan bellek.</value></data>
+  <data name="SettingsCoresHelp.Text" xml:space="preserve"><value>Daha az çekirdek, yapay zekâ çalışırken bilgisayarınızın duyarlı kalmasını sağlar.</value></data>
+  <data name="Vm_Perf_Quiet" xml:space="preserve"><value>Sessiz</value></data>
+  <data name="Vm_Perf_Balanced" xml:space="preserve"><value>Dengeli</value></data>
+  <data name="Vm_Perf_Fast" xml:space="preserve"><value>Hızlı</value></data>
+  <data name="Vm_Perf_Custom" xml:space="preserve"><value>Özel</value></data>
+  <data name="Vm_Perf_Help_quiet" xml:space="preserve"><value>Yaklaşık yarı hızda. Bilgisayarınız duyarlı kalır.</value></data>
+  <data name="Vm_Perf_Help_balanced" xml:space="preserve"><value>İyi hız, diğer programlarınız önce gelir.</value></data>
+  <data name="Vm_Perf_Help_fast" xml:space="preserve"><value>En hızlı yanıtlar. Diğer programlar yavaşlayabilir.</value></data>
+  <data name="Vm_Perf_Help_custom" xml:space="preserve"><value>Kendi ayarlarınız.</value></data>
+  <data name="Vm_Perf_Run_Auto" xml:space="preserve"><value>Otomatik</value></data>
+  <data name="Vm_Perf_Run_Gpu" xml:space="preserve"><value>Ekran kartı</value></data>
+  <data name="Vm_Perf_Run_Cpu" xml:space="preserve"><value>İşlemci</value></data>
+  <data name="Vm_Perf_RunHelp_auto" xml:space="preserve"><value>Yardımcı olduğunda ekran kartını kullanır.</value></data>
+  <data name="Vm_Perf_RunHelp_gpu" xml:space="preserve"><value>Model sığarsa en hızlısı.</value></data>
+  <data name="Vm_Perf_RunHelp_cpu" xml:space="preserve"><value>Daha yavaş, ama ekran kartını oyunlar için boş bırakır.</value></data>
+  <data name="Vm_Perf_NoGpu" xml:space="preserve"><value>Yalnızca işlemci: desteklenen bir ekran kartı bulunamadı</value></data>
+  <data name="SettingsCeiling.Header" xml:space="preserve"><value>En fazla işlemci kullanımı</value></data>
+  <data name="SettingsCeiling.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>En fazla işlemci kullanımı</value></data>
+  <data name="SettingsCeilingHelp.Text" xml:space="preserve"><value>Yapay zekâ işlemcinizin bundan fazlasını asla kullanmaz. Daha düşük değer bilgisayarınızı daha akıcı tutar, ama yanıtlar daha yavaş olur.</value></data>
+  <data name="Vm_Perf_CeilingNone" xml:space="preserve"><value>Sınır yok</value></data>
+  <data name="Vm_Perf_Percent" xml:space="preserve"><value>%{0}</value></data>
+  <data name="SettingsEaseOffHeader.Text" xml:space="preserve"><value>Şu durumda hafiflet</value></data>
+  <data name="SettingsEaseOffFullscreen.Content" xml:space="preserve"><value>Bir oyun veya tam ekran program çalışıyor</value></data>
+  <data name="SettingsEaseOffBattery.Content" xml:space="preserve"><value>Bilgisayar pilde çalışıyor</value></data>
+  <data name="SettingsEaseOffAppBusy.Content" xml:space="preserve"><value>Bir Portal uygulaması dikte gibi canlı bir işle meşgul</value></data>
+  <data name="SettingsEaseOffHelp.Text" xml:space="preserve"><value>Bu durumda yapay zekâ en düşük öncelikle çalışır ve işlemcinizin en fazla yarısını kullanır; bittiğinde normale döner.</value></data>
+  <data name="Vm_Perf_Prio_Low" xml:space="preserve"><value>Düşük</value></data>
+  <data name="Vm_Perf_Prio_Normal" xml:space="preserve"><value>Normal</value></data>
+  <data name="Vm_Perf_PrioHelp_Low" xml:space="preserve"><value>Kendi işiniz her zaman önce gelir.</value></data>
+  <data name="Vm_Perf_PrioHelp_Normal" xml:space="preserve"><value>Daha hızlı, ama diğer programları yavaşlatabilir.</value></data>
+  <data name="Vm_Perf_Gb" xml:space="preserve"><value>{0} GB</value></data>
+  <data name="Vm_Perf_Cores" xml:space="preserve"><value>{1} çekirdekten {0} tanesi</value></data>
+  <data name="Vm_Perf_MemoryRange" xml:space="preserve"><value>{0} GB ile {1} GB arası</value></data>
+  <data name="Vm_Perf_StopFull" xml:space="preserve"><value>{0} GB · {1} modelini tamamen sığdırır</value></data>
+  <data name="Vm_Perf_StopPartial" xml:space="preserve"><value>{0} GB · {1} modelini sığdırır, kısmen işlemcide</value></data>
+  <data name="Vm_Perf_StopCpu" xml:space="preserve"><value>{0} GB · {1} modelini işlemcide sığdırır</value></data>
+  <data name="Vm_Perf_StopNone" xml:space="preserve"><value>{0} GB · listedeki modeller için çok küçük</value></data>
+  <data name="Vm_Perf_Fit_Full" xml:space="preserve"><value>Tamamen ekran kartında çalışır</value></data>
+  <data name="Vm_Perf_Fit_Partial" xml:space="preserve"><value>Bir kısmı ekran kartında, bir kısmı işlemcide: daha yavaş</value></data>
+  <data name="Vm_Perf_Fit_Cpu" xml:space="preserve"><value>İşlemcide çalışır: en yavaş</value></data>
+  <data name="Vm_Perf_Fit_Smaller" xml:space="preserve"><value>{0} için bellek yetersiz. {1} modeline geçilsin mi?</value></data>
+  <data name="Vm_Perf_Fit_LittleMemory" xml:space="preserve"><value>{0} için bellek yetersiz.</value></data>
+  <data name="Vm_Perf_Fit_TooBig" xml:space="preserve"><value>Bu PC için fazla büyük</value></data>
+  <data name="Vm_Perf_TheModel" xml:space="preserve"><value>Model</value></data>
+  <data name="Vm_Perf_Applied" xml:space="preserve"><value>Uygulandı. Yeni sınırlar geçerli.</value></data>
+  <data name="Vm_Perf_Reloading" xml:space="preserve"><value>Uygulandı. {0} yeni sınırlarla yeniden yükleniyor.</value></data>
+  <data name="Vm_Perf_Unloaded" xml:space="preserve"><value>Uygulandı. {0} artık sığmıyor ve boşaltıldı. Diskte kalır; Modeller sayfasından daha küçük birini seçin.</value></data>
+  <data name="HealthIconOk.AutomationProperties.Name" xml:space="preserve"><value>İyi</value></data>
+  <data name="HealthIconWarn.AutomationProperties.Name" xml:space="preserve"><value>Dikkat gerektiriyor</value></data>
+  <data name="HealthIconFail.AutomationProperties.Name" xml:space="preserve"><value>Sorun</value></data>
+  <data name="HealthWordOk.Text" xml:space="preserve"><value>İyi</value></data>
+  <data name="HealthWordWarn.Text" xml:space="preserve"><value>Dikkat gerektiriyor</value></data>
+  <data name="HealthWordFail.Text" xml:space="preserve"><value>Sorun</value></data>
+  <data name="HealthCheckAgainButton.Content" xml:space="preserve"><value>Yeniden denetle</value></data>
+  <data name="HealthFixErrorBar.Title" xml:space="preserve"><value>Bu işe yaramadı</value></data>
+  <data name="Vm_HealthAllGood" xml:space="preserve"><value>Her şey yolunda</value></data>
+  <data name="Vm_HealthOne" xml:space="preserve"><value>1 şey dikkat gerektiriyor</value></data>
+  <data name="Vm_HealthMany" xml:space="preserve"><value>{0} şey dikkat gerektiriyor</value></data>
+  <data name="Vm_HealthFixLoad" xml:space="preserve"><value>Modeli yükle</value></data>
+  <data name="Vm_HealthFixRestart" xml:space="preserve"><value>Motoru yeniden başlat</value></data>
+  <data name="Vm_HealthFixCheckFiles" xml:space="preserve"><value>Dosyaları denetle</value></data>
+  <data name="Vm_HealthFixPerformance" xml:space="preserve"><value>Performans ayarlarını aç</value></data>
+  <data name="Vm_HealthFixModels" xml:space="preserve"><value>Bir model seç</value></data>
+  <data name="Vm_HealthFixFailed" xml:space="preserve"><value>Düzeltme yapılamadı. {0}</value></data>
+  <data name="SettingsRemoteHeader.Text" xml:space="preserve"><value>Diğer cihazlar</value></data>
+  <data name="SettingsRemoteEnabled.Header" xml:space="preserve"><value>Diğer cihazların bu PC'nin yapay zekâsını kullanmasına izin ver</value></data>
+  <data name="SettingsRemoteEnabled.OnContent" xml:space="preserve"><value>Açık</value></data>
+  <data name="SettingsRemoteEnabled.OffContent" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="SettingsRemoteEnabled.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Diğer cihazların bu PC'nin yapay zekâsını kullanmasına izin ver</value></data>
+  <data name="SettingsRemoteHelp.Text" xml:space="preserve"><value>Varsayılan olarak kapalıdır. Açıkken, bu ev ağındaki kendi telefonunuz, dizüstü bilgisayarınız veya tabletiniz bu PC'nin yapay zekâsını kullanmak isteyebilir. Bir cihazın önce bir kodla eşleştirilmesi gerekir ve üzerindeki her uygulama yine sizin onayınızı ister. Bir cihazı istediğiniz zaman kaldırabilirsiniz.</value></data>
+  <data name="SettingsPairDevice.Content" xml:space="preserve"><value>Bir cihaz eşleştir</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Bir cihaz eşleştir</value></data>
+  <data name="SettingsPairingSteps.Text" xml:space="preserve"><value>Diğer cihazda, Portal uygulamasını açın, bir PC'ye bağlanmayı seçin, ardından bu kodu tarayın veya harf ve rakamları yazın. Bir şey göndermeden önce bu PC ile konuştuğunu denetler. Kod bir kez çalışır ve 5 dakika geçerlidir.</value></data>
+  <data name="SettingsPairingQr.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Eşleştirme QR kodu</value></data>
+  <data name="SettingsPairingCancel.Content" xml:space="preserve"><value>Eşleştirmeyi iptal et</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Eşleştirmeyi iptal et</value></data>
+  <data name="SettingsDevicesHeader.Text" xml:space="preserve"><value>Eşleştirilmiş cihazlar</value></data>
+  <data name="SettingsNoDevices.Text" xml:space="preserve"><value>Henüz eşleştirilmiş bir cihaz yok.</value></data>
+  <data name="SettingsRemoveDevice.Content" xml:space="preserve"><value>Kaldır</value></data>
+  <data name="SettingsDeviceModelControl.Header" xml:space="preserve"><value>Model denetimi</value></data>
+  <data name="SettingsDeviceModelControl.OnContent" xml:space="preserve"><value>Açık</value></data>
+  <data name="SettingsDeviceModelControl.OffContent" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="SettingsDeviceModelControl.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Bu cihazın modelleri yükleyip boşaltmasına ve uygulamalarının her birinin hangi modeli kullanacağını seçmesine izin verir</value></data>
+  <data name="SettingsDeviceModelControl.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bu cihazın modelleri yükleyip boşaltmasına ve uygulamalarının her birinin hangi modeli kullanacağını seçmesine izin verir</value></data>
+  <data name="SettingsTakeBackLabel.Text" xml:space="preserve"><value>Geri al</value></data>
+  <data name="SettingsTakeBack.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Bu cihazın yüklediği modeli boşaltır. Bu PC'nin kendi seçimi geri gelir. Hiçbir model dosyasına dokunulmaz.</value></data>
+  <data name="SettingsTakeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bu cihazın yüklediği modeli boşaltır. Bu PC'nin kendi seçimi geri gelir. Hiçbir model dosyasına dokunulmaz.</value></data>
+  <data name="SettingsAllowReplace.Header" xml:space="preserve"><value>Cihazlar modelleri değiştirebilir</value></data>
+  <data name="SettingsAllowReplace.OnContent" xml:space="preserve"><value>Açık</value></data>
+  <data name="SettingsAllowReplace.OffContent" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="SettingsAllowReplace.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Cihazlar modelleri değiştirebilir</value></data>
+  <data name="SettingsAllowReplaceHelp.Text" xml:space="preserve"><value>Yalnızca Model denetimi olan cihazlar için geçerlidir. Kapalı: bir cihaz, kendi uygulamalarınızın kullandığı bir modeli boşaltamaz. Açık: boşaltabilir ve uygulamalarınız bir sonraki isteklerinde modellerini yeniden yükler.</value></data>
+  <data name="Vm_AutoModelControl" xml:space="preserve"><value>{0} için model denetimi</value></data>
+  <data name="Vm_AutoTakeBack" xml:space="preserve"><value>{0} tarafından yüklenen modeli geri al</value></data>
+  <data name="Vm_LoadedBy" xml:space="preserve"><value>{0} tarafından yüklendi: {1} ({2})</value></data>
+  <data name="Vm_PlacementAuto" xml:space="preserve"><value>otomatik yerleştirme</value></data>
+  <data name="Vm_PlacementGpu" xml:space="preserve"><value>ekran kartı</value></data>
+  <data name="Vm_PlacementCpu" xml:space="preserve"><value>sistem belleği</value></data>
+  <data name="Vm_PlacementCpuOnly" xml:space="preserve"><value>yalnızca işlemci</value></data>
+  <data name="SettingsRemoteRelay.Header" xml:space="preserve"><value>Bu PC'ye evin dışından da ulaşılsın</value></data>
+  <data name="SettingsRemoteRelay.OnContent" xml:space="preserve"><value>Açık</value></data>
+  <data name="SettingsRemoteRelay.OffContent" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="SettingsRemoteRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Bu PC'ye evin dışından da ulaşılsın</value></data>
+  <data name="SettingsRelayAdmission.Header" xml:space="preserve"><value>Röle erişim anahtarı</value></data>
+  <data name="SettingsRelayAdmission.OnContent" xml:space="preserve"><value>Açık</value></data>
+  <data name="SettingsRelayAdmission.OffContent" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="SettingsRelayAdmission.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Röle erişim anahtarı</value></data>
+  <data name="SettingsRelayAdmissionHelp.Text" xml:space="preserve"><value>Bu PC'ye röle üzerinden yalnızca eşleştirme kodundaki anahtarla eşleştirilmiş cihazlar ulaşabilir. Eşleştirmeden önce açın: daha önce eşleştirilmiş cihazların röleyi kullanmak için yeniden eşleşmesi gerekir. Röle güncel olmalıdır.</value></data>
+  <data name="SettingsRotateRelayKeyText.Text" xml:space="preserve"><value>Yeni anahtar</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Yeni bir röle erişim anahtarı oluşturur. Röleyi kullanmak için her eşleştirilmiş cihazın yeniden eşleşmesi gerekir. Bir cihazı kaldırmak anahtarı değiştirmez; bu yüzden güvenmediğiniz bir cihazı kaldırdıktan sonra bunu yapın.</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Yeni bir röle erişim anahtarı oluşturur. Röleyi kullanmak için her eşleştirilmiş cihazın yeniden eşleşmesi gerekir. Bir cihazı kaldırmak anahtarı değiştirmez; bu yüzden güvenmediğiniz bir cihazı kaldırdıktan sonra bunu yapın.</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Yeni anahtar</value></data>
+  <data name="Vm_RotateKeyTitle" xml:space="preserve"><value>Yeni bir röle erişim anahtarı oluşturulsun mu?</value></data>
+  <data name="Vm_RotateKeyBody" xml:space="preserve"><value>Bu PC'ye röle üzerinden ulaşmak için eşleştirilmiş her cihazın yeniden eşleşmesi gerekir. Evde hiçbir şey değişmez.</value></data>
+  <data name="Vm_RotateKeyConfirm" xml:space="preserve"><value>Yeni anahtar oluştur</value></data>
+  <data name="SettingsRemoteRelayHelp.Text" xml:space="preserve"><value>Bu PC küçük bir röleye dışarı bağlanır, böylece eşleştirilmiş bir cihaz her yerden ulaşabilir. Röle yalnızca okuyamadığı şifrelenmiş baytları iletir ve her cihazın yine eşleştirilmiş olması ve her isteği imzalaması gerekir.</value></data>
+  <data name="Vm_RelayAway" xml:space="preserve"><value>Evin dışından ulaşılabilir</value></data>
+  <data name="Vm_RelayHomeOnly" xml:space="preserve"><value>Yalnızca ev ağı</value></data>
+  <data name="Vm_RelayUnreachable" xml:space="preserve"><value>Röleye ulaşılamıyor</value></data>
+  <data name="Vm_RelayConnecting" xml:space="preserve"><value>Röleye bağlanılıyor...</value></data>
+  <data name="Vm_RemoteAddress" xml:space="preserve"><value>Bu PC'ye {0} adresinden, {1} numaralı bağlantı noktasıyla ulaşılabilir.</value></data>
+  <data name="Vm_RemoteLastSeen" xml:space="preserve"><value>Son kullanım: {0}</value></data>
+  <data name="Vm_RemoteNeverSeen" xml:space="preserve"><value>Henüz kullanılmadı</value></data>
+  <data name="Vm_AutoRemoveDevice" xml:space="preserve"><value>{0} kaldır</value></data>
+  <data name="Vm_PairingExpires" xml:space="preserve"><value>Kod {0} tarihine kadar geçerli.</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Bağlantıyı kopyala</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Bunu diğer PC'ye gönderin. 5 dakika ve bir cihaz için çalışır.</value></data>
+  <data name="SettingsPairingCopyLinkText.Text" xml:space="preserve"><value>Bağlantıyı kopyala</value></data>
+  <data name="Vm_PairingAddress" xml:space="preserve"><value>Adres: {0}:{1}</value></data>
+  <data name="Vm_PairingFingerprint" xml:space="preserve"><value>Sertifika denetimi: {0}</value></data>
+  <data name="Vm_RemoveDeviceTitle" xml:space="preserve"><value>{0} kaldırılsın mı?</value></data>
+  <data name="Vm_RemoveDeviceBody" xml:space="preserve"><value>{0}, bu PC'nin yapay zekâsına erişimini hemen kaybeder. Yeniden eşleştirene kadar uygulamaları çalışmaz.</value></data>
+  <data name="Vm_RemoveDeviceConfirm" xml:space="preserve"><value>Cihazı kaldır</value></data>
+  <data name="Vm_AppOnDevice" xml:space="preserve"><value>{1} üzerinde {0}</value></data>
+  <data name="NavDevices.Content" xml:space="preserve"><value>Bu PC'nin cihazları</value></data>
+  <data name="NavDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Bu PC'nin cihazları</value></data>
+  <data name="DevicesTitle.Text" xml:space="preserve"><value>Bu PC'deki cihazlar</value></data>
+  <data name="DevicesGamingTitle.Text" xml:space="preserve"><value>Oyun modu</value></data>
+  <data name="DevicesGamingText.Text" xml:space="preserve"><value>Tam ekran bir oyun çalışırken, diğer cihazlardan gelen çağrılara bu PC'nin meşgul olduğu bildirilir. Varsayılan olarak kapalıdır.</value></data>
+  <data name="DevicesGaming.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Oyun modu</value></data>
+  <data name="DevicesNone.Text" xml:space="preserve"><value>Henüz eşleştirilmiş bir cihaz yok. Ayarlar'da, Diğer cihazlar altından bir cihaz eşleştirin.</value></data>
+  <data name="DevicesForgetLabel.Text" xml:space="preserve"><value>Unut</value></data>
+  <data name="DevicesForget.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Bu cihazı kaldırın. Erişimi hemen durur ve kullanım geçmişi silinir. Modellere dokunulmaz.</value></data>
+  <data name="DevicesForget.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bu cihazı kaldırın. Erişimi hemen durur ve kullanım geçmişi silinir. Modellere dokunulmaz.</value></data>
+  <data name="DevicesTakeBackLabel.Text" xml:space="preserve"><value>Geri al</value></data>
+  <data name="DevicesTakeBack.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Bu cihazın yüklediği modeli boşaltır. Bu PC'nin kendi seçimi geri gelir. Hiçbir model dosyasına dokunulmaz.</value></data>
+  <data name="DevicesTakeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bu cihazın yüklediği modeli boşaltır. Bu PC'nin kendi seçimi geri gelir. Hiçbir model dosyasına dokunulmaz.</value></data>
+  <data name="DevicesRenameLabel.Text" xml:space="preserve"><value>Yeniden adlandır</value></data>
+  <data name="DevicesRename.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Bu cihazın gösterilen adını değiştirin</value></data>
+  <data name="DevicesRename.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bu cihazın gösterilen adını değiştirin</value></data>
+  <data name="DevicesNewName.Header" xml:space="preserve"><value>Cihaz adı</value></data>
+  <data name="DevicesRenameSave.Content" xml:space="preserve"><value>Yeniden adlandır</value></data>
+  <data name="DevicesLimitsLabel.Text" xml:space="preserve"><value>Sınırlar</value></data>
+  <data name="DevicesLimits.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Öncelik, günlük sınırlar, sessiz saatler ve bu cihazın kullanabileceği modeller</value></data>
+  <data name="DevicesLimits.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Öncelik, günlük sınırlar, sessiz saatler ve bu cihazın kullanabileceği modeller</value></data>
+  <data name="DevicesPriorityEqual.Header" xml:space="preserve"><value>Bu PC'nin uygulamalarıyla aynı öncelik</value></data>
+  <data name="DevicesPriorityEqual.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Kapalı: bu PC'nin kendi uygulamaları önce gelir. Açık: bu cihaz aynı sırada bekler.</value></data>
+  <data name="DevicesRequestLimit.Header" xml:space="preserve"><value>Günlük istek sayısı</value></data>
+  <data name="DevicesTokenLimit.Header" xml:space="preserve"><value>Günlük token sayısı</value></data>
+  <data name="DevicesQuiet.Header" xml:space="preserve"><value>Sessiz saatler</value></data>
+  <data name="DevicesQuiet.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Cihaz bu saatler arasında hiçbir yanıt almaz (bu PC'nin saati)</value></data>
+  <data name="DevicesQuietFrom.Header" xml:space="preserve"><value>Başlangıç</value></data>
+  <data name="DevicesQuietTo.Header" xml:space="preserve"><value>Bitiş</value></data>
+  <data name="DevicesModelsHeader.Text" xml:space="preserve"><value>Bu cihazın kullanabileceği modeller</value></data>
+  <data name="DevicesSaveLabel.Text" xml:space="preserve"><value>Kaydet</value></data>
+  <data name="DevicesSave.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Bu ayarları bu cihaz için kaydet</value></data>
+  <data name="DevicesSave.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bu ayarları bu cihaz için kaydet</value></data>
+  <data name="Vm_DevOnline" xml:space="preserve"><value>Çevrimiçi</value></data>
+  <data name="Vm_DevIdle" xml:space="preserve"><value>Boşta</value></data>
+  <data name="Vm_DevOffline" xml:space="preserve"><value>Çevrimdışı</value></data>
+  <data name="Vm_DevRouteLan" xml:space="preserve"><value>Ev ağı</value></data>
+  <data name="Vm_DevRouteRelay" xml:space="preserve"><value>Röle (dışarıda)</value></data>
+  <data name="Vm_DevRouteNone" xml:space="preserve"><value>Henüz yol yok</value></data>
+  <data name="Vm_DevRunning" xml:space="preserve"><value>Şu an çalışıyor: {0}</value></data>
+  <data name="Vm_DevRunningQueued" xml:space="preserve"><value>Şu an çalışıyor: {0}, bekleyen: {1}</value></data>
+  <data name="Vm_DevToday" xml:space="preserve"><value>Bugün: {0} istek, {1} token</value></data>
+  <data name="Vm_DevBar" xml:space="preserve"><value>{0} istek, {1} gün önce</value></data>
+  <data name="Vm_DevModel" xml:space="preserve"><value>Model: {0}</value></data>
+  <data name="Vm_DevModelNone" xml:space="preserve"><value>Henüz çağrı yok</value></data>
+  <data name="Vm_DevLoadedByPc" xml:space="preserve"><value>{0}, bu PC tarafından yüklendi</value></data>
+  <data name="Vm_DevLoadedByDevice" xml:space="preserve"><value>{1}, {0} tarafından yüklendi</value></data>
+  <data name="Vm_DevSpeed" xml:space="preserve"><value>Hız: saniyede {0} token, ilk bayta {1} ms</value></data>
+  <data name="Vm_DevSpeedNone" xml:space="preserve"><value>Hız: henüz ölçülmedi</value></data>
+  <data name="Vm_DevPause" xml:space="preserve"><value>Duraklat</value></data>
+  <data name="Vm_DevResume" xml:space="preserve"><value>Devam et</value></data>
+  <data name="Vm_DevPauseTip" xml:space="preserve"><value>Bu cihazı duraklatın. Çağrıları duraklatılmış bir yanıt alır ve dizüstü bilgisayar kendi yedeğini kullanır.</value></data>
+  <data name="Vm_DevResumeTip" xml:space="preserve"><value>Bu cihazın yeniden bu PC'yi kullanmasına izin ver</value></data>
+  <data name="Vm_DevAppPauseTip" xml:space="preserve"><value>Yalnızca bu cihazdaki bu uygulamayı duraklat</value></data>
+  <data name="Vm_DevAppResumeTip" xml:space="preserve"><value>Bu uygulamanın yeniden bu PC'yi kullanmasına izin ver</value></data>
+  <data name="Vm_DevGamingBusy" xml:space="preserve"><value>Bir oyun çalışıyor: cihazlara bu PC'nin meşgul olduğu bildiriliyor.</value></data>
+  <data name="Vm_AutoDevPause" xml:space="preserve"><value>{0} uygulamasını duraklat</value></data>
+  <data name="Vm_AutoDevResume" xml:space="preserve"><value>{0} uygulamasına devam et</value></data>
+  <data name="Vm_AutoDevAppPause" xml:space="preserve"><value>{1} üzerindeki {0} uygulamasını duraklat</value></data>
+  <data name="Vm_AutoDevAppResume" xml:space="preserve"><value>{1} üzerindeki {0} uygulamasına devam et</value></data>
+  <data name="Vm_AutoDevRename" xml:space="preserve"><value>{0} yeniden adlandır</value></data>
+  <data name="RemoteModelLoadLabel.Text" xml:space="preserve"><value>Yükle</value></data>
+  <data name="RemoteModelUnloadLabel.Text" xml:space="preserve"><value>Boşalt</value></data>
+  <data name="RemoteModelLoad.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Bu modeli bilgisayarda yükleyin. Siz boşaltana veya bilgisayarın sahibi değiştirene kadar orada yüklü kalır.</value></data>
+  <data name="RemoteModelLoad.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bu modeli bilgisayarda yükleyin. Siz boşaltana veya bilgisayarın sahibi değiştirene kadar orada yüklü kalır.</value></data>
+  <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Bu dizüstü bilgisayarın bilgisayarda yüklediği modeli boşaltın. Hiçbir model dosyasına dokunulmaz.</value></data>
+  <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bu dizüstü bilgisayarın bilgisayarda yüklediği modeli boşaltın. Hiçbir model dosyasına dokunulmaz.</value></data>
+  <data name="RemoteModelPlacement.Header" xml:space="preserve"><value>Çalıştırma yeri</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Bilgisayar bu modeli nerede çalıştırır: bilgisayar karar verir, ekran kartında, sistem belleğinde veya yalnızca işlemcide (çekirdek sınırıyla, çekirdeklerin yarısı). Bilgisayarın kendi sınırları yine geçerlidir.</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bilgisayar bu modeli nerede çalıştırır: bilgisayar karar verir, ekran kartında, sistem belleğinde veya yalnızca işlemcide (çekirdek sınırıyla, çekirdeklerin yarısı). Bilgisayarın kendi sınırları yine geçerlidir.</value></data>
+  <data name="RemoteModelTooBig.Text" xml:space="preserve"><value>Bilgisayar için fazla büyük</value></data>
+  <data name="SettingsAppModelsHeader.Text" xml:space="preserve"><value>Her uygulama için bilgisayar modeli</value></data>
+  <data name="SettingsAppModelsHelp.Text" xml:space="preserve"><value>Bu dizüstü bilgisayardaki her uygulamanın bilgisayarın hangi modellerini kullanacağını seçin. Bilgisayarın seçimi, karar vermeyi bilgisayara bırakır.</value></data>
+  <data name="Vm_RemTitle" xml:space="preserve"><value>{0} üzerindeki modeller</value></data>
+  <data name="Vm_RemAskOwner" xml:space="preserve"><value>Bu dizüstü bilgisayar için model denetimini açması amacıyla {0} sahibinden isteyin.</value></data>
+  <data name="Vm_RemPlacementAuto" xml:space="preserve"><value>Otomatik</value></data>
+  <data name="Vm_RemPlacementGpu" xml:space="preserve"><value>Ekran kartı</value></data>
+  <data name="Vm_RemPlacementCpu" xml:space="preserve"><value>Sistem belleği</value></data>
+  <data name="Vm_RemPlacementCpuOnly" xml:space="preserve"><value>Yalnızca işlemci</value></data>
+  <data name="Vm_RemStateLoaded" xml:space="preserve"><value>Yüklendi</value></data>
+  <data name="Vm_RemStateLoading" xml:space="preserve"><value>Yükleniyor</value></data>
+  <data name="Vm_RemByLaptop" xml:space="preserve"><value>Bu dizüstü bilgisayar tarafından yüklendi</value></data>
+  <data name="Vm_RemByPc" xml:space="preserve"><value>Bilgisayar tarafından yüklendi</value></data>
+  <data name="Vm_RemByOther" xml:space="preserve"><value>Başka bir cihaz tarafından yüklendi</value></data>
+  <data name="Vm_RemAutoLoad" xml:space="preserve"><value>{0} modelini bilgisayarda yükle</value></data>
+  <data name="Vm_RemAutoUnload" xml:space="preserve"><value>{0} modelini bilgisayardan boşalt</value></data>
+  <data name="Vm_RemHostGone" xml:space="preserve"><value>Ana bilgisayar çalışmıyor.</value></data>
+  <data name="Vm_AppModelPcChoice" xml:space="preserve"><value>Bilgisayarın seçimi</value></data>
+  <data name="Vm_AppModelAutomation" xml:space="preserve"><value>{0} için bilgisayar modeli</value></data>
+  <data name="SettingsHomePcHeader.Text" xml:space="preserve"><value>Ev PC'si</value></data>
+  <data name="SettingsHomePcHelp.Text" xml:space="preserve"><value>Yapay zekâyı bu bilgisayarda çalıştırmak yerine sahip olduğunuz başka bir PC'de kullanın. Bu dizüstü bilgisayarı PC ile bir kez eşleştirin; buradaki uygulamalar bundan sonra o PC'ye sorar.</value></data>
+  <data name="SettingsHomeMode.Header" xml:space="preserve"><value>Yapay zekâ nerede çalışır</value></data>
+  <data name="SettingsHomeMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Yapay zekâ nerede çalışır</value></data>
+  <data name="SettingsHomeFallback.Header" xml:space="preserve"><value>Ev PC'sine ulaşılamazsa</value></data>
+  <data name="SettingsHomeFallback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ev PC'sine ulaşılamazsa</value></data>
+  <data name="SettingsHomeRelayMode.Header" xml:space="preserve"><value>Evin dışındaki bağlantı</value></data>
+  <data name="SettingsHomeRelayMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Evin dışındaki bağlantı</value></data>
+  <data name="SettingsHomeUseRelay.Header" xml:space="preserve"><value>Röleyi kullan</value></data>
+  <data name="SettingsHomeUseRelay.OnContent" xml:space="preserve"><value>Açık</value></data>
+  <data name="SettingsHomeUseRelay.OffContent" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Röleyi kullan</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Röleyi yalnızca bu oturum için açar. Uygulama kapanınca sıfırlanır.</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>PC eşleştir</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bu dizüstü bilgisayarı bir eşleştirme bağlantısıyla ev PC'sine eşleştirin</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Bu dizüstü bilgisayarı bir eşleştirme bağlantısıyla ev PC'sine eşleştirin</value></data>
+  <data name="SettingsHomePairText.Text" xml:space="preserve"><value>PC eşleştir</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Eşleştirmeyi kaldır</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Eşleştirilmiş PC'yi unutun. Modeller ve indirmeler olduğu gibi kalır.</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Eşleştirilmiş PC'yi unutun. Modeller ve indirmeler olduğu gibi kalır.</value></data>
+  <data name="SettingsHomeUnpairText.Text" xml:space="preserve"><value>Eşleştirmeyi kaldır</value></data>
+  <data name="SettingsNotifyDevices.Header" xml:space="preserve"><value>Bir cihaz evin dışından eşleşir veya bağlanır</value></data>
+  <data name="SettingsNotifyDevices.OnContent" xml:space="preserve"><value>Açık</value></data>
+  <data name="SettingsNotifyDevices.OffContent" xml:space="preserve"><value>Kapalı</value></data>
+  <data name="SettingsNotifyDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Bir cihaz evin dışından eşleşir veya bağlanır</value></data>
+  <data name="HomeClientEmpty.Text" xml:space="preserve"><value>Yapay zekâ diğer PC'nizde çalışır. Modeller, bellek kullanımı ve ısınma süreci orada gösterilir.</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>PC'yi değiştir</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Başka bir PC eşleştirmek için Ev PC ayarlarını açın</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Başka bir PC eşleştirmek için Ev PC ayarlarını açın</value></data>
+  <data name="HomeChangePcText.Text" xml:space="preserve"><value>PC'yi değiştir</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Yapay zekâyı burada çalıştır</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>İstemci modundan çıkın ve yapay zekâyı yeniden bu PC'de çalıştırın. Eşleştirme kayıtlı kalır.</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>İstemci modundan çıkın ve yapay zekâyı yeniden bu PC'de çalıştırın. Eşleştirme kayıtlı kalır.</value></data>
+  <data name="HomeRunHereText.Text" xml:space="preserve"><value>Yapay zekâyı burada çalıştır</value></data>
+  <data name="ModelsLocalNote.Text" xml:space="preserve"><value>Bu sayfadaki indirmeler, yapay zekâyı bu PC'nin çalıştırdığı durum içindir.</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ev PC'mi kullan</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>İndirmeyi atlayın ve yapay zekâyı sahip olduğunuz başka bir PC'de kullanın. Sıradaki adımda onunla eşleşeceksiniz.</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>İndirmeyi atlayın ve yapay zekâyı sahip olduğunuz başka bir PC'de kullanın. Sıradaki adımda onunla eşleşeceksiniz.</value></data>
+  <data name="WelcomeHomePcText.Text" xml:space="preserve"><value>Ev PC'mi kullan</value></data>
+  <data name="Vm_LinkConnectedLan" xml:space="preserve"><value>Bağlı - ev ağı</value></data>
+  <data name="Vm_LinkConnectedRelay" xml:space="preserve"><value>Bağlı - röle üzerinden</value></data>
+  <data name="Vm_LinkConnecting" xml:space="preserve"><value>Bağlanılıyor...</value></data>
+  <data name="Vm_LinkUnreachable" xml:space="preserve"><value>Ulaşılamıyor</value></data>
+  <data name="Vm_LinkRevoked" xml:space="preserve"><value>Bu dizüstü bilgisayar PC'den kaldırıldı</value></data>
+  <data name="Vm_LinkRepair" xml:space="preserve"><value>Yeniden eşleş</value></data>
+  <data name="Vm_LinkRtt" xml:space="preserve"><value>{0} - {1} ms</value></data>
+  <data name="Vm_LinkLastSeen" xml:space="preserve"><value>Son görülme {0}</value></data>
+  <data name="Vm_LinkUsingLaptop" xml:space="preserve"><value>Bu dizüstü bilgisayarın modeli kullanılıyor</value></data>
+  <data name="Vm_LinkUnreachableHelp" xml:space="preserve"><value>{0} ile bağlantı kurulamıyor. Açık ve aynı ağda olduğundan emin olun ya da röleyi açın.</value></data>
+  <data name="Vm_LinkRevokedHelp" xml:space="preserve"><value>{0} artık bu dizüstü bilgisayarı içeri almıyor. Kullanmaya devam etmek için yeniden eşleşin.</value></data>
+  <data name="Vm_LinkRepairHelp" xml:space="preserve"><value>{0} kimliği değişti, bu yüzden dizüstü bilgisayar ona güvenmeyi bıraktı. Bunu beklemiyorsanız yeniden eşleşmeyin. Aksi halde eşleştirmeyi kaldırın ve sonra yeniden eşleşin.</value></data>
+  <data name="Vm_TrayLink" xml:space="preserve"><value>{0} - {1}</value></data>
+  <data name="Vm_DeviceAlertPaired" xml:space="preserve"><value>{0} eşleştirildi ve artık bu PC'nin yapay zekâsını kullanabilir.</value></data>
+  <data name="Vm_DeviceAlertRelay" xml:space="preserve"><value>{0} evin dışından röle üzerinden bağlandı.</value></data>
+  <data name="Vm_HomeModeThisPc" xml:space="preserve"><value>Bu PC</value></data>
+  <data name="Vm_HomeModeHomePc" xml:space="preserve"><value>Ev PC'mi kullan</value></data>
+  <data name="Vm_HomeFallbackNone" xml:space="preserve"><value>Hiçbiri</value></data>
+  <data name="Vm_HomeFallbackLocal" xml:space="preserve"><value>Bu dizüstü bilgisayarın modelini kullan</value></data>
+  <data name="Vm_HomeRelayAuto" xml:space="preserve"><value>Otomatik</value></data>
+  <data name="Vm_HomeRelayManual" xml:space="preserve"><value>Elle</value></data>
+  <data name="Vm_HomeNeedsPair" xml:space="preserve"><value>Önce bir PC eşleştirin.</value></data>
+  <data name="Vm_UnpairTitle" xml:space="preserve"><value>Bu PC'nin eşleştirmesi kaldırılsın mı?</value></data>
+  <data name="Vm_UnpairBody" xml:space="preserve"><value>Bu dizüstü bilgisayar {0} PC'sini unutacak ve kullanmayı bırakacak. Modeller ve indirmelere dokunulmaz. Daha sonra yeniden eşleşebilirsiniz.</value></data>
+  <data name="Vm_UnpairConfirm" xml:space="preserve"><value>Eşleştirmeyi kaldır</value></data>
+  <data name="Vm_UnpairCancel" xml:space="preserve"><value>İptal</value></data>
+  <data name="Vm_FallbackTitle" xml:space="preserve"><value>Ev PC'nize ulaşılamıyor</value></data>
+  <data name="Vm_FallbackBody" xml:space="preserve"><value>{0} şu an ulaşılamıyor. O uzaktayken bu dizüstü bilgisayar kendi modeliyle yanıt versin mi? Bunu Ayarlar'da, Ev PC altından değiştirebilirsiniz.</value></data>
+  <data name="Vm_FallbackLocal" xml:space="preserve"><value>Bu dizüstü bilgisayarın modelini kullan</value></data>
+  <data name="Vm_FallbackNone" xml:space="preserve"><value>Hiçbiri</value></data>
+  <data name="Vm_PairTitle" xml:space="preserve"><value>Ev PC'mi kullan</value></data>
+  <data name="Vm_PairIntro" xml:space="preserve"><value>Diğer PC'de Ayarlar'ı açın ve Bir cihaz eşleştir seçeneğini seçin, sonra bağlantıyı kopyalayın. Buraya yapıştırın.</value></data>
+  <data name="Vm_PairLinkPlaceholder" xml:space="preserve"><value>portalai://pair?...</value></data>
+  <data name="Vm_PairLinkName" xml:space="preserve"><value>Eşleştirme bağlantısı</value></data>
+  <data name="Vm_PairPaste" xml:space="preserve"><value>Bağlantıyı yapıştır</value></data>
+  <data name="Vm_PairPasteTip" xml:space="preserve"><value>Eşleştirme bağlantısını panodan yapıştırın</value></data>
+  <data name="Vm_PairNext" xml:space="preserve"><value>İleri</value></data>
+  <data name="Vm_PairConfirm" xml:space="preserve"><value>Eşleştir</value></data>
+  <data name="Vm_PairBack" xml:space="preserve"><value>Geri</value></data>
+  <data name="Vm_PairCancel" xml:space="preserve"><value>İptal</value></data>
+  <data name="Vm_PairWorking" xml:space="preserve"><value>PC'ye bağlanılıyor...</value></data>
+  <data name="Vm_PairDeviceName" xml:space="preserve"><value>Bu dizüstü bilgisayarın adı</value></data>
+  <data name="Vm_PairConfirmPc" xml:space="preserve"><value>{0} ile eşleştirilsin mi?</value></data>
+  <data name="Vm_PairFingerprint" xml:space="preserve"><value>Parmak izi: {0}</value></data>
+  <data name="Vm_PairErr_invalid_input" xml:space="preserve"><value>Bağlantı geçerli değil. Diğer PC'den yeniden kopyalayın.</value></data>
+  <data name="Vm_PairErr_address_not_allowed" xml:space="preserve"><value>Bu adres ev ağınızda değil. Evin dışındayken önce bir kez evde eşleştirme yapın.</value></data>
+  <data name="Vm_PairErr_unreachable" xml:space="preserve"><value>Bu adrese ulaşılamadı.</value></data>
+  <data name="Vm_PairErr_certificate_mismatch" xml:space="preserve"><value>Bu PC doğrulanamadı.</value></data>
+  <data name="Vm_PairErr_host_proof_invalid" xml:space="preserve"><value>Bu PC doğrulanamadı.</value></data>
+  <data name="Vm_PairErr_refused" xml:space="preserve"><value>Bu PC eşleştirmeyi reddetti.</value></data>
+  <data name="Vm_PairErr_protocol_error" xml:space="preserve"><value>Bu PC beklenmeyen bir yanıt gönderdi.</value></data>
+  <data name="Vm_PairErr_save_failed" xml:space="preserve"><value>Eşleştirme başarılı oldu, ancak bu PC'de kaydedilemedi.</value></data>
+  <data name="Vm_PairErr_already_paired" xml:space="preserve"><value>Zaten bir PC eşleştirilmiş. Önce Ayarlar'dan eşleştirmeyi kaldırın.</value></data>
+  <data name="Vm_PairErr_not_available" xml:space="preserve"><value>Bu kurulumda eşleştirme kullanılamıyor.</value></data>
+  <data name="Vm_PairErr_host" xml:space="preserve"><value>Uygulama çalışmıyor.</value></data>
+  <data name="Vm_PairReason_expired" xml:space="preserve"><value>Kodun süresi doldu. Yeni bir kod isteyin.</value></data>
+  <data name="Vm_PairReason_code_voided" xml:space="preserve"><value>Bu kod hatalı denemelerle tükendi. Yeni bir kod isteyin.</value></data>
+  <data name="Vm_PairReason_no_offer" xml:space="preserve"><value>Bu PC bir cihaz beklemiyor. Üzerinde yeni bir kod açın.</value></data>
+  <data name="Vm_PairReason_too_many_devices" xml:space="preserve"><value>Bu PC'nin zaten 16 cihazı var. Önce birini kaldırın.</value></data>
+  <data name="Vm_PairReason_wrong_code" xml:space="preserve"><value>Kod doğru değil.</value></data>
+  <data name="ModelsMemoryTitle.Text" xml:space="preserve"><value>Bellek bütçesi</value></data>
+  <data name="ModelsMemoryTitle.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Yüklü ve yüklenen modellerin planlanan kullanımı; RAM sınırı ve ekran kartı belleğine karşı. Sığmayacak bir model reddedilir.</value></data>
+  <data name="Vm_MemRam" xml:space="preserve"><value>RAM</value></data>
+  <data name="Vm_MemVram" xml:space="preserve"><value>Grafik belleği</value></data>
+  <data name="Vm_MemLine" xml:space="preserve"><value>{0}: {1} kullanımda, yüklenirken {2} ayrıldı, {4} içinden {3} boş</value></data>
+  <data name="UpdateBar.Title" xml:space="preserve"><value>Güncelleme var</value></data>
+  <data name="UpdateBar.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Portal AI Host'un daha yeni bir sürümü Microsoft Store'da hazır</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Güncelle</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Portal AI Host'u güncellemek için Microsoft Store sayfasını açın</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Portal AI Host'u güncellemek için Microsoft Store sayfasını açın</value></data>
+  <data name="UpdateButtonText.Text" xml:space="preserve"><value>Güncelle</value></data>
+  <data name="Vm_ComingSoon" xml:space="preserve"><value>Yakında</value></data>
+  <data name="Vm_VramBoth" xml:space="preserve"><value>İşlemci yardımıyla {0} GB grafik belleği ister; {1} GB önerilir.</value></data>
+  <data name="Vm_VramMin" xml:space="preserve"><value>İşlemci yardımıyla {0} GB grafik belleği ister.</value></data>
+  <data name="Vm_VramRec" xml:space="preserve"><value>{0} GB grafik belleği önerilir.</value></data>
+  <data name="Vm_GroupCount" xml:space="preserve"><value>{0} model</value></data>
+  <data name="Vm_ShowAll" xml:space="preserve"><value>Tümünü göster ({0})</value></data>
+  <data name="Vm_ShowFewer" xml:space="preserve"><value>Daha azını göster</value></data>
+  <data name="Vm_CatAllTip" xml:space="preserve"><value>Her türden modelleri göster</value></data>
+  <data name="Vm_CatChip_all" xml:space="preserve"><value>Tümü</value></data>
+  <data name="Vm_CatChip_chat" xml:space="preserve"><value>Sohbet</value></data>
+  <data name="Vm_CatChip_coding" xml:space="preserve"><value>Kodlama</value></data>
+  <data name="Vm_CatChip_reasoning" xml:space="preserve"><value>Akıl yürütme</value></data>
+  <data name="Vm_CatChip_vision" xml:space="preserve"><value>Görsel</value></data>
+  <data name="Vm_CatChip_search" xml:space="preserve"><value>Arama</value></data>
+  <data name="Vm_CatChip_image" xml:space="preserve"><value>Görseller</value></data>
+  <data name="Vm_CatChip_video" xml:space="preserve"><value>Video</value></data>
+  <data name="Vm_CatChip_speech" xml:space="preserve"><value>Konuşma</value></data>
+  <data name="Vm_CatChip_other" xml:space="preserve"><value>Diğer</value></data>
+  <data name="Vm_Cat_chat" xml:space="preserve"><value>Sohbet ve yazma</value></data>
+  <data name="Vm_Cat_coding" xml:space="preserve"><value>Kodlama</value></data>
+  <data name="Vm_Cat_reasoning" xml:space="preserve"><value>Akıl yürütme</value></data>
+  <data name="Vm_Cat_vision" xml:space="preserve"><value>Resimleri anlama</value></data>
+  <data name="Vm_Cat_search" xml:space="preserve"><value>Arama ve gömmeler</value></data>
+  <data name="Vm_Cat_image" xml:space="preserve"><value>Görsel üretimi</value></data>
+  <data name="Vm_Cat_video" xml:space="preserve"><value>Video üretimi</value></data>
+  <data name="Vm_Cat_speech" xml:space="preserve"><value>Konuşma</value></data>
+  <data name="Vm_Cat_other" xml:space="preserve"><value>Diğer modeller</value></data>
+  <data name="ModelsSearch.PlaceholderText" xml:space="preserve"><value>Modellerde ara</value></data>
+  <data name="ModelsSearch.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Modellerde ara</value></data>
+  <data name="ModelsNoMatches.Text" xml:space="preserve"><value>Eşleşen model yok. Aramayı temizleyin veya Tümü'nü seçin.</value></data>
+  <data name="HomeSeeAppsLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bu ana bilgisayara hangi uygulamaların bağlı olduğunu görün</value></data>
+  <data name="HomeSeeAppsLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Bu ana bilgisayara hangi uygulamaların bağlı olduğunu görün</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Eşleştirme bağlantısını panoya kopyalayın</value></data>
+  <data name="HomeLoadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Modeli belleğe yükleyin, böylece daha hızlı yanıt verir</value></data>
+  <data name="HomeLoadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Modeli belleğe yükleyin, böylece daha hızlı yanıt verir</value></data>
+  <data name="SettingsNotifyDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bir cihaz eşleştiğinde veya bağlandığında bildirim gösterin</value></data>
+  <data name="SettingsCorners.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Köşelerin ne kadar yuvarlak olduğu</value></data>
+  <data name="HomeChangeFolderButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Daha fazla boş alanı olan bir klasör seçmek için Ayarlar'ı açın</value></data>
+  <data name="HomeChangeFolderButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Daha fazla boş alanı olan bir klasör seçmek için Ayarlar'ı açın</value></data>
+  <data name="SettingsMoveButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Modelleri seçilen klasöre taşıyın. Dosyalar eskileri kaldırılmadan önce kopyalanır ve denetlenir.</value></data>
+  <data name="SettingsMoveButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Modelleri seçilen klasöre taşıyın. Dosyalar eskileri kaldırılmadan önce kopyalanır ve denetlenir.</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Eşleştirmeyi iptal et</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Eşleştirmeyi iptal et</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Sağlık denetimlerini göster veya gizle</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Sağlık denetimlerini göster veya gizle</value></data>
+  <data name="SettingsMaterial.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Pencerenin arka plan stili</value></data>
+  <data name="HomeDownloadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Önerilen modeli indirin</value></data>
+  <data name="HomeDownloadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Önerilen modeli indirin</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bir çökme raporunda tam olarak neler olduğunu görün</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Bir çökme raporunda tam olarak neler olduğunu görün</value></data>
+  <data name="SettingsEaseOffFullscreen.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Tam ekran bir uygulama veya oyun çalışırken bellek boşaltın</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Daha iyi modelleri görmek için Modeller sayfasını açın</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Daha iyi modelleri görmek için Modeller sayfasını açın</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Performans ayarlarını varsayılanlarına döndürün</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Performans ayarlarını varsayılanlarına döndürün</value></data>
+  <data name="SettingsEaseOffBattery.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bilgisayar pilde çalışırken bellek boşaltın</value></data>
+  <data name="SettingsPreset.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hız ve bellek kullanımı arasında hazır bir denge seçin</value></data>
+  <data name="SettingsRemoteRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Eşleştirilmiş cihazların ev ağınızın dışından bu PC'ye ulaşmasına izin verin</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Yeni bir cihazı eşleştirmek için kod oluşturun</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Yeni bir cihazı eşleştirmek için kod oluşturun</value></data>
+  <data name="SettingsCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Sorunları düzeltmeye yardımcı olmak için çökme raporları gönderin</value></data>
+  <data name="SettingsAllowReplace.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bir cihazın mevcut bir eşleştirmenin yerine geçmesine izin verin</value></data>
+  <data name="SettingsMotion.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Ne kadar animasyon kullanılacağı</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Varsayılan modeller klasörüne geri dönün</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Varsayılan modeller klasörüne geri dönün</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Dışarıdayken ev PC'sine röle üzerinden ulaşılmasına izin verin</value></data>
+  <data name="HomeTryAgainButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Model listesini yeniden yüklemeyi deneyin</value></data>
+  <data name="HomeTryAgainButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Model listesini yeniden yüklemeyi deneyin</value></data>
+  <data name="SettingsStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Windows'a oturum açtığınızda Portal AI Host'u başlatın</value></data>
+  <data name="SettingsHomeMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bu PC'nin modelleri kendisinin çalıştırıp çalıştırmayacağını veya ev PC'nizi kullanıp kullanmayacağını seçin</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Uygulamaların kullanabilmesi için ana bilgisayarı başlatın</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Uygulamaların kullanabilmesi için ana bilgisayarı başlatın</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Genel ayarları varsayılanlarına döndürün</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Genel ayarları varsayılanlarına döndürün</value></data>
+  <data name="SettingsHomeFallback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Ev PC'sine ulaşılamadığında ne yapılacağı</value></data>
+  <data name="SettingsDensity.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Öğeler arasında ne kadar boşluk olduğu</value></data>
+  <data name="SettingsTextSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Metnin ne kadar büyük olduğu</value></data>
+  <data name="SettingsIdle.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Ana bilgisayar, model belleğini boşaltmadan önce istek gelmeden ne kadar bekler</value></data>
+  <data name="SettingsEaseOffAppBusy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Başka bir uygulama yoğun çalışırken bellek boşaltın</value></data>
+  <data name="SettingsRemoveDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bu cihazı kaldırın. Bağlanmak için yeniden eşleşmesi gerekir.</value></data>
+  <data name="SettingsRemoveDevice.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Bu cihazı kaldırın. Bağlanmak için yeniden eşleşmesi gerekir.</value></data>
+  <data name="SettingsMoveCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Modelleri taşımayı durdur</value></data>
+  <data name="SettingsMoveCancel.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Modelleri taşımayı durdur</value></data>
+  <data name="SettingsNotifyDownloads.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bir indirme bittiğinde veya başarısız olduğunda bildirim gösterin</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Gizlilik ayarlarını varsayılanlarına döndürün</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Gizlilik ayarlarını varsayılanlarına döndürün</value></data>
+  <data name="HealthCheckAgainButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Sağlık denetimlerini yeniden çalıştırın</value></data>
+  <data name="HealthCheckAgainButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Sağlık denetimlerini yeniden çalıştırın</value></data>
+  <data name="SettingsMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Modellerin ne kadar bellek kullanabileceği</value></data>
+  <data name="SettingsTheme.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Açık, koyu veya Windows'u izle</value></data>
+  <data name="SettingsRemoteEnabled.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Diğer cihazlarınızın bu PC'yi kullanmasına izin verin</value></data>
+  <data name="SettingsNotifyProblems.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bir şey dikkatinizi gerektirdiğinde bildirim gösterin</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Etkin modeli denemek için sohbet sayfasını açın</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Etkin modeli denemek için sohbet sayfasını açın</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bildirim ayarlarını varsayılanlarına döndürün</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Bildirim ayarlarını varsayılanlarına döndürün</value></data>
+  <data name="SettingsRelayAdmission.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Cihazlar bağlanmadan önce röleden denetlemesini isteyin</value></data>
+  <data name="HomeUnloadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Modelin kullandığı belleği boşaltın. Model dosyası diskte kalır.</value></data>
+  <data name="HomeUnloadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Modelin kullandığı belleği boşaltın. Model dosyası diskte kalır.</value></data>
+  <data name="HomeSeeAllModelsLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>İndirilebilen tüm modellere göz atın</value></data>
+  <data name="HomeSeeAllModelsLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>İndirilebilen tüm modellere göz atın</value></data>
+  <data name="SettingsNotifyApprovals.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bir uygulama izin istediğinde bildirim gösterin</value></data>
+  <data name="SettingsHomeRelayMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Ev PC'sine ulaşmak için rölenin ne zaman kullanılacağını seçin</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Görünüm ayarlarını varsayılanlarına döndürün</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Görünüm ayarlarını varsayılanlarına döndürün</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Sağlık denetimleri</value></data>
+</root>

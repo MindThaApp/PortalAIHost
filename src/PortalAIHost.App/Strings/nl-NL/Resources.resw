@@ -1,0 +1,986 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="NavHome.Content" xml:space="preserve"><value>Start</value></data>
+  <data name="NavHome.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Start</value></data>
+  <data name="NavModels.Content" xml:space="preserve"><value>Modellen</value></data>
+  <data name="NavModels.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Modellen</value></data>
+  <data name="NavApps.Content" xml:space="preserve"><value>Apparaten en apps</value></data>
+  <data name="NavApps.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Apparaten en apps</value></data>
+  <data name="NavTryIt.Content" xml:space="preserve"><value>Uitproberen</value></data>
+  <data name="NavTryIt.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Uitproberen</value></data>
+  <data name="NavSettings.Content" xml:space="preserve"><value>Instellingen</value></data>
+  <data name="NavSettings.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Instellingen</value></data>
+  <data name="HomeTitle.Text" xml:space="preserve"><value>Start</value></data>
+  <data name="HomeSafeModeBar.Title" xml:space="preserve"><value>Veilige modus</value></data>
+  <data name="HomeStoreProblemBar.Title" xml:space="preserve"><value>Map voor modellen niet beschikbaar</value></data>
+  <data name="Vm_OldFolderBadge" xml:space="preserve"><value>Eerdere map</value></data>
+  <data name="Vm_OldFolderRow" xml:space="preserve"><value>In een eerdere modellenmap: {0}. Verwijder die om ruimte vrij te maken.</value></data>
+  <data name="HomeSafeModeBar.Message" xml:space="preserve"><value>De host is meer dan één keer onverwacht gesloten, dus hij is gestart met voorzichtige instellingen. Je apps werken nog steeds. Als dit blijft gebeuren, start je pc opnieuw.</value></data>
+  <data name="HomeStartButton.Content" xml:space="preserve"><value>Portal AI Host starten</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Portal AI Host starten</value></data>
+  <data name="HomeUpgradeText.Text" xml:space="preserve"><value>Er is een beter model beschikbaar voor je pc. Je huidige model blijft tot het nieuwe klaar is.</value></data>
+  <data name="HomeSeeModelsButton.Content" xml:space="preserve"><value>Modellen bekijken</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Modellen bekijken</value></data>
+  <data name="ModelsTitle.Text" xml:space="preserve"><value>Modellen</value></data>
+  <data name="ModelsExistingBar.Title" xml:space="preserve"><value>Bestaande kopie gevonden</value></data>
+  <data name="ModelsUpgradeBar.Title" xml:space="preserve"><value>Er is een beter model beschikbaar</value></data>
+  <data name="ModelTooBig.Text" xml:space="preserve"><value>Dit model is misschien te groot voor deze pc.</value></data>
+  <data name="ModelDownload.Content" xml:space="preserve"><value>Downloaden</value></data>
+  <data name="ModelPause.Content" xml:space="preserve"><value>Pauzeren</value></data>
+  <data name="ModelResume.Content" xml:space="preserve"><value>Hervatten</value></data>
+  <data name="ModelCancel.Content" xml:space="preserve"><value>Stoppen</value></data>
+  <data name="ModelUse.Content" xml:space="preserve"><value>Dit model gebruiken</value></data>
+  <data name="ModelRemove.Content" xml:space="preserve"><value>Verwijderen</value></data>
+  <data name="ModelsCatalogueBar.Title" xml:space="preserve"><value>Modellijst niet beschikbaar</value></data>
+  <data name="ModelsCatalogueBar.Message" xml:space="preserve"><value>De host kon geen vertrouwde modellijst laden, dus er kunnen nu geen nieuwe modellen worden gedownload. Modellen die al op deze pc staan, werken nog steeds.</value></data>
+  <data name="AppsTitle.Text" xml:space="preserve"><value>Apparaten en apps</value></data>
+  <data name="AppsWaitingHeader.Text" xml:space="preserve"><value>Wacht op je antwoord</value></data>
+  <data name="AppsApprovedHeader.Text" xml:space="preserve"><value>Apps die je AI-host mogen gebruiken</value></data>
+  <data name="AppsNone.Text" xml:space="preserve"><value>Nog geen apps toegestaan. Wanneer een app de host wil gebruiken, wordt je dat hier gevraagd.</value></data>
+  <data name="AppAllow.Content" xml:space="preserve"><value>Toestaan</value></data>
+  <data name="AppDeny.Content" xml:space="preserve"><value>Weigeren</value></data>
+  <data name="Vm_AppTodayNone" xml:space="preserve"><value>Vandaag geen verzoeken</value></data>
+  <data name="Vm_AppToday1" xml:space="preserve"><value>{0} verzoek vandaag</value></data>
+  <data name="Vm_AppToday" xml:space="preserve"><value>{0} verzoeken vandaag</value></data>
+  <data name="Vm_PriorityHigh" xml:space="preserve"><value>Hoog</value></data>
+  <data name="Vm_PriorityNormal" xml:space="preserve"><value>Normaal</value></data>
+  <data name="Vm_PriorityLow" xml:space="preserve"><value>Laag</value></data>
+  <data name="Vm_AutoPriority" xml:space="preserve"><value>Prioriteit voor {0}</value></data>
+  <data name="Vm_AppPausedBadge" xml:space="preserve"><value>Gepauzeerd</value></data>
+  <data name="Vm_AppPausedHint" xml:space="preserve"><value>{0} is gepauzeerd. Nieuwe verzoeken worden geweigerd totdat je hem hervat. Hij behoudt zijn toegang.</value></data>
+  <data name="Vm_AppPause" xml:space="preserve"><value>Pauzeren</value></data>
+  <data name="Vm_AppResume" xml:space="preserve"><value>Hervatten</value></data>
+  <data name="Vm_AutoPause" xml:space="preserve"><value>{0} pauzeren</value></data>
+  <data name="Vm_AutoResume" xml:space="preserve"><value>{0} hervatten</value></data>
+  <data name="AppPriority.Header" xml:space="preserve"><value>Prioriteit</value></data>
+  <data name="AppRevoke.Content" xml:space="preserve"><value>Toegang intrekken</value></data>
+  <data name="SettingsTitle.Text" xml:space="preserve"><value>Instellingen</value></data>
+  <data name="SettingsStartWithWindows.Header" xml:space="preserve"><value>Starten met Windows</value></data>
+  <data name="SettingsStartWithWindows.OnContent" xml:space="preserve"><value>Aan</value></data>
+  <data name="SettingsStartWithWindows.OffContent" xml:space="preserve"><value>Uit</value></data>
+  <data name="SettingsStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Starten met Windows</value></data>
+  <data name="SettingsIdle.Header" xml:space="preserve"><value>Geheugen vrijmaken bij inactiviteit</value></data>
+  <data name="SettingsIdle.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Geheugen vrijmaken bij inactiviteit</value></data>
+  <data name="SettingsIdleHelp.Text" xml:space="preserve"><value>Het model wordt weer wakker de volgende keer dat een app erom vraagt. Het geladen houden geeft snellere antwoorden, maar gebruikt de hele tijd geheugen.</value></data>
+  <data name="SettingsFolder.Header" xml:space="preserve"><value>Map voor gedownloade modellen</value></data>
+  <data name="SettingsFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Map voor gedownloade modellen</value></data>
+  <data name="TryItTitle.Text" xml:space="preserve"><value>Uitproberen</value></data>
+  <data name="TryItIntro.Text" xml:space="preserve"><value>Stel het model een korte vraag om te controleren of het werkt en hoe snel het antwoordt. Wat je hier typt, wordt niet opgeslagen. Druk op Ctrl+Enter om te vragen.</value></data>
+  <data name="TryItPrompt.Header" xml:space="preserve"><value>Je vraag</value></data>
+  <data name="TryItPrompt.PlaceholderText" xml:space="preserve"><value>Bijvoorbeeld: schrijf één zin over de zee.</value></data>
+  <data name="TryItPrompt.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Je vraag</value></data>
+  <data name="TryItSend.Content" xml:space="preserve"><value>Vragen</value></data>
+  <data name="TryItSend.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Vragen</value></data>
+  <data name="TryItStop.Content" xml:space="preserve"><value>Stoppen</value></data>
+  <data name="TryItStop.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Stoppen</value></data>
+  <data name="TryItReply.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Het antwoord</value></data>
+  <data name="WelcomeTitle.Text" xml:space="preserve"><value>Welkom bij Portal AI Host</value></data>
+  <data name="WelcomeLead.Text" xml:space="preserve"><value>AI die op je pc blijft</value></data>
+  <data name="WelcomeIntro.Text" xml:space="preserve"><value>Portal AI Host draait AI-modellen op deze pc voor je Portal-apps. Je hoeft niets in te stellen: we kiezen een model dat bij je pc past.</value></data>
+  <data name="WelcomePoint1Title.Text" xml:space="preserve"><value>Draait op deze pc</value></data>
+  <data name="WelcomePoint1Body.Text" xml:space="preserve"><value>Het model gebruikt je eigen videokaart en geheugen, dus het werkt ook zonder internetverbinding.</value></data>
+  <data name="WelcomePoint2Title.Text" xml:space="preserve"><value>Blijft privé</value></data>
+  <data name="WelcomePoint2Body.Text" xml:space="preserve"><value>Je vragen en bestanden verlaten deze pc nooit.</value></data>
+  <data name="WelcomePoint3Title.Text" xml:space="preserve"><value>Gemaakt voor je Portal-apps</value></data>
+  <data name="WelcomePoint3Body.Text" xml:space="preserve"><value>Je Portal-apps kunnen het gebruiken om te schrijven, samen te vatten en te antwoorden, zonder extra accounts.</value></data>
+  <data name="WelcomeModelTitle.Text" xml:space="preserve"><value>Kies een model</value></data>
+  <data name="WelcomeModelIntro.Text" xml:space="preserve"><value>Een model is de AI die het werk doet. Dit is het model dat volgens ons het best bij je pc past.</value></data>
+  <data name="WelcomeNoModel.Text" xml:space="preserve"><value>We konden nu geen model vinden dat bij deze pc past. Je kunt later opnieuw zoeken op de pagina Modellen.</value></data>
+  <data name="WelcomeDownload.Content" xml:space="preserve"><value>Downloaden</value></data>
+  <data name="WelcomeDownload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Het aanbevolen model downloaden</value></data>
+  <data name="WelcomeChooseLater.Content" xml:space="preserve"><value>Later kiezen</value></data>
+  <data name="WelcomeChooseLater.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Later kiezen, een model kiezen bij Modellen</value></data>
+  <data name="WelcomeKeepGoing.Text" xml:space="preserve"><value>Je kunt doorgaan. De download loopt op de achtergrond door.</value></data>
+  <data name="WelcomeRetry.Content" xml:space="preserve"><value>Opnieuw proberen</value></data>
+  <data name="WelcomeRetry.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Opnieuw proberen, de download opnieuw starten</value></data>
+  <data name="WelcomeWhereTitle.Text" xml:space="preserve"><value>Vind het naast de klok</value></data>
+  <data name="WelcomeTrayTitle.Text" xml:space="preserve"><value>Zoek het pictogram in het systeemvak</value></data>
+  <data name="WelcomeTrayBody.Text" xml:space="preserve"><value>Portal AI Host wacht rustig in het systeemvak, de kleine pictogrammen naast de klok. Klik op het pictogram om hem te openen. Zie je hem niet, klik dan op de pijl om verborgen pictogrammen te tonen.</value></data>
+  <data name="WelcomeAskTitle.Text" xml:space="preserve"><value>Apps vragen altijd eerst</value></data>
+  <data name="WelcomeAskBody.Text" xml:space="preserve"><value>De eerste keer dat een Portal-app AI op deze pc wil gebruiken, wordt je dat gevraagd. Je kunt nee zeggen, en je kunt de toegang altijd weer intrekken.</value></data>
+  <data name="WelcomeStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Starten met Windows: Portal AI Host starten wanneer ik me aanmeld</value></data>
+  <data name="WelcomeSkip.Content" xml:space="preserve"><value>Nu overslaan</value></data>
+  <data name="WelcomeSkip.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Nu overslaan, welkomstscherm sluiten</value></data>
+  <data name="WelcomeBack.Content" xml:space="preserve"><value>Terug</value></data>
+  <data name="WelcomeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Terug</value></data>
+  <data name="Vm_VerifiedShort" xml:space="preserve"><value>Geverifieerde Portal-app</value></data>
+  <data name="Vm_ApprovalDetails" xml:space="preserve"><value>Details</value></data>
+  <data name="Vm_WelcomeRecommended" xml:space="preserve"><value>Aanbevolen: model {0}</value></data>
+  <data name="Vm_WelcomeSmall" xml:space="preserve"><value>Klein</value></data>
+  <data name="Vm_WelcomeMedium" xml:space="preserve"><value>Middelgroot</value></data>
+  <data name="Vm_WelcomeLarge" xml:space="preserve"><value>Groot</value></data>
+  <data name="Vm_WelcomeDetail" xml:space="preserve"><value>{0}, {1}</value></data>
+  <data name="WelcomeLaterNote.Text" xml:space="preserve"><value>Je kunt later een model kiezen bij Modellen.</value></data>
+  <data name="WelcomeStartRec.Content" xml:space="preserve"><value>Starten met aanbevolen instellingen</value></data>
+  <data name="WelcomeStartRec.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Starten met aanbevolen instellingen</value></data>
+  <data name="WelcomeWhereIntro.Text" xml:space="preserve"><value>Twee dingen om te weten voordat je begint.</value></data>
+  <data name="WelcomeStartTitle.Text" xml:space="preserve"><value>Starten met Windows</value></data>
+  <data name="WelcomeStartBody.Text" xml:space="preserve"><value>Houdt Portal AI Host klaar in het systeemvak wanneer je je aanmeldt, zodat je apps er meteen gebruik van kunnen maken.</value></data>
+  <data name="Vm_WelcomeRecommendedTip" xml:space="preserve"><value>Downloadt het aanbevolen model ({0}) op de achtergrond, houdt Portal AI Host ingesteld om met Windows te starten en sluit dit venster. Je kunt alles later wijzigen.</value></data>
+  <data name="Vm_WelcomeRecommendedTipNoModel" xml:space="preserve"><value>Houdt Portal AI Host ingesteld om met Windows te starten en sluit dit venster. Je kunt alles later wijzigen.</value></data>
+  <data name="Vm_WelcomeTitle" xml:space="preserve"><value>Welkom bij Portal AI Host</value></data>
+  <data name="Vm_WelcomeNext" xml:space="preserve"><value>Volgende</value></data>
+  <data name="Vm_WelcomeFinish" xml:space="preserve"><value>Aan de slag</value></data>
+  <data name="Vm_WelcomeSize" xml:space="preserve"><value>Downloadgrootte: {0}</value></data>
+  <data name="Vm_AppTitle" xml:space="preserve"><value>Portal AI Host</value></data>
+  <data name="Vm_NoHostTitle" xml:space="preserve"><value>Portal AI Host draait niet</value></data>
+  <data name="Vm_NoHostBody" xml:space="preserve"><value>De helper die je AI-model draait, is uitgeschakeld. Start hem zodat je apps AI kunnen gebruiken.</value></data>
+  <data name="Vm_Starting" xml:space="preserve"><value>Bezig met starten...</value></data>
+  <data name="Vm_StartFailed" xml:space="preserve"><value>De host kon niet worden gestart. Probeer Portal AI Host opnieuw te openen via het Startmenu.</value></data>
+  <data name="Vm_StateReady" xml:space="preserve"><value>Gereed</value></data>
+  <data name="Vm_StateBusy" xml:space="preserve"><value>Bezig met antwoorden</value></data>
+  <data name="Vm_StateLoading" xml:space="preserve"><value>Model wordt klaargemaakt</value></data>
+  <data name="Vm_StateIdle" xml:space="preserve"><value>In rust. Het model wordt wakker wanneer een app erom vraagt.</value></data>
+  <data name="Vm_StateNoModel" xml:space="preserve"><value>Nog geen model</value></data>
+  <data name="Vm_StateDownloading" xml:space="preserve"><value>Model wordt gedownload</value></data>
+  <data name="Vm_StateError" xml:space="preserve"><value>Er ging iets mis</value></data>
+  <data name="Vm_HostVersion" xml:space="preserve"><value>Hostversie {0}</value></data>
+  <data name="Vm_ModelNone" xml:space="preserve"><value>Nog geen model geïnstalleerd</value></data>
+  <data name="Vm_ModelLoaded" xml:space="preserve"><value>{0} is geladen en gereed</value></data>
+  <data name="Vm_ModelLoading" xml:space="preserve"><value>{0} wordt geladen...</value></data>
+  <data name="Vm_ModelUnloaded" xml:space="preserve"><value>{0} is geïnstalleerd. Het wordt geladen wanneer een app erom vraagt.</value></data>
+  <data name="Vm_QueueEmpty" xml:space="preserve"><value>Geen verzoeken in de wachtrij</value></data>
+  <data name="Vm_QueueSome" xml:space="preserve"><value>{0} actief, {1} wachtend</value></data>
+  <data name="Vm_QualityName" xml:space="preserve"><value>Kwaliteit {0} van 5</value></data>
+  <data name="Vm_DownloadProgress" xml:space="preserve"><value>{0} van {1}</value></data>
+  <data name="Vm_DownloadEta" xml:space="preserve"><value>{0} van {1}, nog ongeveer {2} min</value></data>
+  <data name="Vm_Paused" xml:space="preserve"><value>Gepauzeerd bij {0}%</value></data>
+  <data name="Vm_Verifying" xml:space="preserve"><value>Download wordt gecontroleerd...</value></data>
+  <data name="Vm_Queued" xml:space="preserve"><value>Wachten om te starten...</value></data>
+  <data name="Vm_DownloadFailed" xml:space="preserve"><value>De download is niet voltooid. {0}</value></data>
+  <data name="Vm_DownloadDone" xml:space="preserve"><value>Download voltooid.</value></data>
+  <data name="Vm_InUse" xml:space="preserve"><value>In gebruik</value></data>
+  <data name="Vm_Installed" xml:space="preserve"><value>Geïnstalleerd</value></data>
+  <data name="Vm_BestForYou" xml:space="preserve"><value>Best voor je pc</value></data>
+  <data name="Vm_StorageLine" xml:space="preserve"><value>Modellen gebruiken {2} in {0}. {1} vrij op die schijf.</value></data>
+  <data name="Vm_ExistingCopy" xml:space="preserve"><value>Er staat al een kopie van {0} op deze pc. De host gebruikt die in plaats van hem opnieuw te downloaden.</value></data>
+  <data name="Vm_UpgradeOffer" xml:space="preserve"><value>{0} past beter. Je huidige model blijft tot het nieuwe klaar is.</value></data>
+  <data name="Vm_CancelDlTitle" xml:space="preserve"><value>Deze download stoppen?</value></data>
+  <data name="Vm_CancelDlBody" xml:space="preserve"><value>Het deel dat al gedownload is, wordt weggegooid.</value></data>
+  <data name="Vm_CancelDlYes" xml:space="preserve"><value>Download stoppen</value></data>
+  <data name="Vm_CancelDlKeep" xml:space="preserve"><value>Blijven downloaden</value></data>
+  <data name="Vm_AutoDownload" xml:space="preserve"><value>{0} downloaden</value></data>
+  <data name="Vm_AutoCancel" xml:space="preserve"><value>Downloaden van {0} stoppen</value></data>
+  <data name="Vm_AutoUse" xml:space="preserve"><value>{0} gebruiken</value></data>
+  <data name="Vm_Added" xml:space="preserve"><value>{0} toegevoegd</value></data>
+  <data name="Vm_LastUsed" xml:space="preserve"><value>Laatst gebruikt {0}</value></data>
+  <data name="Vm_NeverUsed" xml:space="preserve"><value>Nog niet gebruikt</value></data>
+  <data name="Vm_AutoRevoke" xml:space="preserve"><value>Toegang intrekken voor {0}</value></data>
+  <data name="Vm_AutoAllow" xml:space="preserve"><value>{0} toestaan</value></data>
+  <data name="Vm_AutoDeny" xml:space="preserve"><value>{0} weigeren</value></data>
+  <data name="Vm_RevokeTitle" xml:space="preserve"><value>Toegang intrekken voor {0}?</value></data>
+  <data name="Vm_RevokeBody" xml:space="preserve"><value>{0} werkt niet meer met de AI-host totdat je het weer toestaat.</value></data>
+  <data name="Vm_RevokeYes" xml:space="preserve"><value>Toegang intrekken</value></data>
+  <data name="Vm_Cancel" xml:space="preserve"><value>Annuleren</value></data>
+  <data name="Vm_Verified" xml:space="preserve"><value>Geïnstalleerde app ({0}). Geen Portal-app.</value></data>
+  <data name="Vm_VerifiedPortal" xml:space="preserve"><value>Geverifieerde Portal-app ({0})</value></data>
+  <data name="Vm_Unverified" xml:space="preserve"><value>Niet geverifieerd. Hij draait vanuit {0}. Sta hem alleen toe als je hem zelf hebt gestart.</value></data>
+  <data name="Vm_ApprovalTitle" xml:space="preserve"><value>{0} AI op deze pc laten gebruiken?</value></data>
+  <data name="Vm_ApprovalBody" xml:space="preserve"><value>{0} wil het AI-model op deze pc gebruiken.</value></data>
+  <data name="Vm_ApprovalReason" xml:space="preserve"><value>Opgegeven reden: {0}</value></data>
+  <data name="Vm_Allow" xml:space="preserve"><value>Toestaan</value></data>
+  <data name="Vm_Deny" xml:space="preserve"><value>Niet toestaan</value></data>
+  <data name="Vm_Later" xml:space="preserve"><value>Later beslissen</value></data>
+  <data name="Vm_Idle_Keep" xml:space="preserve"><value>Model geladen houden</value></data>
+  <data name="Vm_Idle_5" xml:space="preserve"><value>Na 5 minuten</value></data>
+  <data name="Vm_Idle_10" xml:space="preserve"><value>Na 10 minuten</value></data>
+  <data name="Vm_Saved" xml:space="preserve"><value>Opgeslagen</value></data>
+  <data name="Vm_SaveFailed" xml:space="preserve"><value>Kon niet opslaan. Draait de host?</value></data>
+  <data name="Vm_FolderTitle" xml:space="preserve"><value>Deze map voor modellen gebruiken?</value></data>
+  <data name="Vm_FolderBody" xml:space="preserve"><value>De host gebruikt {0} voor modellen. Modellen die je al hebt, worden niet verplaatst of verwijderd.</value></data>
+  <data name="Vm_FolderYes" xml:space="preserve"><value>Map gebruiken</value></data>
+  <data name="TryItClear.Content" xml:space="preserve"><value>Wissen</value></data>
+  <data name="TryItClear.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Het gesprek wissen</value></data>
+  <data name="TryItSuggestLabel.Text" xml:space="preserve"><value>Weet je niet wat je moet vragen? Probeer een van deze.</value></data>
+  <data name="HomeTryItButton.Content" xml:space="preserve"><value>Uitproberen</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Het model uitproberen met een vraag</value></data>
+  <data name="Vm_TrySuggest1" xml:space="preserve"><value>Schrijf één vriendelijke zin over de zee.</value></data>
+  <data name="Vm_TrySuggest2" xml:space="preserve"><value>Leg in twee zinnen uit wat een router doet.</value></data>
+  <data name="Vm_TrySuggest3" xml:space="preserve"><value>Geef me drie namen voor een kat.</value></data>
+  <data name="Vm_TryStats" xml:space="preserve"><value>Eerste woorden na {0} s, daarna {1} tokens per seconde.</value></data>
+  <data name="Vm_TryStatsShort" xml:space="preserve"><value>Eerste woorden na {0} s.</value></data>
+  <data name="Vm_TryStatsStopped" xml:space="preserve"><value>Gestopt. {0}</value></data>
+  <data name="TryItThinking.Header" xml:space="preserve"><value>Wat het model eerst dacht</value></data>
+  <data name="Vm_TryWorking" xml:space="preserve"><value>Bezig ermee. Een kleine pc kan er een minuut over doen.</value></data>
+  <data name="Vm_TryThinking" xml:space="preserve"><value>Het model denkt na...</value></data>
+  <data name="Vm_TryOnlyThinking" xml:space="preserve"><value>Het model heeft zijn hele tijdslimiet besteed aan nadenken en gaf geen antwoord. Probeer een kortere vraag.</value></data>
+  <data name="Vm_TryEmpty" xml:space="preserve"><value>Het model stuurde een leeg antwoord. Probeer opnieuw te vragen.</value></data>
+  <data name="Vm_TryFailed" xml:space="preserve"><value>De host kon niet antwoorden: {0}</value></data>
+  <data name="Vm_HwChecking" xml:space="preserve"><value>Je pc wordt gecontroleerd...</value></data>
+  <data name="Vm_HwUnknown" xml:space="preserve"><value>kon niet worden gelezen</value></data>
+  <data name="Vm_HwMemory" xml:space="preserve"><value>Geheugen: {0}</value></data>
+  <data name="Vm_HwGraphics" xml:space="preserve"><value>Grafische kaart: {0}</value></data>
+  <data name="Vm_HwCores" xml:space="preserve"><value>Processorkernen: {0}</value></data>
+  <data name="Vm_HwDisk" xml:space="preserve"><value>Vrije schijfruimte: {0}</value></data>
+  <data name="HomeWelcomeTitle.Text" xml:space="preserve"><value>Stel je privé-AI op deze pc in</value></data>
+  <data name="HomeWelcomeBody.Text" xml:space="preserve"><value>Portal AI Host houdt één AI-model op deze pc en deelt het met je Portal-apps, zodat elke app geen eigen kopie nodig heeft. Alles draait hier: wat je typt verlaat deze pc nooit en er is geen cloudaccount nodig.</value></data>
+  <data name="HomeCatalogueBar.Title" xml:space="preserve"><value>Modellijst niet beschikbaar</value></data>
+  <data name="HomeCatalogueBar.Message" xml:space="preserve"><value>De host kon geen vertrouwde modellijst laden, dus er is nu niets aan te bevelen. Controleer je internetverbinding en probeer het opnieuw.</value></data>
+  <data name="HomeTryAgainButton.Content" xml:space="preserve"><value>Opnieuw proberen</value></data>
+  <data name="HomeRecommendedLabel.Text" xml:space="preserve"><value>AANBEVOLEN VOOR DEZE PC</value></data>
+  <data name="HomeNoSpaceBar.Title" xml:space="preserve"><value>Niet genoeg schijfruimte</value></data>
+  <data name="HomeChangeFolderButton.Content" xml:space="preserve"><value>Map wijzigen in Instellingen</value></data>
+  <data name="HomeDownloadButton.Content" xml:space="preserve"><value>Downloaden</value></data>
+  <data name="HomeSeeAllModelsLink.Content" xml:space="preserve"><value>Alle modellen bekijken</value></data>
+  <data name="HomeSeeAllModelsLink2.Content" xml:space="preserve"><value>Alle modellen bekijken</value></data>
+  <data name="HomeActiveModelLabel.Text" xml:space="preserve"><value>ACTIEF MODEL</value></data>
+  <data name="HomeAppsLabel.Text" xml:space="preserve"><value>VERBONDEN APPS</value></data>
+  <data name="HomeSeeAppsLink.Content" xml:space="preserve"><value>Apparaten en apps bekijken</value></data>
+  <data name="HomeRequestsLabel.Text" xml:space="preserve"><value>VERZOEKEN</value></data>
+  <data name="Vm_HomeLoaded" xml:space="preserve"><value>Geladen en gereed</value></data>
+  <data name="Vm_HomeLoading" xml:space="preserve"><value>Wordt klaargemaakt...</value></data>
+  <data name="Vm_HomeUnloaded" xml:space="preserve"><value>Niet geladen. Het wordt geladen wanneer een app erom vraagt.</value></data>
+  <data name="Vm_HomeKeepLoaded" xml:space="preserve"><value>Blijft geladen, zodat antwoorden snel beginnen.</value></data>
+  <data name="Vm_HomeIdleUnload" xml:space="preserve"><value>Maakt geheugen vrij na {0} minuten zonder verzoeken.</value></data>
+  <data name="Vm_HomeApps" xml:space="preserve"><value>{0} apps kunnen dit model gebruiken</value></data>
+  <data name="Vm_HomeApps1" xml:space="preserve"><value>1 app kan dit model gebruiken</value></data>
+  <data name="Vm_HomeAppsNone" xml:space="preserve"><value>Nog geen apps verbonden. Ze vragen de eerste keer om je toestemming.</value></data>
+  <data name="Vm_HomeNoSpace" xml:space="preserve"><value>Dit model heeft {0} nodig, maar er is maar {1} vrij. Maak wat ruimte vrij, of kies in Instellingen een andere modellenmap.</value></data>
+  <data name="Vm_NoGpu" xml:space="preserve"><value>niets gevonden</value></data>
+  <data name="Vm_HostMissing" xml:space="preserve"><value>Het hostprogramma ontbreekt in deze installatie. Installeer Portal AI Host opnieuw om dit op te lossen.</value></data>
+  <data name="Vm_HostMissingTestRun" xml:space="preserve"><value>Dit is een testrun en er is geen hostprogramma gevonden naast de app. De geïnstalleerde host wordt niet gestart voor een testrun.</value></data>
+  <data name="Vm_StartTimedOut" xml:space="preserve"><value>De host is gestart, maar heeft niet op tijd geantwoord. Wacht even en probeer het opnieuw.</value></data>
+  <data name="Vm_HostExitTestRoot" xml:space="preserve"><value>De host weigerde te starten: de testdatamap ontbreekt of is niet als testmap aangemerkt.</value></data>
+  <data name="Vm_HostExitStartFailed" xml:space="preserve"><value>De host kon niet starten. Start je pc opnieuw en probeer het opnieuw. Blijft dit gebeuren, installeer Portal AI Host dan opnieuw.</value></data>
+  <data name="Vm_HostExitOtherUser" xml:space="preserve"><value>Een andere Windows-gebruiker op deze pc draait Portal AI Host al. Vraag die persoon het af te sluiten, of meld je aan als die gebruiker.</value></data>
+  <data name="Vm_CatalogueUnavailable" xml:space="preserve"><value>Modellijst niet beschikbaar: de host kon geen vertrouwde modellijst laden. Modellen die al op deze pc staan, werken nog steeds.</value></data>
+  <data name="Vm_RemoveTitle" xml:space="preserve"><value>Dit model verwijderen?</value></data>
+  <data name="Vm_RemoveBody" xml:space="preserve"><value>{0} wordt van deze pc verwijderd. Alleen bestanden die de host heeft gedownload, worden gewist; een modelbestand dat je zelf hebt toegevoegd, wordt alleen van de lijst gehaald en blijft waar het staat.</value></data>
+  <data name="Vm_RemoveYes" xml:space="preserve"><value>Verwijderen</value></data>
+  <data name="Vm_AutoRemove" xml:space="preserve"><value>{0} verwijderen</value></data>
+  <data name="Vm_FolderSavedNote" xml:space="preserve"><value>Opgeslagen. Nadat de host opnieuw is gestart, gaan nieuwe downloads naar {1}. Modellen die al zijn gedownload, worden niet verplaatst of verwijderd; ze blijven in {0} en blijven op de pagina Modellen staan, zodat je ze daar kunt verwijderen.</value></data>
+  <data name="Vm_FolderRefused" xml:space="preserve"><value>De andere instellingen zijn opgeslagen, maar die modellenmap kan niet worden gebruikt: {0}</value></data>
+  <data name="Vm_Startup_Unavailable" xml:space="preserve"><value>Starten met Windows is alleen beschikbaar in de geïnstalleerde app.</value></data>
+  <data name="Vm_Startup_DisabledByUser" xml:space="preserve"><value>Starten met Windows is uitgeschakeld in Taakbeheer. Zet het daar weer aan (Opstartapps).</value></data>
+  <data name="Vm_Startup_Policy" xml:space="preserve"><value>Starten met Windows wordt ingesteld door je organisatie.</value></data>
+  <data name="Vm_DefaultFolder" xml:space="preserve"><value>de standaardmap</value></data>
+  <data name="Vm_Publisher" xml:space="preserve"><value>Uitgever: {0}</value></data>
+  <data name="Vm_PublisherUnknown" xml:space="preserve"><value>Uitgever: onbekend</value></data>
+  <data name="NavAbout.Content" xml:space="preserve"><value>Over</value></data>
+  <data name="NavAbout.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Over</value></data>
+  <data name="AppMenuButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Appmenu</value></data>
+  <data name="Vm_AppMenuTip" xml:space="preserve"><value>Appmenu</value></data>
+  <data name="MenuSettings.Text" xml:space="preserve"><value>Instellingen</value></data>
+  <data name="MenuShortcuts.Text" xml:space="preserve"><value>Sneltoetsen</value></data>
+  <data name="MenuWhatsNew.Text" xml:space="preserve"><value>Wat is er nieuw</value></data>
+  <data name="MenuAbout.Text" xml:space="preserve"><value>Over Portal AI Host</value></data>
+  <data name="Vm_ShortcutsTitle" xml:space="preserve"><value>Sneltoetsen</value></data>
+  <data name="Vm_ShortcutsBody" xml:space="preserve"><value>Ctrl+1: Start
+Ctrl+2: Modellen
+Ctrl+3: Apparaten en apps
+Ctrl+4: Uitproberen
+Ctrl+, : Instellingen
+F1: Over
+Esc: Wat is er nieuw of een dialoog sluiten</value></data>
+  <data name="Vm_Close" xml:space="preserve"><value>Sluiten</value></data>
+  <data name="SettingsGeneralHeader.Text" xml:space="preserve"><value>Algemeen</value></data>
+  <data name="SettingsResetGeneral.Content" xml:space="preserve"><value>Standaard herstellen</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Algemene instellingen naar standaard herstellen</value></data>
+  <data name="SettingsNotificationsHeader.Text" xml:space="preserve"><value>Meldingen</value></data>
+  <data name="SettingsResetNotifications.Content" xml:space="preserve"><value>Standaard herstellen</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Standaard herstellen, meldingsinstellingen</value></data>
+  <data name="SettingsNotificationsHelp.Text" xml:space="preserve"><value>Korte berichten van Windows wanneer iets je aandacht nodig heeft en dit venster gesloten is. Ze blijven stil terwijl een programma op volledig scherm vooraan staat, en ze worden nooit vaker dan eens per paar minuten herhaald.</value></data>
+  <data name="SettingsNotifyDownloads.Header" xml:space="preserve"><value>Een modeldownload is klaar of mislukt</value></data>
+  <data name="SettingsNotifyDownloads.OnContent" xml:space="preserve"><value>Aan</value></data>
+  <data name="SettingsNotifyDownloads.OffContent" xml:space="preserve"><value>Uit</value></data>
+  <data name="SettingsNotifyDownloads.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Melden wanneer een modeldownload klaar is of mislukt</value></data>
+  <data name="SettingsNotifyApprovals.Header" xml:space="preserve"><value>Een app vraagt om goedkeuring</value></data>
+  <data name="SettingsNotifyApprovals.OnContent" xml:space="preserve"><value>Aan</value></data>
+  <data name="SettingsNotifyApprovals.OffContent" xml:space="preserve"><value>Uit</value></data>
+  <data name="SettingsNotifyApprovals.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Melden wanneer een app om goedkeuring vraagt</value></data>
+  <data name="SettingsNotifyProblems.Header" xml:space="preserve"><value>De AI-engine stopt of een controle mislukt</value></data>
+  <data name="SettingsNotifyProblems.OnContent" xml:space="preserve"><value>Aan</value></data>
+  <data name="SettingsNotifyProblems.OffContent" xml:space="preserve"><value>Uit</value></data>
+  <data name="SettingsNotifyProblems.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Melden wanneer de AI-engine stopt of een controle mislukt</value></data>
+  <data name="SettingsPrivacyHeader.Text" xml:space="preserve"><value>Privacy</value></data>
+  <data name="SettingsResetPrivacy.Content" xml:space="preserve"><value>Standaard herstellen</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Standaard herstellen, privacyinstellingen</value></data>
+  <data name="SettingsCrashReports.Header" xml:space="preserve"><value>Crashrapporten versturen</value></data>
+  <data name="SettingsCrashReports.OnContent" xml:space="preserve"><value>Aan</value></data>
+  <data name="SettingsCrashReports.OffContent" xml:space="preserve"><value>Uit</value></data>
+  <data name="SettingsCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Crashrapporten versturen</value></data>
+  <data name="SettingsCrashReportsHelp.Text" xml:space="preserve"><value>Als Portal AI Host crasht, helpt een kort rapport ons het snel op te lossen. Rapporten bevatten nooit je bestanden of wat je typt. Als je dit uitschakelt, stoppen ze meteen.</value></data>
+  <data name="CrashWhatsSent.Content" xml:space="preserve"><value>Wat wordt verstuurd</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Wat wordt verstuurd, opent de privacypagina</value></data>
+  <data name="WelcomeCrashReports.Content" xml:space="preserve"><value>Stuur crashrapporten zodat we problemen snel kunnen oplossen. Ze bevatten nooit je bestanden of wat je typt.</value></data>
+  <data name="WelcomeCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Stuur crashrapporten zodat we problemen snel kunnen oplossen. Ze bevatten nooit je bestanden of wat je typt.</value></data>
+  <data name="SettingsModelsHeader.Text" xml:space="preserve"><value>Modellenmap</value></data>
+  <data name="SettingsResetFolder.Content" xml:space="preserve"><value>Standaard herstellen</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Modellenmap naar standaard herstellen</value></data>
+  <data name="SettingsFolderHelp.Text" xml:space="preserve"><value>Wordt toegepast wanneer je Enter drukt of het vak verlaat. Laat leeg voor de standaardmap. Modellen die je al hebt, blijven waar ze zijn, tenzij je ervoor kiest ze te verplaatsen.</value></data>
+  <data name="SettingsAppearanceHeader.Text" xml:space="preserve"><value>Weergave</value></data>
+  <data name="SettingsResetAppearance.Content" xml:space="preserve"><value>Standaard herstellen</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Weergave naar standaard herstellen</value></data>
+  <data name="SettingsTheme.Header" xml:space="preserve"><value>Thema</value></data>
+  <data name="SettingsTheme.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Thema</value></data>
+  <data name="SettingsMaterial.Header" xml:space="preserve"><value>Vensteroppervlak</value></data>
+  <data name="SettingsMaterial.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Vensteroppervlak</value></data>
+  <data name="SettingsCorners.Header" xml:space="preserve"><value>Hoeken</value></data>
+  <data name="SettingsCorners.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Hoeken</value></data>
+  <data name="SettingsDensity.Header" xml:space="preserve"><value>Dichtheid</value></data>
+  <data name="SettingsDensity.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Dichtheid</value></data>
+  <data name="SettingsTextSize.Header" xml:space="preserve"><value>Tekstgrootte</value></data>
+  <data name="SettingsTextSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Tekstgrootte</value></data>
+  <data name="SettingsMotion.Header" xml:space="preserve"><value>Animaties</value></data>
+  <data name="SettingsMotion.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Animaties</value></data>
+  <data name="SettingsAppearanceHelp.Text" xml:space="preserve"><value>Wijzigingen worden meteen toegepast. Windows-hoogcontrast gebruikt altijd effen systeemkleuren, wat je hier ook kiest. Tekstgrootte komt bovenop de tekstschaal van Windows.</value></data>
+  <data name="Vm_Theme_System" xml:space="preserve"><value>Mijn Windows-instelling gebruiken (standaard)</value></data>
+  <data name="Vm_Theme_Light" xml:space="preserve"><value>Licht</value></data>
+  <data name="Vm_Theme_Dark" xml:space="preserve"><value>Donker</value></data>
+  <data name="Vm_Material_Mica" xml:space="preserve"><value>Mica (standaard)</value></data>
+  <data name="Vm_Material_Acrylic" xml:space="preserve"><value>Acryl</value></data>
+  <data name="Vm_Material_Solid" xml:space="preserve"><value>Effen</value></data>
+  <data name="Vm_Corners_Rounded" xml:space="preserve"><value>Afgerond (standaard)</value></data>
+  <data name="Vm_Corners_Square" xml:space="preserve"><value>Vierkant</value></data>
+  <data name="Vm_Corners_ExtraRound" xml:space="preserve"><value>Extra rond</value></data>
+  <data name="Vm_Density_Compact" xml:space="preserve"><value>Compact</value></data>
+  <data name="Vm_Density_Standard" xml:space="preserve"><value>Normaal (standaard)</value></data>
+  <data name="Vm_Density_Comfortable" xml:space="preserve"><value>Ruim</value></data>
+  <data name="Vm_Text_Normal" xml:space="preserve"><value>Normaal (standaard)</value></data>
+  <data name="Vm_Text_Larger" xml:space="preserve"><value>Groter</value></data>
+  <data name="Vm_Text_Largest" xml:space="preserve"><value>Grootst</value></data>
+  <data name="Vm_Motion_Follow" xml:space="preserve"><value>Volgen Windows (standaard)</value></data>
+  <data name="Vm_Motion_Reduced" xml:space="preserve"><value>Beperkt</value></data>
+  <data name="Vm_Motion_Off" xml:space="preserve"><value>Uit</value></data>
+  <data name="Vm_FolderNotFull" xml:space="preserve"><value>Typ een volledig mappad, bijvoorbeeld D:\Models.</value></data>
+  <data name="AboutTitle.Text" xml:space="preserve"><value>Over Portal AI Host</value></data>
+  <data name="Vm_AboutVersion" xml:space="preserve"><value>Portal AI Host versie {0}</value></data>
+  <data name="Vm_AboutLicenceState" xml:space="preserve"><value>Gratis. Er is geen account of aankoop nodig.</value></data>
+  <data name="Vm_AboutCopyText" xml:space="preserve"><value>Portal AI Host {0}</value></data>
+  <data name="Vm_AboutCopied" xml:space="preserve"><value>Versie gekopieerd.</value></data>
+  <data name="AboutCopyVersion.Content" xml:space="preserve"><value>Versie kopiëren</value></data>
+  <data name="AboutWhatsNew.Content" xml:space="preserve"><value>Wat is er nieuw</value></data>
+  <data name="AboutHelpHeader.Text" xml:space="preserve"><value>Hulp en privacy</value></data>
+  <data name="AboutFeedback.Content" xml:space="preserve"><value>Feedback sturen of een idee voorstellen</value></data>
+  <data name="AboutPrivacy.Content" xml:space="preserve"><value>Privacybeleid</value></data>
+  <data name="AboutDataFolder.Content" xml:space="preserve"><value>Gegevensmap openen</value></data>
+  <data name="AboutLicencesHeader.Text" xml:space="preserve"><value>Licenties</value></data>
+  <data name="Vm_ThirdParty" xml:space="preserve"><value>Portal AI Host bevat llama.cpp (MIT-licentie), dat de AI-modellen op je pc draait. Modellen worden van Hugging Face gedownload onder hun eigen licenties (Apache 2.0, MIT of CreativeML OpenRAIL-M, waarvan de gebruiksbeperkingen gelden). Beeld- en videogeneratie gebruikt stable-diffusion.cpp (MIT-licentie) en ggml (MIT-licentie). Videotools gebruiken FFmpeg (LGPL 3.0 of later). Spraakfuncties gebruiken sherpa-onnx (Apache 2.0), Kokoro-stemmen (Apache 2.0) en Pocket TTS van Kyutai (CC-BY 4.0, naamsvermelding: Kyutai). De app is gebouwd met de Windows App SDK, .NET en de Community Toolkit MVVM-bibliotheek, allemaal onder MIT-licenties.</value></data>
+  <data name="AboutLlamaLink.Content" xml:space="preserve"><value>llama.cpp op GitHub</value></data>
+  <data name="AboutLlamaExpander.Header" xml:space="preserve"><value>Licentietekst llama.cpp</value></data>
+  <data name="Vm_LlamaLicence" xml:space="preserve"><value>MIT License
+
+Copyright (c) 2023-2026 The ggml authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</value></data>
+  <data name="Vm_WhatsNewHeading" xml:space="preserve"><value>Wat is er nieuw in Portal AI Host {0}</value></data>
+  <data name="Vm_Wn1Title" xml:space="preserve"><value>Bedankt</value></data>
+  <data name="Vm_Wn1Body" xml:space="preserve"><value>Bedankt voor je feedback en rapporten. Ze hebben deze update mede vormgegeven.</value></data>
+  <data name="Vm_Wn2Title" xml:space="preserve"><value>Video als MP4, en clips samenvoegen</value></data>
+  <data name="Vm_Wn2Body" xml:space="preserve"><value>Videotaken kunnen nu een MP4-bestand, een afbeelding van het laatste beeld en meerdere clips samengevoegd tot één video opleveren.</value></data>
+  <data name="Vm_Wn3Title" xml:space="preserve"><value>Instellingen voor videokwaliteit</value></data>
+  <data name="Vm_Wn3Body" xml:space="preserve"><value>Kies hoe je pc MP4-video codeert, bijvoorbeeld de kwaliteit en welke videocodec hij gebruikt.</value></data>
+  <data name="Vm_Wn4Title" xml:space="preserve"><value>Uploads voor lokale apps</value></data>
+  <data name="Vm_Wn4Body" xml:space="preserve"><value>Apps op deze pc kunnen nu grote bestanden rechtstreeks aanleveren, in plaats van ze in het verzoek te sturen. Uploads worden na een tijdje verwijderd.</value></data>
+  <data name="Vm_Wn5Title" xml:space="preserve"><value>De Thuis-pc-kaart blijft gelijk lopen</value></data>
+  <data name="Vm_Wn5Body" xml:space="preserve"><value>Wanneer je snel meerdere Thuis-pc-instellingen wijzigt, kan een trage reactie niet meer een oudere waarde tonen.</value></data>
+  <data name="Vm_Wn6Title" xml:space="preserve"><value>Beter in smalle vensters</value></data>
+  <data name="Vm_Wn6Body" xml:space="preserve"><value>Het zijmenu klapt in wanneer het venster smal is, en de herstelkoppelingen in Instellingen lopen door onder hun koppen.</value></data>
+  <data name="Vm_Wn7Title" xml:space="preserve"><value>Duidelijker voor schermlezers</value></data>
+  <data name="Vm_Wn7Body" xml:space="preserve"><value>De sectie gezondheidscontroles op Start en de knoppen op Start en in Instellingen hebben nu namen en hulptekst voor schermlezers en infotips.</value></data>
+  <data name="Vm_Wn8Title" xml:space="preserve"><value>Gebruik je thuis-pc vanaf een laptop</value></data>
+  <data name="Vm_Wn8Body" xml:space="preserve"><value>Koppel een laptop één keer aan je thuis-pc. Apps op de laptop gebruiken dan de AI van de thuis-pc, thuis of onderweg, en vallen terug op het eigen model van de laptop als je dat kiest.</value></data>
+  <data name="Vm_Wn9Title" xml:space="preserve"><value>Apparaten op deze pc</value></data>
+  <data name="Vm_Wn9Body" xml:space="preserve"><value>Bekijk elke gekoppelde laptop op een eigen kaart. Pauzeer hem, stel dagelijkse limieten en stille uren in, kies welke modellen hij mag gebruiken, of trek een model in dat hij heeft geladen.</value></data>
+  <data name="Vm_Wn10Title" xml:space="preserve"><value>Twee modellen tegelijk</value></data>
+  <data name="Vm_Wn10Body" xml:space="preserve"><value>Een laptop die je vertrouwt, kan een tweede model geladen houden op je pc, bijvoorbeeld één op de videokaart en één in het geheugen. Je eigen model wordt nooit verdrongen.</value></data>
+  <data name="Vm_Wn11Title" xml:space="preserve"><value>Veiliger omgaan met apparaten</value></data>
+  <data name="Vm_Wn11Body" xml:space="preserve"><value>Een apparaat verwijderen stopt alles waar het nog om vroeg, en wanneer je een laptop koppelt aan een nieuwe thuis-pc, wordt het toegangstoken van de oude pc niet langer naar de laptop gestuurd.</value></data>
+  <data name="Vm_Wn12Title" xml:space="preserve"><value>Gamemodus werkt in spellen in een venster</value></data>
+  <data name="Vm_Wn12Body" xml:space="preserve"><value>Zet gamemodus aan en andere apparaten krijgen te horen dat je pc bezet is terwijl een spel draait, ook spellen in een venster.</value></data>
+  <data name="Vm_Wn13Title" xml:space="preserve"><value>Toegangssleutel voor relay</value></data>
+  <data name="Vm_Wn13Body" xml:space="preserve"><value>Alleen apparaten die met je sleutel zijn gekoppeld, kunnen buitenshuis bij deze pc komen. Maak op elk moment een nieuwe sleutel.</value></data>
+  <data name="Vm_Wn14Title" xml:space="preserve"><value>Zie je geheugen in één oogopslag</value></data>
+  <data name="Vm_Wn14Body" xml:space="preserve"><value>Balken op de pagina Modellen tonen hoeveel geheugen en videogeheugen de geladen modellen gebruiken, afgezet tegen je limieten.</value></data>
+  <data name="Vm_WnShowMe" xml:space="preserve"><value>Toon het</value></data>
+  <data name="Vm_WnShowMeName" xml:space="preserve"><value>Toon: {0}</value></data>
+  <data name="WhatsNewDone.Content" xml:space="preserve"><value>Begrepen</value></data>
+  <data name="Vm_RevokedBar" xml:space="preserve"><value>Toegang ingetrokken voor {0}.</value></data>
+  <data name="Vm_AutoUndo" xml:space="preserve"><value>Het intrekken van toegang voor {0} ongedaan maken</value></data>
+  <data name="AppsUndo.Content" xml:space="preserve"><value>Ongedaan maken</value></data>
+  <data name="Vm_RemoveFrees" xml:space="preserve"><value>Hiermee komt {0} vrij.</value></data>
+  <data name="Vm_StepOf" xml:space="preserve"><value>Stap {0} van {1}</value></data>
+  <data name="Vm_LiveIdle" xml:space="preserve"><value>Er wordt nu niets geschreven</value></data>
+  <data name="Vm_LiveBusy" xml:space="preserve"><value>Er wordt nu een antwoord geschreven</value></data>
+  <data name="Vm_LiveGenerating" xml:space="preserve"><value>{0} krijgt een antwoord</value></data>
+  <data name="Vm_LiveSpeed" xml:space="preserve"><value>Ongeveer {0} woorden per seconde</value></data>
+  <data name="Vm_LiveMemory" xml:space="preserve"><value>{0} van {1}</value></data>
+  <data name="Vm_LiveMemoryNoTotal" xml:space="preserve"><value>{0}</value></data>
+  <data name="Vm_LivePendingLoad" xml:space="preserve"><value>Laden...</value></data>
+  <data name="Vm_LivePendingUnload" xml:space="preserve"><value>Uit het geheugen verwijderen...</value></data>
+  <data name="Vm_LiveLoadFailed" xml:space="preserve"><value>Het model kon niet worden geladen. {0}</value></data>
+  <data name="Vm_LiveUnloadFailed" xml:space="preserve"><value>Het model kon niet worden uitgeladen. {0}</value></data>
+  <data name="Vm_TodayNone" xml:space="preserve"><value>Vandaag nog geen verzoeken.</value></data>
+  <data name="Vm_TodayRow1" xml:space="preserve"><value>{0} verzoek, laatst gezien {1}</value></data>
+  <data name="Vm_TodayRow" xml:space="preserve"><value>{0} verzoeken, laatst gezien {1}</value></data>
+  <data name="Vm_SeenNever" xml:space="preserve"><value>nooit</value></data>
+  <data name="Vm_SeenNow" xml:space="preserve"><value>zojuist</value></data>
+  <data name="Vm_SeenMinutes" xml:space="preserve"><value>{0} min geleden</value></data>
+  <data name="Vm_SeenHours" xml:space="preserve"><value>{0} u geleden</value></data>
+  <data name="HomeLiveTitle.Text" xml:space="preserve"><value>NU</value></data>
+  <data name="Vm_LiveRamName" xml:space="preserve"><value>Geheugen dat het model gebruikt: {0}</value></data>
+  <data name="Vm_LiveVramName" xml:space="preserve"><value>Videogeheugen dat het model gebruikt: {0}</value></data>
+  <data name="HomeRamLabel.Text" xml:space="preserve"><value>Geheugen dat het model gebruikt</value></data>
+  <data name="HomeVramLabel.Text" xml:space="preserve"><value>Videogeheugen dat het model gebruikt</value></data>
+  <data name="HomeUnloadButton.Content" xml:space="preserve"><value>Nu uitladen</value></data>
+  <data name="HomeLoadButton.Content" xml:space="preserve"><value>Nu laden</value></data>
+  <data name="HomeActionErrorBar.Title" xml:space="preserve"><value>Dat is niet gelukt</value></data>
+  <data name="HomeTodayLabel.Text" xml:space="preserve"><value>VANDAAG</value></data>
+  <data name="Vm_TrayReady" xml:space="preserve"><value>Gereed · {0} geladen</value></data>
+  <data name="Vm_TrayBusy" xml:space="preserve"><value>Bezig · {0}</value></data>
+  <data name="Vm_TrayBusyOther" xml:space="preserve"><value>Bezig</value></data>
+  <data name="Vm_TrayLoading" xml:space="preserve"><value>Laden · {0}</value></data>
+  <data name="Vm_TrayIdle" xml:space="preserve"><value>Gereed · {0} laadt wanneer erom wordt gevraagd</value></data>
+  <data name="Vm_TrayNoModel" xml:space="preserve"><value>Nog geen model</value></data>
+  <data name="Vm_TrayOff" xml:space="preserve"><value>Uit</value></data>
+  <data name="Vm_TrayLastNone" xml:space="preserve"><value>Vandaag geen verzoeken</value></data>
+  <data name="Vm_TrayLast" xml:space="preserve"><value>{0}, {1}</value></data>
+  <data name="TrayModelLabel.Text" xml:space="preserve"><value>Model</value></data>
+  <data name="TrayMemoryLabel.Text" xml:space="preserve"><value>Geheugen</value></data>
+  <data name="TrayLastLabel.Text" xml:space="preserve"><value>Laatste verzoek</value></data>
+  <data name="TrayQueueLabel.Text" xml:space="preserve"><value>Wachtrij</value></data>
+  <data name="TrayOpenButton.Content" xml:space="preserve"><value>App openen</value></data>
+  <data name="TrayUnloadButton.Content" xml:space="preserve"><value>Model uitladen</value></data>
+  <data name="TrayWindowTitle" xml:space="preserve"><value>Status van Portal AI Host</value></data>
+  <data name="ModelsDownloadedHeader.Text" xml:space="preserve"><value>Gedownload</value></data>
+  <data name="ModelsMoreHeader.Text" xml:space="preserve"><value>Modellen die je kunt toevoegen</value></data>
+  <data name="ModelCheck.Content" xml:space="preserve"><value>Bestanden controleren</value></data>
+  <data name="ModelRedownload.Content" xml:space="preserve"><value>Opnieuw downloaden</value></data>
+  <data name="ModelCancelCheck.Content" xml:space="preserve"><value>Controle stoppen</value></data>
+  <data name="ModelDetails.Header" xml:space="preserve"><value>Details</value></data>
+  <data name="ModelsOpenFolder.Content" xml:space="preserve"><value>Map openen</value></data>
+  <data name="ModelsAddOwn.Content" xml:space="preserve"><value>Eigen model toevoegen...</value></data>
+  <data name="ModelsAddOwnHint.Text" xml:space="preserve"><value>Kies een .gguf-bestand dat je al hebt. De host maakt een eigen kopie in de modellenmap. Er wordt een kopie gemaakt; je oorspronkelijke bestand wordt niet gewijzigd of verplaatst.</value></data>
+  <data name="Vm_UserAddedBadge" xml:space="preserve"><value>Door jou toegevoegd</value></data>
+  <data name="Vm_UserAddedReason" xml:space="preserve"><value>Onbekende geschiktheid: de host kan niet bepalen hoeveel geheugen dit model op je pc nodig heeft. Probeer het en kijk wat er gebeurt.</value></data>
+  <data name="Vm_RemoveUserBody" xml:space="preserve"><value>{0} wordt uit de modellenmap van de host verwijderd. Dat is de eigen kopie van de host: het oorspronkelijke bestand dat je koos, wordt niet aangeraakt.</value></data>
+  <data name="Vm_ImportRunning" xml:space="preserve"><value>Je model wordt naar de modellenmap gekopieerd, {0}%</value></data>
+  <data name="Vm_ImportDone" xml:space="preserve"><value>Je model is toegevoegd.</value></data>
+  <data name="Vm_ImportCancelled" xml:space="preserve"><value>Het toevoegen van het model is geannuleerd. Er is niets bewaard en je oorspronkelijke bestand is niet gewijzigd.</value></data>
+  <data name="Vm_ImportFailed" xml:space="preserve"><value>Het model is niet toegevoegd. {0}</value></data>
+  <data name="ModelsMoveHint.Text" xml:space="preserve"><value>Wil je je modellen naar een andere schijf verplaatsen, kies dan in Instellingen onder Modellenmap een nieuwe map.</value></data>
+  <data name="ModelsMoveCancel.Content" xml:space="preserve"><value>Annuleren</value></data>
+  <data name="ModelsFreeUp.Content" xml:space="preserve"><value>Ruimte vrijmaken</value></data>
+  <data name="ModelsCleanupTitle.Text" xml:space="preserve"><value>Ruimte vrijmaken</value></data>
+  <data name="ModelsCleanupPartialHeader.Text" xml:space="preserve"><value>Onafgemaakte downloads die niet worden hervat</value></data>
+  <data name="ModelsCleanupOldHeader.Text" xml:space="preserve"><value>Oude kopieën die zijn overgebleven na het verplaatsen van je modellen</value></data>
+  <data name="ModelsCleanupDamagedHeader.Text" xml:space="preserve"><value>Modellen waarin een controle beschadiging vond</value></data>
+  <data name="ModelsCleanupClose.Content" xml:space="preserve"><value>Sluiten</value></data>
+  <data name="ModelsCleanupHint.Text" xml:space="preserve"><value>Alleen bestanden die deze app heeft gemaakt, worden getoond. Modellen die je gebruikt en bestanden die je zelf hebt toegevoegd, worden nooit verwijderd.</value></data>
+  <data name="Vm_CleanupButton" xml:space="preserve"><value>{0} vrijmaken</value></data>
+  <data name="Vm_CleanupNothing" xml:space="preserve"><value>Er is niets om vrij te maken. Onafgemaakte downloads die je nog kunt hervatten, worden een week bewaard.</value></data>
+  <data name="Vm_CleanupRunning" xml:space="preserve"><value>Ruimte wordt vrijgemaakt...</value></data>
+  <data name="Vm_CleanupConfirmTitle" xml:space="preserve"><value>Deze bestanden verwijderen?</value></data>
+  <data name="Vm_CleanupConfirmBody" xml:space="preserve"><value>Hiermee wordt permanent verwijderd:&#10;{0}&#10;Je andere modellen worden niet aangeraakt.</value></data>
+  <data name="Vm_CleanupDone" xml:space="preserve"><value>{0} vrijgemaakt.</value></data>
+  <data name="Vm_CleanupDoneSkipped" xml:space="preserve"><value>{0} vrijgemaakt. Sommige items zijn blijven staan waar ze staan:&#10;{1}</value></data>
+  <data name="Vm_CleanupFailed" xml:space="preserve"><value>Er is geen ruimte vrijgemaakt: {0}</value></data>
+  <data name="ModelsRemoveFailedBar.Title" xml:space="preserve"><value>Het model kon niet worden verwijderd</value></data>
+  <data name="SettingsMoveButton.Content" xml:space="preserve"><value>Mijn modellen daarheen verplaatsen</value></data>
+  <data name="SettingsMoveCancel.Content" xml:space="preserve"><value>Verplaatsen annuleren</value></data>
+  <data name="Vm_UsedToday" xml:space="preserve"><value>Vandaag laatst gebruikt</value></data>
+  <data name="Vm_UsedYesterday" xml:space="preserve"><value>Gisteren laatst gebruikt</value></data>
+  <data name="Vm_UsedDays" xml:space="preserve"><value>{0} dagen geleden laatst gebruikt</value></data>
+  <data name="Vm_UsedMonths" xml:space="preserve"><value>{0} maanden geleden laatst gebruikt</value></data>
+  <data name="Vm_GoodFor" xml:space="preserve"><value>Geschikt voor: {0}</value></data>
+  <data name="Vm_Caveats" xml:space="preserve"><value>Houd er rekening mee: {0}</value></data>
+  <data name="Vm_MemoryNeeded" xml:space="preserve"><value>Heeft ongeveer {0} geheugen nodig op deze pc.</value></data>
+  <data name="Vm_Licence" xml:space="preserve"><value>Licentie: {0}</value></data>
+  <data name="Vm_RemoveActiveBody" xml:space="preserve"><value>{0} is in gebruik. De host laadt het eerst uit en verwijdert het daarna van deze pc. Alleen bestanden die de host heeft gedownload, worden gewist; een modelbestand dat je zelf hebt toegevoegd, wordt alleen van de lijst gehaald en blijft waar het staat.</value></data>
+  <data name="Vm_RemoveVerb" xml:space="preserve"><value>{0} verwijderen ({1})</value></data>
+  <data name="Vm_RemoveVerbNoSize" xml:space="preserve"><value>{0} verwijderen</value></data>
+  <data name="Vm_AutoCheck" xml:space="preserve"><value>Bestanden van {0} controleren</value></data>
+  <data name="Vm_AutoRedownload" xml:space="preserve"><value>{0} opnieuw downloaden</value></data>
+  <data name="Vm_Removing" xml:space="preserve"><value>Verwijderen...</value></data>
+  <data name="Vm_RemovingBadge" xml:space="preserve"><value>Wordt verwijderd</value></data>
+  <data name="Vm_DamagedBadge" xml:space="preserve"><value>Beschadigd</value></data>
+  <data name="Vm_Checking" xml:space="preserve"><value>Bestanden controleren, {0}%</value></data>
+  <data name="Vm_CheckOk" xml:space="preserve"><value>Alle bestanden zijn intact.</value></data>
+  <data name="Vm_CheckDamaged" xml:space="preserve"><value>Beschadigd: {0} Er is niets verwijderd.</value></data>
+  <data name="Vm_CheckFailed" xml:space="preserve"><value>De controle kon niet worden voltooid: {0}</value></data>
+  <data name="Vm_SwitchTitle" xml:space="preserve"><value>Een ander model gebruiken?</value></data>
+  <data name="Vm_SwitchBody" xml:space="preserve"><value>{0} is in gebruik. Daarna overschakelen naar {1}, of voorlopig geen model gebruiken?</value></data>
+  <data name="Vm_SwitchYes" xml:space="preserve"><value>Overschakelen naar {0}</value></data>
+  <data name="Vm_SwitchNo" xml:space="preserve"><value>Voorlopig geen model gebruiken</value></data>
+  <data name="Vm_RemoveFailed" xml:space="preserve"><value>{0} is niet verwijderd en staat er nog. {1}</value></data>
+  <data name="Vm_RedownloadTitle" xml:space="preserve"><value>Dit model opnieuw downloaden?</value></data>
+  <data name="Vm_RedownloadBody" xml:space="preserve"><value>{0} heeft een beschadigd bestand. Het wordt van deze pc verwijderd en opnieuw gedownload. Er wordt niets anders verwijderd.</value></data>
+  <data name="Vm_RedownloadActiveBody" xml:space="preserve"><value>{0} heeft een beschadigd bestand en is in gebruik. De host laadt het uit, verwijdert het van deze pc en downloadt het opnieuw. Kies het opnieuw zodra de download klaar is.</value></data>
+  <data name="Vm_RedownloadYes" xml:space="preserve"><value>{0} verwijderen en opnieuw downloaden</value></data>
+  <data name="Vm_MoveRunning" xml:space="preserve"><value>Je modellen worden verplaatst, {0}%</value></data>
+  <data name="Vm_MoveRemovingOld" xml:space="preserve"><value>Je modellen staan in de nieuwe map. De oude kopieën worden verwijderd.</value></data>
+  <data name="Vm_MoveDone" xml:space="preserve"><value>Je modellen zijn verplaatst.</value></data>
+  <data name="Vm_MoveCancelled" xml:space="preserve"><value>Het verplaatsen is geannuleerd. Je modellen staan waar ze stonden.</value></data>
+  <data name="Vm_MoveFailed" xml:space="preserve"><value>Het verplaatsen is niet voltooid. {0}</value></data>
+  <data name="Vm_MoveOffer" xml:space="preserve"><value>Ook je {0} aan modellen naar de nieuwe map verplaatsen?</value></data>
+  <data name="Vm_MoveTitle" xml:space="preserve"><value>Je modellen verplaatsen?</value></data>
+  <data name="Vm_MoveBody" xml:space="preserve"><value>Je modellen worden naar {0} gekopieerd en gecontroleerd, en pas daarna worden de oude kopieën verwijderd. Het model dat in gebruik is, wordt tijdens dit proces uitgeladen. Bestanden in de oude map die de host daar niet heeft neergezet, worden nooit aangeraakt.</value></data>
+  <data name="Vm_MoveYes" xml:space="preserve"><value>Mijn modellen verplaatsen</value></data>
+  <data name="Vm_MoveSettingsRunning" xml:space="preserve"><value>Je modellen worden verplaatst, {0}%</value></data>
+  <data name="SettingsPerformanceHeader.Text" xml:space="preserve"><value>Prestaties</value></data>
+  <data name="SettingsResetPerformance.Content" xml:space="preserve"><value>Standaard herstellen</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Prestatie-instellingen naar standaard herstellen</value></data>
+  <data name="SettingsPreset.Header" xml:space="preserve"><value>Prestaties</value></data>
+  <data name="SettingsPreset.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Prestaties</value></data>
+  <data name="SettingsMemory.Header" xml:space="preserve"><value>Maximaal geheugen voor AI</value></data>
+  <data name="SettingsMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Maximaal geheugen voor AI</value></data>
+  <data name="SettingsKeepFree.Header" xml:space="preserve"><value>Altijd vrij laten</value></data>
+  <data name="SettingsKeepFree.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Altijd vrij laten</value></data>
+  <data name="SettingsRunOn.Header" xml:space="preserve"><value>Uitvoeren op</value></data>
+  <data name="SettingsRunOn.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Uitvoeren op</value></data>
+  <data name="SettingsGpuMemory.Header" xml:space="preserve"><value>Videogeheugen voor AI</value></data>
+  <data name="SettingsGpuMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Videogeheugen voor AI</value></data>
+  <data name="SettingsCores.Header" xml:space="preserve"><value>Processorkernen</value></data>
+  <data name="SettingsCores.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Processorkernen</value></data>
+  <data name="SettingsPriority.Header" xml:space="preserve"><value>Prioriteit</value></data>
+  <data name="SettingsPriority.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Prioriteit</value></data>
+  <data name="SettingsMemoryHelp.Text" xml:space="preserve"><value>De AI gebruikt nooit meer dan dit. Lager betekent een kleiner model of tragere antwoorden.</value></data>
+  <data name="SettingsKeepFreeHelp.Text" xml:space="preserve"><value>Geheugen dat vrij blijft voor je andere programma's.</value></data>
+  <data name="SettingsCoresHelp.Text" xml:space="preserve"><value>Minder kernen houden je pc vlot terwijl de AI werkt.</value></data>
+  <data name="Vm_Perf_Quiet" xml:space="preserve"><value>Rustig</value></data>
+  <data name="Vm_Perf_Balanced" xml:space="preserve"><value>Gebalanceerd</value></data>
+  <data name="Vm_Perf_Fast" xml:space="preserve"><value>Snel</value></data>
+  <data name="Vm_Perf_Custom" xml:space="preserve"><value>Aangepast</value></data>
+  <data name="Vm_Perf_Help_quiet" xml:space="preserve"><value>Ongeveer half zo snel. Je pc blijft reageren.</value></data>
+  <data name="Vm_Perf_Help_balanced" xml:space="preserve"><value>Goede snelheid, en je andere programma's gaan voor.</value></data>
+  <data name="Vm_Perf_Help_fast" xml:space="preserve"><value>Snelste antwoorden. Andere programma's kunnen trager worden.</value></data>
+  <data name="Vm_Perf_Help_custom" xml:space="preserve"><value>Je eigen instellingen.</value></data>
+  <data name="Vm_Perf_Run_Auto" xml:space="preserve"><value>Automatisch</value></data>
+  <data name="Vm_Perf_Run_Gpu" xml:space="preserve"><value>Videokaart</value></data>
+  <data name="Vm_Perf_Run_Cpu" xml:space="preserve"><value>Processor</value></data>
+  <data name="Vm_Perf_RunHelp_auto" xml:space="preserve"><value>Gebruikt de videokaart wanneer dat helpt.</value></data>
+  <data name="Vm_Perf_RunHelp_gpu" xml:space="preserve"><value>Het snelst, als het model erin past.</value></data>
+  <data name="Vm_Perf_RunHelp_cpu" xml:space="preserve"><value>Trager, maar laat de videokaart vrij voor games.</value></data>
+  <data name="Vm_Perf_NoGpu" xml:space="preserve"><value>Alleen processor: geen ondersteunde videokaart gevonden</value></data>
+  <data name="SettingsCeiling.Header" xml:space="preserve"><value>Maximaal processorgebruik</value></data>
+  <data name="SettingsCeiling.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Maximaal processorgebruik</value></data>
+  <data name="SettingsCeilingHelp.Text" xml:space="preserve"><value>De AI gebruikt nooit meer van je processor dan dit. Lager houdt je pc soepeler, met tragere antwoorden.</value></data>
+  <data name="Vm_Perf_CeilingNone" xml:space="preserve"><value>Geen limiet</value></data>
+  <data name="Vm_Perf_Percent" xml:space="preserve"><value>{0}%</value></data>
+  <data name="SettingsEaseOffHeader.Text" xml:space="preserve"><value>Minderen wanneer</value></data>
+  <data name="SettingsEaseOffFullscreen.Content" xml:space="preserve"><value>Een spel of programma op volledig scherm draait</value></data>
+  <data name="SettingsEaseOffBattery.Content" xml:space="preserve"><value>De pc draait op de accu</value></data>
+  <data name="SettingsEaseOffAppBusy.Content" xml:space="preserve"><value>Een Portal-app is bezig met live werk, zoals dicteren</value></data>
+  <data name="SettingsEaseOffHelp.Text" xml:space="preserve"><value>De AI draait dan op de laagste prioriteit en gebruikt hooguit de helft van je processor, en keert terug naar normaal als dat voorbij is.</value></data>
+  <data name="Vm_Perf_Prio_Low" xml:space="preserve"><value>Laag</value></data>
+  <data name="Vm_Perf_Prio_Normal" xml:space="preserve"><value>Normaal</value></data>
+  <data name="Vm_Perf_PrioHelp_Low" xml:space="preserve"><value>Je eigen werk gaat altijd voor.</value></data>
+  <data name="Vm_Perf_PrioHelp_Normal" xml:space="preserve"><value>Sneller, maar kan andere programma's vertragen.</value></data>
+  <data name="Vm_Perf_Gb" xml:space="preserve"><value>{0} GB</value></data>
+  <data name="Vm_Perf_Cores" xml:space="preserve"><value>{0} van {1} kernen</value></data>
+  <data name="Vm_Perf_MemoryRange" xml:space="preserve"><value>Van {0} GB tot {1} GB</value></data>
+  <data name="Vm_Perf_StopFull" xml:space="preserve"><value>{0} GB · past volledig {1}</value></data>
+  <data name="Vm_Perf_StopPartial" xml:space="preserve"><value>{0} GB · past {1}, deels op de processor</value></data>
+  <data name="Vm_Perf_StopCpu" xml:space="preserve"><value>{0} GB · past {1} op de processor</value></data>
+  <data name="Vm_Perf_StopNone" xml:space="preserve"><value>{0} GB · te klein voor de modellen in de lijst</value></data>
+  <data name="Vm_Perf_Fit_Full" xml:space="preserve"><value>Draait volledig op de videokaart</value></data>
+  <data name="Vm_Perf_Fit_Partial" xml:space="preserve"><value>Deels op de videokaart, deels op de processor: trager</value></data>
+  <data name="Vm_Perf_Fit_Cpu" xml:space="preserve"><value>Draait op de processor: het traagst</value></data>
+  <data name="Vm_Perf_Fit_Smaller" xml:space="preserve"><value>Te weinig geheugen voor {0}. Overschakelen naar {1}?</value></data>
+  <data name="Vm_Perf_Fit_LittleMemory" xml:space="preserve"><value>Te weinig geheugen voor {0}.</value></data>
+  <data name="Vm_Perf_Fit_TooBig" xml:space="preserve"><value>Te groot voor deze pc</value></data>
+  <data name="Vm_Perf_TheModel" xml:space="preserve"><value>Het model</value></data>
+  <data name="Vm_Perf_Applied" xml:space="preserve"><value>Toegepast. De nieuwe limieten gelden nu.</value></data>
+  <data name="Vm_Perf_Reloading" xml:space="preserve"><value>Toegepast. {0} wordt opnieuw geladen met de nieuwe limieten.</value></data>
+  <data name="Vm_Perf_Unloaded" xml:space="preserve"><value>Toegepast. {0} past niet meer en is uitgeladen. Het blijft op schijf staan; kies op de pagina Modellen een kleiner model.</value></data>
+  <data name="HealthIconOk.AutomationProperties.Name" xml:space="preserve"><value>In orde</value></data>
+  <data name="HealthIconWarn.AutomationProperties.Name" xml:space="preserve"><value>Vraagt aandacht</value></data>
+  <data name="HealthIconFail.AutomationProperties.Name" xml:space="preserve"><value>Probleem</value></data>
+  <data name="HealthWordOk.Text" xml:space="preserve"><value>In orde</value></data>
+  <data name="HealthWordWarn.Text" xml:space="preserve"><value>Vraagt aandacht</value></data>
+  <data name="HealthWordFail.Text" xml:space="preserve"><value>Probleem</value></data>
+  <data name="HealthCheckAgainButton.Content" xml:space="preserve"><value>Opnieuw controleren</value></data>
+  <data name="HealthFixErrorBar.Title" xml:space="preserve"><value>Dat is niet gelukt</value></data>
+  <data name="Vm_HealthAllGood" xml:space="preserve"><value>Alles in orde</value></data>
+  <data name="Vm_HealthOne" xml:space="preserve"><value>1 ding vraagt aandacht</value></data>
+  <data name="Vm_HealthMany" xml:space="preserve"><value>{0} dingen vragen aandacht</value></data>
+  <data name="Vm_HealthFixLoad" xml:space="preserve"><value>Model laden</value></data>
+  <data name="Vm_HealthFixRestart" xml:space="preserve"><value>Engine opnieuw starten</value></data>
+  <data name="Vm_HealthFixCheckFiles" xml:space="preserve"><value>Bestanden controleren</value></data>
+  <data name="Vm_HealthFixPerformance" xml:space="preserve"><value>Prestatie-instellingen openen</value></data>
+  <data name="Vm_HealthFixModels" xml:space="preserve"><value>Kies een model</value></data>
+  <data name="Vm_HealthFixFailed" xml:space="preserve"><value>De oplossing kon niet worden uitgevoerd. {0}</value></data>
+  <data name="SettingsRemoteHeader.Text" xml:space="preserve"><value>Andere apparaten</value></data>
+  <data name="SettingsRemoteEnabled.Header" xml:space="preserve"><value>Andere apparaten AI op deze pc laten gebruiken</value></data>
+  <data name="SettingsRemoteEnabled.OnContent" xml:space="preserve"><value>Aan</value></data>
+  <data name="SettingsRemoteEnabled.OffContent" xml:space="preserve"><value>Uit</value></data>
+  <data name="SettingsRemoteEnabled.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Andere apparaten AI op deze pc laten gebruiken</value></data>
+  <data name="SettingsRemoteHelp.Text" xml:space="preserve"><value>Standaard uit. Wanneer aan, kunnen je eigen telefoon, laptop of tablet op dit thuisnetwerk vragen om de AI op deze pc te gebruiken. Een apparaat moet eerst met een code worden gekoppeld, en elke app erop heeft nog steeds je goedkeuring nodig. Je kunt een apparaat op elk moment verwijderen.</value></data>
+  <data name="SettingsPairDevice.Content" xml:space="preserve"><value>Een apparaat koppelen</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Een apparaat koppelen</value></data>
+  <data name="SettingsPairingSteps.Text" xml:space="preserve"><value>Open op het andere apparaat de Portal-app, kies om verbinding te maken met een pc en scan deze code, of typ de letters en cijfers over. De app controleert eerst of hij met deze pc praat voordat er iets wordt verstuurd. De code werkt één keer, gedurende 5 minuten.</value></data>
+  <data name="SettingsPairingQr.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>QR-code voor koppelen</value></data>
+  <data name="SettingsPairingCancel.Content" xml:space="preserve"><value>Koppelen annuleren</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Koppelen annuleren</value></data>
+  <data name="SettingsDevicesHeader.Text" xml:space="preserve"><value>Gekoppelde apparaten</value></data>
+  <data name="SettingsNoDevices.Text" xml:space="preserve"><value>Nog geen apparaat gekoppeld.</value></data>
+  <data name="SettingsRemoveDevice.Content" xml:space="preserve"><value>Verwijderen</value></data>
+  <data name="SettingsDeviceModelControl.Header" xml:space="preserve"><value>Modelbeheer</value></data>
+  <data name="SettingsDeviceModelControl.OnContent" xml:space="preserve"><value>Aan</value></data>
+  <data name="SettingsDeviceModelControl.OffContent" xml:space="preserve"><value>Uit</value></data>
+  <data name="SettingsDeviceModelControl.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Hiermee kan dit apparaat modellen laden en uitladen, en kiezen welk model elk van zijn apps gebruikt</value></data>
+  <data name="SettingsDeviceModelControl.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hiermee kan dit apparaat modellen laden en uitladen, en kiezen welk model elk van zijn apps gebruikt</value></data>
+  <data name="SettingsTakeBackLabel.Text" xml:space="preserve"><value>Terugnemen</value></data>
+  <data name="SettingsTakeBack.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Het model dat dit apparaat heeft geladen, uitladen. De eigen keuze van deze pc komt terug. Er wordt geen modelbestand aangeraakt.</value></data>
+  <data name="SettingsTakeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Het model dat dit apparaat heeft geladen, uitladen. De eigen keuze van deze pc komt terug. Er wordt geen modelbestand aangeraakt.</value></data>
+  <data name="SettingsAllowReplace.Header" xml:space="preserve"><value>Apparaten mogen modellen vervangen</value></data>
+  <data name="SettingsAllowReplace.OnContent" xml:space="preserve"><value>Aan</value></data>
+  <data name="SettingsAllowReplace.OffContent" xml:space="preserve"><value>Uit</value></data>
+  <data name="SettingsAllowReplace.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Apparaten mogen modellen vervangen</value></data>
+  <data name="SettingsAllowReplaceHelp.Text" xml:space="preserve"><value>Geldt alleen voor apparaten met Modelbeheer. Uit: een apparaat kan geen model uitladen dat je eigen apps gebruiken. Aan: het kan dat wel, en je apps laden hun model opnieuw bij hun volgende verzoek.</value></data>
+  <data name="Vm_AutoModelControl" xml:space="preserve"><value>Modelbeheer voor {0}</value></data>
+  <data name="Vm_AutoTakeBack" xml:space="preserve"><value>Het model terugnemen dat {0} heeft geladen</value></data>
+  <data name="Vm_LoadedBy" xml:space="preserve"><value>Geladen door {0}: {1} ({2})</value></data>
+  <data name="Vm_PlacementAuto" xml:space="preserve"><value>automatische plaatsing</value></data>
+  <data name="Vm_PlacementGpu" xml:space="preserve"><value>videokaart</value></data>
+  <data name="Vm_PlacementCpu" xml:space="preserve"><value>systeemgeheugen</value></data>
+  <data name="Vm_PlacementCpuOnly" xml:space="preserve"><value>alleen processor</value></data>
+  <data name="SettingsRemoteRelay.Header" xml:space="preserve"><value>Ook buitenshuis bereikbaar</value></data>
+  <data name="SettingsRemoteRelay.OnContent" xml:space="preserve"><value>Aan</value></data>
+  <data name="SettingsRemoteRelay.OffContent" xml:space="preserve"><value>Uit</value></data>
+  <data name="SettingsRemoteRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ook buitenshuis bereikbaar</value></data>
+  <data name="SettingsRelayAdmission.Header" xml:space="preserve"><value>Toegangssleutel voor relay</value></data>
+  <data name="SettingsRelayAdmission.OnContent" xml:space="preserve"><value>Aan</value></data>
+  <data name="SettingsRelayAdmission.OffContent" xml:space="preserve"><value>Uit</value></data>
+  <data name="SettingsRelayAdmission.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Toegangssleutel voor relay</value></data>
+  <data name="SettingsRelayAdmissionHelp.Text" xml:space="preserve"><value>Alleen apparaten die met de sleutel in de koppelcode zijn gekoppeld, kunnen via de relay bij deze pc komen. Zet dit aan vóór het koppelen: apparaten die eerder zijn gekoppeld, moeten opnieuw koppelen om de relay te gebruiken. De relay moet up-to-date zijn.</value></data>
+  <data name="SettingsRotateRelayKeyText.Text" xml:space="preserve"><value>Nieuwe sleutel</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Maak een nieuwe toegangssleutel voor de relay. Elk gekoppeld apparaat moet opnieuw koppelen om de relay te gebruiken. Een apparaat verwijderen verandert de sleutel niet, dus doe dit nadat je een apparaat hebt verwijderd dat je niet vertrouwt.</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Maak een nieuwe toegangssleutel voor de relay. Elk gekoppeld apparaat moet opnieuw koppelen om de relay te gebruiken. Een apparaat verwijderen verandert de sleutel niet, dus doe dit nadat je een apparaat hebt verwijderd dat je niet vertrouwt.</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Nieuwe sleutel</value></data>
+  <data name="Vm_RotateKeyTitle" xml:space="preserve"><value>Een nieuwe toegangssleutel voor de relay maken?</value></data>
+  <data name="Vm_RotateKeyBody" xml:space="preserve"><value>Elk gekoppeld apparaat moet opnieuw koppelen om via de relay bij deze pc te komen. Thuis verandert er niets.</value></data>
+  <data name="Vm_RotateKeyConfirm" xml:space="preserve"><value>Nieuwe sleutel maken</value></data>
+  <data name="SettingsRemoteRelayHelp.Text" xml:space="preserve"><value>Deze pc maakt verbinding met een kleine relay, zodat een gekoppeld apparaat er van overal bij kan. De relay geeft alleen versleutelde gegevens door die hij niet kan lezen, en elk apparaat moet nog steeds gekoppeld zijn en elk verzoek ondertekenen.</value></data>
+  <data name="Vm_RelayAway" xml:space="preserve"><value>Bereikbaar buitenshuis</value></data>
+  <data name="Vm_RelayHomeOnly" xml:space="preserve"><value>Alleen thuisnetwerk</value></data>
+  <data name="Vm_RelayUnreachable" xml:space="preserve"><value>Kan de relay niet bereiken</value></data>
+  <data name="Vm_RelayConnecting" xml:space="preserve"><value>Verbinden met de relay...</value></data>
+  <data name="Vm_RemoteAddress" xml:space="preserve"><value>Deze pc is bereikbaar op {0}, poort {1}.</value></data>
+  <data name="Vm_RemoteLastSeen" xml:space="preserve"><value>Laatst gebruikt {0}</value></data>
+  <data name="Vm_RemoteNeverSeen" xml:space="preserve"><value>Nog niet gebruikt</value></data>
+  <data name="Vm_AutoRemoveDevice" xml:space="preserve"><value>{0} verwijderen</value></data>
+  <data name="Vm_PairingExpires" xml:space="preserve"><value>De code is geldig tot {0}.</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Link kopiëren</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Stuur dit naar de andere pc. Het werkt 5 minuten en voor één apparaat.</value></data>
+  <data name="SettingsPairingCopyLinkText.Text" xml:space="preserve"><value>Link kopiëren</value></data>
+  <data name="Vm_PairingAddress" xml:space="preserve"><value>Adres: {0}:{1}</value></data>
+  <data name="Vm_PairingFingerprint" xml:space="preserve"><value>Certificaatcontrole: {0}</value></data>
+  <data name="Vm_RemoveDeviceTitle" xml:space="preserve"><value>{0} verwijderen?</value></data>
+  <data name="Vm_RemoveDeviceBody" xml:space="preserve"><value>{0} verliest meteen de toegang tot de AI van deze pc. Zijn apps werken niet meer totdat je hem opnieuw koppelt.</value></data>
+  <data name="Vm_RemoveDeviceConfirm" xml:space="preserve"><value>Apparaat verwijderen</value></data>
+  <data name="Vm_AppOnDevice" xml:space="preserve"><value>{0} op {1}</value></data>
+  <data name="NavDevices.Content" xml:space="preserve"><value>Apparaten van deze pc</value></data>
+  <data name="NavDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Apparaten van deze pc</value></data>
+  <data name="DevicesTitle.Text" xml:space="preserve"><value>Apparaten op deze pc</value></data>
+  <data name="DevicesGamingTitle.Text" xml:space="preserve"><value>Gamemodus</value></data>
+  <data name="DevicesGamingText.Text" xml:space="preserve"><value>Terwijl een spel op volledig scherm draait, krijgen aanroepen van andere apparaten te horen dat deze pc bezet is. Standaard uit.</value></data>
+  <data name="DevicesGaming.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Gamemodus</value></data>
+  <data name="DevicesNone.Text" xml:space="preserve"><value>Nog geen apparaat gekoppeld. Koppel er een in Instellingen, onder Andere apparaten.</value></data>
+  <data name="DevicesForgetLabel.Text" xml:space="preserve"><value>Vergeten</value></data>
+  <data name="DevicesForget.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Verwijder dit apparaat. De toegang stopt meteen en de gebruiksgeschiedenis wordt gewist. Modellen worden niet aangeraakt.</value></data>
+  <data name="DevicesForget.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Verwijder dit apparaat. De toegang stopt meteen en de gebruiksgeschiedenis wordt gewist. Modellen worden niet aangeraakt.</value></data>
+  <data name="DevicesTakeBackLabel.Text" xml:space="preserve"><value>Terugnemen</value></data>
+  <data name="DevicesTakeBack.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Het model dat dit apparaat heeft geladen, uitladen. De eigen keuze van deze pc komt terug. Er wordt geen modelbestand aangeraakt.</value></data>
+  <data name="DevicesTakeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Het model dat dit apparaat heeft geladen, uitladen. De eigen keuze van deze pc komt terug. Er wordt geen modelbestand aangeraakt.</value></data>
+  <data name="DevicesRenameLabel.Text" xml:space="preserve"><value>Hernoemen</value></data>
+  <data name="DevicesRename.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Wijzig de naam die voor dit apparaat wordt getoond</value></data>
+  <data name="DevicesRename.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Wijzig de naam die voor dit apparaat wordt getoond</value></data>
+  <data name="DevicesNewName.Header" xml:space="preserve"><value>Apparaatnaam</value></data>
+  <data name="DevicesRenameSave.Content" xml:space="preserve"><value>Hernoemen</value></data>
+  <data name="DevicesLimitsLabel.Text" xml:space="preserve"><value>Limieten</value></data>
+  <data name="DevicesLimits.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Prioriteit, dagelijkse limieten, stille uren en de modellen die dit apparaat mag gebruiken</value></data>
+  <data name="DevicesLimits.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Prioriteit, dagelijkse limieten, stille uren en de modellen die dit apparaat mag gebruiken</value></data>
+  <data name="DevicesPriorityEqual.Header" xml:space="preserve"><value>Zelfde prioriteit als de apps van deze pc</value></data>
+  <data name="DevicesPriorityEqual.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Uit: de eigen apps van deze pc gaan eerst. Aan: dit apparaat staat in dezelfde rij.</value></data>
+  <data name="DevicesRequestLimit.Header" xml:space="preserve"><value>Verzoeken per dag</value></data>
+  <data name="DevicesTokenLimit.Header" xml:space="preserve"><value>Tokens per dag</value></data>
+  <data name="DevicesQuiet.Header" xml:space="preserve"><value>Stille uren</value></data>
+  <data name="DevicesQuiet.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Het apparaat krijgt tussen deze tijden geen antwoorden (tijd van deze pc)</value></data>
+  <data name="DevicesQuietFrom.Header" xml:space="preserve"><value>Van</value></data>
+  <data name="DevicesQuietTo.Header" xml:space="preserve"><value>Tot</value></data>
+  <data name="DevicesModelsHeader.Text" xml:space="preserve"><value>Modellen die dit apparaat mag gebruiken</value></data>
+  <data name="DevicesSaveLabel.Text" xml:space="preserve"><value>Opslaan</value></data>
+  <data name="DevicesSave.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Sla deze instellingen op voor dit apparaat</value></data>
+  <data name="DevicesSave.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Sla deze instellingen op voor dit apparaat</value></data>
+  <data name="Vm_DevOnline" xml:space="preserve"><value>Online</value></data>
+  <data name="Vm_DevIdle" xml:space="preserve"><value>Inactief</value></data>
+  <data name="Vm_DevOffline" xml:space="preserve"><value>Offline</value></data>
+  <data name="Vm_DevRouteLan" xml:space="preserve"><value>Thuisnetwerk</value></data>
+  <data name="Vm_DevRouteRelay" xml:space="preserve"><value>Relay (onderweg)</value></data>
+  <data name="Vm_DevRouteNone" xml:space="preserve"><value>Nog geen route</value></data>
+  <data name="Vm_DevRunning" xml:space="preserve"><value>Nu actief: {0}</value></data>
+  <data name="Vm_DevRunningQueued" xml:space="preserve"><value>Nu actief: {0}, wachtend: {1}</value></data>
+  <data name="Vm_DevToday" xml:space="preserve"><value>Vandaag: {0} verzoeken, {1} tokens</value></data>
+  <data name="Vm_DevBar" xml:space="preserve"><value>{0} verzoeken, {1} dagen geleden</value></data>
+  <data name="Vm_DevModel" xml:space="preserve"><value>Model: {0}</value></data>
+  <data name="Vm_DevModelNone" xml:space="preserve"><value>Nog geen aanroep</value></data>
+  <data name="Vm_DevLoadedByPc" xml:space="preserve"><value>{0}, geladen door deze pc</value></data>
+  <data name="Vm_DevLoadedByDevice" xml:space="preserve"><value>{1}, geladen door {0}</value></data>
+  <data name="Vm_DevSpeed" xml:space="preserve"><value>Snelheid: {0} tokens/s, {1} ms tot de eerste byte</value></data>
+  <data name="Vm_DevSpeedNone" xml:space="preserve"><value>Snelheid: nog niet gemeten</value></data>
+  <data name="Vm_DevPause" xml:space="preserve"><value>Pauzeren</value></data>
+  <data name="Vm_DevResume" xml:space="preserve"><value>Hervatten</value></data>
+  <data name="Vm_DevPauseTip" xml:space="preserve"><value>Pauzeer dit apparaat. De aanroepen ervan krijgen een gepauzeerd antwoord en de laptop gebruikt zijn eigen terugvaloptie.</value></data>
+  <data name="Vm_DevResumeTip" xml:space="preserve"><value>Laat dit apparaat deze pc weer gebruiken</value></data>
+  <data name="Vm_DevAppPauseTip" xml:space="preserve"><value>Pauzeer alleen deze app op dit apparaat</value></data>
+  <data name="Vm_DevAppResumeTip" xml:space="preserve"><value>Laat deze app weer deze pc gebruiken</value></data>
+  <data name="Vm_DevGamingBusy" xml:space="preserve"><value>Er draait een spel: apparaten krijgen te horen dat deze pc bezet is.</value></data>
+  <data name="Vm_AutoDevPause" xml:space="preserve"><value>{0} pauzeren</value></data>
+  <data name="Vm_AutoDevResume" xml:space="preserve"><value>{0} hervatten</value></data>
+  <data name="Vm_AutoDevAppPause" xml:space="preserve"><value>{0} pauzeren op {1}</value></data>
+  <data name="Vm_AutoDevAppResume" xml:space="preserve"><value>{0} hervatten op {1}</value></data>
+  <data name="Vm_AutoDevRename" xml:space="preserve"><value>{0} hernoemen</value></data>
+  <data name="RemoteModelLoadLabel.Text" xml:space="preserve"><value>Laden</value></data>
+  <data name="RemoteModelUnloadLabel.Text" xml:space="preserve"><value>Uitladen</value></data>
+  <data name="RemoteModelLoad.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Laad dit model op de pc. Het blijft daar geladen tot je het uitlaadt of de eigenaar van de pc het verandert.</value></data>
+  <data name="RemoteModelLoad.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Laad dit model op de pc. Het blijft daar geladen tot je het uitlaadt of de eigenaar van de pc het verandert.</value></data>
+  <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Het model dat deze laptop op de pc heeft geladen, uitladen. Er wordt geen modelbestand aangeraakt.</value></data>
+  <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Het model dat deze laptop op de pc heeft geladen, uitladen. Er wordt geen modelbestand aangeraakt.</value></data>
+  <data name="RemoteModelPlacement.Header" xml:space="preserve"><value>Uitvoeren op</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Waar de pc dit model draait: bepaald door de pc, op zijn videokaart, in systeemgeheugen, of alleen op de processor met een threadlimiet (de helft van de kernen). De eigen limieten van de pc gelden nog steeds.</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Waar de pc dit model draait: bepaald door de pc, op zijn videokaart, in systeemgeheugen, of alleen op de processor met een threadlimiet (de helft van de kernen). De eigen limieten van de pc gelden nog steeds.</value></data>
+  <data name="RemoteModelTooBig.Text" xml:space="preserve"><value>Te groot voor de pc</value></data>
+  <data name="SettingsAppModelsHeader.Text" xml:space="preserve"><value>Pc-model per app</value></data>
+  <data name="SettingsAppModelsHelp.Text" xml:space="preserve"><value>Kies welk model van de pc elke app op deze laptop gebruikt. Met "Keuze van de pc" laat je dat aan de pc over.</value></data>
+  <data name="Vm_RemTitle" xml:space="preserve"><value>Modellen op {0}</value></data>
+  <data name="Vm_RemAskOwner" xml:space="preserve"><value>Vraag de eigenaar van {0} om Modelbeheer voor deze laptop in te schakelen.</value></data>
+  <data name="Vm_RemPlacementAuto" xml:space="preserve"><value>Automatisch</value></data>
+  <data name="Vm_RemPlacementGpu" xml:space="preserve"><value>Videokaart</value></data>
+  <data name="Vm_RemPlacementCpu" xml:space="preserve"><value>Systeemgeheugen</value></data>
+  <data name="Vm_RemPlacementCpuOnly" xml:space="preserve"><value>Alleen processor</value></data>
+  <data name="Vm_RemStateLoaded" xml:space="preserve"><value>Geladen</value></data>
+  <data name="Vm_RemStateLoading" xml:space="preserve"><value>Laden</value></data>
+  <data name="Vm_RemByLaptop" xml:space="preserve"><value>Geladen door deze laptop</value></data>
+  <data name="Vm_RemByPc" xml:space="preserve"><value>Geladen door de pc</value></data>
+  <data name="Vm_RemByOther" xml:space="preserve"><value>Geladen door een ander apparaat</value></data>
+  <data name="Vm_RemAutoLoad" xml:space="preserve"><value>{0} op de pc laden</value></data>
+  <data name="Vm_RemAutoUnload" xml:space="preserve"><value>{0} van de pc uitladen</value></data>
+  <data name="Vm_RemHostGone" xml:space="preserve"><value>De host draait niet.</value></data>
+  <data name="Vm_AppModelPcChoice" xml:space="preserve"><value>Keuze van de pc</value></data>
+  <data name="Vm_AppModelAutomation" xml:space="preserve"><value>Pc-model voor {0}</value></data>
+  <data name="SettingsHomePcHeader.Text" xml:space="preserve"><value>Thuis-pc</value></data>
+  <data name="SettingsHomePcHelp.Text" xml:space="preserve"><value>Gebruik de AI op een andere pc van jou in plaats van hem op deze te draaien. Koppel deze laptop één keer aan die pc; apps hier vragen dan aan die pc.</value></data>
+  <data name="SettingsHomeMode.Header" xml:space="preserve"><value>Waar de AI draait</value></data>
+  <data name="SettingsHomeMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Waar de AI draait</value></data>
+  <data name="SettingsHomeFallback.Header" xml:space="preserve"><value>Als de thuis-pc niet bereikbaar is</value></data>
+  <data name="SettingsHomeFallback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Als de thuis-pc niet bereikbaar is</value></data>
+  <data name="SettingsHomeRelayMode.Header" xml:space="preserve"><value>Verbinding buitenshuis</value></data>
+  <data name="SettingsHomeRelayMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Verbinding buitenshuis</value></data>
+  <data name="SettingsHomeUseRelay.Header" xml:space="preserve"><value>Relay gebruiken</value></data>
+  <data name="SettingsHomeUseRelay.OnContent" xml:space="preserve"><value>Aan</value></data>
+  <data name="SettingsHomeUseRelay.OffContent" xml:space="preserve"><value>Uit</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Relay gebruiken</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Zet de relay alleen voor deze sessie aan. Hij wordt gereset wanneer de app sluit.</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Pc koppelen</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Koppel deze laptop aan een thuis-pc via een koppellink</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Koppel deze laptop aan een thuis-pc via een koppellink</value></data>
+  <data name="SettingsHomePairText.Text" xml:space="preserve"><value>Pc koppelen</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ontkoppelen</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Vergeet de gekoppelde pc. Modellen en downloads blijven zoals ze zijn.</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Vergeet de gekoppelde pc. Modellen en downloads blijven zoals ze zijn.</value></data>
+  <data name="SettingsHomeUnpairText.Text" xml:space="preserve"><value>Ontkoppelen</value></data>
+  <data name="SettingsNotifyDevices.Header" xml:space="preserve"><value>Een apparaat koppelt of verbindt van buitenaf</value></data>
+  <data name="SettingsNotifyDevices.OnContent" xml:space="preserve"><value>Aan</value></data>
+  <data name="SettingsNotifyDevices.OffContent" xml:space="preserve"><value>Uit</value></data>
+  <data name="SettingsNotifyDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Een apparaat koppelt of verbindt van buitenaf</value></data>
+  <data name="HomeClientEmpty.Text" xml:space="preserve"><value>De AI draait op je andere pc. Modellen, geheugengebruik en opwarmen worden daar getoond.</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Pc wijzigen</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Open de instellingen van de thuis-pc om een andere pc te koppelen</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Open de instellingen van de thuis-pc om een andere pc te koppelen</value></data>
+  <data name="HomeChangePcText.Text" xml:space="preserve"><value>Pc wijzigen</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>AI hier draaien</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Stop de clientmodus en draai de AI weer op deze pc. De koppeling blijft bewaard.</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Stop de clientmodus en draai de AI weer op deze pc. De koppeling blijft bewaard.</value></data>
+  <data name="HomeRunHereText.Text" xml:space="preserve"><value>AI hier draaien</value></data>
+  <data name="ModelsLocalNote.Text" xml:space="preserve"><value>Downloads op deze pagina zijn voor wanneer deze pc de AI draait.</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Mijn thuis-pc gebruiken</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Sla het downloaden over en gebruik de AI op een andere pc van jou. Daarna koppel je ermee.</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Sla het downloaden over en gebruik de AI op een andere pc van jou. Daarna koppel je ermee.</value></data>
+  <data name="WelcomeHomePcText.Text" xml:space="preserve"><value>Mijn thuis-pc gebruiken</value></data>
+  <data name="Vm_LinkConnectedLan" xml:space="preserve"><value>Verbonden - thuisnetwerk</value></data>
+  <data name="Vm_LinkConnectedRelay" xml:space="preserve"><value>Verbonden - via relay</value></data>
+  <data name="Vm_LinkConnecting" xml:space="preserve"><value>Verbinden...</value></data>
+  <data name="Vm_LinkUnreachable" xml:space="preserve"><value>Niet bereikbaar</value></data>
+  <data name="Vm_LinkRevoked" xml:space="preserve"><value>Deze laptop is van de pc verwijderd</value></data>
+  <data name="Vm_LinkRepair" xml:space="preserve"><value>Opnieuw koppelen</value></data>
+  <data name="Vm_LinkRtt" xml:space="preserve"><value>{0} - {1} ms</value></data>
+  <data name="Vm_LinkLastSeen" xml:space="preserve"><value>Laatst gezien {0}</value></data>
+  <data name="Vm_LinkUsingLaptop" xml:space="preserve"><value>Het model van deze laptop wordt gebruikt</value></data>
+  <data name="Vm_LinkUnreachableHelp" xml:space="preserve"><value>{0} is niet bereikbaar. Controleer of het aan staat en op hetzelfde netwerk zit, of zet de relay aan.</value></data>
+  <data name="Vm_LinkRevokedHelp" xml:space="preserve"><value>{0} laat deze laptop niet meer toe. Koppel opnieuw om hem te blijven gebruiken.</value></data>
+  <data name="Vm_LinkRepairHelp" xml:space="preserve"><value>De identiteit van {0} is veranderd, dus deze laptop vertrouwt hem niet meer. Als je dit niet verwachtte, koppel dan niet opnieuw. Ontkoppel anders eerst en koppel daarna opnieuw.</value></data>
+  <data name="Vm_TrayLink" xml:space="preserve"><value>{0} - {1}</value></data>
+  <data name="Vm_DeviceAlertPaired" xml:space="preserve"><value>{0} is gekoppeld en kan nu de AI van deze pc gebruiken.</value></data>
+  <data name="Vm_DeviceAlertRelay" xml:space="preserve"><value>{0} heeft zich van buitenaf via de relay verbonden.</value></data>
+  <data name="Vm_HomeModeThisPc" xml:space="preserve"><value>Deze pc</value></data>
+  <data name="Vm_HomeModeHomePc" xml:space="preserve"><value>Mijn thuis-pc gebruiken</value></data>
+  <data name="Vm_HomeFallbackNone" xml:space="preserve"><value>Geen</value></data>
+  <data name="Vm_HomeFallbackLocal" xml:space="preserve"><value>Het model van deze laptop gebruiken</value></data>
+  <data name="Vm_HomeRelayAuto" xml:space="preserve"><value>Automatisch</value></data>
+  <data name="Vm_HomeRelayManual" xml:space="preserve"><value>Handmatig</value></data>
+  <data name="Vm_HomeNeedsPair" xml:space="preserve"><value>Koppel eerst een pc.</value></data>
+  <data name="Vm_UnpairTitle" xml:space="preserve"><value>Deze pc ontkoppelen?</value></data>
+  <data name="Vm_UnpairBody" xml:space="preserve"><value>Deze laptop vergeet {0} en gebruikt hem niet meer. Modellen en downloads worden niet aangeraakt. Je kunt later opnieuw koppelen.</value></data>
+  <data name="Vm_UnpairConfirm" xml:space="preserve"><value>Ontkoppelen</value></data>
+  <data name="Vm_UnpairCancel" xml:space="preserve"><value>Annuleren</value></data>
+  <data name="Vm_FallbackTitle" xml:space="preserve"><value>Je thuis-pc is niet bereikbaar</value></data>
+  <data name="Vm_FallbackBody" xml:space="preserve"><value>{0} is nu niet bereikbaar. Mag deze laptop zolang antwoorden met zijn eigen model? Je kunt dit wijzigen in Instellingen, onder Thuis-pc.</value></data>
+  <data name="Vm_FallbackLocal" xml:space="preserve"><value>Het model van deze laptop gebruiken</value></data>
+  <data name="Vm_FallbackNone" xml:space="preserve"><value>Geen</value></data>
+  <data name="Vm_PairTitle" xml:space="preserve"><value>Mijn thuis-pc gebruiken</value></data>
+  <data name="Vm_PairIntro" xml:space="preserve"><value>Open op de andere pc Instellingen en kies Een apparaat koppelen, en kopieer dan de link. Plak hem hier.</value></data>
+  <data name="Vm_PairLinkPlaceholder" xml:space="preserve"><value>portalai://pair?...</value></data>
+  <data name="Vm_PairLinkName" xml:space="preserve"><value>Koppellink</value></data>
+  <data name="Vm_PairPaste" xml:space="preserve"><value>Link plakken</value></data>
+  <data name="Vm_PairPasteTip" xml:space="preserve"><value>Plak de koppellink vanuit het klembord</value></data>
+  <data name="Vm_PairNext" xml:space="preserve"><value>Volgende</value></data>
+  <data name="Vm_PairConfirm" xml:space="preserve"><value>Koppelen</value></data>
+  <data name="Vm_PairBack" xml:space="preserve"><value>Terug</value></data>
+  <data name="Vm_PairCancel" xml:space="preserve"><value>Annuleren</value></data>
+  <data name="Vm_PairWorking" xml:space="preserve"><value>Verbinden met de pc...</value></data>
+  <data name="Vm_PairDeviceName" xml:space="preserve"><value>Naam van deze laptop</value></data>
+  <data name="Vm_PairConfirmPc" xml:space="preserve"><value>Koppelen met {0}?</value></data>
+  <data name="Vm_PairFingerprint" xml:space="preserve"><value>Vingerafdruk: {0}</value></data>
+  <data name="Vm_PairErr_invalid_input" xml:space="preserve"><value>De link is niet geldig. Kopieer hem opnieuw van de andere pc.</value></data>
+  <data name="Vm_PairErr_address_not_allowed" xml:space="preserve"><value>Dat adres staat niet op je thuisnetwerk. Koppel buitenshuis eerst één keer thuis.</value></data>
+  <data name="Vm_PairErr_unreachable" xml:space="preserve"><value>Dat adres kon niet worden bereikt.</value></data>
+  <data name="Vm_PairErr_certificate_mismatch" xml:space="preserve"><value>Deze pc kon niet worden geverifieerd.</value></data>
+  <data name="Vm_PairErr_host_proof_invalid" xml:space="preserve"><value>Deze pc kon niet worden geverifieerd.</value></data>
+  <data name="Vm_PairErr_refused" xml:space="preserve"><value>Die pc heeft het koppelen geweigerd.</value></data>
+  <data name="Vm_PairErr_protocol_error" xml:space="preserve"><value>Die pc stuurde een onverwacht antwoord.</value></data>
+  <data name="Vm_PairErr_save_failed" xml:space="preserve"><value>Het koppelen is gelukt, maar het kon op deze pc niet worden opgeslagen.</value></data>
+  <data name="Vm_PairErr_already_paired" xml:space="preserve"><value>Er is al een pc gekoppeld. Ontkoppel die eerst in Instellingen.</value></data>
+  <data name="Vm_PairErr_not_available" xml:space="preserve"><value>Koppelen is niet beschikbaar in deze installatie.</value></data>
+  <data name="Vm_PairErr_host" xml:space="preserve"><value>De app draait niet.</value></data>
+  <data name="Vm_PairReason_expired" xml:space="preserve"><value>De code is verlopen. Vraag een nieuwe aan.</value></data>
+  <data name="Vm_PairReason_code_voided" xml:space="preserve"><value>Die code is ongeldig geworden door te veel verkeerde pogingen. Vraag een nieuwe aan.</value></data>
+  <data name="Vm_PairReason_no_offer" xml:space="preserve"><value>Die pc wacht niet op een apparaat. Open een nieuwe code op die pc.</value></data>
+  <data name="Vm_PairReason_too_many_devices" xml:space="preserve"><value>Die pc heeft al 16 apparaten. Verwijder er eerst één.</value></data>
+  <data name="Vm_PairReason_wrong_code" xml:space="preserve"><value>De code klopt niet.</value></data>
+  <data name="ModelsMemoryTitle.Text" xml:space="preserve"><value>Geheugenbudget</value></data>
+  <data name="ModelsMemoryTitle.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Wat de geladen en laadende modellen naar verwachting gebruiken, afgezet tegen de RAM-limiet en het geheugen van de videokaart. Een model dat er niet in past, wordt geweigerd.</value></data>
+  <data name="Vm_MemRam" xml:space="preserve"><value>RAM</value></data>
+  <data name="Vm_MemVram" xml:space="preserve"><value>Videogeheugen</value></data>
+  <data name="Vm_MemLine" xml:space="preserve"><value>{0}: {1} gebruikt, {2} gereserveerd tijdens het laden, {3} vrij van {4}</value></data>
+  <data name="UpdateBar.Title" xml:space="preserve"><value>Update beschikbaar</value></data>
+  <data name="UpdateBar.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Een nieuwere versie van Portal AI Host staat klaar in de Microsoft Store</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Bijwerken</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Open de pagina van Portal AI Host in de Microsoft Store om bij te werken</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Open de pagina van Portal AI Host in de Microsoft Store om bij te werken</value></data>
+  <data name="UpdateButtonText.Text" xml:space="preserve"><value>Bijwerken</value></data>
+  <data name="Vm_ComingSoon" xml:space="preserve"><value>Binnenkort</value></data>
+  <data name="Vm_VramBoth" xml:space="preserve"><value>Heeft {0} GB videogeheugen nodig met CPU-ondersteuning; {1} GB wordt aanbevolen.</value></data>
+  <data name="Vm_VramMin" xml:space="preserve"><value>Heeft {0} GB videogeheugen nodig met CPU-ondersteuning.</value></data>
+  <data name="Vm_VramRec" xml:space="preserve"><value>{0} GB videogeheugen aanbevolen.</value></data>
+  <data name="Vm_GroupCount" xml:space="preserve"><value>{0} modellen</value></data>
+  <data name="Vm_ShowAll" xml:space="preserve"><value>Alle {0} tonen</value></data>
+  <data name="Vm_ShowFewer" xml:space="preserve"><value>Minder tonen</value></data>
+  <data name="Vm_CatAllTip" xml:space="preserve"><value>Modellen van alle soorten tonen</value></data>
+  <data name="Vm_CatChip_all" xml:space="preserve"><value>Alle</value></data>
+  <data name="Vm_CatChip_chat" xml:space="preserve"><value>Chat</value></data>
+  <data name="Vm_CatChip_coding" xml:space="preserve"><value>Programmeren</value></data>
+  <data name="Vm_CatChip_reasoning" xml:space="preserve"><value>Redeneren</value></data>
+  <data name="Vm_CatChip_vision" xml:space="preserve"><value>Beeld</value></data>
+  <data name="Vm_CatChip_search" xml:space="preserve"><value>Zoeken</value></data>
+  <data name="Vm_CatChip_image" xml:space="preserve"><value>Afbeeldingen</value></data>
+  <data name="Vm_CatChip_video" xml:space="preserve"><value>Video</value></data>
+  <data name="Vm_CatChip_speech" xml:space="preserve"><value>Spraak</value></data>
+  <data name="Vm_CatChip_other" xml:space="preserve"><value>Overig</value></data>
+  <data name="Vm_Cat_chat" xml:space="preserve"><value>Chat &amp; schrijven</value></data>
+  <data name="Vm_Cat_coding" xml:space="preserve"><value>Programmeren</value></data>
+  <data name="Vm_Cat_reasoning" xml:space="preserve"><value>Redeneren</value></data>
+  <data name="Vm_Cat_vision" xml:space="preserve"><value>Afbeeldingen begrijpen</value></data>
+  <data name="Vm_Cat_search" xml:space="preserve"><value>Zoeken &amp; embeddings</value></data>
+  <data name="Vm_Cat_image" xml:space="preserve"><value>Beeldgeneratie</value></data>
+  <data name="Vm_Cat_video" xml:space="preserve"><value>Videogeneratie</value></data>
+  <data name="Vm_Cat_speech" xml:space="preserve"><value>Spraak</value></data>
+  <data name="Vm_Cat_other" xml:space="preserve"><value>Overige modellen</value></data>
+  <data name="ModelsSearch.PlaceholderText" xml:space="preserve"><value>Modellen zoeken</value></data>
+  <data name="ModelsSearch.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Modellen zoeken</value></data>
+  <data name="ModelsNoMatches.Text" xml:space="preserve"><value>Geen modellen gevonden. Wis het zoekveld of kies Alle.</value></data>
+  <data name="HomeSeeAppsLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bekijk welke apps zijn verbonden met deze host</value></data>
+  <data name="HomeSeeAppsLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Bekijk welke apps zijn verbonden met deze host</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Kopieer de koppellink naar het klembord</value></data>
+  <data name="HomeLoadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Laad het model in het geheugen zodat het sneller antwoordt</value></data>
+  <data name="HomeLoadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Laad het model in het geheugen zodat het sneller antwoordt</value></data>
+  <data name="SettingsNotifyDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Toon een melding wanneer een apparaat koppelt of verbindt</value></data>
+  <data name="SettingsCorners.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hoe rond de hoeken zijn</value></data>
+  <data name="HomeChangeFolderButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Open Instellingen om een map met meer vrije ruimte te kiezen</value></data>
+  <data name="HomeChangeFolderButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Open Instellingen om een map met meer vrije ruimte te kiezen</value></data>
+  <data name="SettingsMoveButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Verplaats de modellen naar de gekozen map. Bestanden worden gekopieerd en gecontroleerd voordat de oude worden verwijderd.</value></data>
+  <data name="SettingsMoveButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Verplaats de modellen naar de gekozen map. Bestanden worden gekopieerd en gecontroleerd voordat de oude worden verwijderd.</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Koppelen annuleren</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Koppelen annuleren</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Gezondheidscontroles tonen of verbergen</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Gezondheidscontroles tonen of verbergen</value></data>
+  <data name="SettingsMaterial.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>De achtergrondstijl van het venster</value></data>
+  <data name="HomeDownloadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Download het aanbevolen model</value></data>
+  <data name="HomeDownloadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Download het aanbevolen model</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Zie precies wat een crashrapport bevat</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Zie precies wat een crashrapport bevat</value></data>
+  <data name="SettingsEaseOffFullscreen.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Geheugen vrijmaken terwijl een programma op volledig scherm of een spel draait</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Open de pagina Modellen om betere modellen te zien</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Open de pagina Modellen om betere modellen te zien</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Zet de prestatie-instellingen terug naar de standaardwaarden</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Zet de prestatie-instellingen terug naar de standaardwaarden</value></data>
+  <data name="SettingsEaseOffBattery.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Geheugen vrijmaken terwijl de pc op de accu draait</value></data>
+  <data name="SettingsPreset.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Kies een kant-en-klare balans tussen snelheid en geheugengebruik</value></data>
+  <data name="SettingsRemoteRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Laat gekoppelde apparaten deze pc bereiken van buiten je thuisnetwerk</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Maak een code om een nieuw apparaat te koppelen</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Maak een code om een nieuw apparaat te koppelen</value></data>
+  <data name="SettingsCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Stuur crashrapporten om problemen te helpen oplossen</value></data>
+  <data name="SettingsAllowReplace.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Sta een apparaat toe een bestaande koppeling te vervangen</value></data>
+  <data name="SettingsMotion.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hoeveel animatie wordt gebruikt</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Ga terug naar de standaard modellenmap</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Ga terug naar de standaard modellenmap</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Sta toe dat de thuis-pc buitenshuis via de relay bereikt wordt</value></data>
+  <data name="HomeTryAgainButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Probeer de modellijst opnieuw te laden</value></data>
+  <data name="HomeTryAgainButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Probeer de modellijst opnieuw te laden</value></data>
+  <data name="SettingsStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Start Portal AI Host wanneer je je aanmeldt bij Windows</value></data>
+  <data name="SettingsHomeMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Kies of deze pc zelf modellen draait of je thuis-pc gebruikt</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Start de host zodat apps hem kunnen gebruiken</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Start de host zodat apps hem kunnen gebruiken</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Zet de algemene instellingen terug naar de standaardwaarden</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Zet de algemene instellingen terug naar de standaardwaarden</value></data>
+  <data name="SettingsHomeFallback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Wat er gebeurt wanneer de thuis-pc niet bereikbaar is</value></data>
+  <data name="SettingsDensity.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hoeveel ruimte er tussen items zit</value></data>
+  <data name="SettingsTextSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hoe groot de tekst is</value></data>
+  <data name="SettingsIdle.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hoelang de host zonder verzoeken wacht voordat hij het modelgeheugen vrijmaakt</value></data>
+  <data name="SettingsEaseOffAppBusy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Geheugen vrijmaken terwijl een andere app hard werkt</value></data>
+  <data name="SettingsRemoveDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Verwijder dit apparaat. Het moet opnieuw koppelen om verbinding te maken.</value></data>
+  <data name="SettingsRemoveDevice.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Verwijder dit apparaat. Het moet opnieuw koppelen om verbinding te maken.</value></data>
+  <data name="SettingsMoveCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Stop het verplaatsen van de modellen</value></data>
+  <data name="SettingsMoveCancel.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Stop het verplaatsen van de modellen</value></data>
+  <data name="SettingsNotifyDownloads.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Toon een melding wanneer een download klaar is of mislukt</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Zet de privacy-instellingen terug naar de standaardwaarden</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Zet de privacy-instellingen terug naar de standaardwaarden</value></data>
+  <data name="HealthCheckAgainButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Voer de gezondheidscontroles opnieuw uit</value></data>
+  <data name="HealthCheckAgainButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Voer de gezondheidscontroles opnieuw uit</value></data>
+  <data name="SettingsMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hoeveel geheugen modellen mogen gebruiken</value></data>
+  <data name="SettingsTheme.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Licht, donker, of volgen van Windows</value></data>
+  <data name="SettingsRemoteEnabled.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Laat je andere apparaten deze pc gebruiken</value></data>
+  <data name="SettingsNotifyProblems.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Toon een melding wanneer iets je aandacht nodig heeft</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Open de chatpagina om het actieve model te proberen</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Open de chatpagina om het actieve model te proberen</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Zet de meldingsinstellingen terug naar de standaardwaarden</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Zet de meldingsinstellingen terug naar de standaardwaarden</value></data>
+  <data name="SettingsRelayAdmission.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Vereis dat de relay apparaten controleert voordat ze verbinden</value></data>
+  <data name="HomeUnloadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Geef het geheugen vrij dat het model gebruikt. Het modelbestand blijft op schijf.</value></data>
+  <data name="HomeUnloadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Geef het geheugen vrij dat het model gebruikt. Het modelbestand blijft op schijf.</value></data>
+  <data name="HomeSeeAllModelsLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Blader door alle modellen die gedownload kunnen worden</value></data>
+  <data name="HomeSeeAllModelsLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Blader door alle modellen die gedownload kunnen worden</value></data>
+  <data name="SettingsNotifyApprovals.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Toon een melding wanneer een app om toestemming vraagt</value></data>
+  <data name="SettingsHomeRelayMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Kies wanneer de relay wordt gebruikt om de thuis-pc te bereiken</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Zet de weergave-instellingen terug naar de standaardwaarden</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Zet de weergave-instellingen terug naar de standaardwaarden</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Gezondheidscontroles</value></data>
+</root>

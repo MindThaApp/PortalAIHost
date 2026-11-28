@@ -1,0 +1,986 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="NavHome.Content" xml:space="preserve"><value>首頁</value></data>
+  <data name="NavHome.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>首頁</value></data>
+  <data name="NavModels.Content" xml:space="preserve"><value>模型</value></data>
+  <data name="NavModels.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>模型</value></data>
+  <data name="NavApps.Content" xml:space="preserve"><value>裝置與應用程式</value></data>
+  <data name="NavApps.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>裝置與應用程式</value></data>
+  <data name="NavTryIt.Content" xml:space="preserve"><value>試用</value></data>
+  <data name="NavTryIt.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>試用</value></data>
+  <data name="NavSettings.Content" xml:space="preserve"><value>設定</value></data>
+  <data name="NavSettings.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>設定</value></data>
+  <data name="HomeTitle.Text" xml:space="preserve"><value>首頁</value></data>
+  <data name="HomeSafeModeBar.Title" xml:space="preserve"><value>安全模式</value></data>
+  <data name="HomeStoreProblemBar.Title" xml:space="preserve"><value>無法使用模型資料夾</value></data>
+  <data name="Vm_OldFolderBadge" xml:space="preserve"><value>先前的資料夾</value></data>
+  <data name="Vm_OldFolderRow" xml:space="preserve"><value>位於先前的模型資料夾:{0}。移除即可釋放空間。</value></data>
+  <data name="HomeSafeModeBar.Message" xml:space="preserve"><value>主機多次意外關閉，因此已使用保守設定啟動。您的應用程式仍可正常使用。如果持續發生，請重新啟動電腦。</value></data>
+  <data name="HomeStartButton.Content" xml:space="preserve"><value>啟動 Portal AI Host</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>啟動 Portal AI Host</value></data>
+  <data name="HomeUpgradeText.Text" xml:space="preserve"><value>有更適合您電腦的模型。在新模型就緒之前，會繼續使用目前的模型。</value></data>
+  <data name="HomeSeeModelsButton.Content" xml:space="preserve"><value>查看模型</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>查看模型</value></data>
+  <data name="ModelsTitle.Text" xml:space="preserve"><value>模型</value></data>
+  <data name="ModelsExistingBar.Title" xml:space="preserve"><value>找到現有的複本</value></data>
+  <data name="ModelsUpgradeBar.Title" xml:space="preserve"><value>有更好的模型可用</value></data>
+  <data name="ModelTooBig.Text" xml:space="preserve"><value>這個模型對此電腦來說可能太大。</value></data>
+  <data name="ModelDownload.Content" xml:space="preserve"><value>下載</value></data>
+  <data name="ModelPause.Content" xml:space="preserve"><value>暫停</value></data>
+  <data name="ModelResume.Content" xml:space="preserve"><value>繼續</value></data>
+  <data name="ModelCancel.Content" xml:space="preserve"><value>停止</value></data>
+  <data name="ModelUse.Content" xml:space="preserve"><value>使用此模型</value></data>
+  <data name="ModelRemove.Content" xml:space="preserve"><value>移除</value></data>
+  <data name="ModelsCatalogueBar.Title" xml:space="preserve"><value>無法使用模型清單</value></data>
+  <data name="ModelsCatalogueBar.Message" xml:space="preserve"><value>主機無法載入受信任的模型清單，因此目前無法下載新模型。此電腦上已有的模型仍可使用。</value></data>
+  <data name="AppsTitle.Text" xml:space="preserve"><value>裝置與應用程式</value></data>
+  <data name="AppsWaitingHeader.Text" xml:space="preserve"><value>等候您的回應</value></data>
+  <data name="AppsApprovedHeader.Text" xml:space="preserve"><value>可使用您 AI 主機的應用程式</value></data>
+  <data name="AppsNone.Text" xml:space="preserve"><value>尚未允許任何應用程式。當應用程式要求使用主機時，會在此詢問您。</value></data>
+  <data name="AppAllow.Content" xml:space="preserve"><value>允許</value></data>
+  <data name="AppDeny.Content" xml:space="preserve"><value>拒絕</value></data>
+  <data name="Vm_AppTodayNone" xml:space="preserve"><value>今天沒有要求</value></data>
+  <data name="Vm_AppToday1" xml:space="preserve"><value>今天有 {0} 個要求</value></data>
+  <data name="Vm_AppToday" xml:space="preserve"><value>今天有 {0} 個要求</value></data>
+  <data name="Vm_PriorityHigh" xml:space="preserve"><value>高</value></data>
+  <data name="Vm_PriorityNormal" xml:space="preserve"><value>一般</value></data>
+  <data name="Vm_PriorityLow" xml:space="preserve"><value>低</value></data>
+  <data name="Vm_AutoPriority" xml:space="preserve"><value>{0} 的優先順序</value></data>
+  <data name="Vm_AppPausedBadge" xml:space="preserve"><value>已暫停</value></data>
+  <data name="Vm_AppPausedHint" xml:space="preserve"><value>{0} 已暫停。在您繼續之前，新要求會被拒絕。它仍保有存取權。</value></data>
+  <data name="Vm_AppPause" xml:space="preserve"><value>暫停</value></data>
+  <data name="Vm_AppResume" xml:space="preserve"><value>繼續</value></data>
+  <data name="Vm_AutoPause" xml:space="preserve"><value>暫停 {0}</value></data>
+  <data name="Vm_AutoResume" xml:space="preserve"><value>繼續 {0}</value></data>
+  <data name="AppPriority.Header" xml:space="preserve"><value>優先順序</value></data>
+  <data name="AppRevoke.Content" xml:space="preserve"><value>移除存取權</value></data>
+  <data name="SettingsTitle.Text" xml:space="preserve"><value>設定</value></data>
+  <data name="SettingsStartWithWindows.Header" xml:space="preserve"><value>隨 Windows 啟動</value></data>
+  <data name="SettingsStartWithWindows.OnContent" xml:space="preserve"><value>開啟</value></data>
+  <data name="SettingsStartWithWindows.OffContent" xml:space="preserve"><value>關閉</value></data>
+  <data name="SettingsStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>隨 Windows 啟動</value></data>
+  <data name="SettingsIdle.Header" xml:space="preserve"><value>閒置時釋放記憶體</value></data>
+  <data name="SettingsIdle.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>閒置時釋放記憶體</value></data>
+  <data name="SettingsIdleHelp.Text" xml:space="preserve"><value>下次有應用程式要求時，模型會再次喚醒。保持載入可更快回應，但會一直佔用記憶體。</value></data>
+  <data name="SettingsFolder.Header" xml:space="preserve"><value>已下載模型的資料夾</value></data>
+  <data name="SettingsFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>已下載模型的資料夾</value></data>
+  <data name="TryItTitle.Text" xml:space="preserve"><value>試用</value></data>
+  <data name="TryItIntro.Text" xml:space="preserve"><value>向模型提出簡短的問題，以確認它能正常運作並查看回應速度。您在此輸入的內容不會被儲存。按 Ctrl+Enter 提問。</value></data>
+  <data name="TryItPrompt.Header" xml:space="preserve"><value>您的問題</value></data>
+  <data name="TryItPrompt.PlaceholderText" xml:space="preserve"><value>例如:寫一句關於大海的句子。</value></data>
+  <data name="TryItPrompt.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>您的問題</value></data>
+  <data name="TryItSend.Content" xml:space="preserve"><value>提問</value></data>
+  <data name="TryItSend.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>提問</value></data>
+  <data name="TryItStop.Content" xml:space="preserve"><value>停止</value></data>
+  <data name="TryItStop.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>停止</value></data>
+  <data name="TryItReply.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>回覆</value></data>
+  <data name="WelcomeTitle.Text" xml:space="preserve"><value>歡迎使用 Portal AI Host</value></data>
+  <data name="WelcomeLead.Text" xml:space="preserve"><value>AI 就在您的電腦上</value></data>
+  <data name="WelcomeIntro.Text" xml:space="preserve"><value>Portal AI Host 會在此電腦上為您的 Portal 應用程式執行 AI 模型。無需任何設定，我們會挑選適合您電腦的模型。</value></data>
+  <data name="WelcomePoint1Title.Text" xml:space="preserve"><value>在此電腦上執行</value></data>
+  <data name="WelcomePoint1Body.Text" xml:space="preserve"><value>模型使用您自己的顯示卡和記憶體，因此即使沒有網際網路連線也能運作。</value></data>
+  <data name="WelcomePoint2Title.Text" xml:space="preserve"><value>保持私密</value></data>
+  <data name="WelcomePoint2Body.Text" xml:space="preserve"><value>您的問題和檔案絕不會離開此電腦。</value></data>
+  <data name="WelcomePoint3Title.Text" xml:space="preserve"><value>專為您的 Portal 應用程式打造</value></data>
+  <data name="WelcomePoint3Body.Text" xml:space="preserve"><value>您的 Portal 應用程式可用它來撰寫、摘要和回答，無需額外帳戶。</value></data>
+  <data name="WelcomeModelTitle.Text" xml:space="preserve"><value>選擇模型</value></data>
+  <data name="WelcomeModelIntro.Text" xml:space="preserve"><value>模型就是負責工作的 AI。這是我們認為最適合您電腦的模型。</value></data>
+  <data name="WelcomeNoModel.Text" xml:space="preserve"><value>目前找不到適合此電腦的模型。您可以稍後在「模型」頁面再試一次。</value></data>
+  <data name="WelcomeDownload.Content" xml:space="preserve"><value>下載</value></data>
+  <data name="WelcomeDownload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>下載建議的模型</value></data>
+  <data name="WelcomeChooseLater.Content" xml:space="preserve"><value>稍後選擇</value></data>
+  <data name="WelcomeChooseLater.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>稍後選擇，在「模型」中挑選模型</value></data>
+  <data name="WelcomeKeepGoing.Text" xml:space="preserve"><value>您可以繼續操作。下載會在背景持續進行。</value></data>
+  <data name="WelcomeRetry.Content" xml:space="preserve"><value>重試</value></data>
+  <data name="WelcomeRetry.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>重試，重新開始下載</value></data>
+  <data name="WelcomeWhereTitle.Text" xml:space="preserve"><value>在時鐘附近尋找</value></data>
+  <data name="WelcomeTrayTitle.Text" xml:space="preserve"><value>尋找系統匣圖示</value></data>
+  <data name="WelcomeTrayBody.Text" xml:space="preserve"><value>Portal AI Host 會安靜地待在系統匣，也就是時鐘附近的小圖示。按一下其圖示即可開啟。如果看不到，請按一下箭頭以顯示隱藏的圖示。</value></data>
+  <data name="WelcomeAskTitle.Text" xml:space="preserve"><value>應用程式一律先詢問</value></data>
+  <data name="WelcomeAskBody.Text" xml:space="preserve"><value>Portal 應用程式第一次要在此電腦上使用 AI 時，會先詢問您。您可以拒絕，也可以隨時收回存取權。</value></data>
+  <data name="WelcomeStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>隨 Windows 啟動，在我登入時啟動 Portal AI Host</value></data>
+  <data name="WelcomeSkip.Content" xml:space="preserve"><value>暫時略過</value></data>
+  <data name="WelcomeSkip.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>暫時略過，關閉歡迎畫面</value></data>
+  <data name="WelcomeBack.Content" xml:space="preserve"><value>返回</value></data>
+  <data name="WelcomeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>返回</value></data>
+  <data name="Vm_VerifiedShort" xml:space="preserve"><value>已驗證的 Portal 應用程式</value></data>
+  <data name="Vm_ApprovalDetails" xml:space="preserve"><value>詳細資料</value></data>
+  <data name="Vm_WelcomeRecommended" xml:space="preserve"><value>建議:{0} 模型</value></data>
+  <data name="Vm_WelcomeSmall" xml:space="preserve"><value>小型</value></data>
+  <data name="Vm_WelcomeMedium" xml:space="preserve"><value>中型</value></data>
+  <data name="Vm_WelcomeLarge" xml:space="preserve"><value>大型</value></data>
+  <data name="Vm_WelcomeDetail" xml:space="preserve"><value>{0}、{1}</value></data>
+  <data name="WelcomeLaterNote.Text" xml:space="preserve"><value>您可以稍後在「模型」中挑選模型。</value></data>
+  <data name="WelcomeStartRec.Content" xml:space="preserve"><value>以建議的設定開始</value></data>
+  <data name="WelcomeStartRec.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>以建議的設定開始</value></data>
+  <data name="WelcomeWhereIntro.Text" xml:space="preserve"><value>開始之前，有兩件事需要知道。</value></data>
+  <data name="WelcomeStartTitle.Text" xml:space="preserve"><value>隨 Windows 啟動</value></data>
+  <data name="WelcomeStartBody.Text" xml:space="preserve"><value>在您登入時讓 Portal AI Host 在系統匣中就緒，讓您的應用程式可立即使用。</value></data>
+  <data name="Vm_WelcomeRecommendedTip" xml:space="preserve"><value>在背景下載建議的模型 ({0})，讓 Portal AI Host 隨 Windows 啟動，並關閉此視窗。您之後都可以變更。</value></data>
+  <data name="Vm_WelcomeRecommendedTipNoModel" xml:space="preserve"><value>讓 Portal AI Host 隨 Windows 啟動，並關閉此視窗。您之後都可以變更。</value></data>
+  <data name="Vm_WelcomeTitle" xml:space="preserve"><value>歡迎使用 Portal AI Host</value></data>
+  <data name="Vm_WelcomeNext" xml:space="preserve"><value>下一步</value></data>
+  <data name="Vm_WelcomeFinish" xml:space="preserve"><value>開始使用</value></data>
+  <data name="Vm_WelcomeSize" xml:space="preserve"><value>下載大小:{0}</value></data>
+  <data name="Vm_AppTitle" xml:space="preserve"><value>Portal AI Host</value></data>
+  <data name="Vm_NoHostTitle" xml:space="preserve"><value>Portal AI Host 未執行</value></data>
+  <data name="Vm_NoHostBody" xml:space="preserve"><value>執行 AI 模型的協助程式已關閉。請啟動它，讓您的應用程式可使用 AI。</value></data>
+  <data name="Vm_Starting" xml:space="preserve"><value>正在啟動...</value></data>
+  <data name="Vm_StartFailed" xml:space="preserve"><value>無法啟動主機。請從「開始」功能表再次開啟 Portal AI Host。</value></data>
+  <data name="Vm_StateReady" xml:space="preserve"><value>就緒</value></data>
+  <data name="Vm_StateBusy" xml:space="preserve"><value>忙於回答</value></data>
+  <data name="Vm_StateLoading" xml:space="preserve"><value>正在準備模型</value></data>
+  <data name="Vm_StateIdle" xml:space="preserve"><value>休息中。應用程式提出要求時，模型會喚醒。</value></data>
+  <data name="Vm_StateNoModel" xml:space="preserve"><value>尚無模型</value></data>
+  <data name="Vm_StateDownloading" xml:space="preserve"><value>正在下載模型</value></data>
+  <data name="Vm_StateError" xml:space="preserve"><value>發生錯誤</value></data>
+  <data name="Vm_HostVersion" xml:space="preserve"><value>主機版本 {0}</value></data>
+  <data name="Vm_ModelNone" xml:space="preserve"><value>尚未安裝模型</value></data>
+  <data name="Vm_ModelLoaded" xml:space="preserve"><value>{0} 已載入並就緒</value></data>
+  <data name="Vm_ModelLoading" xml:space="preserve"><value>正在載入 {0}...</value></data>
+  <data name="Vm_ModelUnloaded" xml:space="preserve"><value>{0} 已安裝。應用程式要求時才會載入。</value></data>
+  <data name="Vm_QueueEmpty" xml:space="preserve"><value>沒有等候中的要求</value></data>
+  <data name="Vm_QueueSome" xml:space="preserve"><value>{0} 個執行中，{1} 個等候中</value></data>
+  <data name="Vm_QualityName" xml:space="preserve"><value>品質 {0} / 5</value></data>
+  <data name="Vm_DownloadProgress" xml:space="preserve"><value>{0} / {1}</value></data>
+  <data name="Vm_DownloadEta" xml:space="preserve"><value>{0} / {1}，約剩 {2} 分鐘</value></data>
+  <data name="Vm_Paused" xml:space="preserve"><value>已在 {0}% 暫停</value></data>
+  <data name="Vm_Verifying" xml:space="preserve"><value>正在檢查下載...</value></data>
+  <data name="Vm_Queued" xml:space="preserve"><value>正在等候開始...</value></data>
+  <data name="Vm_DownloadFailed" xml:space="preserve"><value>下載未完成。{0}</value></data>
+  <data name="Vm_DownloadDone" xml:space="preserve"><value>下載完成。</value></data>
+  <data name="Vm_InUse" xml:space="preserve"><value>使用中</value></data>
+  <data name="Vm_Installed" xml:space="preserve"><value>已安裝</value></data>
+  <data name="Vm_BestForYou" xml:space="preserve"><value>最適合您的電腦</value></data>
+  <data name="Vm_StorageLine" xml:space="preserve"><value>模型在 {0} 中使用 {2}。該磁碟機尚有 {1} 可用。</value></data>
+  <data name="Vm_ExistingCopy" xml:space="preserve"><value>此電腦上已有 {0} 的複本。主機會使用它，不會再次下載。</value></data>
+  <data name="Vm_UpgradeOffer" xml:space="preserve"><value>{0} 更適合。在新模型就緒之前，會繼續使用目前的模型。</value></data>
+  <data name="Vm_CancelDlTitle" xml:space="preserve"><value>要停止此下載嗎?</value></data>
+  <data name="Vm_CancelDlBody" xml:space="preserve"><value>已下載的部分將被捨棄。</value></data>
+  <data name="Vm_CancelDlYes" xml:space="preserve"><value>停止下載</value></data>
+  <data name="Vm_CancelDlKeep" xml:space="preserve"><value>繼續下載</value></data>
+  <data name="Vm_AutoDownload" xml:space="preserve"><value>下載 {0}</value></data>
+  <data name="Vm_AutoCancel" xml:space="preserve"><value>停止下載 {0}</value></data>
+  <data name="Vm_AutoUse" xml:space="preserve"><value>使用 {0}</value></data>
+  <data name="Vm_Added" xml:space="preserve"><value>新增於 {0}</value></data>
+  <data name="Vm_LastUsed" xml:space="preserve"><value>上次使用於 {0}</value></data>
+  <data name="Vm_NeverUsed" xml:space="preserve"><value>尚未使用</value></data>
+  <data name="Vm_AutoRevoke" xml:space="preserve"><value>移除 {0} 的存取權</value></data>
+  <data name="Vm_AutoAllow" xml:space="preserve"><value>允許 {0}</value></data>
+  <data name="Vm_AutoDeny" xml:space="preserve"><value>拒絕 {0}</value></data>
+  <data name="Vm_RevokeTitle" xml:space="preserve"><value>要移除 {0} 的存取權嗎?</value></data>
+  <data name="Vm_RevokeBody" xml:space="preserve"><value>在您再次允許之前，{0} 將無法使用 AI 主機。</value></data>
+  <data name="Vm_RevokeYes" xml:space="preserve"><value>移除存取權</value></data>
+  <data name="Vm_Cancel" xml:space="preserve"><value>取消</value></data>
+  <data name="Vm_Verified" xml:space="preserve"><value>已安裝的應用程式 ({0})。不是 Portal 應用程式。</value></data>
+  <data name="Vm_VerifiedPortal" xml:space="preserve"><value>已驗證的 Portal 應用程式 ({0})</value></data>
+  <data name="Vm_Unverified" xml:space="preserve"><value>未經驗證。它從 {0} 執行。除非是您自己啟動的，否則請勿允許。</value></data>
+  <data name="Vm_ApprovalTitle" xml:space="preserve"><value>要讓 {0} 在此電腦上使用 AI 嗎?</value></data>
+  <data name="Vm_ApprovalBody" xml:space="preserve"><value>{0} 想要使用此電腦上的 AI 模型。</value></data>
+  <data name="Vm_ApprovalReason" xml:space="preserve"><value>提供的原因:{0}</value></data>
+  <data name="Vm_Allow" xml:space="preserve"><value>允許</value></data>
+  <data name="Vm_Deny" xml:space="preserve"><value>不允許</value></data>
+  <data name="Vm_Later" xml:space="preserve"><value>稍後決定</value></data>
+  <data name="Vm_Idle_Keep" xml:space="preserve"><value>讓模型保持載入</value></data>
+  <data name="Vm_Idle_5" xml:space="preserve"><value>5 分鐘後</value></data>
+  <data name="Vm_Idle_10" xml:space="preserve"><value>10 分鐘後</value></data>
+  <data name="Vm_Saved" xml:space="preserve"><value>已儲存</value></data>
+  <data name="Vm_SaveFailed" xml:space="preserve"><value>無法儲存。主機是否正在執行?</value></data>
+  <data name="Vm_FolderTitle" xml:space="preserve"><value>要使用此資料夾存放模型嗎?</value></data>
+  <data name="Vm_FolderBody" xml:space="preserve"><value>主機將使用 {0} 存放模型。您已有的模型不會被移動或刪除。</value></data>
+  <data name="Vm_FolderYes" xml:space="preserve"><value>使用資料夾</value></data>
+  <data name="TryItClear.Content" xml:space="preserve"><value>清除</value></data>
+  <data name="TryItClear.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>清除對話</value></data>
+  <data name="TryItSuggestLabel.Text" xml:space="preserve"><value>不知道要問什麼?試試這些。</value></data>
+  <data name="HomeTryItButton.Content" xml:space="preserve"><value>試用</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>用一個問題試用模型</value></data>
+  <data name="Vm_TrySuggest1" xml:space="preserve"><value>寫一句關於大海的友善句子。</value></data>
+  <data name="Vm_TrySuggest2" xml:space="preserve"><value>用兩句話說明路由器的功用。</value></data>
+  <data name="Vm_TrySuggest3" xml:space="preserve"><value>幫我的貓想三個名字。</value></data>
+  <data name="Vm_TryStats" xml:space="preserve"><value>{0} 秒後出現第一批文字，之後每秒 {1} 個權杖。</value></data>
+  <data name="Vm_TryStatsShort" xml:space="preserve"><value>{0} 秒後出現第一批文字。</value></data>
+  <data name="Vm_TryStatsStopped" xml:space="preserve"><value>已停止。{0}</value></data>
+  <data name="TryItThinking.Header" xml:space="preserve"><value>模型最先的想法</value></data>
+  <data name="Vm_TryWorking" xml:space="preserve"><value>處理中。電腦較小時可能需要一分鐘。</value></data>
+  <data name="Vm_TryThinking" xml:space="preserve"><value>思考中...</value></data>
+  <data name="Vm_TryOnlyThinking" xml:space="preserve"><value>模型用完了整個思考時間限制，卻沒有給出答案。請試著問較短的問題。</value></data>
+  <data name="Vm_TryEmpty" xml:space="preserve"><value>模型傳回了空白的答案。請再問一次。</value></data>
+  <data name="Vm_TryFailed" xml:space="preserve"><value>主機無法回答:{0}</value></data>
+  <data name="Vm_HwChecking" xml:space="preserve"><value>正在檢查您的電腦...</value></data>
+  <data name="Vm_HwUnknown" xml:space="preserve"><value>無法讀取</value></data>
+  <data name="Vm_HwMemory" xml:space="preserve"><value>記憶體:{0}</value></data>
+  <data name="Vm_HwGraphics" xml:space="preserve"><value>圖形:{0}</value></data>
+  <data name="Vm_HwCores" xml:space="preserve"><value>處理器核心數:{0}</value></data>
+  <data name="Vm_HwDisk" xml:space="preserve"><value>可用磁碟空間:{0}</value></data>
+  <data name="HomeWelcomeTitle.Text" xml:space="preserve"><value>在此電腦上設定您的私人 AI</value></data>
+  <data name="HomeWelcomeBody.Text" xml:space="preserve"><value>Portal AI Host 會在此電腦上保留一個 AI 模型，並與您的 Portal 應用程式共用，因此各應用程式不需要各自的複本。一切都在本機執行: 您的文字絕不會離開此電腦，也不需要雲端帳戶。</value></data>
+  <data name="HomeCatalogueBar.Title" xml:space="preserve"><value>無法使用模型清單</value></data>
+  <data name="HomeCatalogueBar.Message" xml:space="preserve"><value>主機無法載入受信任的模型清單，因此目前沒有可建議的項目。請檢查您的網際網路連線，然後再試一次。</value></data>
+  <data name="HomeTryAgainButton.Content" xml:space="preserve"><value>重試</value></data>
+  <data name="HomeRecommendedLabel.Text" xml:space="preserve"><value>為此電腦推薦</value></data>
+  <data name="HomeNoSpaceBar.Title" xml:space="preserve"><value>磁碟空間不足</value></data>
+  <data name="HomeChangeFolderButton.Content" xml:space="preserve"><value>在「設定」中變更資料夾</value></data>
+  <data name="HomeDownloadButton.Content" xml:space="preserve"><value>下載</value></data>
+  <data name="HomeSeeAllModelsLink.Content" xml:space="preserve"><value>查看所有模型</value></data>
+  <data name="HomeSeeAllModelsLink2.Content" xml:space="preserve"><value>查看所有模型</value></data>
+  <data name="HomeActiveModelLabel.Text" xml:space="preserve"><value>使用中的模型</value></data>
+  <data name="HomeAppsLabel.Text" xml:space="preserve"><value>已連線的應用程式</value></data>
+  <data name="HomeSeeAppsLink.Content" xml:space="preserve"><value>查看裝置與應用程式</value></data>
+  <data name="HomeRequestsLabel.Text" xml:space="preserve"><value>要求</value></data>
+  <data name="Vm_HomeLoaded" xml:space="preserve"><value>已載入並就緒</value></data>
+  <data name="Vm_HomeLoading" xml:space="preserve"><value>正在準備...</value></data>
+  <data name="Vm_HomeUnloaded" xml:space="preserve"><value>未載入。應用程式要求時才會載入。</value></data>
+  <data name="Vm_HomeKeepLoaded" xml:space="preserve"><value>保持載入，讓回應快速開始。</value></data>
+  <data name="Vm_HomeIdleUnload" xml:space="preserve"><value>在 {0} 分鐘沒有要求後釋放記憶體。</value></data>
+  <data name="Vm_HomeApps" xml:space="preserve"><value>有 {0} 個應用程式可使用此模型</value></data>
+  <data name="Vm_HomeApps1" xml:space="preserve"><value>有 1 個應用程式可使用此模型</value></data>
+  <data name="Vm_HomeAppsNone" xml:space="preserve"><value>尚未連線任何應用程式。它們第一次使用時會徵求您的同意。</value></data>
+  <data name="Vm_HomeNoSpace" xml:space="preserve"><value>此模型需要 {0}，但只有 {1} 可用。請釋放一些空間，或在「設定」中選擇其他模型資料夾。</value></data>
+  <data name="Vm_NoGpu" xml:space="preserve"><value>找不到</value></data>
+  <data name="Vm_HostMissing" xml:space="preserve"><value>此安裝缺少主機程式。請重新安裝 Portal AI Host 以修正此問題。</value></data>
+  <data name="Vm_HostMissingTestRun" xml:space="preserve"><value>這是測試執行，且在應用程式旁找不到主機程式。測試執行不會啟動已安裝的主機。</value></data>
+  <data name="Vm_StartTimedOut" xml:space="preserve"><value>主機已啟動，但未及時回應。請稍候，然後再試一次。</value></data>
+  <data name="Vm_HostExitTestRoot" xml:space="preserve"><value>主機拒絕啟動: 測試資料資料夾遺失，或未標示為測試資料夾。</value></data>
+  <data name="Vm_HostExitStartFailed" xml:space="preserve"><value>主機無法啟動。請重新啟動電腦後再試一次。如果持續發生，請重新安裝 Portal AI Host。</value></data>
+  <data name="Vm_HostExitOtherUser" xml:space="preserve"><value>此電腦上的另一位 Windows 使用者已在執行 Portal AI Host。請請他們結束，或以該使用者身分登入。</value></data>
+  <data name="Vm_CatalogueUnavailable" xml:space="preserve"><value>無法使用模型清單: 主機無法載入受信任的模型清單。此電腦上已有的模型仍可使用。</value></data>
+  <data name="Vm_RemoveTitle" xml:space="preserve"><value>要移除此模型嗎?</value></data>
+  <data name="Vm_RemoveBody" xml:space="preserve"><value>{0} 將從此電腦移除。只會刪除主機下載的檔案; 您自行加入的模型檔案只會從清單中移除，並保留在原處。</value></data>
+  <data name="Vm_RemoveYes" xml:space="preserve"><value>移除</value></data>
+  <data name="Vm_AutoRemove" xml:space="preserve"><value>移除 {0}</value></data>
+  <data name="Vm_FolderSavedNote" xml:space="preserve"><value>已儲存。主機重新啟動後，新的下載會存到 {1}。已下載的模型不會被移動或刪除; 它們會保留在 {0}，並仍列在「模型」頁面上，您可以在那裡移除它們。</value></data>
+  <data name="Vm_FolderRefused" xml:space="preserve"><value>其他設定已儲存，但無法使用該模型資料夾:{0}</value></data>
+  <data name="Vm_Startup_Unavailable" xml:space="preserve"><value>「隨 Windows 啟動」僅適用於已安裝的應用程式。</value></data>
+  <data name="Vm_Startup_DisabledByUser" xml:space="preserve"><value>「隨 Windows 啟動」已在工作管理員中關閉。請在那裡 (啟動應用程式) 重新開啟。</value></data>
+  <data name="Vm_Startup_Policy" xml:space="preserve"><value>「隨 Windows 啟動」由您的組織設定。</value></data>
+  <data name="Vm_DefaultFolder" xml:space="preserve"><value>預設資料夾</value></data>
+  <data name="Vm_Publisher" xml:space="preserve"><value>發行者:{0}</value></data>
+  <data name="Vm_PublisherUnknown" xml:space="preserve"><value>發行者:未知</value></data>
+  <data name="NavAbout.Content" xml:space="preserve"><value>關於</value></data>
+  <data name="NavAbout.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>關於</value></data>
+  <data name="AppMenuButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>應用程式功能表</value></data>
+  <data name="Vm_AppMenuTip" xml:space="preserve"><value>應用程式功能表</value></data>
+  <data name="MenuSettings.Text" xml:space="preserve"><value>設定</value></data>
+  <data name="MenuShortcuts.Text" xml:space="preserve"><value>鍵盤快速鍵</value></data>
+  <data name="MenuWhatsNew.Text" xml:space="preserve"><value>新功能</value></data>
+  <data name="MenuAbout.Text" xml:space="preserve"><value>關於 Portal AI Host</value></data>
+  <data name="Vm_ShortcutsTitle" xml:space="preserve"><value>鍵盤快速鍵</value></data>
+  <data name="Vm_ShortcutsBody" xml:space="preserve"><value>Ctrl+1: 首頁
+Ctrl+2: 模型
+Ctrl+3: 裝置與應用程式
+Ctrl+4: 試用
+Ctrl+, : 設定
+F1: 關於
+Esc: 關閉新功能或對話方塊</value></data>
+  <data name="Vm_Close" xml:space="preserve"><value>關閉</value></data>
+  <data name="SettingsGeneralHeader.Text" xml:space="preserve"><value>一般</value></data>
+  <data name="SettingsResetGeneral.Content" xml:space="preserve"><value>重設為預設值</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>將一般設定重設為預設值</value></data>
+  <data name="SettingsNotificationsHeader.Text" xml:space="preserve"><value>通知</value></data>
+  <data name="SettingsResetNotifications.Content" xml:space="preserve"><value>重設為預設值</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>重設為預設值，通知設定</value></data>
+  <data name="SettingsNotificationsHelp.Text" xml:space="preserve"><value>當有事情需要您處理，且此視窗已關閉時，Windows 會顯示簡短訊息。全螢幕程式在前景時不會打擾您，且每隔幾分鐘最多只會重複一次。</value></data>
+  <data name="SettingsNotifyDownloads.Header" xml:space="preserve"><value>模型下載完成或失敗</value></data>
+  <data name="SettingsNotifyDownloads.OnContent" xml:space="preserve"><value>開啟</value></data>
+  <data name="SettingsNotifyDownloads.OffContent" xml:space="preserve"><value>關閉</value></data>
+  <data name="SettingsNotifyDownloads.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>模型下載完成或失敗時通知</value></data>
+  <data name="SettingsNotifyApprovals.Header" xml:space="preserve"><value>應用程式要求核准</value></data>
+  <data name="SettingsNotifyApprovals.OnContent" xml:space="preserve"><value>開啟</value></data>
+  <data name="SettingsNotifyApprovals.OffContent" xml:space="preserve"><value>關閉</value></data>
+  <data name="SettingsNotifyApprovals.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>應用程式要求核准時通知</value></data>
+  <data name="SettingsNotifyProblems.Header" xml:space="preserve"><value>AI 引擎停止或檢查失敗</value></data>
+  <data name="SettingsNotifyProblems.OnContent" xml:space="preserve"><value>開啟</value></data>
+  <data name="SettingsNotifyProblems.OffContent" xml:space="preserve"><value>關閉</value></data>
+  <data name="SettingsNotifyProblems.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>AI 引擎停止或檢查失敗時通知</value></data>
+  <data name="SettingsPrivacyHeader.Text" xml:space="preserve"><value>隱私權</value></data>
+  <data name="SettingsResetPrivacy.Content" xml:space="preserve"><value>重設為預設值</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>重設為預設值，隱私權設定</value></data>
+  <data name="SettingsCrashReports.Header" xml:space="preserve"><value>傳送當機報告</value></data>
+  <data name="SettingsCrashReports.OnContent" xml:space="preserve"><value>開啟</value></data>
+  <data name="SettingsCrashReports.OffContent" xml:space="preserve"><value>關閉</value></data>
+  <data name="SettingsCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>傳送當機報告</value></data>
+  <data name="SettingsCrashReportsHelp.Text" xml:space="preserve"><value>如果 Portal AI Host 當機，簡短的報告可協助我們快速修正。報告絕不包含您的檔案或您輸入的內容。關閉後會立即停止傳送。</value></data>
+  <data name="CrashWhatsSent.Content" xml:space="preserve"><value>傳送的內容</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>傳送的內容，開啟隱私權頁面</value></data>
+  <data name="WelcomeCrashReports.Content" xml:space="preserve"><value>傳送當機報告，讓我們能快速修正問題。報告絕不包含您的檔案或您輸入的內容。</value></data>
+  <data name="WelcomeCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>傳送當機報告，讓我們能快速修正問題。報告絕不包含您的檔案或您輸入的內容。</value></data>
+  <data name="SettingsModelsHeader.Text" xml:space="preserve"><value>模型資料夾</value></data>
+  <data name="SettingsResetFolder.Content" xml:space="preserve"><value>重設為預設值</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>將模型資料夾重設為預設值</value></data>
+  <data name="SettingsFolderHelp.Text" xml:space="preserve"><value>按 Enter 或離開輸入框時套用。留空則使用預設資料夾。您已有的模型會留在原處，除非您選擇移動它們。</value></data>
+  <data name="SettingsAppearanceHeader.Text" xml:space="preserve"><value>外觀</value></data>
+  <data name="SettingsResetAppearance.Content" xml:space="preserve"><value>重設為預設值</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>將外觀重設為預設值</value></data>
+  <data name="SettingsTheme.Header" xml:space="preserve"><value>主題</value></data>
+  <data name="SettingsTheme.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>主題</value></data>
+  <data name="SettingsMaterial.Header" xml:space="preserve"><value>視窗材質</value></data>
+  <data name="SettingsMaterial.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>視窗材質</value></data>
+  <data name="SettingsCorners.Header" xml:space="preserve"><value>圓角</value></data>
+  <data name="SettingsCorners.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>圓角</value></data>
+  <data name="SettingsDensity.Header" xml:space="preserve"><value>密度</value></data>
+  <data name="SettingsDensity.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>密度</value></data>
+  <data name="SettingsTextSize.Header" xml:space="preserve"><value>文字大小</value></data>
+  <data name="SettingsTextSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>文字大小</value></data>
+  <data name="SettingsMotion.Header" xml:space="preserve"><value>動態效果</value></data>
+  <data name="SettingsMotion.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>動態效果</value></data>
+  <data name="SettingsAppearanceHelp.Text" xml:space="preserve"><value>變更會立即套用。Windows 高對比一律使用純色系統色彩，不論您在此選擇什麼。文字大小會疊加在您的 Windows 文字縮放上。</value></data>
+  <data name="Vm_Theme_System" xml:space="preserve"><value>使用我的 Windows 設定 (預設)</value></data>
+  <data name="Vm_Theme_Light" xml:space="preserve"><value>淺色</value></data>
+  <data name="Vm_Theme_Dark" xml:space="preserve"><value>深色</value></data>
+  <data name="Vm_Material_Mica" xml:space="preserve"><value>Mica (預設)</value></data>
+  <data name="Vm_Material_Acrylic" xml:space="preserve"><value>壓克力</value></data>
+  <data name="Vm_Material_Solid" xml:space="preserve"><value>純色</value></data>
+  <data name="Vm_Corners_Rounded" xml:space="preserve"><value>圓角 (預設)</value></data>
+  <data name="Vm_Corners_Square" xml:space="preserve"><value>方角</value></data>
+  <data name="Vm_Corners_ExtraRound" xml:space="preserve"><value>超圓角</value></data>
+  <data name="Vm_Density_Compact" xml:space="preserve"><value>精簡</value></data>
+  <data name="Vm_Density_Standard" xml:space="preserve"><value>標準 (預設)</value></data>
+  <data name="Vm_Density_Comfortable" xml:space="preserve"><value>舒適</value></data>
+  <data name="Vm_Text_Normal" xml:space="preserve"><value>一般 (預設)</value></data>
+  <data name="Vm_Text_Larger" xml:space="preserve"><value>較大</value></data>
+  <data name="Vm_Text_Largest" xml:space="preserve"><value>最大</value></data>
+  <data name="Vm_Motion_Follow" xml:space="preserve"><value>跟隨 Windows (預設)</value></data>
+  <data name="Vm_Motion_Reduced" xml:space="preserve"><value>減少</value></data>
+  <data name="Vm_Motion_Off" xml:space="preserve"><value>關閉</value></data>
+  <data name="Vm_FolderNotFull" xml:space="preserve"><value>輸入完整的資料夾路徑，例如 D:\Models。</value></data>
+  <data name="AboutTitle.Text" xml:space="preserve"><value>關於 Portal AI Host</value></data>
+  <data name="Vm_AboutVersion" xml:space="preserve"><value>Portal AI Host 版本 {0}</value></data>
+  <data name="Vm_AboutLicenceState" xml:space="preserve"><value>免費。不需要帳戶或購買。</value></data>
+  <data name="Vm_AboutCopyText" xml:space="preserve"><value>Portal AI Host {0}</value></data>
+  <data name="Vm_AboutCopied" xml:space="preserve"><value>已複製版本。</value></data>
+  <data name="AboutCopyVersion.Content" xml:space="preserve"><value>複製版本</value></data>
+  <data name="AboutWhatsNew.Content" xml:space="preserve"><value>新功能</value></data>
+  <data name="AboutHelpHeader.Text" xml:space="preserve"><value>說明與隱私權</value></data>
+  <data name="AboutFeedback.Content" xml:space="preserve"><value>傳送意見反應或提出建議</value></data>
+  <data name="AboutPrivacy.Content" xml:space="preserve"><value>隱私權原則</value></data>
+  <data name="AboutDataFolder.Content" xml:space="preserve"><value>開啟資料資料夾</value></data>
+  <data name="AboutLicencesHeader.Text" xml:space="preserve"><value>授權</value></data>
+  <data name="Vm_ThirdParty" xml:space="preserve"><value>Portal AI Host 包含 llama.cpp (MIT 授權)，用於在您的電腦上執行 AI 模型。模型依各自的授權 (Apache 2.0、MIT 或 CreativeML OpenRAIL-M，其使用限制適用) 從 Hugging Face 下載。影像與影片生成使用 stable-diffusion.cpp (MIT 授權) 和 ggml (MIT 授權)。影片工具使用 FFmpeg (LGPL 3.0 或更新版本)。語音功能使用 sherpa-onnx (Apache 2.0)、Kokoro 語音 (Apache 2.0) 和 Kyutai 的 Pocket TTS (CC-BY 4.0，致謝: Kyutai)。此應用程式使用 Windows App SDK、.NET 和 Community Toolkit MVVM 程式庫建置，皆採用 MIT 授權。</value></data>
+  <data name="AboutLlamaLink.Content" xml:space="preserve"><value>GitHub 上的 llama.cpp</value></data>
+  <data name="AboutLlamaExpander.Header" xml:space="preserve"><value>llama.cpp 授權文字</value></data>
+  <data name="Vm_LlamaLicence" xml:space="preserve"><value>MIT License
+
+Copyright (c) 2023-2026 The ggml authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</value></data>
+  <data name="Vm_WhatsNewHeading" xml:space="preserve"><value>Portal AI Host {0} 的新功能</value></data>
+  <data name="Vm_Wn1Title" xml:space="preserve"><value>謝謝您</value></data>
+  <data name="Vm_Wn1Body" xml:space="preserve"><value>感謝您的意見反應和回報。它們塑造了這次更新。</value></data>
+  <data name="Vm_Wn2Title" xml:space="preserve"><value>影片輸出為 MP4，以及合併片段</value></data>
+  <data name="Vm_Wn2Body" xml:space="preserve"><value>影片工作現在可以提供 MP4 檔案、最後一個畫面的圖片，以及合併成一支影片的多個片段。</value></data>
+  <data name="Vm_Wn3Title" xml:space="preserve"><value>影片品質設定</value></data>
+  <data name="Vm_Wn3Body" xml:space="preserve"><value>選擇您的電腦如何編碼 MP4 影片，例如品質，以及使用哪種影片編碼器。</value></data>
+  <data name="Vm_Wn4Title" xml:space="preserve"><value>本機應用程式的上傳</value></data>
+  <data name="Vm_Wn4Body" xml:space="preserve"><value>此電腦上的應用程式現在可以直接交出大型檔案，而不必隨要求一併傳送。上傳的檔案會在一段時間後移除。</value></data>
+  <data name="Vm_Wn5Title" xml:space="preserve"><value>首頁電腦卡片保持同步</value></data>
+  <data name="Vm_Wn5Body" xml:space="preserve"><value>當您快速變更多項首頁電腦設定時，緩慢的回應不再會顯示較舊的值。</value></data>
+  <data name="Vm_Wn6Title" xml:space="preserve"><value>在窄視窗中表現更好</value></data>
+  <data name="Vm_Wn6Body" xml:space="preserve"><value>視窗較窄時，側邊功能表會收合，「設定」中的重設連結會換行到標題下方。</value></data>
+  <data name="Vm_Wn7Title" xml:space="preserve"><value>對螢幕助讀程式更清楚</value></data>
+  <data name="Vm_Wn7Body" xml:space="preserve"><value>首頁的健康狀態區段，以及首頁和設定中的按鈕，現在都有供螢幕助讀程式和工具提示使用的名稱與說明文字。</value></data>
+  <data name="Vm_Wn8Title" xml:space="preserve"><value>從筆記型電腦使用您的家用電腦</value></data>
+  <data name="Vm_Wn8Body" xml:space="preserve"><value>將筆記型電腦與您的家用電腦配對一次。之後筆記型電腦上的應用程式無論在家或外出，都能使用家用電腦的 AI，若您選擇，也可退回使用筆記型電腦自己的模型。</value></data>
+  <data name="Vm_Wn9Title" xml:space="preserve"><value>此電腦上的裝置</value></data>
+  <data name="Vm_Wn9Body" xml:space="preserve"><value>每部配對的筆記型電腦都有自己的卡片。您可以暫停它、設定每日限制和安靜時段、選擇它可使用的模型，或收回它載入的模型。</value></data>
+  <data name="Vm_Wn10Title" xml:space="preserve"><value>同時使用兩個模型</value></data>
+  <data name="Vm_Wn10Body" xml:space="preserve"><value>您信任的筆記型電腦可以在您的電腦上保持載入第二個模型，例如一個在顯示卡上，一個在記憶體中。您自己的模型絕不會被擠掉。</value></data>
+  <data name="Vm_Wn11Title" xml:space="preserve"><value>更安全的裝置處理</value></data>
+  <data name="Vm_Wn11Body" xml:space="preserve"><value>移除裝置會停止它仍在要求的所有項目，且將筆記型電腦與新的家用電腦配對時，不再有把舊電腦的存取權杖傳給它的風險。</value></data>
+  <data name="Vm_Wn12Title" xml:space="preserve"><value>遊戲模式適用於視窗化遊戲</value></data>
+  <data name="Vm_Wn12Body" xml:space="preserve"><value>開啟遊戲模式後，遊戲執行期間 (包括視窗化遊戲)，其他裝置會被告知您的電腦正忙碌。</value></data>
+  <data name="Vm_Wn13Title" xml:space="preserve"><value>轉送存取金鑰</value></data>
+  <data name="Vm_Wn13Body" xml:space="preserve"><value>只有與您的金鑰配對的裝置，才能在外出時連到此電腦。您隨時可以建立新金鑰。</value></data>
+  <data name="Vm_Wn14Title" xml:space="preserve"><value>一眼看到您的記憶體</value></data>
+  <data name="Vm_Wn14Body" xml:space="preserve"><value>「模型」頁面上的長條會顯示已載入的模型使用多少記憶體和圖形記憶體，並與您的限制比較。</value></data>
+  <data name="Vm_WnShowMe" xml:space="preserve"><value>帶我看</value></data>
+  <data name="Vm_WnShowMeName" xml:space="preserve"><value>帶我看:{0}</value></data>
+  <data name="WhatsNewDone.Content" xml:space="preserve"><value>知道了</value></data>
+  <data name="Vm_RevokedBar" xml:space="preserve"><value>已移除 {0} 的存取權。</value></data>
+  <data name="Vm_AutoUndo" xml:space="preserve"><value>復原移除 {0} 的存取權</value></data>
+  <data name="AppsUndo.Content" xml:space="preserve"><value>復原</value></data>
+  <data name="Vm_RemoveFrees" xml:space="preserve"><value>這會釋放 {0}。</value></data>
+  <data name="Vm_StepOf" xml:space="preserve"><value>第 {0} 步，共 {1} 步</value></data>
+  <data name="Vm_LiveIdle" xml:space="preserve"><value>目前沒有正在寫入的內容</value></data>
+  <data name="Vm_LiveBusy" xml:space="preserve"><value>正在撰寫答案</value></data>
+  <data name="Vm_LiveGenerating" xml:space="preserve"><value>{0} 正在取得答案</value></data>
+  <data name="Vm_LiveSpeed" xml:space="preserve"><value>每秒約 {0} 個字</value></data>
+  <data name="Vm_LiveMemory" xml:space="preserve"><value>{0} / {1}</value></data>
+  <data name="Vm_LiveMemoryNoTotal" xml:space="preserve"><value>{0}</value></data>
+  <data name="Vm_LivePendingLoad" xml:space="preserve"><value>正在載入...</value></data>
+  <data name="Vm_LivePendingUnload" xml:space="preserve"><value>正在卸載...</value></data>
+  <data name="Vm_LiveLoadFailed" xml:space="preserve"><value>無法載入模型。{0}</value></data>
+  <data name="Vm_LiveUnloadFailed" xml:space="preserve"><value>無法卸載模型。{0}</value></data>
+  <data name="Vm_TodayNone" xml:space="preserve"><value>今天還沒有要求。</value></data>
+  <data name="Vm_TodayRow1" xml:space="preserve"><value>{0} 個要求，上次出現於 {1}</value></data>
+  <data name="Vm_TodayRow" xml:space="preserve"><value>{0} 個要求，上次出現於 {1}</value></data>
+  <data name="Vm_SeenNever" xml:space="preserve"><value>從未</value></data>
+  <data name="Vm_SeenNow" xml:space="preserve"><value>剛剛</value></data>
+  <data name="Vm_SeenMinutes" xml:space="preserve"><value>{0} 分鐘前</value></data>
+  <data name="Vm_SeenHours" xml:space="preserve"><value>{0} 小時前</value></data>
+  <data name="HomeLiveTitle.Text" xml:space="preserve"><value>目前</value></data>
+  <data name="Vm_LiveRamName" xml:space="preserve"><value>模型使用的記憶體:{0}</value></data>
+  <data name="Vm_LiveVramName" xml:space="preserve"><value>模型使用的圖形記憶體:{0}</value></data>
+  <data name="HomeRamLabel.Text" xml:space="preserve"><value>模型使用的記憶體</value></data>
+  <data name="HomeVramLabel.Text" xml:space="preserve"><value>模型使用的圖形記憶體</value></data>
+  <data name="HomeUnloadButton.Content" xml:space="preserve"><value>立即卸載</value></data>
+  <data name="HomeLoadButton.Content" xml:space="preserve"><value>立即載入</value></data>
+  <data name="HomeActionErrorBar.Title" xml:space="preserve"><value>沒有成功</value></data>
+  <data name="HomeTodayLabel.Text" xml:space="preserve"><value>今天</value></data>
+  <data name="Vm_TrayReady" xml:space="preserve"><value>就緒 · 已載入 {0}</value></data>
+  <data name="Vm_TrayBusy" xml:space="preserve"><value>忙碌 · {0}</value></data>
+  <data name="Vm_TrayBusyOther" xml:space="preserve"><value>忙碌</value></data>
+  <data name="Vm_TrayLoading" xml:space="preserve"><value>載入中 · {0}</value></data>
+  <data name="Vm_TrayIdle" xml:space="preserve"><value>就緒 · 要求時載入 {0}</value></data>
+  <data name="Vm_TrayNoModel" xml:space="preserve"><value>尚無模型</value></data>
+  <data name="Vm_TrayOff" xml:space="preserve"><value>關閉</value></data>
+  <data name="Vm_TrayLastNone" xml:space="preserve"><value>今天沒有要求</value></data>
+  <data name="Vm_TrayLast" xml:space="preserve"><value>{0}、{1}</value></data>
+  <data name="TrayModelLabel.Text" xml:space="preserve"><value>模型</value></data>
+  <data name="TrayMemoryLabel.Text" xml:space="preserve"><value>記憶體</value></data>
+  <data name="TrayLastLabel.Text" xml:space="preserve"><value>上次要求</value></data>
+  <data name="TrayQueueLabel.Text" xml:space="preserve"><value>佇列</value></data>
+  <data name="TrayOpenButton.Content" xml:space="preserve"><value>開啟應用程式</value></data>
+  <data name="TrayUnloadButton.Content" xml:space="preserve"><value>卸載模型</value></data>
+  <data name="TrayWindowTitle" xml:space="preserve"><value>Portal AI Host 狀態</value></data>
+  <data name="ModelsDownloadedHeader.Text" xml:space="preserve"><value>已下載</value></data>
+  <data name="ModelsMoreHeader.Text" xml:space="preserve"><value>您可以新增的模型</value></data>
+  <data name="ModelCheck.Content" xml:space="preserve"><value>檢查檔案</value></data>
+  <data name="ModelRedownload.Content" xml:space="preserve"><value>重新下載</value></data>
+  <data name="ModelCancelCheck.Content" xml:space="preserve"><value>停止檢查</value></data>
+  <data name="ModelDetails.Header" xml:space="preserve"><value>詳細資料</value></data>
+  <data name="ModelsOpenFolder.Content" xml:space="preserve"><value>開啟資料夾</value></data>
+  <data name="ModelsAddOwn.Content" xml:space="preserve"><value>新增您自己的模型...</value></data>
+  <data name="ModelsAddOwnHint.Text" xml:space="preserve"><value>選擇您已有的 .gguf 檔案。主機會在模型資料夾中建立自己的複本。這會建立複本; 您的原始檔案不會被變更或移動。</value></data>
+  <data name="Vm_UserAddedBadge" xml:space="preserve"><value>由您新增</value></data>
+  <data name="Vm_UserAddedReason" xml:space="preserve"><value>適用性未知: 主機無法判斷此模型在您的電腦上需要多少記憶體。請試試看。</value></data>
+  <data name="Vm_RemoveUserBody" xml:space="preserve"><value>{0} 將從主機的模型資料夾中移除。那是主機自己的複本: 您選擇的原始檔案不會被動到。</value></data>
+  <data name="Vm_ImportRunning" xml:space="preserve"><value>正在將您的模型複製到模型資料夾，{0}%</value></data>
+  <data name="Vm_ImportDone" xml:space="preserve"><value>已新增您的模型。</value></data>
+  <data name="Vm_ImportCancelled" xml:space="preserve"><value>已取消新增模型。沒有保留任何內容，您的原始檔案也未變更。</value></data>
+  <data name="Vm_ImportFailed" xml:space="preserve"><value>未新增模型。{0}</value></data>
+  <data name="ModelsMoveHint.Text" xml:space="preserve"><value>若要將模型移到其他磁碟機，請在「設定」的「模型資料夾」下選擇新資料夾。</value></data>
+  <data name="ModelsMoveCancel.Content" xml:space="preserve"><value>取消</value></data>
+  <data name="ModelsFreeUp.Content" xml:space="preserve"><value>釋放空間</value></data>
+  <data name="ModelsCleanupTitle.Text" xml:space="preserve"><value>釋放空間</value></data>
+  <data name="ModelsCleanupPartialHeader.Text" xml:space="preserve"><value>沒有人在繼續的未完成下載</value></data>
+  <data name="ModelsCleanupOldHeader.Text" xml:space="preserve"><value>移動模型後留下的舊複本</value></data>
+  <data name="ModelsCleanupDamagedHeader.Text" xml:space="preserve"><value>檢查發現已損毀的模型</value></data>
+  <data name="ModelsCleanupClose.Content" xml:space="preserve"><value>關閉</value></data>
+  <data name="ModelsCleanupHint.Text" xml:space="preserve"><value>只列出此應用程式建立的檔案。您正在使用的模型，以及您自行加入的檔案，絕不會被移除。</value></data>
+  <data name="Vm_CleanupButton" xml:space="preserve"><value>釋放 {0}</value></data>
+  <data name="Vm_CleanupNothing" xml:space="preserve"><value>沒有可釋放的項目。您仍可繼續的未完成下載會保留一週。</value></data>
+  <data name="Vm_CleanupRunning" xml:space="preserve"><value>正在釋放空間...</value></data>
+  <data name="Vm_CleanupConfirmTitle" xml:space="preserve"><value>要移除這些檔案嗎?</value></data>
+  <data name="Vm_CleanupConfirmBody" xml:space="preserve"><value>這會永久移除:&#10;{0}&#10;您的其他模型不會被動到。</value></data>
+  <data name="Vm_CleanupDone" xml:space="preserve"><value>已釋放 {0}。</value></data>
+  <data name="Vm_CleanupDoneSkipped" xml:space="preserve"><value>已釋放 {0}。部分項目留在原處:&#10;{1}</value></data>
+  <data name="Vm_CleanupFailed" xml:space="preserve"><value>未能釋放空間:{0}</value></data>
+  <data name="ModelsRemoveFailedBar.Title" xml:space="preserve"><value>無法移除模型</value></data>
+  <data name="SettingsMoveButton.Content" xml:space="preserve"><value>將我的模型移到那裡</value></data>
+  <data name="SettingsMoveCancel.Content" xml:space="preserve"><value>取消移動</value></data>
+  <data name="Vm_UsedToday" xml:space="preserve"><value>今天使用過</value></data>
+  <data name="Vm_UsedYesterday" xml:space="preserve"><value>昨天使用過</value></data>
+  <data name="Vm_UsedDays" xml:space="preserve"><value>上次使用於 {0} 天前</value></data>
+  <data name="Vm_UsedMonths" xml:space="preserve"><value>上次使用於 {0} 個月前</value></data>
+  <data name="Vm_GoodFor" xml:space="preserve"><value>適合:{0}</value></data>
+  <data name="Vm_Caveats" xml:space="preserve"><value>請注意:{0}</value></data>
+  <data name="Vm_MemoryNeeded" xml:space="preserve"><value>在此電腦上需要約 {0} 記憶體。</value></data>
+  <data name="Vm_Licence" xml:space="preserve"><value>授權:{0}</value></data>
+  <data name="Vm_RemoveActiveBody" xml:space="preserve"><value>{0} 正在使用中。主機會先卸載它，再從此電腦移除。只會刪除主機下載的檔案; 您自行加入的模型檔案只會從清單中移除，並保留在原處。</value></data>
+  <data name="Vm_RemoveVerb" xml:space="preserve"><value>移除 {0} ({1})</value></data>
+  <data name="Vm_RemoveVerbNoSize" xml:space="preserve"><value>移除 {0}</value></data>
+  <data name="Vm_AutoCheck" xml:space="preserve"><value>檢查 {0} 的檔案</value></data>
+  <data name="Vm_AutoRedownload" xml:space="preserve"><value>重新下載 {0}</value></data>
+  <data name="Vm_Removing" xml:space="preserve"><value>正在移除...</value></data>
+  <data name="Vm_RemovingBadge" xml:space="preserve"><value>正在移除</value></data>
+  <data name="Vm_DamagedBadge" xml:space="preserve"><value>已損毀</value></data>
+  <data name="Vm_Checking" xml:space="preserve"><value>正在檢查檔案，{0}%</value></data>
+  <data name="Vm_CheckOk" xml:space="preserve"><value>所有檔案都完好。</value></data>
+  <data name="Vm_CheckDamaged" xml:space="preserve"><value>已損毀:{0} 沒有刪除任何內容。</value></data>
+  <data name="Vm_CheckFailed" xml:space="preserve"><value>檢查無法完成:{0}</value></data>
+  <data name="Vm_SwitchTitle" xml:space="preserve"><value>要使用其他模型嗎?</value></data>
+  <data name="Vm_SwitchBody" xml:space="preserve"><value>{0} 正在使用中。之後要切換到 {1}，還是暫時不使用任何模型?</value></data>
+  <data name="Vm_SwitchYes" xml:space="preserve"><value>切換到 {0}</value></data>
+  <data name="Vm_SwitchNo" xml:space="preserve"><value>暫時不使用模型</value></data>
+  <data name="Vm_RemoveFailed" xml:space="preserve"><value>{0} 未被移除，仍在此處。{1}</value></data>
+  <data name="Vm_RedownloadTitle" xml:space="preserve"><value>要重新下載此模型嗎?</value></data>
+  <data name="Vm_RedownloadBody" xml:space="preserve"><value>{0} 有損毀的檔案。它會從此電腦移除並重新下載。不會刪除其他任何內容。</value></data>
+  <data name="Vm_RedownloadActiveBody" xml:space="preserve"><value>{0} 有損毀的檔案且正在使用中。主機會卸載它、從此電腦移除，然後重新下載。下載完成後請再次選擇它。</value></data>
+  <data name="Vm_RedownloadYes" xml:space="preserve"><value>移除並重新下載 {0}</value></data>
+  <data name="Vm_MoveRunning" xml:space="preserve"><value>正在移動您的模型，{0}%</value></data>
+  <data name="Vm_MoveRemovingOld" xml:space="preserve"><value>您的模型已在新資料夾中。正在移除舊複本。</value></data>
+  <data name="Vm_MoveDone" xml:space="preserve"><value>您的模型已移動。</value></data>
+  <data name="Vm_MoveCancelled" xml:space="preserve"><value>已取消移動。您的模型仍在原處。</value></data>
+  <data name="Vm_MoveFailed" xml:space="preserve"><value>移動未完成。{0}</value></data>
+  <data name="Vm_MoveOffer" xml:space="preserve"><value>也要將您 {0} 的模型移到新資料夾嗎?</value></data>
+  <data name="Vm_MoveTitle" xml:space="preserve"><value>要移動您的模型嗎?</value></data>
+  <data name="Vm_MoveBody" xml:space="preserve"><value>您的模型會複製到 {0}，經檢查後才移除舊複本。執行期間，使用中的模型會被卸載。舊資料夾中不是主機放置的檔案絕不會被動到。</value></data>
+  <data name="Vm_MoveYes" xml:space="preserve"><value>移動我的模型</value></data>
+  <data name="Vm_MoveSettingsRunning" xml:space="preserve"><value>正在移動您的模型，{0}%</value></data>
+  <data name="SettingsPerformanceHeader.Text" xml:space="preserve"><value>效能</value></data>
+  <data name="SettingsResetPerformance.Content" xml:space="preserve"><value>重設為預設值</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>將效能設定重設為預設值</value></data>
+  <data name="SettingsPreset.Header" xml:space="preserve"><value>效能</value></data>
+  <data name="SettingsPreset.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>效能</value></data>
+  <data name="SettingsMemory.Header" xml:space="preserve"><value>AI 可使用的最大記憶體</value></data>
+  <data name="SettingsMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>AI 可使用的最大記憶體</value></data>
+  <data name="SettingsKeepFree.Header" xml:space="preserve"><value>一律保留可用空間</value></data>
+  <data name="SettingsKeepFree.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>一律保留可用空間</value></data>
+  <data name="SettingsRunOn.Header" xml:space="preserve"><value>執行於</value></data>
+  <data name="SettingsRunOn.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>執行於</value></data>
+  <data name="SettingsGpuMemory.Header" xml:space="preserve"><value>AI 的圖形記憶體</value></data>
+  <data name="SettingsGpuMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>AI 的圖形記憶體</value></data>
+  <data name="SettingsCores.Header" xml:space="preserve"><value>處理器核心數</value></data>
+  <data name="SettingsCores.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>處理器核心數</value></data>
+  <data name="SettingsPriority.Header" xml:space="preserve"><value>優先順序</value></data>
+  <data name="SettingsPriority.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>優先順序</value></data>
+  <data name="SettingsMemoryHelp.Text" xml:space="preserve"><value>AI 使用的量絕不會超過此值。較低表示模型較小或回應較慢。</value></data>
+  <data name="SettingsKeepFreeHelp.Text" xml:space="preserve"><value>保留給其他程式使用的記憶體。</value></data>
+  <data name="SettingsCoresHelp.Text" xml:space="preserve"><value>較少的核心可在 AI 運作時讓電腦保持順暢。</value></data>
+  <data name="Vm_Perf_Quiet" xml:space="preserve"><value>安靜</value></data>
+  <data name="Vm_Perf_Balanced" xml:space="preserve"><value>平衡</value></data>
+  <data name="Vm_Perf_Fast" xml:space="preserve"><value>快速</value></data>
+  <data name="Vm_Perf_Custom" xml:space="preserve"><value>自訂</value></data>
+  <data name="Vm_Perf_Help_quiet" xml:space="preserve"><value>速度約為一半。電腦仍保持順暢。</value></data>
+  <data name="Vm_Perf_Help_balanced" xml:space="preserve"><value>速度良好，且以您的其他程式優先。</value></data>
+  <data name="Vm_Perf_Help_fast" xml:space="preserve"><value>回應最快。其他程式可能會變慢。</value></data>
+  <data name="Vm_Perf_Help_custom" xml:space="preserve"><value>您自己的設定。</value></data>
+  <data name="Vm_Perf_Run_Auto" xml:space="preserve"><value>自動</value></data>
+  <data name="Vm_Perf_Run_Gpu" xml:space="preserve"><value>顯示卡</value></data>
+  <data name="Vm_Perf_Run_Cpu" xml:space="preserve"><value>處理器</value></data>
+  <data name="Vm_Perf_RunHelp_auto" xml:space="preserve"><value>有幫助時使用顯示卡。</value></data>
+  <data name="Vm_Perf_RunHelp_gpu" xml:space="preserve"><value>若模型放得下，速度最快。</value></data>
+  <data name="Vm_Perf_RunHelp_cpu" xml:space="preserve"><value>較慢，但會讓顯示卡留給遊戲使用。</value></data>
+  <data name="Vm_Perf_NoGpu" xml:space="preserve"><value>僅使用處理器: 找不到支援的顯示卡</value></data>
+  <data name="SettingsCeiling.Header" xml:space="preserve"><value>處理器最大使用量</value></data>
+  <data name="SettingsCeiling.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>處理器最大使用量</value></data>
+  <data name="SettingsCeilingHelp.Text" xml:space="preserve"><value>AI 使用的處理器量絕不會超過此值。較低可讓電腦更順暢，但回應較慢。</value></data>
+  <data name="Vm_Perf_CeilingNone" xml:space="preserve"><value>無限制</value></data>
+  <data name="Vm_Perf_Percent" xml:space="preserve"><value>{0}%</value></data>
+  <data name="SettingsEaseOffHeader.Text" xml:space="preserve"><value>在以下情況放緩</value></data>
+  <data name="SettingsEaseOffFullscreen.Content" xml:space="preserve"><value>有遊戲或全螢幕程式正在執行</value></data>
+  <data name="SettingsEaseOffBattery.Content" xml:space="preserve"><value>電腦使用電池供電</value></data>
+  <data name="SettingsEaseOffAppBusy.Content" xml:space="preserve"><value>Portal 應用程式正忙於即時工作，例如聽寫</value></data>
+  <data name="SettingsEaseOffHelp.Text" xml:space="preserve"><value>AI 屆時會以最低優先順序執行，最多使用一半的處理器，結束後即恢復正常。</value></data>
+  <data name="Vm_Perf_Prio_Low" xml:space="preserve"><value>低</value></data>
+  <data name="Vm_Perf_Prio_Normal" xml:space="preserve"><value>一般</value></data>
+  <data name="Vm_Perf_PrioHelp_Low" xml:space="preserve"><value>您自己的工作永遠優先。</value></data>
+  <data name="Vm_Perf_PrioHelp_Normal" xml:space="preserve"><value>較快，但可能讓其他程式變慢。</value></data>
+  <data name="Vm_Perf_Gb" xml:space="preserve"><value>{0} GB</value></data>
+  <data name="Vm_Perf_Cores" xml:space="preserve"><value>{0} / {1} 個核心</value></data>
+  <data name="Vm_Perf_MemoryRange" xml:space="preserve"><value>從 {0} GB 到 {1} GB</value></data>
+  <data name="Vm_Perf_StopFull" xml:space="preserve"><value>{0} GB · 完全容納 {1}</value></data>
+  <data name="Vm_Perf_StopPartial" xml:space="preserve"><value>{0} GB · 可容納 {1}，部分在處理器上</value></data>
+  <data name="Vm_Perf_StopCpu" xml:space="preserve"><value>{0} GB · 可在處理器上容納 {1}</value></data>
+  <data name="Vm_Perf_StopNone" xml:space="preserve"><value>{0} GB · 對清單中的模型來說太小</value></data>
+  <data name="Vm_Perf_Fit_Full" xml:space="preserve"><value>完全在顯示卡上執行</value></data>
+  <data name="Vm_Perf_Fit_Partial" xml:space="preserve"><value>部分在顯示卡上，部分在處理器上: 較慢</value></data>
+  <data name="Vm_Perf_Fit_Cpu" xml:space="preserve"><value>在處理器上執行: 最慢</value></data>
+  <data name="Vm_Perf_Fit_Smaller" xml:space="preserve"><value>{0} 的記憶體不足。要切換到 {1} 嗎?</value></data>
+  <data name="Vm_Perf_Fit_LittleMemory" xml:space="preserve"><value>{0} 的記憶體不足。</value></data>
+  <data name="Vm_Perf_Fit_TooBig" xml:space="preserve"><value>對此電腦來說太大</value></data>
+  <data name="Vm_Perf_TheModel" xml:space="preserve"><value>模型</value></data>
+  <data name="Vm_Perf_Applied" xml:space="preserve"><value>已套用。新的限制已生效。</value></data>
+  <data name="Vm_Perf_Reloading" xml:space="preserve"><value>已套用。{0} 正以新的限制重新載入。</value></data>
+  <data name="Vm_Perf_Unloaded" xml:space="preserve"><value>已套用。{0} 已不適用而被卸載。它仍保留在磁碟上; 請在「模型」頁面選擇較小的模型。</value></data>
+  <data name="HealthIconOk.AutomationProperties.Name" xml:space="preserve"><value>良好</value></data>
+  <data name="HealthIconWarn.AutomationProperties.Name" xml:space="preserve"><value>需要注意</value></data>
+  <data name="HealthIconFail.AutomationProperties.Name" xml:space="preserve"><value>問題</value></data>
+  <data name="HealthWordOk.Text" xml:space="preserve"><value>良好</value></data>
+  <data name="HealthWordWarn.Text" xml:space="preserve"><value>需要注意</value></data>
+  <data name="HealthWordFail.Text" xml:space="preserve"><value>問題</value></data>
+  <data name="HealthCheckAgainButton.Content" xml:space="preserve"><value>再次檢查</value></data>
+  <data name="HealthFixErrorBar.Title" xml:space="preserve"><value>沒有成功</value></data>
+  <data name="Vm_HealthAllGood" xml:space="preserve"><value>一切正常</value></data>
+  <data name="Vm_HealthOne" xml:space="preserve"><value>有 1 件事需要注意</value></data>
+  <data name="Vm_HealthMany" xml:space="preserve"><value>有 {0} 件事需要注意</value></data>
+  <data name="Vm_HealthFixLoad" xml:space="preserve"><value>載入模型</value></data>
+  <data name="Vm_HealthFixRestart" xml:space="preserve"><value>重新啟動引擎</value></data>
+  <data name="Vm_HealthFixCheckFiles" xml:space="preserve"><value>檢查檔案</value></data>
+  <data name="Vm_HealthFixPerformance" xml:space="preserve"><value>開啟效能設定</value></data>
+  <data name="Vm_HealthFixModels" xml:space="preserve"><value>選擇模型</value></data>
+  <data name="Vm_HealthFixFailed" xml:space="preserve"><value>無法完成修正。{0}</value></data>
+  <data name="SettingsRemoteHeader.Text" xml:space="preserve"><value>其他裝置</value></data>
+  <data name="SettingsRemoteEnabled.Header" xml:space="preserve"><value>允許其他裝置使用此電腦的 AI</value></data>
+  <data name="SettingsRemoteEnabled.OnContent" xml:space="preserve"><value>開啟</value></data>
+  <data name="SettingsRemoteEnabled.OffContent" xml:space="preserve"><value>關閉</value></data>
+  <data name="SettingsRemoteEnabled.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>允許其他裝置使用此電腦的 AI</value></data>
+  <data name="SettingsRemoteHelp.Text" xml:space="preserve"><value>預設為關閉。開啟後，您家用網路上自己的手機、筆記型電腦或平板電腦可以要求使用此電腦的 AI。裝置必須先以代碼配對，且其上的每個應用程式仍需要您的核准。您隨時可以移除裝置。</value></data>
+  <data name="SettingsPairDevice.Content" xml:space="preserve"><value>配對裝置</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>配對裝置</value></data>
+  <data name="SettingsPairingSteps.Text" xml:space="preserve"><value>在另一部裝置上開啟其 Portal 應用程式，選擇連線到電腦，然後掃描此代碼或輸入字母和數字。它在傳送任何內容之前，會先確認是在與此電腦通訊。代碼只能使用一次，有效時間為 5 分鐘。</value></data>
+  <data name="SettingsPairingQr.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>配對 QR 代碼</value></data>
+  <data name="SettingsPairingCancel.Content" xml:space="preserve"><value>取消配對</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>取消配對</value></data>
+  <data name="SettingsDevicesHeader.Text" xml:space="preserve"><value>已配對的裝置</value></data>
+  <data name="SettingsNoDevices.Text" xml:space="preserve"><value>尚未配對任何裝置。</value></data>
+  <data name="SettingsRemoveDevice.Content" xml:space="preserve"><value>移除</value></data>
+  <data name="SettingsDeviceModelControl.Header" xml:space="preserve"><value>模型控制</value></data>
+  <data name="SettingsDeviceModelControl.OnContent" xml:space="preserve"><value>開啟</value></data>
+  <data name="SettingsDeviceModelControl.OffContent" xml:space="preserve"><value>關閉</value></data>
+  <data name="SettingsDeviceModelControl.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>讓此裝置載入和卸載模型，並選擇其每個應用程式使用的模型</value></data>
+  <data name="SettingsDeviceModelControl.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>讓此裝置載入和卸載模型，並選擇其每個應用程式使用的模型</value></data>
+  <data name="SettingsTakeBackLabel.Text" xml:space="preserve"><value>收回</value></data>
+  <data name="SettingsTakeBack.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>卸載此裝置載入的模型。此電腦自己的選擇會恢復。不會動到任何模型檔案。</value></data>
+  <data name="SettingsTakeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>卸載此裝置載入的模型。此電腦自己的選擇會恢復。不會動到任何模型檔案。</value></data>
+  <data name="SettingsAllowReplace.Header" xml:space="preserve"><value>裝置可取代模型</value></data>
+  <data name="SettingsAllowReplace.OnContent" xml:space="preserve"><value>開啟</value></data>
+  <data name="SettingsAllowReplace.OffContent" xml:space="preserve"><value>關閉</value></data>
+  <data name="SettingsAllowReplace.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>裝置可取代模型</value></data>
+  <data name="SettingsAllowReplaceHelp.Text" xml:space="preserve"><value>僅對具有模型控制的裝置有影響。關閉: 裝置無法卸載您自己的應用程式正在使用的模型。開啟: 可以卸載，而您的應用程式會在下次要求時重新載入其模型。</value></data>
+  <data name="Vm_AutoModelControl" xml:space="preserve"><value>{0} 的模型控制</value></data>
+  <data name="Vm_AutoTakeBack" xml:space="preserve"><value>收回 {0} 載入的模型</value></data>
+  <data name="Vm_LoadedBy" xml:space="preserve"><value>由 {0} 載入:{1} ({2})</value></data>
+  <data name="Vm_PlacementAuto" xml:space="preserve"><value>自動配置</value></data>
+  <data name="Vm_PlacementGpu" xml:space="preserve"><value>顯示卡</value></data>
+  <data name="Vm_PlacementCpu" xml:space="preserve"><value>系統記憶體</value></data>
+  <data name="Vm_PlacementCpuOnly" xml:space="preserve"><value>僅處理器</value></data>
+  <data name="SettingsRemoteRelay.Header" xml:space="preserve"><value>也可在外出時連到此電腦</value></data>
+  <data name="SettingsRemoteRelay.OnContent" xml:space="preserve"><value>開啟</value></data>
+  <data name="SettingsRemoteRelay.OffContent" xml:space="preserve"><value>關閉</value></data>
+  <data name="SettingsRemoteRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>也可在外出時連到此電腦</value></data>
+  <data name="SettingsRelayAdmission.Header" xml:space="preserve"><value>轉送存取金鑰</value></data>
+  <data name="SettingsRelayAdmission.OnContent" xml:space="preserve"><value>開啟</value></data>
+  <data name="SettingsRelayAdmission.OffContent" xml:space="preserve"><value>關閉</value></data>
+  <data name="SettingsRelayAdmission.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>轉送存取金鑰</value></data>
+  <data name="SettingsRelayAdmissionHelp.Text" xml:space="preserve"><value>只有以配對代碼中的金鑰配對的裝置，才能透過轉送連到此電腦。請在配對前開啟: 先前配對的裝置必須重新配對才能使用轉送。轉送必須是最新版本。</value></data>
+  <data name="SettingsRotateRelayKeyText.Text" xml:space="preserve"><value>新金鑰</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>建立新的轉送存取金鑰。每部已配對的裝置都必須重新配對才能使用轉送。移除裝置不會變更金鑰，因此在移除您不信任的裝置後請執行此操作。</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>建立新的轉送存取金鑰。每部已配對的裝置都必須重新配對才能使用轉送。移除裝置不會變更金鑰，因此在移除您不信任的裝置後請執行此操作。</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>新金鑰</value></data>
+  <data name="Vm_RotateKeyTitle" xml:space="preserve"><value>要建立新的轉送存取金鑰嗎?</value></data>
+  <data name="Vm_RotateKeyBody" xml:space="preserve"><value>每部已配對的裝置都必須重新配對，才能透過轉送使用此電腦。在家中則不受影響。</value></data>
+  <data name="Vm_RotateKeyConfirm" xml:space="preserve"><value>建立新金鑰</value></data>
+  <data name="SettingsRemoteRelayHelp.Text" xml:space="preserve"><value>此電腦會對外連線到小型轉送服務，讓已配對的裝置可從任何地方連到它。轉送只會傳遞它無法讀取的加密位元組，且每部裝置仍須配對並簽署每個要求。</value></data>
+  <data name="Vm_RelayAway" xml:space="preserve"><value>可在外出時連線</value></data>
+  <data name="Vm_RelayHomeOnly" xml:space="preserve"><value>僅限家用網路</value></data>
+  <data name="Vm_RelayUnreachable" xml:space="preserve"><value>無法連到轉送</value></data>
+  <data name="Vm_RelayConnecting" xml:space="preserve"><value>正在連線到轉送...</value></data>
+  <data name="Vm_RemoteAddress" xml:space="preserve"><value>可透過 {0}，連接埠 {1} 連到此電腦。</value></data>
+  <data name="Vm_RemoteLastSeen" xml:space="preserve"><value>上次使用於 {0}</value></data>
+  <data name="Vm_RemoteNeverSeen" xml:space="preserve"><value>尚未使用</value></data>
+  <data name="Vm_AutoRemoveDevice" xml:space="preserve"><value>移除 {0}</value></data>
+  <data name="Vm_PairingExpires" xml:space="preserve"><value>代碼有效期限到 {0}。</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>複製連結</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>將此傳送給另一部電腦。有效時間為 5 分鐘，且僅限一部裝置。</value></data>
+  <data name="SettingsPairingCopyLinkText.Text" xml:space="preserve"><value>複製連結</value></data>
+  <data name="Vm_PairingAddress" xml:space="preserve"><value>位址:{0}:{1}</value></data>
+  <data name="Vm_PairingFingerprint" xml:space="preserve"><value>憑證檢查:{0}</value></data>
+  <data name="Vm_RemoveDeviceTitle" xml:space="preserve"><value>要移除 {0} 嗎?</value></data>
+  <data name="Vm_RemoveDeviceBody" xml:space="preserve"><value>{0} 會立即失去對此電腦 AI 的存取權。在您再次配對之前，其應用程式將無法運作。</value></data>
+  <data name="Vm_RemoveDeviceConfirm" xml:space="preserve"><value>移除裝置</value></data>
+  <data name="Vm_AppOnDevice" xml:space="preserve"><value>{1} 上的 {0}</value></data>
+  <data name="NavDevices.Content" xml:space="preserve"><value>此電腦的裝置</value></data>
+  <data name="NavDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>此電腦的裝置</value></data>
+  <data name="DevicesTitle.Text" xml:space="preserve"><value>此電腦上的裝置</value></data>
+  <data name="DevicesGamingTitle.Text" xml:space="preserve"><value>遊戲模式</value></data>
+  <data name="DevicesGamingText.Text" xml:space="preserve"><value>全螢幕遊戲執行期間，其他裝置的呼叫會被告知此電腦正忙碌。預設為關閉。</value></data>
+  <data name="DevicesGaming.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>遊戲模式</value></data>
+  <data name="DevicesNone.Text" xml:space="preserve"><value>尚未配對任何裝置。請在「設定」的「其他裝置」下配對一部。</value></data>
+  <data name="DevicesForgetLabel.Text" xml:space="preserve"><value>移除</value></data>
+  <data name="DevicesForget.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>移除此裝置。其存取權會立即停止，且其使用記錄會被刪除。不會動到模型。</value></data>
+  <data name="DevicesForget.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>移除此裝置。其存取權會立即停止，且其使用記錄會被刪除。不會動到模型。</value></data>
+  <data name="DevicesTakeBackLabel.Text" xml:space="preserve"><value>收回</value></data>
+  <data name="DevicesTakeBack.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>卸載此裝置載入的模型。此電腦自己的選擇會恢復。不會動到任何模型檔案。</value></data>
+  <data name="DevicesTakeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>卸載此裝置載入的模型。此電腦自己的選擇會恢復。不會動到任何模型檔案。</value></data>
+  <data name="DevicesRenameLabel.Text" xml:space="preserve"><value>重新命名</value></data>
+  <data name="DevicesRename.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>變更此裝置顯示的名稱</value></data>
+  <data name="DevicesRename.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>變更此裝置顯示的名稱</value></data>
+  <data name="DevicesNewName.Header" xml:space="preserve"><value>裝置名稱</value></data>
+  <data name="DevicesRenameSave.Content" xml:space="preserve"><value>重新命名</value></data>
+  <data name="DevicesLimitsLabel.Text" xml:space="preserve"><value>限制</value></data>
+  <data name="DevicesLimits.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>優先順序、每日限制、安靜時段，以及此裝置可使用的模型</value></data>
+  <data name="DevicesLimits.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>優先順序、每日限制、安靜時段，以及此裝置可使用的模型</value></data>
+  <data name="DevicesPriorityEqual.Header" xml:space="preserve"><value>與此電腦的應用程式相同優先順序</value></data>
+  <data name="DevicesPriorityEqual.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>關閉: 此電腦自己的應用程式優先。開啟: 此裝置在同一個佇列中等候。</value></data>
+  <data name="DevicesRequestLimit.Header" xml:space="preserve"><value>每日要求數</value></data>
+  <data name="DevicesTokenLimit.Header" xml:space="preserve"><value>每日權杖數</value></data>
+  <data name="DevicesQuiet.Header" xml:space="preserve"><value>安靜時段</value></data>
+  <data name="DevicesQuiet.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>在這些時間之間，裝置得不到任何回應 (採用此電腦的時間)</value></data>
+  <data name="DevicesQuietFrom.Header" xml:space="preserve"><value>從</value></data>
+  <data name="DevicesQuietTo.Header" xml:space="preserve"><value>到</value></data>
+  <data name="DevicesModelsHeader.Text" xml:space="preserve"><value>此裝置可使用的模型</value></data>
+  <data name="DevicesSaveLabel.Text" xml:space="preserve"><value>儲存</value></data>
+  <data name="DevicesSave.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>儲存此裝置的這些設定</value></data>
+  <data name="DevicesSave.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>儲存此裝置的這些設定</value></data>
+  <data name="Vm_DevOnline" xml:space="preserve"><value>線上</value></data>
+  <data name="Vm_DevIdle" xml:space="preserve"><value>閒置</value></data>
+  <data name="Vm_DevOffline" xml:space="preserve"><value>離線</value></data>
+  <data name="Vm_DevRouteLan" xml:space="preserve"><value>家用網路</value></data>
+  <data name="Vm_DevRouteRelay" xml:space="preserve"><value>轉送 (外出)</value></data>
+  <data name="Vm_DevRouteNone" xml:space="preserve"><value>尚無路徑</value></data>
+  <data name="Vm_DevRunning" xml:space="preserve"><value>目前執行中:{0}</value></data>
+  <data name="Vm_DevRunningQueued" xml:space="preserve"><value>目前執行中:{0}，等候中:{1}</value></data>
+  <data name="Vm_DevToday" xml:space="preserve"><value>今天:{0} 個要求，{1} 個權杖</value></data>
+  <data name="Vm_DevBar" xml:space="preserve"><value>{0} 個要求，{1} 天前</value></data>
+  <data name="Vm_DevModel" xml:space="preserve"><value>模型:{0}</value></data>
+  <data name="Vm_DevModelNone" xml:space="preserve"><value>尚無呼叫</value></data>
+  <data name="Vm_DevLoadedByPc" xml:space="preserve"><value>{0}，由此電腦載入</value></data>
+  <data name="Vm_DevLoadedByDevice" xml:space="preserve"><value>{1}，由 {0} 載入</value></data>
+  <data name="Vm_DevSpeed" xml:space="preserve"><value>速度:{0} 權杖/秒，首位元組 {1} 毫秒</value></data>
+  <data name="Vm_DevSpeedNone" xml:space="preserve"><value>速度:尚未測量</value></data>
+  <data name="Vm_DevPause" xml:space="preserve"><value>暫停</value></data>
+  <data name="Vm_DevResume" xml:space="preserve"><value>繼續</value></data>
+  <data name="Vm_DevPauseTip" xml:space="preserve"><value>暫停此裝置。其呼叫會得到已暫停的回應，筆記型電腦會使用自己的備援。</value></data>
+  <data name="Vm_DevResumeTip" xml:space="preserve"><value>讓此裝置再次使用此電腦</value></data>
+  <data name="Vm_DevAppPauseTip" xml:space="preserve"><value>僅暫停此裝置上的這個應用程式</value></data>
+  <data name="Vm_DevAppResumeTip" xml:space="preserve"><value>讓此應用程式再次使用此電腦</value></data>
+  <data name="Vm_DevGamingBusy" xml:space="preserve"><value>遊戲正在執行: 裝置會被告知此電腦正忙碌。</value></data>
+  <data name="Vm_AutoDevPause" xml:space="preserve"><value>暫停 {0}</value></data>
+  <data name="Vm_AutoDevResume" xml:space="preserve"><value>繼續 {0}</value></data>
+  <data name="Vm_AutoDevAppPause" xml:space="preserve"><value>暫停 {1} 上的 {0}</value></data>
+  <data name="Vm_AutoDevAppResume" xml:space="preserve"><value>繼續 {1} 上的 {0}</value></data>
+  <data name="Vm_AutoDevRename" xml:space="preserve"><value>重新命名 {0}</value></data>
+  <data name="RemoteModelLoadLabel.Text" xml:space="preserve"><value>載入</value></data>
+  <data name="RemoteModelUnloadLabel.Text" xml:space="preserve"><value>卸載</value></data>
+  <data name="RemoteModelLoad.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>在電腦上載入此模型。它會一直保持載入，直到您卸載或電腦擁有者變更它。</value></data>
+  <data name="RemoteModelLoad.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>在電腦上載入此模型。它會一直保持載入，直到您卸載或電腦擁有者變更它。</value></data>
+  <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>卸載此筆記型電腦在電腦上載入的模型。不會動到任何模型檔案。</value></data>
+  <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>卸載此筆記型電腦在電腦上載入的模型。不會動到任何模型檔案。</value></data>
+  <data name="RemoteModelPlacement.Header" xml:space="preserve"><value>執行於</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>電腦執行此模型的位置: 由電腦決定、在其顯示卡上、在系統記憶體中，或僅在處理器上並限制執行緒數 (核心數的一半)。電腦自己的限制仍然適用。</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>電腦執行此模型的位置: 由電腦決定、在其顯示卡上、在系統記憶體中，或僅在處理器上並限制執行緒數 (核心數的一半)。電腦自己的限制仍然適用。</value></data>
+  <data name="RemoteModelTooBig.Text" xml:space="preserve"><value>對電腦來說太大</value></data>
+  <data name="SettingsAppModelsHeader.Text" xml:space="preserve"><value>每個應用程式使用的電腦模型</value></data>
+  <data name="SettingsAppModelsHelp.Text" xml:space="preserve"><value>選擇此筆記型電腦上的每個應用程式使用電腦的哪個模型。「由電腦決定」會交給電腦處理。</value></data>
+  <data name="Vm_RemTitle" xml:space="preserve"><value>{0} 上的模型</value></data>
+  <data name="Vm_RemAskOwner" xml:space="preserve"><value>請 {0} 的擁有者為此筆記型電腦開啟模型控制。</value></data>
+  <data name="Vm_RemPlacementAuto" xml:space="preserve"><value>自動</value></data>
+  <data name="Vm_RemPlacementGpu" xml:space="preserve"><value>顯示卡</value></data>
+  <data name="Vm_RemPlacementCpu" xml:space="preserve"><value>系統記憶體</value></data>
+  <data name="Vm_RemPlacementCpuOnly" xml:space="preserve"><value>僅處理器</value></data>
+  <data name="Vm_RemStateLoaded" xml:space="preserve"><value>已載入</value></data>
+  <data name="Vm_RemStateLoading" xml:space="preserve"><value>載入中</value></data>
+  <data name="Vm_RemByLaptop" xml:space="preserve"><value>由此筆記型電腦載入</value></data>
+  <data name="Vm_RemByPc" xml:space="preserve"><value>由電腦載入</value></data>
+  <data name="Vm_RemByOther" xml:space="preserve"><value>由其他裝置載入</value></data>
+  <data name="Vm_RemAutoLoad" xml:space="preserve"><value>在電腦上載入 {0}</value></data>
+  <data name="Vm_RemAutoUnload" xml:space="preserve"><value>從電腦卸載 {0}</value></data>
+  <data name="Vm_RemHostGone" xml:space="preserve"><value>主機未執行。</value></data>
+  <data name="Vm_AppModelPcChoice" xml:space="preserve"><value>由電腦決定</value></data>
+  <data name="Vm_AppModelAutomation" xml:space="preserve"><value>{0} 使用的電腦模型</value></data>
+  <data name="SettingsHomePcHeader.Text" xml:space="preserve"><value>家用電腦</value></data>
+  <data name="SettingsHomePcHelp.Text" xml:space="preserve"><value>使用您另一部電腦上的 AI，而不是在這部上執行。將此筆記型電腦與該電腦配對一次，此處的應用程式之後就會向那部電腦提出要求。</value></data>
+  <data name="SettingsHomeMode.Header" xml:space="preserve"><value>AI 執行的位置</value></data>
+  <data name="SettingsHomeMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>AI 執行的位置</value></data>
+  <data name="SettingsHomeFallback.Header" xml:space="preserve"><value>如果無法連到家用電腦</value></data>
+  <data name="SettingsHomeFallback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>如果無法連到家用電腦</value></data>
+  <data name="SettingsHomeRelayMode.Header" xml:space="preserve"><value>外出時的連線</value></data>
+  <data name="SettingsHomeRelayMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>外出時的連線</value></data>
+  <data name="SettingsHomeUseRelay.Header" xml:space="preserve"><value>使用轉送</value></data>
+  <data name="SettingsHomeUseRelay.OnContent" xml:space="preserve"><value>開啟</value></data>
+  <data name="SettingsHomeUseRelay.OffContent" xml:space="preserve"><value>關閉</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>使用轉送</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>僅在此工作階段開啟轉送。應用程式關閉時會重設。</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>配對電腦</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>透過配對連結將此筆記型電腦與家用電腦配對</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>透過配對連結將此筆記型電腦與家用電腦配對</value></data>
+  <data name="SettingsHomePairText.Text" xml:space="preserve"><value>配對電腦</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>取消配對</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>忘記已配對的電腦。模型和下載內容會保持原狀。</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>忘記已配對的電腦。模型和下載內容會保持原狀。</value></data>
+  <data name="SettingsHomeUnpairText.Text" xml:space="preserve"><value>取消配對</value></data>
+  <data name="SettingsNotifyDevices.Header" xml:space="preserve"><value>有裝置從外部配對或連線</value></data>
+  <data name="SettingsNotifyDevices.OnContent" xml:space="preserve"><value>開啟</value></data>
+  <data name="SettingsNotifyDevices.OffContent" xml:space="preserve"><value>關閉</value></data>
+  <data name="SettingsNotifyDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>有裝置從外部配對或連線</value></data>
+  <data name="HomeClientEmpty.Text" xml:space="preserve"><value>AI 在您的另一部電腦上執行。模型、記憶體使用量和預熱狀況會顯示在那裡。</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>變更電腦</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>開啟家用電腦設定以配對另一部電腦</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>開啟家用電腦設定以配對另一部電腦</value></data>
+  <data name="HomeChangePcText.Text" xml:space="preserve"><value>變更電腦</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>在此執行 AI</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>離開用戶端模式，再次在此電腦上執行 AI。配對會保留。</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>離開用戶端模式，再次在此電腦上執行 AI。配對會保留。</value></data>
+  <data name="HomeRunHereText.Text" xml:space="preserve"><value>在此執行 AI</value></data>
+  <data name="ModelsLocalNote.Text" xml:space="preserve"><value>此頁面上的下載適用於由這部電腦執行 AI 的情況。</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>使用我的家用電腦</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>略過下載，改用您另一部電腦上的 AI。接下來您會與它配對。</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>略過下載，改用您另一部電腦上的 AI。接下來您會與它配對。</value></data>
+  <data name="WelcomeHomePcText.Text" xml:space="preserve"><value>使用我的家用電腦</value></data>
+  <data name="Vm_LinkConnectedLan" xml:space="preserve"><value>已連線 - 家用網路</value></data>
+  <data name="Vm_LinkConnectedRelay" xml:space="preserve"><value>已連線 - 透過轉送</value></data>
+  <data name="Vm_LinkConnecting" xml:space="preserve"><value>正在連線...</value></data>
+  <data name="Vm_LinkUnreachable" xml:space="preserve"><value>無法連線</value></data>
+  <data name="Vm_LinkRevoked" xml:space="preserve"><value>此筆記型電腦已從電腦中移除</value></data>
+  <data name="Vm_LinkRepair" xml:space="preserve"><value>重新配對</value></data>
+  <data name="Vm_LinkRtt" xml:space="preserve"><value>{0} - {1} 毫秒</value></data>
+  <data name="Vm_LinkLastSeen" xml:space="preserve"><value>上次看到於 {0}</value></data>
+  <data name="Vm_LinkUsingLaptop" xml:space="preserve"><value>使用此筆記型電腦的模型</value></data>
+  <data name="Vm_LinkUnreachableHelp" xml:space="preserve"><value>無法連到 {0}。請確認它已開機且在同一個網路上，或開啟轉送。</value></data>
+  <data name="Vm_LinkRevokedHelp" xml:space="preserve"><value>{0} 不再讓此筆記型電腦進入。請重新配對以繼續使用。</value></data>
+  <data name="Vm_LinkRepairHelp" xml:space="preserve"><value>{0} 的身分識別已變更，因此此筆記型電腦不再信任它。如果這不在您預期之中，請勿重新配對。否則請先取消配對，再重新配對。</value></data>
+  <data name="Vm_TrayLink" xml:space="preserve"><value>{0} - {1}</value></data>
+  <data name="Vm_DeviceAlertPaired" xml:space="preserve"><value>{0} 已配對，現在可使用此電腦的 AI。</value></data>
+  <data name="Vm_DeviceAlertRelay" xml:space="preserve"><value>{0} 在外出時透過轉送連線。</value></data>
+  <data name="Vm_HomeModeThisPc" xml:space="preserve"><value>此電腦</value></data>
+  <data name="Vm_HomeModeHomePc" xml:space="preserve"><value>使用我的家用電腦</value></data>
+  <data name="Vm_HomeFallbackNone" xml:space="preserve"><value>無</value></data>
+  <data name="Vm_HomeFallbackLocal" xml:space="preserve"><value>使用此筆記型電腦的模型</value></data>
+  <data name="Vm_HomeRelayAuto" xml:space="preserve"><value>自動</value></data>
+  <data name="Vm_HomeRelayManual" xml:space="preserve"><value>手動</value></data>
+  <data name="Vm_HomeNeedsPair" xml:space="preserve"><value>請先配對電腦。</value></data>
+  <data name="Vm_UnpairTitle" xml:space="preserve"><value>要取消與此電腦的配對嗎?</value></data>
+  <data name="Vm_UnpairBody" xml:space="preserve"><value>此筆記型電腦將忘記 {0} 並停止使用它。不會動到模型和下載內容。您之後可以再次配對。</value></data>
+  <data name="Vm_UnpairConfirm" xml:space="preserve"><value>取消配對</value></data>
+  <data name="Vm_UnpairCancel" xml:space="preserve"><value>取消</value></data>
+  <data name="Vm_FallbackTitle" xml:space="preserve"><value>無法連到您的家用電腦</value></data>
+  <data name="Vm_FallbackBody" xml:space="preserve"><value>目前無法連到 {0}。在它離線期間，此筆記型電腦是否應以自己的模型回答?您可以在「設定」的「家用電腦」下變更。</value></data>
+  <data name="Vm_FallbackLocal" xml:space="preserve"><value>使用此筆記型電腦的模型</value></data>
+  <data name="Vm_FallbackNone" xml:space="preserve"><value>無</value></data>
+  <data name="Vm_PairTitle" xml:space="preserve"><value>使用我的家用電腦</value></data>
+  <data name="Vm_PairIntro" xml:space="preserve"><value>在另一部電腦上，開啟「設定」並選擇「配對裝置」，然後複製連結。再貼到這裡。</value></data>
+  <data name="Vm_PairLinkPlaceholder" xml:space="preserve"><value>portalai://pair?...</value></data>
+  <data name="Vm_PairLinkName" xml:space="preserve"><value>配對連結</value></data>
+  <data name="Vm_PairPaste" xml:space="preserve"><value>貼上連結</value></data>
+  <data name="Vm_PairPasteTip" xml:space="preserve"><value>從剪貼簿貼上配對連結</value></data>
+  <data name="Vm_PairNext" xml:space="preserve"><value>下一步</value></data>
+  <data name="Vm_PairConfirm" xml:space="preserve"><value>配對</value></data>
+  <data name="Vm_PairBack" xml:space="preserve"><value>返回</value></data>
+  <data name="Vm_PairCancel" xml:space="preserve"><value>取消</value></data>
+  <data name="Vm_PairWorking" xml:space="preserve"><value>正在連線到電腦...</value></data>
+  <data name="Vm_PairDeviceName" xml:space="preserve"><value>此筆記型電腦的名稱</value></data>
+  <data name="Vm_PairConfirmPc" xml:space="preserve"><value>要與 {0} 配對嗎?</value></data>
+  <data name="Vm_PairFingerprint" xml:space="preserve"><value>指紋:{0}</value></data>
+  <data name="Vm_PairErr_invalid_input" xml:space="preserve"><value>連結無效。請從另一部電腦重新複製。</value></data>
+  <data name="Vm_PairErr_address_not_allowed" xml:space="preserve"><value>該位址不在您的家用網路上。外出時，請先在家中配對一次。</value></data>
+  <data name="Vm_PairErr_unreachable" xml:space="preserve"><value>無法連到該位址。</value></data>
+  <data name="Vm_PairErr_certificate_mismatch" xml:space="preserve"><value>無法驗證此電腦。</value></data>
+  <data name="Vm_PairErr_host_proof_invalid" xml:space="preserve"><value>無法驗證此電腦。</value></data>
+  <data name="Vm_PairErr_refused" xml:space="preserve"><value>該電腦拒絕了配對。</value></data>
+  <data name="Vm_PairErr_protocol_error" xml:space="preserve"><value>該電腦傳回非預期的回應。</value></data>
+  <data name="Vm_PairErr_save_failed" xml:space="preserve"><value>配對成功，但無法儲存在此電腦上。</value></data>
+  <data name="Vm_PairErr_already_paired" xml:space="preserve"><value>已配對一部電腦。請先在「設定」中取消配對。</value></data>
+  <data name="Vm_PairErr_not_available" xml:space="preserve"><value>此安裝不支援配對。</value></data>
+  <data name="Vm_PairErr_host" xml:space="preserve"><value>應用程式未執行。</value></data>
+  <data name="Vm_PairReason_expired" xml:space="preserve"><value>代碼已過期。請要求新的代碼。</value></data>
+  <data name="Vm_PairReason_code_voided" xml:space="preserve"><value>該代碼因多次輸入錯誤而失效。請要求新的代碼。</value></data>
+  <data name="Vm_PairReason_no_offer" xml:space="preserve"><value>該電腦並未在等候裝置。請在其上開啟新的代碼。</value></data>
+  <data name="Vm_PairReason_too_many_devices" xml:space="preserve"><value>該電腦已有 16 部裝置。請先移除一部。</value></data>
+  <data name="Vm_PairReason_wrong_code" xml:space="preserve"><value>代碼不正確。</value></data>
+  <data name="ModelsMemoryTitle.Text" xml:space="preserve"><value>記憶體預算</value></data>
+  <data name="ModelsMemoryTitle.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>已載入和載入中的模型預計使用的量，與 RAM 限制和顯示卡記憶體相比。放不下的模型會被拒絕。</value></data>
+  <data name="Vm_MemRam" xml:space="preserve"><value>RAM</value></data>
+  <data name="Vm_MemVram" xml:space="preserve"><value>圖形記憶體</value></data>
+  <data name="Vm_MemLine" xml:space="preserve"><value>{0}:已使用 {1}，載入時保留 {2}，{4} 中尚有 {3} 可用</value></data>
+  <data name="UpdateBar.Title" xml:space="preserve"><value>有可用的更新</value></data>
+  <data name="UpdateBar.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Microsoft Store 中有較新版本的 Portal AI Host</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>更新</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>開啟 Microsoft Store 頁面以更新 Portal AI Host</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>開啟 Microsoft Store 頁面以更新 Portal AI Host</value></data>
+  <data name="UpdateButtonText.Text" xml:space="preserve"><value>更新</value></data>
+  <data name="Vm_ComingSoon" xml:space="preserve"><value>即將推出</value></data>
+  <data name="Vm_VramBoth" xml:space="preserve"><value>搭配 CPU 卸載需要 {0} GB 的圖形記憶體; 建議 {1} GB。</value></data>
+  <data name="Vm_VramMin" xml:space="preserve"><value>搭配 CPU 卸載需要 {0} GB 的圖形記憶體。</value></data>
+  <data name="Vm_VramRec" xml:space="preserve"><value>建議 {0} GB 的圖形記憶體。</value></data>
+  <data name="Vm_GroupCount" xml:space="preserve"><value>{0} 個模型</value></data>
+  <data name="Vm_ShowAll" xml:space="preserve"><value>顯示全部 {0} 個</value></data>
+  <data name="Vm_ShowFewer" xml:space="preserve"><value>顯示較少</value></data>
+  <data name="Vm_CatAllTip" xml:space="preserve"><value>顯示所有類型的模型</value></data>
+  <data name="Vm_CatChip_all" xml:space="preserve"><value>全部</value></data>
+  <data name="Vm_CatChip_chat" xml:space="preserve"><value>聊天</value></data>
+  <data name="Vm_CatChip_coding" xml:space="preserve"><value>程式設計</value></data>
+  <data name="Vm_CatChip_reasoning" xml:space="preserve"><value>推理</value></data>
+  <data name="Vm_CatChip_vision" xml:space="preserve"><value>視覺</value></data>
+  <data name="Vm_CatChip_search" xml:space="preserve"><value>搜尋</value></data>
+  <data name="Vm_CatChip_image" xml:space="preserve"><value>影像</value></data>
+  <data name="Vm_CatChip_video" xml:space="preserve"><value>影片</value></data>
+  <data name="Vm_CatChip_speech" xml:space="preserve"><value>語音</value></data>
+  <data name="Vm_CatChip_other" xml:space="preserve"><value>其他</value></data>
+  <data name="Vm_Cat_chat" xml:space="preserve"><value>聊天與寫作</value></data>
+  <data name="Vm_Cat_coding" xml:space="preserve"><value>程式設計</value></data>
+  <data name="Vm_Cat_reasoning" xml:space="preserve"><value>推理</value></data>
+  <data name="Vm_Cat_vision" xml:space="preserve"><value>理解圖片</value></data>
+  <data name="Vm_Cat_search" xml:space="preserve"><value>搜尋與內嵌</value></data>
+  <data name="Vm_Cat_image" xml:space="preserve"><value>影像生成</value></data>
+  <data name="Vm_Cat_video" xml:space="preserve"><value>影片生成</value></data>
+  <data name="Vm_Cat_speech" xml:space="preserve"><value>語音</value></data>
+  <data name="Vm_Cat_other" xml:space="preserve"><value>其他模型</value></data>
+  <data name="ModelsSearch.PlaceholderText" xml:space="preserve"><value>搜尋模型</value></data>
+  <data name="ModelsSearch.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>搜尋模型</value></data>
+  <data name="ModelsNoMatches.Text" xml:space="preserve"><value>沒有符合的模型。請清除搜尋，或選擇「全部」。</value></data>
+  <data name="HomeSeeAppsLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>查看哪些應用程式已連線到此主機</value></data>
+  <data name="HomeSeeAppsLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>查看哪些應用程式已連線到此主機</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>將配對連結複製到剪貼簿</value></data>
+  <data name="HomeLoadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>將模型載入記憶體，讓回應更快</value></data>
+  <data name="HomeLoadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>將模型載入記憶體，讓回應更快</value></data>
+  <data name="SettingsNotifyDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>當有裝置配對或連線時顯示通知</value></data>
+  <data name="SettingsCorners.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>圓角的圓潤程度</value></data>
+  <data name="HomeChangeFolderButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>開啟「設定」以選擇可用空間更大的資料夾</value></data>
+  <data name="HomeChangeFolderButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>開啟「設定」以選擇可用空間更大的資料夾</value></data>
+  <data name="SettingsMoveButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>將模型移到所選的資料夾。會先複製並檢查檔案，再移除舊檔案。</value></data>
+  <data name="SettingsMoveButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>將模型移到所選的資料夾。會先複製並檢查檔案，再移除舊檔案。</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>取消配對</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>取消配對</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>顯示或隱藏健康檢查</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>顯示或隱藏健康檢查</value></data>
+  <data name="SettingsMaterial.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>視窗的背景樣式</value></data>
+  <data name="HomeDownloadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>下載建議的模型</value></data>
+  <data name="HomeDownloadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>下載建議的模型</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>查看當機報告究竟包含什麼</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>查看當機報告究竟包含什麼</value></data>
+  <data name="SettingsEaseOffFullscreen.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>在全螢幕應用程式或遊戲執行時釋放記憶體</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>開啟「模型」頁面以查看更好的模型</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>開啟「模型」頁面以查看更好的模型</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>將效能設定恢復為預設值</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>將效能設定恢復為預設值</value></data>
+  <data name="SettingsEaseOffBattery.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>在電腦使用電池供電時釋放記憶體</value></data>
+  <data name="SettingsPreset.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>選擇預先調整好的速度與記憶體使用平衡</value></data>
+  <data name="SettingsRemoteRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>讓已配對的裝置從您的家用網路外連到此電腦</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>建立代碼以配對新裝置</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>建立代碼以配對新裝置</value></data>
+  <data name="SettingsCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>傳送當機報告以協助修正問題</value></data>
+  <data name="SettingsAllowReplace.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>允許裝置取代現有的配對</value></data>
+  <data name="SettingsMotion.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>使用多少動畫</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>恢復為預設的模型資料夾</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>恢復為預設的模型資料夾</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>允許在外出時透過轉送連到家用電腦</value></data>
+  <data name="HomeTryAgainButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>再次嘗試載入模型清單</value></data>
+  <data name="HomeTryAgainButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>再次嘗試載入模型清單</value></data>
+  <data name="SettingsStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>在您登入 Windows 時啟動 Portal AI Host</value></data>
+  <data name="SettingsHomeMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>選擇此電腦是自己執行模型，還是使用您的家用電腦</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>啟動主機，讓應用程式可使用它</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>啟動主機，讓應用程式可使用它</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>將一般設定恢復為預設值</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>將一般設定恢復為預設值</value></data>
+  <data name="SettingsHomeFallback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>無法連到家用電腦時的處理方式</value></data>
+  <data name="SettingsDensity.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>項目之間的間距大小</value></data>
+  <data name="SettingsTextSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>文字的大小</value></data>
+  <data name="SettingsIdle.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>主機在沒有要求多久後釋放模型記憶體</value></data>
+  <data name="SettingsEaseOffAppBusy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>在其他應用程式忙碌時釋放記憶體</value></data>
+  <data name="SettingsRemoveDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>移除此裝置。它必須重新配對才能連線。</value></data>
+  <data name="SettingsRemoveDevice.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>移除此裝置。它必須重新配對才能連線。</value></data>
+  <data name="SettingsMoveCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>停止移動模型</value></data>
+  <data name="SettingsMoveCancel.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>停止移動模型</value></data>
+  <data name="SettingsNotifyDownloads.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>當下載完成或失敗時顯示通知</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>將隱私權設定恢復為預設值</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>將隱私權設定恢復為預設值</value></data>
+  <data name="HealthCheckAgainButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>再次執行健康檢查</value></data>
+  <data name="HealthCheckAgainButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>再次執行健康檢查</value></data>
+  <data name="SettingsMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>模型可使用多少記憶體</value></data>
+  <data name="SettingsTheme.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>淺色、深色，或跟隨 Windows</value></data>
+  <data name="SettingsRemoteEnabled.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>讓您的其他裝置使用此電腦</value></data>
+  <data name="SettingsNotifyProblems.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>當有事情需要您注意時顯示通知</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>開啟聊天頁面以試用使用中的模型</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>開啟聊天頁面以試用使用中的模型</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>將通知設定恢復為預設值</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>將通知設定恢復為預設值</value></data>
+  <data name="SettingsRelayAdmission.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>要求轉送在裝置連線前先檢查它們</value></data>
+  <data name="HomeUnloadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>釋放模型使用的記憶體。模型檔案會保留在磁碟上。</value></data>
+  <data name="HomeUnloadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>釋放模型使用的記憶體。模型檔案會保留在磁碟上。</value></data>
+  <data name="HomeSeeAllModelsLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>瀏覽所有可下載的模型</value></data>
+  <data name="HomeSeeAllModelsLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>瀏覽所有可下載的模型</value></data>
+  <data name="SettingsNotifyApprovals.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>當應用程式要求權限時顯示通知</value></data>
+  <data name="SettingsHomeRelayMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>選擇何時使用轉送連到家用電腦</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>將外觀設定恢復為預設值</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>將外觀設定恢復為預設值</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>健康檢查</value></data>
+</root>

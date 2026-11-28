@@ -1,0 +1,986 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="NavHome.Content" xml:space="preserve"><value>الرئيسية</value></data>
+  <data name="NavHome.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>الرئيسية</value></data>
+  <data name="NavModels.Content" xml:space="preserve"><value>النماذج</value></data>
+  <data name="NavModels.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>النماذج</value></data>
+  <data name="NavApps.Content" xml:space="preserve"><value>الأجهزة والتطبيقات</value></data>
+  <data name="NavApps.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>الأجهزة والتطبيقات</value></data>
+  <data name="NavTryIt.Content" xml:space="preserve"><value>جرّبه</value></data>
+  <data name="NavTryIt.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>جرّبه</value></data>
+  <data name="NavSettings.Content" xml:space="preserve"><value>الإعدادات</value></data>
+  <data name="NavSettings.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>الإعدادات</value></data>
+  <data name="HomeTitle.Text" xml:space="preserve"><value>الرئيسية</value></data>
+  <data name="HomeSafeModeBar.Title" xml:space="preserve"><value>الوضع الآمن</value></data>
+  <data name="HomeStoreProblemBar.Title" xml:space="preserve"><value>مجلد النماذج غير متاح</value></data>
+  <data name="Vm_OldFolderBadge" xml:space="preserve"><value>مجلد سابق</value></data>
+  <data name="Vm_OldFolderRow" xml:space="preserve"><value>في مجلد نماذج سابق: {0}. أزله لتحرير المساحة.</value></data>
+  <data name="HomeSafeModeBar.Message" xml:space="preserve"><value>أُغلق المضيف بشكل غير متوقع أكثر من مرة، لذا بدأ بإعدادات حذرة. ما زالت تطبيقاتك تعمل. إذا استمر ذلك، فأعد تشغيل الكمبيوتر.</value></data>
+  <data name="HomeStartButton.Content" xml:space="preserve"><value>بدء Portal AI Host</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>بدء Portal AI Host</value></data>
+  <data name="HomeUpgradeText.Text" xml:space="preserve"><value>يتوفر نموذج أفضل لجهاز الكمبيوتر هذا. يبقى نموذجك الحالي إلى أن يصبح الجديد جاهزًا.</value></data>
+  <data name="HomeSeeModelsButton.Content" xml:space="preserve"><value>عرض النماذج</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>عرض النماذج</value></data>
+  <data name="ModelsTitle.Text" xml:space="preserve"><value>النماذج</value></data>
+  <data name="ModelsExistingBar.Title" xml:space="preserve"><value>تم العثور على نسخة موجودة</value></data>
+  <data name="ModelsUpgradeBar.Title" xml:space="preserve"><value>يتوفر نموذج أفضل</value></data>
+  <data name="ModelTooBig.Text" xml:space="preserve"><value>قد يكون هذا النموذج كبيرًا جدًا لهذا الكمبيوتر.</value></data>
+  <data name="ModelDownload.Content" xml:space="preserve"><value>تنزيل</value></data>
+  <data name="ModelPause.Content" xml:space="preserve"><value>إيقاف مؤقت</value></data>
+  <data name="ModelResume.Content" xml:space="preserve"><value>استئناف</value></data>
+  <data name="ModelCancel.Content" xml:space="preserve"><value>إيقاف</value></data>
+  <data name="ModelUse.Content" xml:space="preserve"><value>استخدام هذا النموذج</value></data>
+  <data name="ModelRemove.Content" xml:space="preserve"><value>إزالة</value></data>
+  <data name="ModelsCatalogueBar.Title" xml:space="preserve"><value>قائمة النماذج غير متاحة</value></data>
+  <data name="ModelsCatalogueBar.Message" xml:space="preserve"><value>تعذّر على المضيف تحميل قائمة نماذج موثوقة، لذا لا يمكن تنزيل نماذج جديدة الآن. ما زالت النماذج الموجودة على هذا الكمبيوتر تعمل.</value></data>
+  <data name="AppsTitle.Text" xml:space="preserve"><value>الأجهزة والتطبيقات</value></data>
+  <data name="AppsWaitingHeader.Text" xml:space="preserve"><value>في انتظار ردك</value></data>
+  <data name="AppsApprovedHeader.Text" xml:space="preserve"><value>التطبيقات التي يمكنها استخدام مضيف الذكاء الاصطناعي</value></data>
+  <data name="AppsNone.Text" xml:space="preserve"><value>لم يُسمح لأي تطبيق بعد. عندما يطلب تطبيق استخدام المضيف، سيظهر لك السؤال هنا.</value></data>
+  <data name="AppAllow.Content" xml:space="preserve"><value>سماح</value></data>
+  <data name="AppDeny.Content" xml:space="preserve"><value>رفض</value></data>
+  <data name="Vm_AppTodayNone" xml:space="preserve"><value>لا توجد طلبات اليوم</value></data>
+  <data name="Vm_AppToday1" xml:space="preserve"><value>{0} طلب اليوم</value></data>
+  <data name="Vm_AppToday" xml:space="preserve"><value>{0} طلبات اليوم</value></data>
+  <data name="Vm_PriorityHigh" xml:space="preserve"><value>عالية</value></data>
+  <data name="Vm_PriorityNormal" xml:space="preserve"><value>عادية</value></data>
+  <data name="Vm_PriorityLow" xml:space="preserve"><value>منخفضة</value></data>
+  <data name="Vm_AutoPriority" xml:space="preserve"><value>الأولوية لـ {0}</value></data>
+  <data name="Vm_AppPausedBadge" xml:space="preserve"><value>متوقف مؤقتًا</value></data>
+  <data name="Vm_AppPausedHint" xml:space="preserve"><value>{0} متوقف مؤقتًا. تُرفض الطلبات الجديدة إلى أن تستأنفه. ويحتفظ بإذن الوصول.</value></data>
+  <data name="Vm_AppPause" xml:space="preserve"><value>إيقاف مؤقت</value></data>
+  <data name="Vm_AppResume" xml:space="preserve"><value>استئناف</value></data>
+  <data name="Vm_AutoPause" xml:space="preserve"><value>إيقاف {0} مؤقتًا</value></data>
+  <data name="Vm_AutoResume" xml:space="preserve"><value>استئناف {0}</value></data>
+  <data name="AppPriority.Header" xml:space="preserve"><value>الأولوية</value></data>
+  <data name="AppRevoke.Content" xml:space="preserve"><value>إزالة الوصول</value></data>
+  <data name="SettingsTitle.Text" xml:space="preserve"><value>الإعدادات</value></data>
+  <data name="SettingsStartWithWindows.Header" xml:space="preserve"><value>البدء مع Windows</value></data>
+  <data name="SettingsStartWithWindows.OnContent" xml:space="preserve"><value>تشغيل</value></data>
+  <data name="SettingsStartWithWindows.OffContent" xml:space="preserve"><value>إيقاف</value></data>
+  <data name="SettingsStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>البدء مع Windows</value></data>
+  <data name="SettingsIdle.Header" xml:space="preserve"><value>تحرير الذاكرة عند الخمول</value></data>
+  <data name="SettingsIdle.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>تحرير الذاكرة عند الخمول</value></data>
+  <data name="SettingsIdleHelp.Text" xml:space="preserve"><value>يستيقظ النموذج مجددًا في المرة التالية التي يطلبه فيها تطبيق. إبقاؤه محمّلًا يجعل الإجابة أسرع لكنه يستهلك الذاكرة طوال الوقت.</value></data>
+  <data name="SettingsFolder.Header" xml:space="preserve"><value>مجلد النماذج التي تم تنزيلها</value></data>
+  <data name="SettingsFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>مجلد النماذج التي تم تنزيلها</value></data>
+  <data name="TryItTitle.Text" xml:space="preserve"><value>جرّبه</value></data>
+  <data name="TryItIntro.Text" xml:space="preserve"><value>اطرح على النموذج سؤالًا قصيرًا للتحقق من عمله ومعرفة سرعة إجابته. لا يُحفظ أي شيء تكتبه هنا. اضغط Ctrl+Enter للسؤال.</value></data>
+  <data name="TryItPrompt.Header" xml:space="preserve"><value>سؤالك</value></data>
+  <data name="TryItPrompt.PlaceholderText" xml:space="preserve"><value>مثال: اكتب جملة واحدة عن البحر.</value></data>
+  <data name="TryItPrompt.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>سؤالك</value></data>
+  <data name="TryItSend.Content" xml:space="preserve"><value>اسأل</value></data>
+  <data name="TryItSend.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>اسأل</value></data>
+  <data name="TryItStop.Content" xml:space="preserve"><value>إيقاف</value></data>
+  <data name="TryItStop.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>إيقاف</value></data>
+  <data name="TryItReply.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>الرد</value></data>
+  <data name="WelcomeTitle.Text" xml:space="preserve"><value>مرحبًا بك في Portal AI Host</value></data>
+  <data name="WelcomeLead.Text" xml:space="preserve"><value>ذكاء اصطناعي يبقى على جهازك</value></data>
+  <data name="WelcomeIntro.Text" xml:space="preserve"><value>يشغّل Portal AI Host نماذج الذكاء الاصطناعي على هذا الكمبيوتر لتطبيقات Portal الخاصة بك. لا يلزم أي إعداد: سنختار نموذجًا يناسب جهازك.</value></data>
+  <data name="WelcomePoint1Title.Text" xml:space="preserve"><value>يعمل على هذا الكمبيوتر</value></data>
+  <data name="WelcomePoint1Body.Text" xml:space="preserve"><value>يستخدم النموذج بطاقة الرسومات والذاكرة لديك، لذا يعمل حتى بدون اتصال بالإنترنت.</value></data>
+  <data name="WelcomePoint2Title.Text" xml:space="preserve"><value>يبقى خاصًا</value></data>
+  <data name="WelcomePoint2Body.Text" xml:space="preserve"><value>لا تغادر أسئلتك وملفاتك هذا الكمبيوتر أبدًا.</value></data>
+  <data name="WelcomePoint3Title.Text" xml:space="preserve"><value>مصمم لتطبيقات Portal الخاصة بك</value></data>
+  <data name="WelcomePoint3Body.Text" xml:space="preserve"><value>يمكن لتطبيقات Portal استخدامه للكتابة والتلخيص والإجابة، دون الحاجة إلى حسابات إضافية.</value></data>
+  <data name="WelcomeModelTitle.Text" xml:space="preserve"><value>اختيار نموذج</value></data>
+  <data name="WelcomeModelIntro.Text" xml:space="preserve"><value>النموذج هو الذكاء الاصطناعي الذي يؤدي العمل. هذا هو النموذج الذي نعتقد أنه الأنسب لجهازك.</value></data>
+  <data name="WelcomeNoModel.Text" xml:space="preserve"><value>تعذّر العثور على نموذج يناسب هذا الكمبيوتر الآن. يمكنك البحث مجددًا لاحقًا في صفحة النماذج.</value></data>
+  <data name="WelcomeDownload.Content" xml:space="preserve"><value>تنزيل</value></data>
+  <data name="WelcomeDownload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>تنزيل النموذج الموصى به</value></data>
+  <data name="WelcomeChooseLater.Content" xml:space="preserve"><value>لاحقًا</value></data>
+  <data name="WelcomeChooseLater.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>الاختيار لاحقًا، اختر نموذجًا في النماذج</value></data>
+  <data name="WelcomeKeepGoing.Text" xml:space="preserve"><value>يمكنك المتابعة. يستمر التنزيل في الخلفية.</value></data>
+  <data name="WelcomeRetry.Content" xml:space="preserve"><value>إعادة المحاولة</value></data>
+  <data name="WelcomeRetry.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>إعادة المحاولة، إعادة بدء التنزيل</value></data>
+  <data name="WelcomeWhereTitle.Text" xml:space="preserve"><value>ابحث عنه قرب الساعة</value></data>
+  <data name="WelcomeTrayTitle.Text" xml:space="preserve"><value>ابحث عن أيقونة منطقة الإعلام</value></data>
+  <data name="WelcomeTrayBody.Text" xml:space="preserve"><value>ينتظر Portal AI Host بهدوء في منطقة الإعلام، وهي الأيقونات الصغيرة قرب الساعة. انقر على أيقونته لفتحه. إذا لم تجده، فانقر على السهم لإظهار الأيقونات المخفية.</value></data>
+  <data name="WelcomeAskTitle.Text" xml:space="preserve"><value>التطبيقات تسأل دائمًا أولًا</value></data>
+  <data name="WelcomeAskBody.Text" xml:space="preserve"><value>في أول مرة يريد فيها تطبيق Portal استخدام الذكاء الاصطناعي على هذا الكمبيوتر، سيُطلب رأيك. يمكنك الرفض، ويمكنك سحب الوصول في أي وقت.</value></data>
+  <data name="WelcomeStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>البدء مع Windows، تشغيل Portal AI Host عند تسجيل الدخول</value></data>
+  <data name="WelcomeSkip.Content" xml:space="preserve"><value>تخطي الآن</value></data>
+  <data name="WelcomeSkip.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>تخطي الآن، إغلاق الترحيب</value></data>
+  <data name="WelcomeBack.Content" xml:space="preserve"><value>رجوع</value></data>
+  <data name="WelcomeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>رجوع</value></data>
+  <data name="Vm_VerifiedShort" xml:space="preserve"><value>تطبيق Portal موثّق</value></data>
+  <data name="Vm_ApprovalDetails" xml:space="preserve"><value>التفاصيل</value></data>
+  <data name="Vm_WelcomeRecommended" xml:space="preserve"><value>الموصى به: نموذج {0}</value></data>
+  <data name="Vm_WelcomeSmall" xml:space="preserve"><value>صغير</value></data>
+  <data name="Vm_WelcomeMedium" xml:space="preserve"><value>متوسط</value></data>
+  <data name="Vm_WelcomeLarge" xml:space="preserve"><value>كبير</value></data>
+  <data name="Vm_WelcomeDetail" xml:space="preserve"><value>{0}، {1}</value></data>
+  <data name="WelcomeLaterNote.Text" xml:space="preserve"><value>يمكنك اختيار نموذج لاحقًا في النماذج.</value></data>
+  <data name="WelcomeStartRec.Content" xml:space="preserve"><value>البدء بالإعدادات الموصى بها</value></data>
+  <data name="WelcomeStartRec.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>البدء بالإعدادات الموصى بها</value></data>
+  <data name="WelcomeWhereIntro.Text" xml:space="preserve"><value>أمران يجب معرفتهما قبل البدء.</value></data>
+  <data name="WelcomeStartTitle.Text" xml:space="preserve"><value>البدء مع Windows</value></data>
+  <data name="WelcomeStartBody.Text" xml:space="preserve"><value>يُبقي Portal AI Host جاهزًا في منطقة الإعلام عند تسجيل الدخول، لتتمكن تطبيقاتك من استخدامه فورًا.</value></data>
+  <data name="Vm_WelcomeRecommendedTip" xml:space="preserve"><value>ينزّل النموذج الموصى به ({0}) في الخلفية، ويُبقي Portal AI Host يبدأ مع Windows، ويغلق هذه النافذة. يمكنك تغيير كل ذلك لاحقًا.</value></data>
+  <data name="Vm_WelcomeRecommendedTipNoModel" xml:space="preserve"><value>يُبقي Portal AI Host يبدأ مع Windows ويغلق هذه النافذة. يمكنك تغيير كل ذلك لاحقًا.</value></data>
+  <data name="Vm_WelcomeTitle" xml:space="preserve"><value>مرحبًا بك في Portal AI Host</value></data>
+  <data name="Vm_WelcomeNext" xml:space="preserve"><value>التالي</value></data>
+  <data name="Vm_WelcomeFinish" xml:space="preserve"><value>ابدأ</value></data>
+  <data name="Vm_WelcomeSize" xml:space="preserve"><value>حجم التنزيل: {0}</value></data>
+  <data name="Vm_AppTitle" xml:space="preserve"><value>Portal AI Host</value></data>
+  <data name="Vm_NoHostTitle" xml:space="preserve"><value>Portal AI Host لا يعمل</value></data>
+  <data name="Vm_NoHostBody" xml:space="preserve"><value>تم إيقاف المساعد الذي يشغّل نموذج الذكاء الاصطناعي. شغّله لتتمكن تطبيقاتك من استخدام الذكاء الاصطناعي.</value></data>
+  <data name="Vm_Starting" xml:space="preserve"><value>جارٍ البدء...</value></data>
+  <data name="Vm_StartFailed" xml:space="preserve"><value>تعذّر بدء المضيف. جرّب فتح Portal AI Host مجددًا من قائمة ابدأ.</value></data>
+  <data name="Vm_StateReady" xml:space="preserve"><value>جاهز</value></data>
+  <data name="Vm_StateBusy" xml:space="preserve"><value>مشغول بالإجابة</value></data>
+  <data name="Vm_StateLoading" xml:space="preserve"><value>جارٍ تجهيز النموذج</value></data>
+  <data name="Vm_StateIdle" xml:space="preserve"><value>في وضع الراحة. يستيقظ النموذج عندما يطلبه تطبيق.</value></data>
+  <data name="Vm_StateNoModel" xml:space="preserve"><value>لا يوجد نموذج بعد</value></data>
+  <data name="Vm_StateDownloading" xml:space="preserve"><value>جارٍ تنزيل نموذج</value></data>
+  <data name="Vm_StateError" xml:space="preserve"><value>حدث خطأ ما</value></data>
+  <data name="Vm_HostVersion" xml:space="preserve"><value>إصدار المضيف {0}</value></data>
+  <data name="Vm_ModelNone" xml:space="preserve"><value>لم يُثبَّت أي نموذج بعد</value></data>
+  <data name="Vm_ModelLoaded" xml:space="preserve"><value>{0} محمّل وجاهز</value></data>
+  <data name="Vm_ModelLoading" xml:space="preserve"><value>جارٍ تحميل {0}...</value></data>
+  <data name="Vm_ModelUnloaded" xml:space="preserve"><value>{0} مثبّت. يُحمَّل عندما يطلبه تطبيق.</value></data>
+  <data name="Vm_QueueEmpty" xml:space="preserve"><value>لا توجد طلبات في الانتظار</value></data>
+  <data name="Vm_QueueSome" xml:space="preserve"><value>{0} قيد التشغيل، {1} في الانتظار</value></data>
+  <data name="Vm_QualityName" xml:space="preserve"><value>الجودة {0} من 5</value></data>
+  <data name="Vm_DownloadProgress" xml:space="preserve"><value>{0} من {1}</value></data>
+  <data name="Vm_DownloadEta" xml:space="preserve"><value>{0} من {1}، متبقٍ نحو {2} دقيقة</value></data>
+  <data name="Vm_Paused" xml:space="preserve"><value>متوقف مؤقتًا عند {0}%</value></data>
+  <data name="Vm_Verifying" xml:space="preserve"><value>جارٍ التحقق من التنزيل...</value></data>
+  <data name="Vm_Queued" xml:space="preserve"><value>في انتظار البدء...</value></data>
+  <data name="Vm_DownloadFailed" xml:space="preserve"><value>لم يكتمل التنزيل. {0}</value></data>
+  <data name="Vm_DownloadDone" xml:space="preserve"><value>اكتمل التنزيل.</value></data>
+  <data name="Vm_InUse" xml:space="preserve"><value>قيد الاستخدام</value></data>
+  <data name="Vm_Installed" xml:space="preserve"><value>مثبّت</value></data>
+  <data name="Vm_BestForYou" xml:space="preserve"><value>الأنسب لجهازك</value></data>
+  <data name="Vm_StorageLine" xml:space="preserve"><value>تستخدم النماذج {2} في {0}. المتاح {1} على ذلك المحرك.</value></data>
+  <data name="Vm_ExistingCopy" xml:space="preserve"><value>توجد نسخة من {0} على هذا الكمبيوتر بالفعل. سيستخدمها المضيف بدلًا من تنزيلها مجددًا.</value></data>
+  <data name="Vm_UpgradeOffer" xml:space="preserve"><value>{0} أنسب لجهازك. يبقى نموذجك الحالي إلى أن يصبح الجديد جاهزًا.</value></data>
+  <data name="Vm_CancelDlTitle" xml:space="preserve"><value>هل تريد إيقاف هذا التنزيل؟</value></data>
+  <data name="Vm_CancelDlBody" xml:space="preserve"><value>سيتم تجاهل الجزء الذي تم تنزيله بالفعل.</value></data>
+  <data name="Vm_CancelDlYes" xml:space="preserve"><value>إيقاف التنزيل</value></data>
+  <data name="Vm_CancelDlKeep" xml:space="preserve"><value>متابعة التنزيل</value></data>
+  <data name="Vm_AutoDownload" xml:space="preserve"><value>تنزيل {0}</value></data>
+  <data name="Vm_AutoCancel" xml:space="preserve"><value>إيقاف تنزيل {0}</value></data>
+  <data name="Vm_AutoUse" xml:space="preserve"><value>استخدام {0}</value></data>
+  <data name="Vm_Added" xml:space="preserve"><value>تمت الإضافة {0}</value></data>
+  <data name="Vm_LastUsed" xml:space="preserve"><value>آخر استخدام {0}</value></data>
+  <data name="Vm_NeverUsed" xml:space="preserve"><value>لم يُستخدم بعد</value></data>
+  <data name="Vm_AutoRevoke" xml:space="preserve"><value>إزالة الوصول عن {0}</value></data>
+  <data name="Vm_AutoAllow" xml:space="preserve"><value>السماح لـ {0}</value></data>
+  <data name="Vm_AutoDeny" xml:space="preserve"><value>رفض {0}</value></data>
+  <data name="Vm_RevokeTitle" xml:space="preserve"><value>هل تريد إزالة الوصول عن {0}؟</value></data>
+  <data name="Vm_RevokeBody" xml:space="preserve"><value>سيتوقف {0} عن العمل مع مضيف الذكاء الاصطناعي إلى أن تسمح له مجددًا.</value></data>
+  <data name="Vm_RevokeYes" xml:space="preserve"><value>إزالة الوصول</value></data>
+  <data name="Vm_Cancel" xml:space="preserve"><value>إلغاء</value></data>
+  <data name="Vm_Verified" xml:space="preserve"><value>تطبيق مثبّت ({0}). ليس تطبيق Portal.</value></data>
+  <data name="Vm_VerifiedPortal" xml:space="preserve"><value>تطبيق Portal موثّق ({0})</value></data>
+  <data name="Vm_Unverified" xml:space="preserve"><value>غير موثّق. يعمل من {0}. اسمح له فقط إذا كنت قد شغّلته بنفسك.</value></data>
+  <data name="Vm_ApprovalTitle" xml:space="preserve"><value>هل تسمح لـ {0} باستخدام الذكاء الاصطناعي على هذا الكمبيوتر؟</value></data>
+  <data name="Vm_ApprovalBody" xml:space="preserve"><value>يريد {0} استخدام نموذج الذكاء الاصطناعي على هذا الكمبيوتر.</value></data>
+  <data name="Vm_ApprovalReason" xml:space="preserve"><value>السبب المذكور: {0}</value></data>
+  <data name="Vm_Allow" xml:space="preserve"><value>سماح</value></data>
+  <data name="Vm_Deny" xml:space="preserve"><value>عدم السماح</value></data>
+  <data name="Vm_Later" xml:space="preserve"><value>القرار لاحقًا</value></data>
+  <data name="Vm_Idle_Keep" xml:space="preserve"><value>إبقاء النموذج محمّلًا</value></data>
+  <data name="Vm_Idle_5" xml:space="preserve"><value>بعد 5 دقائق</value></data>
+  <data name="Vm_Idle_10" xml:space="preserve"><value>بعد 10 دقائق</value></data>
+  <data name="Vm_Saved" xml:space="preserve"><value>تم الحفظ</value></data>
+  <data name="Vm_SaveFailed" xml:space="preserve"><value>تعذّر الحفظ. هل المضيف قيد التشغيل؟</value></data>
+  <data name="Vm_FolderTitle" xml:space="preserve"><value>هل تريد استخدام هذا المجلد للنماذج؟</value></data>
+  <data name="Vm_FolderBody" xml:space="preserve"><value>سيستخدم المضيف {0} للنماذج. لا يتم نقل النماذج الموجودة لديك أو حذفها.</value></data>
+  <data name="Vm_FolderYes" xml:space="preserve"><value>استخدام المجلد</value></data>
+  <data name="TryItClear.Content" xml:space="preserve"><value>مسح</value></data>
+  <data name="TryItClear.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>مسح المحادثة</value></data>
+  <data name="TryItSuggestLabel.Text" xml:space="preserve"><value>لا تعرف ماذا تسأل؟ جرّب أحد هذه الأسئلة.</value></data>
+  <data name="HomeTryItButton.Content" xml:space="preserve"><value>جرّبه</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>جرّب النموذج بسؤال</value></data>
+  <data name="Vm_TrySuggest1" xml:space="preserve"><value>اكتب جملة ودودة واحدة عن البحر.</value></data>
+  <data name="Vm_TrySuggest2" xml:space="preserve"><value>اشرح في جملتين ما يفعله الموجّه (الراوتر).</value></data>
+  <data name="Vm_TrySuggest3" xml:space="preserve"><value>أعطني ثلاثة أسماء لقطة.</value></data>
+  <data name="Vm_TryStats" xml:space="preserve"><value>أولى الكلمات بعد {0} ث، ثم {1} رمزًا في الثانية.</value></data>
+  <data name="Vm_TryStatsShort" xml:space="preserve"><value>أولى الكلمات بعد {0} ث.</value></data>
+  <data name="Vm_TryStatsStopped" xml:space="preserve"><value>تم الإيقاف. {0}</value></data>
+  <data name="TryItThinking.Header" xml:space="preserve"><value>ما فكّر فيه النموذج أولًا</value></data>
+  <data name="Vm_TryWorking" xml:space="preserve"><value>جارٍ العمل على ذلك. قد يستغرق الكمبيوتر الصغير دقيقة.</value></data>
+  <data name="Vm_TryThinking" xml:space="preserve"><value>جارٍ التفكير...</value></data>
+  <data name="Vm_TryOnlyThinking" xml:space="preserve"><value>استنفد النموذج كامل المهلة في التفكير ولم يقدّم إجابة. جرّب سؤالًا أقصر.</value></data>
+  <data name="Vm_TryEmpty" xml:space="preserve"><value>أرسل النموذج إجابة فارغة. جرّب السؤال مجددًا.</value></data>
+  <data name="Vm_TryFailed" xml:space="preserve"><value>تعذّرت إجابة المضيف: {0}</value></data>
+  <data name="Vm_HwChecking" xml:space="preserve"><value>جارٍ فحص جهازك...</value></data>
+  <data name="Vm_HwUnknown" xml:space="preserve"><value>تعذّرت القراءة</value></data>
+  <data name="Vm_HwMemory" xml:space="preserve"><value>الذاكرة: {0}</value></data>
+  <data name="Vm_HwGraphics" xml:space="preserve"><value>الرسومات: {0}</value></data>
+  <data name="Vm_HwCores" xml:space="preserve"><value>أنوية المعالج: {0}</value></data>
+  <data name="Vm_HwDisk" xml:space="preserve"><value>مساحة القرص الحرة: {0}</value></data>
+  <data name="HomeWelcomeTitle.Text" xml:space="preserve"><value>إعداد الذكاء الاصطناعي الخاص بك على هذا الكمبيوتر</value></data>
+  <data name="HomeWelcomeBody.Text" xml:space="preserve"><value>يحتفظ Portal AI Host بنموذج ذكاء اصطناعي واحد على هذا الكمبيوتر ويشاركه مع تطبيقات Portal، فلا يحتاج كل تطبيق إلى نسخته الخاصة. كل شيء يعمل هنا: لا تغادر كلماتك هذا الكمبيوتر، ولا حاجة إلى حساب سحابي.</value></data>
+  <data name="HomeCatalogueBar.Title" xml:space="preserve"><value>قائمة النماذج غير متاحة</value></data>
+  <data name="HomeCatalogueBar.Message" xml:space="preserve"><value>تعذّر على المضيف تحميل قائمة نماذج موثوقة، لذا لا توجد توصية الآن. تحقق من اتصالك بالإنترنت وحاول مجددًا.</value></data>
+  <data name="HomeTryAgainButton.Content" xml:space="preserve"><value>إعادة المحاولة</value></data>
+  <data name="HomeRecommendedLabel.Text" xml:space="preserve"><value>موصى به لهذا الكمبيوتر</value></data>
+  <data name="HomeNoSpaceBar.Title" xml:space="preserve"><value>مساحة القرص غير كافية</value></data>
+  <data name="HomeChangeFolderButton.Content" xml:space="preserve"><value>تغيير المجلد في الإعدادات</value></data>
+  <data name="HomeDownloadButton.Content" xml:space="preserve"><value>تنزيل</value></data>
+  <data name="HomeSeeAllModelsLink.Content" xml:space="preserve"><value>عرض كل النماذج</value></data>
+  <data name="HomeSeeAllModelsLink2.Content" xml:space="preserve"><value>عرض كل النماذج</value></data>
+  <data name="HomeActiveModelLabel.Text" xml:space="preserve"><value>النموذج النشط</value></data>
+  <data name="HomeAppsLabel.Text" xml:space="preserve"><value>التطبيقات المتصلة</value></data>
+  <data name="HomeSeeAppsLink.Content" xml:space="preserve"><value>عرض الأجهزة والتطبيقات</value></data>
+  <data name="HomeRequestsLabel.Text" xml:space="preserve"><value>الطلبات</value></data>
+  <data name="Vm_HomeLoaded" xml:space="preserve"><value>محمّل وجاهز</value></data>
+  <data name="Vm_HomeLoading" xml:space="preserve"><value>جارٍ التجهيز...</value></data>
+  <data name="Vm_HomeUnloaded" xml:space="preserve"><value>غير محمّل. يُحمَّل عندما يطلبه تطبيق.</value></data>
+  <data name="Vm_HomeKeepLoaded" xml:space="preserve"><value>يبقى محمّلًا لتبدأ الإجابات بسرعة.</value></data>
+  <data name="Vm_HomeIdleUnload" xml:space="preserve"><value>يحرّر الذاكرة بعد {0} دقيقة دون طلبات.</value></data>
+  <data name="Vm_HomeApps" xml:space="preserve"><value>يمكن لـ {0} تطبيقات استخدام هذا النموذج</value></data>
+  <data name="Vm_HomeApps1" xml:space="preserve"><value>يمكن لتطبيق واحد استخدام هذا النموذج</value></data>
+  <data name="Vm_HomeAppsNone" xml:space="preserve"><value>لا توجد تطبيقات متصلة بعد. تطلب إذنك في أول مرة.</value></data>
+  <data name="Vm_HomeNoSpace" xml:space="preserve"><value>يحتاج هذا النموذج إلى {0} لكن المتاح {1} فقط. حرّر بعض المساحة أو اختر مجلد نماذج مختلفًا في الإعدادات.</value></data>
+  <data name="Vm_NoGpu" xml:space="preserve"><value>لم يتم العثور على شيء</value></data>
+  <data name="Vm_HostMissing" xml:space="preserve"><value>برنامج المضيف مفقود من هذا التثبيت. أعد تثبيت Portal AI Host لإصلاح ذلك.</value></data>
+  <data name="Vm_HostMissingTestRun" xml:space="preserve"><value>هذا تشغيل اختباري ولم يُعثر على برنامج المضيف بجوار التطبيق. لا يبدأ المضيف المثبّت في التشغيل الاختباري.</value></data>
+  <data name="Vm_StartTimedOut" xml:space="preserve"><value>بدأ المضيف لكنه لم يستجب في الوقت المناسب. انتظر قليلًا ثم حاول مجددًا.</value></data>
+  <data name="Vm_HostExitTestRoot" xml:space="preserve"><value>رفض المضيف البدء: مجلد بيانات الاختبار مفقود أو غير معلَّم كمجلد اختبار.</value></data>
+  <data name="Vm_HostExitStartFailed" xml:space="preserve"><value>تعذّر بدء المضيف. أعد تشغيل الكمبيوتر وحاول مجددًا. إذا استمرت المشكلة، فأعد تثبيت Portal AI Host.</value></data>
+  <data name="Vm_HostExitOtherUser" xml:space="preserve"><value>هناك مستخدم Windows آخر على هذا الكمبيوتر يشغّل Portal AI Host بالفعل. اطلب منه إنهاءه أو سجّل الدخول بحساب ذلك المستخدم.</value></data>
+  <data name="Vm_CatalogueUnavailable" xml:space="preserve"><value>قائمة النماذج غير متاحة: تعذّر على المضيف تحميل قائمة نماذج موثوقة. ما زالت النماذج الموجودة على هذا الكمبيوتر تعمل.</value></data>
+  <data name="Vm_RemoveTitle" xml:space="preserve"><value>هل تريد إزالة هذا النموذج؟</value></data>
+  <data name="Vm_RemoveBody" xml:space="preserve"><value>ستتم إزالة {0} من هذا الكمبيوتر. تُحذف فقط الملفات التي نزّلها المضيف؛ أما ملف النموذج الذي أضفته بنفسك فيُزال من القائمة فقط ويبقى في مكانه.</value></data>
+  <data name="Vm_RemoveYes" xml:space="preserve"><value>إزالة</value></data>
+  <data name="Vm_AutoRemove" xml:space="preserve"><value>إزالة {0}</value></data>
+  <data name="Vm_FolderSavedNote" xml:space="preserve"><value>تم الحفظ. بعد إعادة تشغيل المضيف، تذهب التنزيلات الجديدة إلى {1}. لا يتم نقل النماذج التي تم تنزيلها بالفعل أو حذفها؛ تبقى في {0} وتبقى مدرجة في صفحة النماذج، لذا يمكنك إزالتها من هناك.</value></data>
+  <data name="Vm_FolderRefused" xml:space="preserve"><value>تم حفظ الإعدادات الأخرى، لكن لا يمكن استخدام مجلد النماذج هذا: {0}</value></data>
+  <data name="Vm_Startup_Unavailable" xml:space="preserve"><value>خيار البدء مع Windows متاح فقط في التطبيق المثبّت.</value></data>
+  <data name="Vm_Startup_DisabledByUser" xml:space="preserve"><value>تم إيقاف البدء مع Windows في إدارة المهام. أعد تشغيله من هناك (تطبيقات بدء التشغيل).</value></data>
+  <data name="Vm_Startup_Policy" xml:space="preserve"><value>خيار البدء مع Windows تحدده مؤسستك.</value></data>
+  <data name="Vm_DefaultFolder" xml:space="preserve"><value>المجلد الافتراضي</value></data>
+  <data name="Vm_Publisher" xml:space="preserve"><value>الناشر: {0}</value></data>
+  <data name="Vm_PublisherUnknown" xml:space="preserve"><value>الناشر: غير معروف</value></data>
+  <data name="NavAbout.Content" xml:space="preserve"><value>حول</value></data>
+  <data name="NavAbout.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>حول</value></data>
+  <data name="AppMenuButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>قائمة التطبيق</value></data>
+  <data name="Vm_AppMenuTip" xml:space="preserve"><value>قائمة التطبيق</value></data>
+  <data name="MenuSettings.Text" xml:space="preserve"><value>الإعدادات</value></data>
+  <data name="MenuShortcuts.Text" xml:space="preserve"><value>اختصارات لوحة المفاتيح</value></data>
+  <data name="MenuWhatsNew.Text" xml:space="preserve"><value>الجديد</value></data>
+  <data name="MenuAbout.Text" xml:space="preserve"><value>حول Portal AI Host</value></data>
+  <data name="Vm_ShortcutsTitle" xml:space="preserve"><value>اختصارات لوحة المفاتيح</value></data>
+  <data name="Vm_ShortcutsBody" xml:space="preserve"><value>Ctrl+1: الرئيسية
+Ctrl+2: النماذج
+Ctrl+3: الأجهزة والتطبيقات
+Ctrl+4: جرّبه
+Ctrl+, : الإعدادات
+F1: حول
+Esc: إغلاق «الجديد» أو مربع حوار</value></data>
+  <data name="Vm_Close" xml:space="preserve"><value>إغلاق</value></data>
+  <data name="SettingsGeneralHeader.Text" xml:space="preserve"><value>عام</value></data>
+  <data name="SettingsResetGeneral.Content" xml:space="preserve"><value>إعادة التعيين إلى الافتراضي</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>إعادة تعيين الإعدادات العامة إلى الافتراضي</value></data>
+  <data name="SettingsNotificationsHeader.Text" xml:space="preserve"><value>الإشعارات</value></data>
+  <data name="SettingsResetNotifications.Content" xml:space="preserve"><value>إعادة التعيين إلى الافتراضي</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>إعادة التعيين إلى الافتراضي، إعدادات الإشعارات</value></data>
+  <data name="SettingsNotificationsHelp.Text" xml:space="preserve"><value>رسائل قصيرة من Windows عندما يحتاج الأمر إلى انتباهك وتكون هذه النافذة مغلقة. تبقى هادئة أثناء وجود برنامج بملء الشاشة في المقدمة، ولا تتكرر أكثر من مرة كل بضع دقائق.</value></data>
+  <data name="SettingsNotifyDownloads.Header" xml:space="preserve"><value>اكتمال تنزيل نموذج أو فشله</value></data>
+  <data name="SettingsNotifyDownloads.OnContent" xml:space="preserve"><value>تشغيل</value></data>
+  <data name="SettingsNotifyDownloads.OffContent" xml:space="preserve"><value>إيقاف</value></data>
+  <data name="SettingsNotifyDownloads.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>الإشعار عند اكتمال تنزيل نموذج أو فشله</value></data>
+  <data name="SettingsNotifyApprovals.Header" xml:space="preserve"><value>طلب تطبيق للموافقة</value></data>
+  <data name="SettingsNotifyApprovals.OnContent" xml:space="preserve"><value>تشغيل</value></data>
+  <data name="SettingsNotifyApprovals.OffContent" xml:space="preserve"><value>إيقاف</value></data>
+  <data name="SettingsNotifyApprovals.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>الإشعار عند طلب تطبيق للموافقة</value></data>
+  <data name="SettingsNotifyProblems.Header" xml:space="preserve"><value>توقف محرك الذكاء الاصطناعي أو فشل فحص</value></data>
+  <data name="SettingsNotifyProblems.OnContent" xml:space="preserve"><value>تشغيل</value></data>
+  <data name="SettingsNotifyProblems.OffContent" xml:space="preserve"><value>إيقاف</value></data>
+  <data name="SettingsNotifyProblems.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>الإشعار عند توقف محرك الذكاء الاصطناعي أو فشل فحص</value></data>
+  <data name="SettingsPrivacyHeader.Text" xml:space="preserve"><value>الخصوصية</value></data>
+  <data name="SettingsResetPrivacy.Content" xml:space="preserve"><value>إعادة التعيين إلى الافتراضي</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>إعادة التعيين إلى الافتراضي، إعدادات الخصوصية</value></data>
+  <data name="SettingsCrashReports.Header" xml:space="preserve"><value>إرسال تقارير الأعطال</value></data>
+  <data name="SettingsCrashReports.OnContent" xml:space="preserve"><value>تشغيل</value></data>
+  <data name="SettingsCrashReports.OffContent" xml:space="preserve"><value>إيقاف</value></data>
+  <data name="SettingsCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>إرسال تقارير الأعطال</value></data>
+  <data name="SettingsCrashReportsHelp.Text" xml:space="preserve"><value>إذا تعطل Portal AI Host، يساعدنا تقرير قصير على إصلاحه بسرعة. لا تتضمن التقارير ملفاتك ولا ما تكتبه. يؤدي إيقاف هذا الخيار إلى إيقافها فورًا.</value></data>
+  <data name="CrashWhatsSent.Content" xml:space="preserve"><value>ما يتم إرساله</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ما يتم إرساله، يفتح صفحة الخصوصية</value></data>
+  <data name="WelcomeCrashReports.Content" xml:space="preserve"><value>أرسل تقارير الأعطال لنصلح المشكلات بسرعة. لا تتضمن ملفاتك ولا ما تكتبه.</value></data>
+  <data name="WelcomeCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>أرسل تقارير الأعطال لنصلح المشكلات بسرعة. لا تتضمن ملفاتك ولا ما تكتبه.</value></data>
+  <data name="SettingsModelsHeader.Text" xml:space="preserve"><value>مجلد النماذج</value></data>
+  <data name="SettingsResetFolder.Content" xml:space="preserve"><value>إعادة التعيين إلى الافتراضي</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>إعادة تعيين مجلد النماذج إلى الافتراضي</value></data>
+  <data name="SettingsFolderHelp.Text" xml:space="preserve"><value>يُطبَّق عند الضغط على Enter أو مغادرة المربع. اتركه فارغًا لاستخدام المجلد الافتراضي. تبقى النماذج الموجودة لديك في أماكنها ما لم تختر نقلها.</value></data>
+  <data name="SettingsAppearanceHeader.Text" xml:space="preserve"><value>المظهر</value></data>
+  <data name="SettingsResetAppearance.Content" xml:space="preserve"><value>إعادة التعيين إلى الافتراضي</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>إعادة تعيين المظهر إلى الافتراضي</value></data>
+  <data name="SettingsTheme.Header" xml:space="preserve"><value>السمة</value></data>
+  <data name="SettingsTheme.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>السمة</value></data>
+  <data name="SettingsMaterial.Header" xml:space="preserve"><value>مادة النافذة</value></data>
+  <data name="SettingsMaterial.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>مادة النافذة</value></data>
+  <data name="SettingsCorners.Header" xml:space="preserve"><value>الزوايا</value></data>
+  <data name="SettingsCorners.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>الزوايا</value></data>
+  <data name="SettingsDensity.Header" xml:space="preserve"><value>الكثافة</value></data>
+  <data name="SettingsDensity.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>الكثافة</value></data>
+  <data name="SettingsTextSize.Header" xml:space="preserve"><value>حجم النص</value></data>
+  <data name="SettingsTextSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>حجم النص</value></data>
+  <data name="SettingsMotion.Header" xml:space="preserve"><value>الحركة</value></data>
+  <data name="SettingsMotion.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>الحركة</value></data>
+  <data name="SettingsAppearanceHelp.Text" xml:space="preserve"><value>تُطبَّق التغييرات فورًا. يستخدم التباين العالي في Windows دائمًا ألوان النظام الصلبة مهما اخترت هنا. يُضاف حجم النص إلى تحجيم النص في Windows.</value></data>
+  <data name="Vm_Theme_System" xml:space="preserve"><value>استخدام إعداد Windows (افتراضي)</value></data>
+  <data name="Vm_Theme_Light" xml:space="preserve"><value>فاتح</value></data>
+  <data name="Vm_Theme_Dark" xml:space="preserve"><value>داكن</value></data>
+  <data name="Vm_Material_Mica" xml:space="preserve"><value>Mica (افتراضي)</value></data>
+  <data name="Vm_Material_Acrylic" xml:space="preserve"><value>Acrylic</value></data>
+  <data name="Vm_Material_Solid" xml:space="preserve"><value>صلب</value></data>
+  <data name="Vm_Corners_Rounded" xml:space="preserve"><value>مستدير (افتراضي)</value></data>
+  <data name="Vm_Corners_Square" xml:space="preserve"><value>مربع</value></data>
+  <data name="Vm_Corners_ExtraRound" xml:space="preserve"><value>شديد الاستدارة</value></data>
+  <data name="Vm_Density_Compact" xml:space="preserve"><value>مضغوط</value></data>
+  <data name="Vm_Density_Standard" xml:space="preserve"><value>قياسي (افتراضي)</value></data>
+  <data name="Vm_Density_Comfortable" xml:space="preserve"><value>مريح</value></data>
+  <data name="Vm_Text_Normal" xml:space="preserve"><value>عادي (افتراضي)</value></data>
+  <data name="Vm_Text_Larger" xml:space="preserve"><value>أكبر</value></data>
+  <data name="Vm_Text_Largest" xml:space="preserve"><value>الأكبر</value></data>
+  <data name="Vm_Motion_Follow" xml:space="preserve"><value>اتباع Windows (افتراضي)</value></data>
+  <data name="Vm_Motion_Reduced" xml:space="preserve"><value>مخفّضة</value></data>
+  <data name="Vm_Motion_Off" xml:space="preserve"><value>إيقاف</value></data>
+  <data name="Vm_FolderNotFull" xml:space="preserve"><value>اكتب مسار مجلد كاملًا، مثل D:\Models.</value></data>
+  <data name="AboutTitle.Text" xml:space="preserve"><value>حول Portal AI Host</value></data>
+  <data name="Vm_AboutVersion" xml:space="preserve"><value>إصدار Portal AI Host {0}</value></data>
+  <data name="Vm_AboutLicenceState" xml:space="preserve"><value>مجاني. لا حاجة إلى حساب أو عملية شراء.</value></data>
+  <data name="Vm_AboutCopyText" xml:space="preserve"><value>Portal AI Host {0}</value></data>
+  <data name="Vm_AboutCopied" xml:space="preserve"><value>تم نسخ الإصدار.</value></data>
+  <data name="AboutCopyVersion.Content" xml:space="preserve"><value>نسخ الإصدار</value></data>
+  <data name="AboutWhatsNew.Content" xml:space="preserve"><value>الجديد</value></data>
+  <data name="AboutHelpHeader.Text" xml:space="preserve"><value>المساعدة والخصوصية</value></data>
+  <data name="AboutFeedback.Content" xml:space="preserve"><value>إرسال ملاحظات أو اقتراح فكرة</value></data>
+  <data name="AboutPrivacy.Content" xml:space="preserve"><value>سياسة الخصوصية</value></data>
+  <data name="AboutDataFolder.Content" xml:space="preserve"><value>فتح مجلد البيانات</value></data>
+  <data name="AboutLicencesHeader.Text" xml:space="preserve"><value>التراخيص</value></data>
+  <data name="Vm_ThirdParty" xml:space="preserve"><value>يتضمن Portal AI Host مكتبة llama.cpp (ترخيص MIT)، التي تشغّل نماذج الذكاء الاصطناعي على جهازك. تُنزَّل النماذج من Hugging Face بموجب تراخيصها الخاصة (Apache 2.0 أو MIT أو CreativeML OpenRAIL-M التي تنطبق قيود استخدامها). يستخدم إنشاء الصور والفيديو stable-diffusion.cpp (ترخيص MIT) وggml (ترخيص MIT). تستخدم أدوات الفيديو FFmpeg (LGPL 3.0 أو أحدث). تستخدم ميزات الصوت sherpa-onnx (Apache 2.0) وأصوات Kokoro (Apache 2.0) وPocket TTS من Kyutai (CC-BY 4.0، الإسناد: Kyutai). بُني التطبيق باستخدام Windows App SDK و.NET ومكتبة Community Toolkit MVVM، وكلها بموجب تراخيص MIT.</value></data>
+  <data name="AboutLlamaLink.Content" xml:space="preserve"><value>llama.cpp على GitHub</value></data>
+  <data name="AboutLlamaExpander.Header" xml:space="preserve"><value>نص ترخيص llama.cpp</value></data>
+  <data name="Vm_LlamaLicence" xml:space="preserve"><value>MIT License
+
+Copyright (c) 2023-2026 The ggml authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</value></data>
+  <data name="Vm_WhatsNewHeading" xml:space="preserve"><value>الجديد في Portal AI Host {0}</value></data>
+  <data name="Vm_Wn1Title" xml:space="preserve"><value>شكرًا لك</value></data>
+  <data name="Vm_Wn1Body" xml:space="preserve"><value>شكرًا على ملاحظاتك وتقاريرك. لقد أسهمت في تشكيل هذا التحديث.</value></data>
+  <data name="Vm_Wn2Title" xml:space="preserve"><value>الفيديو بصيغة MP4 ودمج المقاطع</value></data>
+  <data name="Vm_Wn2Body" xml:space="preserve"><value>يمكن الآن لمهام الفيديو أن تمنحك ملف MP4 وصورة لآخر إطار وعدة مقاطع مدمجة في فيديو واحد.</value></data>
+  <data name="Vm_Wn3Title" xml:space="preserve"><value>إعدادات جودة الفيديو</value></data>
+  <data name="Vm_Wn3Body" xml:space="preserve"><value>اختر كيف يرمّز جهازك فيديو MP4، مثل الجودة، وأي مرمّز فيديو يستخدم.</value></data>
+  <data name="Vm_Wn4Title" xml:space="preserve"><value>عمليات الرفع للتطبيقات المحلية</value></data>
+  <data name="Vm_Wn4Body" xml:space="preserve"><value>يمكن للتطبيقات على هذا الكمبيوتر الآن تسليم الملفات الكبيرة مباشرة بدلًا من إرسالها ضمن الطلب. تُزال الملفات المرفوعة بعد فترة.</value></data>
+  <data name="Vm_Wn5Title" xml:space="preserve"><value>بطاقة كمبيوتر المنزل تبقى متزامنة</value></data>
+  <data name="Vm_Wn5Body" xml:space="preserve"><value>عند تغيير عدة إعدادات لكمبيوتر المنزل بسرعة، لن يظهر بعد الآن رد بطيء بقيمة أقدم.</value></data>
+  <data name="Vm_Wn6Title" xml:space="preserve"><value>أفضل في النوافذ الضيقة</value></data>
+  <data name="Vm_Wn6Body" xml:space="preserve"><value>تنطوي القائمة الجانبية عندما تكون النافذة ضيقة، وتلتف روابط إعادة التعيين في الإعدادات تحت عناوينها.</value></data>
+  <data name="Vm_Wn7Title" xml:space="preserve"><value>أوضح لقارئات الشاشة</value></data>
+  <data name="Vm_Wn7Body" xml:space="preserve"><value>أصبح لقسم صحة النظام في الرئيسية والأزرار في الرئيسية والإعدادات أسماء ونص مساعدة لقارئات الشاشة وتلميحات الأدوات.</value></data>
+  <data name="Vm_Wn8Title" xml:space="preserve"><value>استخدم كمبيوتر منزلك من حاسوب محمول</value></data>
+  <data name="Vm_Wn8Body" xml:space="preserve"><value>اقرن حاسوبًا محمولًا بكمبيوتر منزلك مرة واحدة. بعدها تستخدم التطبيقات على الحاسوب المحمول الذكاء الاصطناعي في كمبيوتر المنزل، في المنزل أو خارجه، وتعود إلى نموذج الحاسوب المحمول إذا اخترت ذلك.</value></data>
+  <data name="Vm_Wn9Title" xml:space="preserve"><value>الأجهزة على هذا الكمبيوتر</value></data>
+  <data name="Vm_Wn9Body" xml:space="preserve"><value>شاهد كل حاسوب محمول مقترن في بطاقة خاصة به. أوقفه مؤقتًا، وحدد حدودًا يومية وساعات هدوء، واختر النماذج المسموح له باستخدامها، أو استرجع نموذجًا حمّله.</value></data>
+  <data name="Vm_Wn10Title" xml:space="preserve"><value>نموذجان في وقت واحد</value></data>
+  <data name="Vm_Wn10Body" xml:space="preserve"><value>يمكن لحاسوب محمول تثق به إبقاء نموذج ثانٍ محمّلًا على جهازك، مثلًا نموذج على بطاقة الرسومات وآخر في الذاكرة. لا يُزاح نموذجك أبدًا.</value></data>
+  <data name="Vm_Wn11Title" xml:space="preserve"><value>تعامل أكثر أمانًا مع الأجهزة</value></data>
+  <data name="Vm_Wn11Body" xml:space="preserve"><value>تؤدي إزالة جهاز إلى إيقاف كل ما كان لا يزال يطلبه، ولم يعد اقتران حاسوب محمول بكمبيوتر منزل جديد يعرّض رمز وصول الكمبيوتر القديم للإرسال إليه.</value></data>
+  <data name="Vm_Wn12Title" xml:space="preserve"><value>وضع الألعاب يعمل في الألعاب ذات النوافذ</value></data>
+  <data name="Vm_Wn12Body" xml:space="preserve"><value>فعّل وضع الألعاب ليُبلَّغ الأجهزة الأخرى بأن جهازك مشغول أثناء تشغيل لعبة، بما في ذلك الألعاب في نافذة.</value></data>
+  <data name="Vm_Wn13Title" xml:space="preserve"><value>مفتاح الوصول عبر الوسيط</value></data>
+  <data name="Vm_Wn13Body" xml:space="preserve"><value>يمكن فقط للأجهزة المقترنة بمفتاحك الوصول إلى هذا الكمبيوتر خارج المنزل. أنشئ مفتاحًا جديدًا في أي وقت.</value></data>
+  <data name="Vm_Wn14Title" xml:space="preserve"><value>شاهد ذاكرتك في لمحة</value></data>
+  <data name="Vm_Wn14Body" xml:space="preserve"><value>تُظهر الأشرطة في صفحة النماذج مقدار الذاكرة وذاكرة الرسومات التي تستخدمها النماذج المحمّلة، مقابل حدودك.</value></data>
+  <data name="Vm_WnShowMe" xml:space="preserve"><value>أرني</value></data>
+  <data name="Vm_WnShowMeName" xml:space="preserve"><value>أرني: {0}</value></data>
+  <data name="WhatsNewDone.Content" xml:space="preserve"><value>حسنًا</value></data>
+  <data name="Vm_RevokedBar" xml:space="preserve"><value>تمت إزالة الوصول عن {0}.</value></data>
+  <data name="Vm_AutoUndo" xml:space="preserve"><value>تراجع عن إزالة الوصول عن {0}</value></data>
+  <data name="AppsUndo.Content" xml:space="preserve"><value>تراجع</value></data>
+  <data name="Vm_RemoveFrees" xml:space="preserve"><value>يحرّر هذا {0}.</value></data>
+  <data name="Vm_StepOf" xml:space="preserve"><value>الخطوة {0} من {1}</value></data>
+  <data name="Vm_LiveIdle" xml:space="preserve"><value>لا يتم إنشاء شيء الآن</value></data>
+  <data name="Vm_LiveBusy" xml:space="preserve"><value>جارٍ كتابة إجابة الآن</value></data>
+  <data name="Vm_LiveGenerating" xml:space="preserve"><value>{0} يحصل على إجابة</value></data>
+  <data name="Vm_LiveSpeed" xml:space="preserve"><value>نحو {0} كلمة في الثانية</value></data>
+  <data name="Vm_LiveMemory" xml:space="preserve"><value>{0} من {1}</value></data>
+  <data name="Vm_LiveMemoryNoTotal" xml:space="preserve"><value>{0}</value></data>
+  <data name="Vm_LivePendingLoad" xml:space="preserve"><value>جارٍ التحميل...</value></data>
+  <data name="Vm_LivePendingUnload" xml:space="preserve"><value>جارٍ إلغاء التحميل...</value></data>
+  <data name="Vm_LiveLoadFailed" xml:space="preserve"><value>تعذّر تحميل النموذج. {0}</value></data>
+  <data name="Vm_LiveUnloadFailed" xml:space="preserve"><value>تعذّر إلغاء تحميل النموذج. {0}</value></data>
+  <data name="Vm_TodayNone" xml:space="preserve"><value>لا توجد طلبات اليوم بعد.</value></data>
+  <data name="Vm_TodayRow1" xml:space="preserve"><value>{0} طلب، آخر ظهور {1}</value></data>
+  <data name="Vm_TodayRow" xml:space="preserve"><value>{0} طلبات، آخر ظهور {1}</value></data>
+  <data name="Vm_SeenNever" xml:space="preserve"><value>أبدًا</value></data>
+  <data name="Vm_SeenNow" xml:space="preserve"><value>الآن</value></data>
+  <data name="Vm_SeenMinutes" xml:space="preserve"><value>قبل {0} د</value></data>
+  <data name="Vm_SeenHours" xml:space="preserve"><value>قبل {0} س</value></data>
+  <data name="HomeLiveTitle.Text" xml:space="preserve"><value>الآن</value></data>
+  <data name="Vm_LiveRamName" xml:space="preserve"><value>الذاكرة التي يستخدمها النموذج: {0}</value></data>
+  <data name="Vm_LiveVramName" xml:space="preserve"><value>ذاكرة الرسومات التي يستخدمها النموذج: {0}</value></data>
+  <data name="HomeRamLabel.Text" xml:space="preserve"><value>الذاكرة التي يستخدمها النموذج</value></data>
+  <data name="HomeVramLabel.Text" xml:space="preserve"><value>ذاكرة الرسومات التي يستخدمها النموذج</value></data>
+  <data name="HomeUnloadButton.Content" xml:space="preserve"><value>إلغاء التحميل الآن</value></data>
+  <data name="HomeLoadButton.Content" xml:space="preserve"><value>تحميل الآن</value></data>
+  <data name="HomeActionErrorBar.Title" xml:space="preserve"><value>لم تنجح العملية</value></data>
+  <data name="HomeTodayLabel.Text" xml:space="preserve"><value>اليوم</value></data>
+  <data name="Vm_TrayReady" xml:space="preserve"><value>جاهز · تم تحميل {0}</value></data>
+  <data name="Vm_TrayBusy" xml:space="preserve"><value>مشغول · {0}</value></data>
+  <data name="Vm_TrayBusyOther" xml:space="preserve"><value>مشغول</value></data>
+  <data name="Vm_TrayLoading" xml:space="preserve"><value>جارٍ التحميل · {0}</value></data>
+  <data name="Vm_TrayIdle" xml:space="preserve"><value>جاهز · يُحمَّل {0} عند الطلب</value></data>
+  <data name="Vm_TrayNoModel" xml:space="preserve"><value>لا يوجد نموذج بعد</value></data>
+  <data name="Vm_TrayOff" xml:space="preserve"><value>إيقاف</value></data>
+  <data name="Vm_TrayLastNone" xml:space="preserve"><value>لا توجد طلبات اليوم</value></data>
+  <data name="Vm_TrayLast" xml:space="preserve"><value>{0}، {1}</value></data>
+  <data name="TrayModelLabel.Text" xml:space="preserve"><value>النموذج</value></data>
+  <data name="TrayMemoryLabel.Text" xml:space="preserve"><value>الذاكرة</value></data>
+  <data name="TrayLastLabel.Text" xml:space="preserve"><value>آخر طلب</value></data>
+  <data name="TrayQueueLabel.Text" xml:space="preserve"><value>قائمة الانتظار</value></data>
+  <data name="TrayOpenButton.Content" xml:space="preserve"><value>فتح التطبيق</value></data>
+  <data name="TrayUnloadButton.Content" xml:space="preserve"><value>إلغاء تحميل النموذج</value></data>
+  <data name="TrayWindowTitle" xml:space="preserve"><value>حالة Portal AI Host</value></data>
+  <data name="ModelsDownloadedHeader.Text" xml:space="preserve"><value>تم التنزيل</value></data>
+  <data name="ModelsMoreHeader.Text" xml:space="preserve"><value>نماذج يمكنك إضافتها</value></data>
+  <data name="ModelCheck.Content" xml:space="preserve"><value>فحص الملفات</value></data>
+  <data name="ModelRedownload.Content" xml:space="preserve"><value>تنزيل مجددًا</value></data>
+  <data name="ModelCancelCheck.Content" xml:space="preserve"><value>إيقاف الفحص</value></data>
+  <data name="ModelDetails.Header" xml:space="preserve"><value>التفاصيل</value></data>
+  <data name="ModelsOpenFolder.Content" xml:space="preserve"><value>فتح المجلد</value></data>
+  <data name="ModelsAddOwn.Content" xml:space="preserve"><value>إضافة نموذجك...</value></data>
+  <data name="ModelsAddOwnHint.Text" xml:space="preserve"><value>اختر ملف .gguf لديك بالفعل. ينشئ المضيف نسخته الخاصة في مجلد النماذج. يتم عمل نسخة؛ ولا يتغير ملفك الأصلي ولا يُنقل.</value></data>
+  <data name="Vm_UserAddedBadge" xml:space="preserve"><value>أضفته بنفسك</value></data>
+  <data name="Vm_UserAddedReason" xml:space="preserve"><value>ملاءمة غير معروفة: لا يستطيع المضيف معرفة مقدار الذاكرة التي يحتاجها هذا النموذج على جهازك. جرّبه وشاهد النتيجة.</value></data>
+  <data name="Vm_RemoveUserBody" xml:space="preserve"><value>ستتم إزالة {0} من مجلد نماذج المضيف. هذه نسخة المضيف الخاصة: الملف الأصلي الذي اخترته لا يُمس.</value></data>
+  <data name="Vm_ImportRunning" xml:space="preserve"><value>جارٍ نسخ نموذجك إلى مجلد النماذج، {0}%</value></data>
+  <data name="Vm_ImportDone" xml:space="preserve"><value>تمت إضافة نموذجك.</value></data>
+  <data name="Vm_ImportCancelled" xml:space="preserve"><value>تم إلغاء إضافة النموذج. لم يتم الاحتفاظ بشيء، ولم يتغير ملفك الأصلي.</value></data>
+  <data name="Vm_ImportFailed" xml:space="preserve"><value>لم تتم إضافة النموذج. {0}</value></data>
+  <data name="ModelsMoveHint.Text" xml:space="preserve"><value>لنقل نماذجك إلى محرك أقراص آخر، اختر مجلدًا جديدًا في الإعدادات ضمن مجلد النماذج.</value></data>
+  <data name="ModelsMoveCancel.Content" xml:space="preserve"><value>إلغاء</value></data>
+  <data name="ModelsFreeUp.Content" xml:space="preserve"><value>تحرير مساحة</value></data>
+  <data name="ModelsCleanupTitle.Text" xml:space="preserve"><value>تحرير مساحة</value></data>
+  <data name="ModelsCleanupPartialHeader.Text" xml:space="preserve"><value>تنزيلات غير مكتملة لا يتم استئنافها</value></data>
+  <data name="ModelsCleanupOldHeader.Text" xml:space="preserve"><value>نسخ قديمة متبقية بعد نقل نماذجك</value></data>
+  <data name="ModelsCleanupDamagedHeader.Text" xml:space="preserve"><value>نماذج وجد الفحص أنها تالفة</value></data>
+  <data name="ModelsCleanupClose.Content" xml:space="preserve"><value>إغلاق</value></data>
+  <data name="ModelsCleanupHint.Text" xml:space="preserve"><value>تُدرج فقط الملفات التي أنشأها هذا التطبيق. لا تتم إزالة النماذج التي تستخدمها ولا الملفات التي أضفتها بنفسك.</value></data>
+  <data name="Vm_CleanupButton" xml:space="preserve"><value>تحرير {0}</value></data>
+  <data name="Vm_CleanupNothing" xml:space="preserve"><value>لا يوجد ما يمكن تحريره. تُحفظ التنزيلات غير المكتملة التي يمكنك استئنافها لمدة أسبوع.</value></data>
+  <data name="Vm_CleanupRunning" xml:space="preserve"><value>جارٍ تحرير المساحة...</value></data>
+  <data name="Vm_CleanupConfirmTitle" xml:space="preserve"><value>هل تريد إزالة هذه الملفات؟</value></data>
+  <data name="Vm_CleanupConfirmBody" xml:space="preserve"><value>يؤدي هذا إلى إزالة ما يلي نهائيًا:&#10;{0}&#10;لا تتأثر نماذجك الأخرى.</value></data>
+  <data name="Vm_CleanupDone" xml:space="preserve"><value>تم تحرير {0}.</value></data>
+  <data name="Vm_CleanupDoneSkipped" xml:space="preserve"><value>تم تحرير {0}. تُركت بعض العناصر في أماكنها:&#10;{1}</value></data>
+  <data name="Vm_CleanupFailed" xml:space="preserve"><value>لم يتم تحرير المساحة: {0}</value></data>
+  <data name="ModelsRemoveFailedBar.Title" xml:space="preserve"><value>تعذّرت إزالة النموذج</value></data>
+  <data name="SettingsMoveButton.Content" xml:space="preserve"><value>نقل نماذجي إلى هناك</value></data>
+  <data name="SettingsMoveCancel.Content" xml:space="preserve"><value>إلغاء النقل</value></data>
+  <data name="Vm_UsedToday" xml:space="preserve"><value>آخر استخدام اليوم</value></data>
+  <data name="Vm_UsedYesterday" xml:space="preserve"><value>آخر استخدام أمس</value></data>
+  <data name="Vm_UsedDays" xml:space="preserve"><value>آخر استخدام قبل {0} يومًا</value></data>
+  <data name="Vm_UsedMonths" xml:space="preserve"><value>آخر استخدام قبل {0} شهرًا</value></data>
+  <data name="Vm_GoodFor" xml:space="preserve"><value>مناسب لـ: {0}</value></data>
+  <data name="Vm_Caveats" xml:space="preserve"><value>ضع في اعتبارك: {0}</value></data>
+  <data name="Vm_MemoryNeeded" xml:space="preserve"><value>يحتاج إلى نحو {0} من الذاكرة على هذا الكمبيوتر.</value></data>
+  <data name="Vm_Licence" xml:space="preserve"><value>الترخيص: {0}</value></data>
+  <data name="Vm_RemoveActiveBody" xml:space="preserve"><value>{0} قيد الاستخدام. يلغي المضيف تحميله أولًا ثم يزيله من هذا الكمبيوتر. تُحذف فقط الملفات التي نزّلها المضيف؛ أما ملف النموذج الذي أضفته بنفسك فيُزال من القائمة فقط ويبقى في مكانه.</value></data>
+  <data name="Vm_RemoveVerb" xml:space="preserve"><value>إزالة {0} ({1})</value></data>
+  <data name="Vm_RemoveVerbNoSize" xml:space="preserve"><value>إزالة {0}</value></data>
+  <data name="Vm_AutoCheck" xml:space="preserve"><value>فحص ملفات {0}</value></data>
+  <data name="Vm_AutoRedownload" xml:space="preserve"><value>تنزيل {0} مجددًا</value></data>
+  <data name="Vm_Removing" xml:space="preserve"><value>جارٍ الإزالة...</value></data>
+  <data name="Vm_RemovingBadge" xml:space="preserve"><value>جارٍ الإزالة</value></data>
+  <data name="Vm_DamagedBadge" xml:space="preserve"><value>تالف</value></data>
+  <data name="Vm_Checking" xml:space="preserve"><value>جارٍ فحص الملفات، {0}%</value></data>
+  <data name="Vm_CheckOk" xml:space="preserve"><value>جميع الملفات سليمة.</value></data>
+  <data name="Vm_CheckDamaged" xml:space="preserve"><value>تالف: {0} لم يُحذف أي شيء.</value></data>
+  <data name="Vm_CheckFailed" xml:space="preserve"><value>تعذّر إكمال الفحص: {0}</value></data>
+  <data name="Vm_SwitchTitle" xml:space="preserve"><value>هل تريد استخدام نموذج آخر؟</value></data>
+  <data name="Vm_SwitchBody" xml:space="preserve"><value>{0} قيد الاستخدام. هل تريد التبديل إلى {1} بعد ذلك، أم عدم استخدام أي نموذج الآن؟</value></data>
+  <data name="Vm_SwitchYes" xml:space="preserve"><value>التبديل إلى {0}</value></data>
+  <data name="Vm_SwitchNo" xml:space="preserve"><value>عدم استخدام أي نموذج الآن</value></data>
+  <data name="Vm_RemoveFailed" xml:space="preserve"><value>لم تتم إزالة {0} وما زال موجودًا. {1}</value></data>
+  <data name="Vm_RedownloadTitle" xml:space="preserve"><value>هل تريد تنزيل هذا النموذج مجددًا؟</value></data>
+  <data name="Vm_RedownloadBody" xml:space="preserve"><value>{0} يحتوي على ملف تالف. تتم إزالته من هذا الكمبيوتر وتنزيله مجددًا. لا يُحذف أي شيء آخر.</value></data>
+  <data name="Vm_RedownloadActiveBody" xml:space="preserve"><value>{0} يحتوي على ملف تالف وهو قيد الاستخدام. يلغي المضيف تحميله ويزيله من هذا الكمبيوتر وينزّله مجددًا. اخترْه مرة أخرى عند اكتمال التنزيل.</value></data>
+  <data name="Vm_RedownloadYes" xml:space="preserve"><value>إزالة {0} وتنزيله مجددًا</value></data>
+  <data name="Vm_MoveRunning" xml:space="preserve"><value>جارٍ نقل نماذجك، {0}%</value></data>
+  <data name="Vm_MoveRemovingOld" xml:space="preserve"><value>أصبحت نماذجك في المجلد الجديد. جارٍ إزالة النسخ القديمة.</value></data>
+  <data name="Vm_MoveDone" xml:space="preserve"><value>تم نقل نماذجك.</value></data>
+  <data name="Vm_MoveCancelled" xml:space="preserve"><value>تم إلغاء النقل. نماذجك في أماكنها السابقة.</value></data>
+  <data name="Vm_MoveFailed" xml:space="preserve"><value>لم يكتمل النقل. {0}</value></data>
+  <data name="Vm_MoveOffer" xml:space="preserve"><value>هل تريد نقل {0} من نماذجك إلى المجلد الجديد أيضًا؟</value></data>
+  <data name="Vm_MoveTitle" xml:space="preserve"><value>هل تريد نقل نماذجك؟</value></data>
+  <data name="Vm_MoveBody" xml:space="preserve"><value>تُنسخ نماذجك إلى {0} ويتم التحقق منها، ثم تُزال النسخ القديمة فقط. يتم إلغاء تحميل النموذج المستخدم أثناء ذلك. لا تُمس أبدًا الملفات الموجودة في المجلد القديم التي لم يضعها المضيف.</value></data>
+  <data name="Vm_MoveYes" xml:space="preserve"><value>نقل نماذجي</value></data>
+  <data name="Vm_MoveSettingsRunning" xml:space="preserve"><value>جارٍ نقل نماذجك، {0}%</value></data>
+  <data name="SettingsPerformanceHeader.Text" xml:space="preserve"><value>الأداء</value></data>
+  <data name="SettingsResetPerformance.Content" xml:space="preserve"><value>إعادة التعيين إلى الافتراضي</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>إعادة تعيين إعدادات الأداء إلى الافتراضي</value></data>
+  <data name="SettingsPreset.Header" xml:space="preserve"><value>الأداء</value></data>
+  <data name="SettingsPreset.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>الأداء</value></data>
+  <data name="SettingsMemory.Header" xml:space="preserve"><value>الحد الأقصى للذاكرة للذكاء الاصطناعي</value></data>
+  <data name="SettingsMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>الحد الأقصى للذاكرة للذكاء الاصطناعي</value></data>
+  <data name="SettingsKeepFree.Header" xml:space="preserve"><value>إبقاء مساحة حرة دائمًا</value></data>
+  <data name="SettingsKeepFree.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>إبقاء مساحة حرة دائمًا</value></data>
+  <data name="SettingsRunOn.Header" xml:space="preserve"><value>التشغيل على</value></data>
+  <data name="SettingsRunOn.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>التشغيل على</value></data>
+  <data name="SettingsGpuMemory.Header" xml:space="preserve"><value>ذاكرة الرسومات للذكاء الاصطناعي</value></data>
+  <data name="SettingsGpuMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ذاكرة الرسومات للذكاء الاصطناعي</value></data>
+  <data name="SettingsCores.Header" xml:space="preserve"><value>أنوية المعالج</value></data>
+  <data name="SettingsCores.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>أنوية المعالج</value></data>
+  <data name="SettingsPriority.Header" xml:space="preserve"><value>الأولوية</value></data>
+  <data name="SettingsPriority.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>الأولوية</value></data>
+  <data name="SettingsMemoryHelp.Text" xml:space="preserve"><value>لا يستخدم الذكاء الاصطناعي أكثر من هذا القدر أبدًا. القيمة الأقل تعني نموذجًا أصغر أو ردودًا أبطأ.</value></data>
+  <data name="SettingsKeepFreeHelp.Text" xml:space="preserve"><value>ذاكرة تُترك حرة لبرامجك الأخرى.</value></data>
+  <data name="SettingsCoresHelp.Text" xml:space="preserve"><value>عدد أقل من الأنوية يبقي جهازك سريع الاستجابة أثناء عمل الذكاء الاصطناعي.</value></data>
+  <data name="Vm_Perf_Quiet" xml:space="preserve"><value>هادئ</value></data>
+  <data name="Vm_Perf_Balanced" xml:space="preserve"><value>متوازن</value></data>
+  <data name="Vm_Perf_Fast" xml:space="preserve"><value>سريع</value></data>
+  <data name="Vm_Perf_Custom" xml:space="preserve"><value>مخصص</value></data>
+  <data name="Vm_Perf_Help_quiet" xml:space="preserve"><value>نحو نصف السرعة. يبقى جهازك سريع الاستجابة.</value></data>
+  <data name="Vm_Perf_Help_balanced" xml:space="preserve"><value>سرعة جيدة، وبرامجك الأخرى لها الأولوية.</value></data>
+  <data name="Vm_Perf_Help_fast" xml:space="preserve"><value>أسرع الردود. قد تتباطأ البرامج الأخرى.</value></data>
+  <data name="Vm_Perf_Help_custom" xml:space="preserve"><value>إعداداتك الخاصة.</value></data>
+  <data name="Vm_Perf_Run_Auto" xml:space="preserve"><value>تلقائي</value></data>
+  <data name="Vm_Perf_Run_Gpu" xml:space="preserve"><value>بطاقة الرسومات</value></data>
+  <data name="Vm_Perf_Run_Cpu" xml:space="preserve"><value>المعالج</value></data>
+  <data name="Vm_Perf_RunHelp_auto" xml:space="preserve"><value>يستخدم بطاقة الرسومات عندما يفيد ذلك.</value></data>
+  <data name="Vm_Perf_RunHelp_gpu" xml:space="preserve"><value>الأسرع، إذا كان النموذج يتسع.</value></data>
+  <data name="Vm_Perf_RunHelp_cpu" xml:space="preserve"><value>أبطأ، لكنه يترك بطاقة الرسومات متاحة للألعاب.</value></data>
+  <data name="Vm_Perf_NoGpu" xml:space="preserve"><value>المعالج فقط: لم يتم العثور على بطاقة رسومات مدعومة</value></data>
+  <data name="SettingsCeiling.Header" xml:space="preserve"><value>الحد الأقصى لاستخدام المعالج</value></data>
+  <data name="SettingsCeiling.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>الحد الأقصى لاستخدام المعالج</value></data>
+  <data name="SettingsCeilingHelp.Text" xml:space="preserve"><value>لا يستخدم الذكاء الاصطناعي من معالجك أكثر من هذا القدر أبدًا. القيمة الأقل تبقي جهازك أكثر سلاسة مع ردود أبطأ.</value></data>
+  <data name="Vm_Perf_CeilingNone" xml:space="preserve"><value>بلا حد</value></data>
+  <data name="Vm_Perf_Percent" xml:space="preserve"><value>{0}%</value></data>
+  <data name="SettingsEaseOffHeader.Text" xml:space="preserve"><value>التخفيف عند</value></data>
+  <data name="SettingsEaseOffFullscreen.Content" xml:space="preserve"><value>تشغيل لعبة أو برنامج بملء الشاشة</value></data>
+  <data name="SettingsEaseOffBattery.Content" xml:space="preserve"><value>عمل الكمبيوتر على البطارية</value></data>
+  <data name="SettingsEaseOffAppBusy.Content" xml:space="preserve"><value>انشغال تطبيق Portal بعمل مباشر، مثل الإملاء</value></data>
+  <data name="SettingsEaseOffHelp.Text" xml:space="preserve"><value>يعمل الذكاء الاصطناعي حينها بأدنى أولوية ويستخدم نصف معالجك على الأكثر، ويعود إلى الوضع العادي عند انتهاء ذلك.</value></data>
+  <data name="Vm_Perf_Prio_Low" xml:space="preserve"><value>منخفضة</value></data>
+  <data name="Vm_Perf_Prio_Normal" xml:space="preserve"><value>عادية</value></data>
+  <data name="Vm_Perf_PrioHelp_Low" xml:space="preserve"><value>عملك الخاص له الأولوية دائمًا.</value></data>
+  <data name="Vm_Perf_PrioHelp_Normal" xml:space="preserve"><value>أسرع، لكنه قد يبطئ البرامج الأخرى.</value></data>
+  <data name="Vm_Perf_Gb" xml:space="preserve"><value>{0} غيغابايت</value></data>
+  <data name="Vm_Perf_Cores" xml:space="preserve"><value>{0} من {1} نواة</value></data>
+  <data name="Vm_Perf_MemoryRange" xml:space="preserve"><value>من {0} غيغابايت إلى {1} غيغابايت</value></data>
+  <data name="Vm_Perf_StopFull" xml:space="preserve"><value>{0} غيغابايت · يتسع {1} بالكامل</value></data>
+  <data name="Vm_Perf_StopPartial" xml:space="preserve"><value>{0} غيغابايت · يتسع {1}، جزئيًا على المعالج</value></data>
+  <data name="Vm_Perf_StopCpu" xml:space="preserve"><value>{0} غيغابايت · يتسع {1} على المعالج</value></data>
+  <data name="Vm_Perf_StopNone" xml:space="preserve"><value>{0} غيغابايت · صغير جدًا للنماذج في القائمة</value></data>
+  <data name="Vm_Perf_Fit_Full" xml:space="preserve"><value>يعمل بالكامل على بطاقة الرسومات</value></data>
+  <data name="Vm_Perf_Fit_Partial" xml:space="preserve"><value>جزء على بطاقة الرسومات وجزء على المعالج: أبطأ</value></data>
+  <data name="Vm_Perf_Fit_Cpu" xml:space="preserve"><value>يعمل على المعالج: الأبطأ</value></data>
+  <data name="Vm_Perf_Fit_Smaller" xml:space="preserve"><value>ذاكرة غير كافية لـ {0}. هل تريد التبديل إلى {1}؟</value></data>
+  <data name="Vm_Perf_Fit_LittleMemory" xml:space="preserve"><value>ذاكرة غير كافية لـ {0}.</value></data>
+  <data name="Vm_Perf_Fit_TooBig" xml:space="preserve"><value>كبير جدًا لهذا الكمبيوتر</value></data>
+  <data name="Vm_Perf_TheModel" xml:space="preserve"><value>النموذج</value></data>
+  <data name="Vm_Perf_Applied" xml:space="preserve"><value>تم التطبيق. الحدود الجديدة سارية.</value></data>
+  <data name="Vm_Perf_Reloading" xml:space="preserve"><value>تم التطبيق. تتم إعادة تحميل {0} بالحدود الجديدة.</value></data>
+  <data name="Vm_Perf_Unloaded" xml:space="preserve"><value>تم التطبيق. لم يعد {0} يتسع وتم إلغاء تحميله. يبقى على القرص؛ اختر نموذجًا أصغر في صفحة النماذج.</value></data>
+  <data name="HealthIconOk.AutomationProperties.Name" xml:space="preserve"><value>جيد</value></data>
+  <data name="HealthIconWarn.AutomationProperties.Name" xml:space="preserve"><value>يحتاج إلى انتباه</value></data>
+  <data name="HealthIconFail.AutomationProperties.Name" xml:space="preserve"><value>مشكلة</value></data>
+  <data name="HealthWordOk.Text" xml:space="preserve"><value>جيد</value></data>
+  <data name="HealthWordWarn.Text" xml:space="preserve"><value>يحتاج إلى انتباه</value></data>
+  <data name="HealthWordFail.Text" xml:space="preserve"><value>مشكلة</value></data>
+  <data name="HealthCheckAgainButton.Content" xml:space="preserve"><value>التحقق مجددًا</value></data>
+  <data name="HealthFixErrorBar.Title" xml:space="preserve"><value>لم تنجح العملية</value></data>
+  <data name="Vm_HealthAllGood" xml:space="preserve"><value>كل شيء على ما يرام</value></data>
+  <data name="Vm_HealthOne" xml:space="preserve"><value>عنصر واحد يحتاج إلى انتباه</value></data>
+  <data name="Vm_HealthMany" xml:space="preserve"><value>{0} عناصر تحتاج إلى انتباه</value></data>
+  <data name="Vm_HealthFixLoad" xml:space="preserve"><value>تحميل النموذج</value></data>
+  <data name="Vm_HealthFixRestart" xml:space="preserve"><value>إعادة تشغيل المحرك</value></data>
+  <data name="Vm_HealthFixCheckFiles" xml:space="preserve"><value>فحص الملفات</value></data>
+  <data name="Vm_HealthFixPerformance" xml:space="preserve"><value>فتح إعدادات الأداء</value></data>
+  <data name="Vm_HealthFixModels" xml:space="preserve"><value>اختيار نموذج</value></data>
+  <data name="Vm_HealthFixFailed" xml:space="preserve"><value>تعذّر تنفيذ الإصلاح. {0}</value></data>
+  <data name="SettingsRemoteHeader.Text" xml:space="preserve"><value>أجهزة أخرى</value></data>
+  <data name="SettingsRemoteEnabled.Header" xml:space="preserve"><value>السماح للأجهزة الأخرى باستخدام الذكاء الاصطناعي في هذا الكمبيوتر</value></data>
+  <data name="SettingsRemoteEnabled.OnContent" xml:space="preserve"><value>تشغيل</value></data>
+  <data name="SettingsRemoteEnabled.OffContent" xml:space="preserve"><value>إيقاف</value></data>
+  <data name="SettingsRemoteEnabled.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>السماح للأجهزة الأخرى باستخدام الذكاء الاصطناعي في هذا الكمبيوتر</value></data>
+  <data name="SettingsRemoteHelp.Text" xml:space="preserve"><value>متوقف افتراضيًا. عند التشغيل، يمكن لهاتفك أو حاسوبك المحمول أو جهازك اللوحي على شبكة منزلك طلب استخدام الذكاء الاصطناعي في هذا الكمبيوتر. يجب اقتران الجهاز برمز أولًا، ويظل كل تطبيق عليه بحاجة إلى موافقتك. يمكنك إزالة جهاز في أي وقت.</value></data>
+  <data name="SettingsPairDevice.Content" xml:space="preserve"><value>اقتران جهاز</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>اقتران جهاز</value></data>
+  <data name="SettingsPairingSteps.Text" xml:space="preserve"><value>على الجهاز الآخر، افتح تطبيق Portal الخاص به، واختر الاتصال بكمبيوتر، ثم امسح هذا الرمز أو اكتب الأحرف والأرقام. يتحقق من أنه يتحدث مع هذا الكمبيوتر قبل إرسال أي شيء. يعمل الرمز مرة واحدة لمدة 5 دقائق.</value></data>
+  <data name="SettingsPairingQr.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>رمز QR للاقتران</value></data>
+  <data name="SettingsPairingCancel.Content" xml:space="preserve"><value>إلغاء الاقتران</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>إلغاء الاقتران</value></data>
+  <data name="SettingsDevicesHeader.Text" xml:space="preserve"><value>الأجهزة المقترنة</value></data>
+  <data name="SettingsNoDevices.Text" xml:space="preserve"><value>لا يوجد جهاز مقترن بعد.</value></data>
+  <data name="SettingsRemoveDevice.Content" xml:space="preserve"><value>إزالة</value></data>
+  <data name="SettingsDeviceModelControl.Header" xml:space="preserve"><value>التحكم في النماذج</value></data>
+  <data name="SettingsDeviceModelControl.OnContent" xml:space="preserve"><value>تشغيل</value></data>
+  <data name="SettingsDeviceModelControl.OffContent" xml:space="preserve"><value>إيقاف</value></data>
+  <data name="SettingsDeviceModelControl.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>يتيح لهذا الجهاز تحميل النماذج وإلغاء تحميلها واختيار النموذج الذي يستخدمه كل تطبيق عليه</value></data>
+  <data name="SettingsDeviceModelControl.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>يتيح لهذا الجهاز تحميل النماذج وإلغاء تحميلها واختيار النموذج الذي يستخدمه كل تطبيق عليه</value></data>
+  <data name="SettingsTakeBackLabel.Text" xml:space="preserve"><value>استرجاع</value></data>
+  <data name="SettingsTakeBack.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>يلغي تحميل النموذج الذي حمّله هذا الجهاز. يعود اختيار هذا الكمبيوتر. لا يتم المساس بأي ملف نموذج.</value></data>
+  <data name="SettingsTakeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>يلغي تحميل النموذج الذي حمّله هذا الجهاز. يعود اختيار هذا الكمبيوتر. لا يتم المساس بأي ملف نموذج.</value></data>
+  <data name="SettingsAllowReplace.Header" xml:space="preserve"><value>يمكن للأجهزة استبدال النماذج</value></data>
+  <data name="SettingsAllowReplace.OnContent" xml:space="preserve"><value>تشغيل</value></data>
+  <data name="SettingsAllowReplace.OffContent" xml:space="preserve"><value>إيقاف</value></data>
+  <data name="SettingsAllowReplace.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>يمكن للأجهزة استبدال النماذج</value></data>
+  <data name="SettingsAllowReplaceHelp.Text" xml:space="preserve"><value>يهم فقط للأجهزة التي لديها التحكم في النماذج. إيقاف: لا يمكن للجهاز إلغاء تحميل نموذج تستخدمه تطبيقاتك. تشغيل: يمكنه ذلك، وتعيد تطبيقاتك تحميل نموذجها عند طلبها التالي.</value></data>
+  <data name="Vm_AutoModelControl" xml:space="preserve"><value>التحكم في النماذج لـ {0}</value></data>
+  <data name="Vm_AutoTakeBack" xml:space="preserve"><value>استرجاع النموذج الذي حمّله {0}</value></data>
+  <data name="Vm_LoadedBy" xml:space="preserve"><value>حمّله {0}: {1} ({2})</value></data>
+  <data name="Vm_PlacementAuto" xml:space="preserve"><value>تحديد تلقائي للموضع</value></data>
+  <data name="Vm_PlacementGpu" xml:space="preserve"><value>بطاقة الرسومات</value></data>
+  <data name="Vm_PlacementCpu" xml:space="preserve"><value>ذاكرة النظام</value></data>
+  <data name="Vm_PlacementCpuOnly" xml:space="preserve"><value>المعالج فقط</value></data>
+  <data name="SettingsRemoteRelay.Header" xml:space="preserve"><value>الوصول إلى هذا الكمبيوتر خارج المنزل أيضًا</value></data>
+  <data name="SettingsRemoteRelay.OnContent" xml:space="preserve"><value>تشغيل</value></data>
+  <data name="SettingsRemoteRelay.OffContent" xml:space="preserve"><value>إيقاف</value></data>
+  <data name="SettingsRemoteRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>الوصول إلى هذا الكمبيوتر خارج المنزل أيضًا</value></data>
+  <data name="SettingsRelayAdmission.Header" xml:space="preserve"><value>مفتاح الوصول عبر الوسيط</value></data>
+  <data name="SettingsRelayAdmission.OnContent" xml:space="preserve"><value>تشغيل</value></data>
+  <data name="SettingsRelayAdmission.OffContent" xml:space="preserve"><value>إيقاف</value></data>
+  <data name="SettingsRelayAdmission.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>مفتاح الوصول عبر الوسيط</value></data>
+  <data name="SettingsRelayAdmissionHelp.Text" xml:space="preserve"><value>يمكن فقط للأجهزة المقترنة بالمفتاح الموجود في رمز الاقتران الوصول إلى هذا الكمبيوتر عبر الوسيط. شغّله قبل الاقتران: يجب على الأجهزة المقترنة سابقًا الاقتران مجددًا لاستخدام الوسيط. يجب أن يكون الوسيط محدّثًا.</value></data>
+  <data name="SettingsRotateRelayKeyText.Text" xml:space="preserve"><value>مفتاح جديد</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>أنشئ مفتاح وصول جديدًا عبر الوسيط. يجب على كل جهاز مقترن الاقتران مجددًا لاستخدام الوسيط. لا تغيّر إزالة جهاز المفتاح، لذا افعل ذلك بعد إزالة جهاز لا تثق به.</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>أنشئ مفتاح وصول جديدًا عبر الوسيط. يجب على كل جهاز مقترن الاقتران مجددًا لاستخدام الوسيط. لا تغيّر إزالة جهاز المفتاح، لذا افعل ذلك بعد إزالة جهاز لا تثق به.</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>مفتاح جديد</value></data>
+  <data name="Vm_RotateKeyTitle" xml:space="preserve"><value>هل تريد إنشاء مفتاح وصول جديد عبر الوسيط؟</value></data>
+  <data name="Vm_RotateKeyBody" xml:space="preserve"><value>يجب على كل جهاز مقترن الاقتران مجددًا لاستخدام هذا الكمبيوتر عبر الوسيط. في المنزل لا يتغير شيء.</value></data>
+  <data name="Vm_RotateKeyConfirm" xml:space="preserve"><value>إنشاء مفتاح جديد</value></data>
+  <data name="SettingsRemoteRelayHelp.Text" xml:space="preserve"><value>يتصل هذا الكمبيوتر بوسيط صغير، ليتمكن جهاز مقترن من الوصول إليه من أي مكان. لا يمرّر الوسيط سوى بايتات مشفّرة لا يستطيع قراءتها، ولا يزال على كل جهاز أن يكون مقترنًا وأن يوقّع كل طلب.</value></data>
+  <data name="Vm_RelayAway" xml:space="preserve"><value>يمكن الوصول إليه خارج المنزل</value></data>
+  <data name="Vm_RelayHomeOnly" xml:space="preserve"><value>شبكة المنزل فقط</value></data>
+  <data name="Vm_RelayUnreachable" xml:space="preserve"><value>تعذّر الوصول إلى الوسيط</value></data>
+  <data name="Vm_RelayConnecting" xml:space="preserve"><value>جارٍ الاتصال بالوسيط...</value></data>
+  <data name="Vm_RemoteAddress" xml:space="preserve"><value>يمكن الوصول إلى هذا الكمبيوتر على {0}، المنفذ {1}.</value></data>
+  <data name="Vm_RemoteLastSeen" xml:space="preserve"><value>آخر استخدام {0}</value></data>
+  <data name="Vm_RemoteNeverSeen" xml:space="preserve"><value>لم يُستخدم بعد</value></data>
+  <data name="Vm_AutoRemoveDevice" xml:space="preserve"><value>إزالة {0}</value></data>
+  <data name="Vm_PairingExpires" xml:space="preserve"><value>الرمز صالح حتى {0}.</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>نسخ الرابط</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>أرسل هذا إلى الكمبيوتر الآخر. يعمل لمدة 5 دقائق ولجهاز واحد.</value></data>
+  <data name="SettingsPairingCopyLinkText.Text" xml:space="preserve"><value>نسخ الرابط</value></data>
+  <data name="Vm_PairingAddress" xml:space="preserve"><value>العنوان: {0}:{1}</value></data>
+  <data name="Vm_PairingFingerprint" xml:space="preserve"><value>فحص الشهادة: {0}</value></data>
+  <data name="Vm_RemoveDeviceTitle" xml:space="preserve"><value>هل تريد إزالة {0}؟</value></data>
+  <data name="Vm_RemoveDeviceBody" xml:space="preserve"><value>يفقد {0} الوصول إلى الذكاء الاصطناعي في هذا الكمبيوتر فورًا. تتوقف تطبيقاته عن العمل إلى أن تقرنه مجددًا.</value></data>
+  <data name="Vm_RemoveDeviceConfirm" xml:space="preserve"><value>إزالة الجهاز</value></data>
+  <data name="Vm_AppOnDevice" xml:space="preserve"><value>{0} على {1}</value></data>
+  <data name="NavDevices.Content" xml:space="preserve"><value>أجهزة هذا الكمبيوتر</value></data>
+  <data name="NavDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>أجهزة هذا الكمبيوتر</value></data>
+  <data name="DevicesTitle.Text" xml:space="preserve"><value>الأجهزة على هذا الكمبيوتر</value></data>
+  <data name="DevicesGamingTitle.Text" xml:space="preserve"><value>وضع الألعاب</value></data>
+  <data name="DevicesGamingText.Text" xml:space="preserve"><value>أثناء تشغيل لعبة بملء الشاشة، يُبلَّغ المتصلون من الأجهزة الأخرى بأن هذا الكمبيوتر مشغول. متوقف افتراضيًا.</value></data>
+  <data name="DevicesGaming.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>وضع الألعاب</value></data>
+  <data name="DevicesNone.Text" xml:space="preserve"><value>لا يوجد جهاز مقترن بعد. اقرن جهازًا في الإعدادات ضمن أجهزة أخرى.</value></data>
+  <data name="DevicesForgetLabel.Text" xml:space="preserve"><value>نسيان</value></data>
+  <data name="DevicesForget.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>إزالة هذا الجهاز. يتوقف وصوله فورًا ويُحذف سجل استخدامه. لا يتم المساس بالنماذج.</value></data>
+  <data name="DevicesForget.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>إزالة هذا الجهاز. يتوقف وصوله فورًا ويُحذف سجل استخدامه. لا يتم المساس بالنماذج.</value></data>
+  <data name="DevicesTakeBackLabel.Text" xml:space="preserve"><value>استرجاع</value></data>
+  <data name="DevicesTakeBack.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>يلغي تحميل النموذج الذي حمّله هذا الجهاز. يعود اختيار هذا الكمبيوتر. لا يتم المساس بأي ملف نموذج.</value></data>
+  <data name="DevicesTakeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>يلغي تحميل النموذج الذي حمّله هذا الجهاز. يعود اختيار هذا الكمبيوتر. لا يتم المساس بأي ملف نموذج.</value></data>
+  <data name="DevicesRenameLabel.Text" xml:space="preserve"><value>إعادة تسمية</value></data>
+  <data name="DevicesRename.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>تغيير الاسم المعروض لهذا الجهاز</value></data>
+  <data name="DevicesRename.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>تغيير الاسم المعروض لهذا الجهاز</value></data>
+  <data name="DevicesNewName.Header" xml:space="preserve"><value>اسم الجهاز</value></data>
+  <data name="DevicesRenameSave.Content" xml:space="preserve"><value>إعادة تسمية</value></data>
+  <data name="DevicesLimitsLabel.Text" xml:space="preserve"><value>الحدود</value></data>
+  <data name="DevicesLimits.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>الأولوية والحدود اليومية وساعات الهدوء والنماذج التي يمكن لهذا الجهاز استخدامها</value></data>
+  <data name="DevicesLimits.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>الأولوية والحدود اليومية وساعات الهدوء والنماذج التي يمكن لهذا الجهاز استخدامها</value></data>
+  <data name="DevicesPriorityEqual.Header" xml:space="preserve"><value>الأولوية نفسها لتطبيقات هذا الكمبيوتر</value></data>
+  <data name="DevicesPriorityEqual.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>إيقاف: تأتي تطبيقات هذا الكمبيوتر أولًا. تشغيل: ينتظر هذا الجهاز في الطابور نفسه.</value></data>
+  <data name="DevicesRequestLimit.Header" xml:space="preserve"><value>الطلبات في اليوم</value></data>
+  <data name="DevicesTokenLimit.Header" xml:space="preserve"><value>الرموز في اليوم</value></data>
+  <data name="DevicesQuiet.Header" xml:space="preserve"><value>ساعات الهدوء</value></data>
+  <data name="DevicesQuiet.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>لا يحصل الجهاز على إجابات بين هذين الوقتين (بتوقيت هذا الكمبيوتر)</value></data>
+  <data name="DevicesQuietFrom.Header" xml:space="preserve"><value>من</value></data>
+  <data name="DevicesQuietTo.Header" xml:space="preserve"><value>حتى</value></data>
+  <data name="DevicesModelsHeader.Text" xml:space="preserve"><value>النماذج التي يمكن لهذا الجهاز استخدامها</value></data>
+  <data name="DevicesSaveLabel.Text" xml:space="preserve"><value>حفظ</value></data>
+  <data name="DevicesSave.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>حفظ هذه الإعدادات لهذا الجهاز</value></data>
+  <data name="DevicesSave.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>حفظ هذه الإعدادات لهذا الجهاز</value></data>
+  <data name="Vm_DevOnline" xml:space="preserve"><value>متصل</value></data>
+  <data name="Vm_DevIdle" xml:space="preserve"><value>خامل</value></data>
+  <data name="Vm_DevOffline" xml:space="preserve"><value>غير متصل</value></data>
+  <data name="Vm_DevRouteLan" xml:space="preserve"><value>شبكة المنزل</value></data>
+  <data name="Vm_DevRouteRelay" xml:space="preserve"><value>الوسيط (خارج المنزل)</value></data>
+  <data name="Vm_DevRouteNone" xml:space="preserve"><value>لا يوجد مسار بعد</value></data>
+  <data name="Vm_DevRunning" xml:space="preserve"><value>قيد التشغيل الآن: {0}</value></data>
+  <data name="Vm_DevRunningQueued" xml:space="preserve"><value>قيد التشغيل الآن: {0}، في الانتظار: {1}</value></data>
+  <data name="Vm_DevToday" xml:space="preserve"><value>اليوم: {0} طلبات، {1} رمز</value></data>
+  <data name="Vm_DevBar" xml:space="preserve"><value>{0} طلبات، قبل {1} يومًا</value></data>
+  <data name="Vm_DevModel" xml:space="preserve"><value>النموذج: {0}</value></data>
+  <data name="Vm_DevModelNone" xml:space="preserve"><value>لا توجد مكالمة بعد</value></data>
+  <data name="Vm_DevLoadedByPc" xml:space="preserve"><value>{0}، حمّله هذا الكمبيوتر</value></data>
+  <data name="Vm_DevLoadedByDevice" xml:space="preserve"><value>{1}، حمّله {0}</value></data>
+  <data name="Vm_DevSpeed" xml:space="preserve"><value>السرعة: {0} رمز/ث، {1} مللي ثانية حتى أول بايت</value></data>
+  <data name="Vm_DevSpeedNone" xml:space="preserve"><value>السرعة: لم تُقَس بعد</value></data>
+  <data name="Vm_DevPause" xml:space="preserve"><value>إيقاف مؤقت</value></data>
+  <data name="Vm_DevResume" xml:space="preserve"><value>استئناف</value></data>
+  <data name="Vm_DevPauseTip" xml:space="preserve"><value>أوقف هذا الجهاز مؤقتًا. تحصل مكالماته على رد إيقاف مؤقت ويستخدم الحاسوب المحمول بديله الخاص.</value></data>
+  <data name="Vm_DevResumeTip" xml:space="preserve"><value>السماح لهذا الجهاز باستخدام هذا الكمبيوتر مجددًا</value></data>
+  <data name="Vm_DevAppPauseTip" xml:space="preserve"><value>إيقاف هذا التطبيق فقط مؤقتًا على هذا الجهاز</value></data>
+  <data name="Vm_DevAppResumeTip" xml:space="preserve"><value>السماح لهذا التطبيق باستخدام هذا الكمبيوتر مجددًا</value></data>
+  <data name="Vm_DevGamingBusy" xml:space="preserve"><value>هناك لعبة قيد التشغيل: يُبلَّغ الأجهزة بأن هذا الكمبيوتر مشغول.</value></data>
+  <data name="Vm_AutoDevPause" xml:space="preserve"><value>إيقاف {0} مؤقتًا</value></data>
+  <data name="Vm_AutoDevResume" xml:space="preserve"><value>استئناف {0}</value></data>
+  <data name="Vm_AutoDevAppPause" xml:space="preserve"><value>إيقاف {0} على {1} مؤقتًا</value></data>
+  <data name="Vm_AutoDevAppResume" xml:space="preserve"><value>استئناف {0} على {1}</value></data>
+  <data name="Vm_AutoDevRename" xml:space="preserve"><value>إعادة تسمية {0}</value></data>
+  <data name="RemoteModelLoadLabel.Text" xml:space="preserve"><value>تحميل</value></data>
+  <data name="RemoteModelUnloadLabel.Text" xml:space="preserve"><value>إلغاء التحميل</value></data>
+  <data name="RemoteModelLoad.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>حمّل هذا النموذج على الكمبيوتر. يبقى محمّلًا هناك إلى أن تلغي تحميله أو يغيّره مالك الكمبيوتر.</value></data>
+  <data name="RemoteModelLoad.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>حمّل هذا النموذج على الكمبيوتر. يبقى محمّلًا هناك إلى أن تلغي تحميله أو يغيّره مالك الكمبيوتر.</value></data>
+  <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ألغِ تحميل النموذج الذي حمّله هذا الحاسوب المحمول على الكمبيوتر. لا يتم المساس بأي ملف نموذج.</value></data>
+  <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ألغِ تحميل النموذج الذي حمّله هذا الحاسوب المحمول على الكمبيوتر. لا يتم المساس بأي ملف نموذج.</value></data>
+  <data name="RemoteModelPlacement.Header" xml:space="preserve"><value>التشغيل على</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>المكان الذي يشغّل فيه الكمبيوتر هذا النموذج: يحدده الكمبيوتر، على بطاقة الرسومات، أو في ذاكرة النظام، أو على المعالج فقط مع حد للخيوط (نصف الأنوية). تظل حدود الكمبيوتر نفسه سارية.</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>المكان الذي يشغّل فيه الكمبيوتر هذا النموذج: يحدده الكمبيوتر، على بطاقة الرسومات، أو في ذاكرة النظام، أو على المعالج فقط مع حد للخيوط (نصف الأنوية). تظل حدود الكمبيوتر نفسه سارية.</value></data>
+  <data name="RemoteModelTooBig.Text" xml:space="preserve"><value>كبير جدًا للكمبيوتر</value></data>
+  <data name="SettingsAppModelsHeader.Text" xml:space="preserve"><value>نموذج الكمبيوتر لكل تطبيق</value></data>
+  <data name="SettingsAppModelsHelp.Text" xml:space="preserve"><value>اختر أيًّا من نماذج الكمبيوتر يستخدمه كل تطبيق على هذا الحاسوب المحمول. «اختيار الكمبيوتر» يترك القرار للكمبيوتر.</value></data>
+  <data name="Vm_RemTitle" xml:space="preserve"><value>النماذج على {0}</value></data>
+  <data name="Vm_RemAskOwner" xml:space="preserve"><value>اطلب من مالك {0} تشغيل التحكم في النماذج لهذا الحاسوب المحمول.</value></data>
+  <data name="Vm_RemPlacementAuto" xml:space="preserve"><value>تلقائي</value></data>
+  <data name="Vm_RemPlacementGpu" xml:space="preserve"><value>بطاقة الرسومات</value></data>
+  <data name="Vm_RemPlacementCpu" xml:space="preserve"><value>ذاكرة النظام</value></data>
+  <data name="Vm_RemPlacementCpuOnly" xml:space="preserve"><value>المعالج فقط</value></data>
+  <data name="Vm_RemStateLoaded" xml:space="preserve"><value>محمّل</value></data>
+  <data name="Vm_RemStateLoading" xml:space="preserve"><value>جارٍ التحميل</value></data>
+  <data name="Vm_RemByLaptop" xml:space="preserve"><value>حمّله هذا الحاسوب المحمول</value></data>
+  <data name="Vm_RemByPc" xml:space="preserve"><value>حمّله الكمبيوتر</value></data>
+  <data name="Vm_RemByOther" xml:space="preserve"><value>حمّله جهاز آخر</value></data>
+  <data name="Vm_RemAutoLoad" xml:space="preserve"><value>تحميل {0} على الكمبيوتر</value></data>
+  <data name="Vm_RemAutoUnload" xml:space="preserve"><value>إلغاء تحميل {0} من الكمبيوتر</value></data>
+  <data name="Vm_RemHostGone" xml:space="preserve"><value>المضيف لا يعمل.</value></data>
+  <data name="Vm_AppModelPcChoice" xml:space="preserve"><value>اختيار الكمبيوتر</value></data>
+  <data name="Vm_AppModelAutomation" xml:space="preserve"><value>نموذج الكمبيوتر لـ {0}</value></data>
+  <data name="SettingsHomePcHeader.Text" xml:space="preserve"><value>كمبيوتر المنزل</value></data>
+  <data name="SettingsHomePcHelp.Text" xml:space="preserve"><value>استخدم الذكاء الاصطناعي على كمبيوتر آخر لديك بدلًا من تشغيله على هذا الجهاز. اقرن هذا الحاسوب المحمول بالكمبيوتر مرة واحدة؛ ثم تسأل التطبيقات هنا ذلك الكمبيوتر.</value></data>
+  <data name="SettingsHomeMode.Header" xml:space="preserve"><value>مكان تشغيل الذكاء الاصطناعي</value></data>
+  <data name="SettingsHomeMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>مكان تشغيل الذكاء الاصطناعي</value></data>
+  <data name="SettingsHomeFallback.Header" xml:space="preserve"><value>إذا تعذّر الوصول إلى كمبيوتر المنزل</value></data>
+  <data name="SettingsHomeFallback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>إذا تعذّر الوصول إلى كمبيوتر المنزل</value></data>
+  <data name="SettingsHomeRelayMode.Header" xml:space="preserve"><value>الاتصال خارج المنزل</value></data>
+  <data name="SettingsHomeRelayMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>الاتصال خارج المنزل</value></data>
+  <data name="SettingsHomeUseRelay.Header" xml:space="preserve"><value>استخدام الوسيط</value></data>
+  <data name="SettingsHomeUseRelay.OnContent" xml:space="preserve"><value>تشغيل</value></data>
+  <data name="SettingsHomeUseRelay.OffContent" xml:space="preserve"><value>إيقاف</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>استخدام الوسيط</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>يشغّل الوسيط لهذه الجلسة فقط. تتم إعادة تعيينه عند إغلاق التطبيق.</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>اقتران الكمبيوتر</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>اقتران هذا الحاسوب المحمول بكمبيوتر المنزل من رابط اقتران</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>اقتران هذا الحاسوب المحمول بكمبيوتر المنزل من رابط اقتران</value></data>
+  <data name="SettingsHomePairText.Text" xml:space="preserve"><value>اقتران الكمبيوتر</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>إلغاء الاقتران</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>نسيان الكمبيوتر المقترن. تبقى النماذج والتنزيلات كما هي.</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>نسيان الكمبيوتر المقترن. تبقى النماذج والتنزيلات كما هي.</value></data>
+  <data name="SettingsHomeUnpairText.Text" xml:space="preserve"><value>إلغاء الاقتران</value></data>
+  <data name="SettingsNotifyDevices.Header" xml:space="preserve"><value>اقتران جهاز أو اتصاله من خارج المنزل</value></data>
+  <data name="SettingsNotifyDevices.OnContent" xml:space="preserve"><value>تشغيل</value></data>
+  <data name="SettingsNotifyDevices.OffContent" xml:space="preserve"><value>إيقاف</value></data>
+  <data name="SettingsNotifyDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>اقتران جهاز أو اتصاله من خارج المنزل</value></data>
+  <data name="HomeClientEmpty.Text" xml:space="preserve"><value>يعمل الذكاء الاصطناعي على كمبيوترك الآخر. تُعرض النماذج واستخدام الذاكرة والإحماء هناك.</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>تغيير الكمبيوتر</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>فتح إعدادات كمبيوتر المنزل لاقتران كمبيوتر آخر</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>فتح إعدادات كمبيوتر المنزل لاقتران كمبيوتر آخر</value></data>
+  <data name="HomeChangePcText.Text" xml:space="preserve"><value>تغيير الكمبيوتر</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>تشغيل الذكاء الاصطناعي هنا</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>اترك وضع العميل وشغّل الذكاء الاصطناعي على هذا الكمبيوتر مجددًا. يبقى الاقتران محفوظًا.</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>اترك وضع العميل وشغّل الذكاء الاصطناعي على هذا الكمبيوتر مجددًا. يبقى الاقتران محفوظًا.</value></data>
+  <data name="HomeRunHereText.Text" xml:space="preserve"><value>تشغيل الذكاء الاصطناعي هنا</value></data>
+  <data name="ModelsLocalNote.Text" xml:space="preserve"><value>التنزيلات في هذه الصفحة مخصصة للوقت الذي يشغّل فيه هذا الكمبيوتر الذكاء الاصطناعي.</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>استخدام كمبيوتر منزلي</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>تخطَّ التنزيل واستخدم الذكاء الاصطناعي على كمبيوتر آخر لديك. ستقترن به بعد ذلك.</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>تخطَّ التنزيل واستخدم الذكاء الاصطناعي على كمبيوتر آخر لديك. ستقترن به بعد ذلك.</value></data>
+  <data name="WelcomeHomePcText.Text" xml:space="preserve"><value>استخدام كمبيوتر منزلي</value></data>
+  <data name="Vm_LinkConnectedLan" xml:space="preserve"><value>متصل - شبكة المنزل</value></data>
+  <data name="Vm_LinkConnectedRelay" xml:space="preserve"><value>متصل - عبر الوسيط</value></data>
+  <data name="Vm_LinkConnecting" xml:space="preserve"><value>جارٍ الاتصال...</value></data>
+  <data name="Vm_LinkUnreachable" xml:space="preserve"><value>لا يمكن الوصول إليه</value></data>
+  <data name="Vm_LinkRevoked" xml:space="preserve"><value>أُزيل هذا الحاسوب المحمول من الكمبيوتر</value></data>
+  <data name="Vm_LinkRepair" xml:space="preserve"><value>اقتران مجددًا</value></data>
+  <data name="Vm_LinkRtt" xml:space="preserve"><value>{0} - {1} مللي ثانية</value></data>
+  <data name="Vm_LinkLastSeen" xml:space="preserve"><value>آخر ظهور {0}</value></data>
+  <data name="Vm_LinkUsingLaptop" xml:space="preserve"><value>استخدام نموذج هذا الحاسوب المحمول</value></data>
+  <data name="Vm_LinkUnreachableHelp" xml:space="preserve"><value>تعذّر الوصول إلى {0}. تأكد من أنه قيد التشغيل وعلى الشبكة نفسها، أو شغّل الوسيط.</value></data>
+  <data name="Vm_LinkRevokedHelp" xml:space="preserve"><value>لم يعد {0} يسمح لهذا الحاسوب المحمول بالدخول. اقترن مجددًا لمتابعة استخدامه.</value></data>
+  <data name="Vm_LinkRepairHelp" xml:space="preserve"><value>تغيّرت هوية {0}، لذا توقف هذا الحاسوب المحمول عن الوثوق به. إذا لم تكن تتوقع ذلك، فلا تقترن مجددًا. وإلا فألغِ الاقتران ثم اقترن مجددًا.</value></data>
+  <data name="Vm_TrayLink" xml:space="preserve"><value>{0} - {1}</value></data>
+  <data name="Vm_DeviceAlertPaired" xml:space="preserve"><value>تم اقتران {0} ويمكنه الآن استخدام الذكاء الاصطناعي في هذا الكمبيوتر.</value></data>
+  <data name="Vm_DeviceAlertRelay" xml:space="preserve"><value>اتصل {0} عبر الوسيط من خارج المنزل.</value></data>
+  <data name="Vm_HomeModeThisPc" xml:space="preserve"><value>هذا الكمبيوتر</value></data>
+  <data name="Vm_HomeModeHomePc" xml:space="preserve"><value>استخدام كمبيوتر منزلي</value></data>
+  <data name="Vm_HomeFallbackNone" xml:space="preserve"><value>لا شيء</value></data>
+  <data name="Vm_HomeFallbackLocal" xml:space="preserve"><value>استخدام نموذج هذا الحاسوب المحمول</value></data>
+  <data name="Vm_HomeRelayAuto" xml:space="preserve"><value>تلقائي</value></data>
+  <data name="Vm_HomeRelayManual" xml:space="preserve"><value>يدوي</value></data>
+  <data name="Vm_HomeNeedsPair" xml:space="preserve"><value>اقرن كمبيوترًا أولًا.</value></data>
+  <data name="Vm_UnpairTitle" xml:space="preserve"><value>هل تريد إلغاء اقتران هذا الكمبيوتر؟</value></data>
+  <data name="Vm_UnpairBody" xml:space="preserve"><value>سينسى هذا الحاسوب المحمول {0} ويتوقف عن استخدامه. لا يتم المساس بالنماذج والتنزيلات. يمكنك الاقتران مجددًا لاحقًا.</value></data>
+  <data name="Vm_UnpairConfirm" xml:space="preserve"><value>إلغاء الاقتران</value></data>
+  <data name="Vm_UnpairCancel" xml:space="preserve"><value>إلغاء</value></data>
+  <data name="Vm_FallbackTitle" xml:space="preserve"><value>تعذّر الوصول إلى كمبيوتر منزلك</value></data>
+  <data name="Vm_FallbackBody" xml:space="preserve"><value>تعذّر الوصول إلى {0} الآن. أثناء غيابه، هل يجيب هذا الحاسوب المحمول بنموذجه الخاص؟ يمكنك تغيير ذلك في الإعدادات ضمن كمبيوتر المنزل.</value></data>
+  <data name="Vm_FallbackLocal" xml:space="preserve"><value>استخدام نموذج هذا الحاسوب المحمول</value></data>
+  <data name="Vm_FallbackNone" xml:space="preserve"><value>لا شيء</value></data>
+  <data name="Vm_PairTitle" xml:space="preserve"><value>استخدام كمبيوتر منزلي</value></data>
+  <data name="Vm_PairIntro" xml:space="preserve"><value>على الكمبيوتر الآخر، افتح الإعدادات واختر اقتران جهاز، ثم انسخ الرابط. الصقه هنا.</value></data>
+  <data name="Vm_PairLinkPlaceholder" xml:space="preserve"><value>portalai://pair?...</value></data>
+  <data name="Vm_PairLinkName" xml:space="preserve"><value>رابط الاقتران</value></data>
+  <data name="Vm_PairPaste" xml:space="preserve"><value>لصق الرابط</value></data>
+  <data name="Vm_PairPasteTip" xml:space="preserve"><value>لصق رابط الاقتران من الحافظة</value></data>
+  <data name="Vm_PairNext" xml:space="preserve"><value>التالي</value></data>
+  <data name="Vm_PairConfirm" xml:space="preserve"><value>اقتران</value></data>
+  <data name="Vm_PairBack" xml:space="preserve"><value>رجوع</value></data>
+  <data name="Vm_PairCancel" xml:space="preserve"><value>إلغاء</value></data>
+  <data name="Vm_PairWorking" xml:space="preserve"><value>جارٍ الاتصال بالكمبيوتر...</value></data>
+  <data name="Vm_PairDeviceName" xml:space="preserve"><value>اسم هذا الحاسوب المحمول</value></data>
+  <data name="Vm_PairConfirmPc" xml:space="preserve"><value>هل تريد الاقتران بـ {0}؟</value></data>
+  <data name="Vm_PairFingerprint" xml:space="preserve"><value>البصمة: {0}</value></data>
+  <data name="Vm_PairErr_invalid_input" xml:space="preserve"><value>الرابط غير صالح. انسخه مجددًا من الكمبيوتر الآخر.</value></data>
+  <data name="Vm_PairErr_address_not_allowed" xml:space="preserve"><value>هذا العنوان ليس على شبكة منزلك. خارج المنزل، اقترن مرة واحدة في المنزل أولًا.</value></data>
+  <data name="Vm_PairErr_unreachable" xml:space="preserve"><value>تعذّر الوصول إلى هذا العنوان.</value></data>
+  <data name="Vm_PairErr_certificate_mismatch" xml:space="preserve"><value>تعذّر التحقق من هذا الكمبيوتر.</value></data>
+  <data name="Vm_PairErr_host_proof_invalid" xml:space="preserve"><value>تعذّر التحقق من هذا الكمبيوتر.</value></data>
+  <data name="Vm_PairErr_refused" xml:space="preserve"><value>رفض ذلك الكمبيوتر الاقتران.</value></data>
+  <data name="Vm_PairErr_protocol_error" xml:space="preserve"><value>أرسل ذلك الكمبيوتر ردًا غير متوقع.</value></data>
+  <data name="Vm_PairErr_save_failed" xml:space="preserve"><value>نجح الاقتران، لكن تعذّر حفظه على هذا الكمبيوتر.</value></data>
+  <data name="Vm_PairErr_already_paired" xml:space="preserve"><value>يوجد كمبيوتر مقترن بالفعل. ألغِ اقترانه في الإعدادات أولًا.</value></data>
+  <data name="Vm_PairErr_not_available" xml:space="preserve"><value>الاقتران غير متاح في هذا التثبيت.</value></data>
+  <data name="Vm_PairErr_host" xml:space="preserve"><value>التطبيق لا يعمل.</value></data>
+  <data name="Vm_PairReason_expired" xml:space="preserve"><value>انتهت صلاحية الرمز. اطلب رمزًا جديدًا.</value></data>
+  <data name="Vm_PairReason_code_voided" xml:space="preserve"><value>استُنفد هذا الرمز بسبب محاولات خاطئة. اطلب رمزًا جديدًا.</value></data>
+  <data name="Vm_PairReason_no_offer" xml:space="preserve"><value>ذلك الكمبيوتر لا ينتظر جهازًا. افتح رمزًا جديدًا عليه.</value></data>
+  <data name="Vm_PairReason_too_many_devices" xml:space="preserve"><value>لدى ذلك الكمبيوتر 16 جهازًا بالفعل. أزل أحدها أولًا.</value></data>
+  <data name="Vm_PairReason_wrong_code" xml:space="preserve"><value>الرمز غير صحيح.</value></data>
+  <data name="ModelsMemoryTitle.Text" xml:space="preserve"><value>ميزانية الذاكرة</value></data>
+  <data name="ModelsMemoryTitle.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ما يُخطَّط لاستخدامه من النماذج المحمّلة وقيد التحميل، مقابل حد ذاكرة RAM وذاكرة بطاقة الرسومات. يُرفض النموذج الذي لا يتسع.</value></data>
+  <data name="Vm_MemRam" xml:space="preserve"><value>RAM</value></data>
+  <data name="Vm_MemVram" xml:space="preserve"><value>ذاكرة الرسومات</value></data>
+  <data name="Vm_MemLine" xml:space="preserve"><value>{0}: المستخدم {1}، المحجوز أثناء التحميل {2}، المتاح {3} من {4}</value></data>
+  <data name="UpdateBar.Title" xml:space="preserve"><value>يتوفر تحديث</value></data>
+  <data name="UpdateBar.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>يتوفر إصدار أحدث من Portal AI Host في Microsoft Store</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>تحديث</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>فتح صفحة Microsoft Store لتحديث Portal AI Host</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>فتح صفحة Microsoft Store لتحديث Portal AI Host</value></data>
+  <data name="UpdateButtonText.Text" xml:space="preserve"><value>تحديث</value></data>
+  <data name="Vm_ComingSoon" xml:space="preserve"><value>قريبًا</value></data>
+  <data name="Vm_VramBoth" xml:space="preserve"><value>يحتاج إلى {0} غيغابايت من ذاكرة الرسومات مع التفريغ إلى المعالج؛ يُوصى بـ {1} غيغابايت.</value></data>
+  <data name="Vm_VramMin" xml:space="preserve"><value>يحتاج إلى {0} غيغابايت من ذاكرة الرسومات مع التفريغ إلى المعالج.</value></data>
+  <data name="Vm_VramRec" xml:space="preserve"><value>يُوصى بـ {0} غيغابايت من ذاكرة الرسومات.</value></data>
+  <data name="Vm_GroupCount" xml:space="preserve"><value>{0} نماذج</value></data>
+  <data name="Vm_ShowAll" xml:space="preserve"><value>عرض كل {0}</value></data>
+  <data name="Vm_ShowFewer" xml:space="preserve"><value>عرض أقل</value></data>
+  <data name="Vm_CatAllTip" xml:space="preserve"><value>عرض نماذج كل الأنواع</value></data>
+  <data name="Vm_CatChip_all" xml:space="preserve"><value>الكل</value></data>
+  <data name="Vm_CatChip_chat" xml:space="preserve"><value>الدردشة</value></data>
+  <data name="Vm_CatChip_coding" xml:space="preserve"><value>البرمجة</value></data>
+  <data name="Vm_CatChip_reasoning" xml:space="preserve"><value>الاستدلال</value></data>
+  <data name="Vm_CatChip_vision" xml:space="preserve"><value>الرؤية</value></data>
+  <data name="Vm_CatChip_search" xml:space="preserve"><value>البحث</value></data>
+  <data name="Vm_CatChip_image" xml:space="preserve"><value>الصور</value></data>
+  <data name="Vm_CatChip_video" xml:space="preserve"><value>الفيديو</value></data>
+  <data name="Vm_CatChip_speech" xml:space="preserve"><value>الكلام</value></data>
+  <data name="Vm_CatChip_other" xml:space="preserve"><value>أخرى</value></data>
+  <data name="Vm_Cat_chat" xml:space="preserve"><value>الدردشة والكتابة</value></data>
+  <data name="Vm_Cat_coding" xml:space="preserve"><value>البرمجة</value></data>
+  <data name="Vm_Cat_reasoning" xml:space="preserve"><value>الاستدلال</value></data>
+  <data name="Vm_Cat_vision" xml:space="preserve"><value>فهم الصور</value></data>
+  <data name="Vm_Cat_search" xml:space="preserve"><value>البحث والتضمينات</value></data>
+  <data name="Vm_Cat_image" xml:space="preserve"><value>إنشاء الصور</value></data>
+  <data name="Vm_Cat_video" xml:space="preserve"><value>إنشاء الفيديو</value></data>
+  <data name="Vm_Cat_speech" xml:space="preserve"><value>الكلام</value></data>
+  <data name="Vm_Cat_other" xml:space="preserve"><value>نماذج أخرى</value></data>
+  <data name="ModelsSearch.PlaceholderText" xml:space="preserve"><value>البحث في النماذج</value></data>
+  <data name="ModelsSearch.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>البحث في النماذج</value></data>
+  <data name="ModelsNoMatches.Text" xml:space="preserve"><value>لا توجد نماذج مطابقة. امسح البحث أو اختر الكل.</value></data>
+  <data name="HomeSeeAppsLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>عرض التطبيقات المتصلة بهذا المضيف</value></data>
+  <data name="HomeSeeAppsLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>عرض التطبيقات المتصلة بهذا المضيف</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>نسخ رابط الاقتران إلى الحافظة</value></data>
+  <data name="HomeLoadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>تحميل النموذج في الذاكرة ليجيب بشكل أسرع</value></data>
+  <data name="HomeLoadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>تحميل النموذج في الذاكرة ليجيب بشكل أسرع</value></data>
+  <data name="SettingsNotifyDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>عرض إشعار عند اقتران جهاز أو اتصاله</value></data>
+  <data name="SettingsCorners.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>مدى استدارة الزوايا</value></data>
+  <data name="HomeChangeFolderButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>فتح الإعدادات لاختيار مجلد به مساحة حرة أكبر</value></data>
+  <data name="HomeChangeFolderButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>فتح الإعدادات لاختيار مجلد به مساحة حرة أكبر</value></data>
+  <data name="SettingsMoveButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>نقل النماذج إلى المجلد المختار. تُنسخ الملفات وتُفحص قبل إزالة القديمة.</value></data>
+  <data name="SettingsMoveButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>نقل النماذج إلى المجلد المختار. تُنسخ الملفات وتُفحص قبل إزالة القديمة.</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>إلغاء الاقتران</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>إلغاء الاقتران</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>إظهار فحوصات الصحة أو إخفاؤها</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>إظهار فحوصات الصحة أو إخفاؤها</value></data>
+  <data name="SettingsMaterial.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>نمط خلفية النافذة</value></data>
+  <data name="HomeDownloadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>تنزيل النموذج الموصى به</value></data>
+  <data name="HomeDownloadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>تنزيل النموذج الموصى به</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>اطّلع على ما يتضمنه تقرير العطل بالضبط</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>اطّلع على ما يتضمنه تقرير العطل بالضبط</value></data>
+  <data name="SettingsEaseOffFullscreen.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>تحرير الذاكرة أثناء تشغيل تطبيق أو لعبة بملء الشاشة</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>فتح صفحة النماذج لعرض نماذج أفضل</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>فتح صفحة النماذج لعرض نماذج أفضل</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>إعادة إعدادات الأداء إلى قيمها الافتراضية</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>إعادة إعدادات الأداء إلى قيمها الافتراضية</value></data>
+  <data name="SettingsEaseOffBattery.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>تحرير الذاكرة أثناء عمل الكمبيوتر على البطارية</value></data>
+  <data name="SettingsPreset.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>اختر توازنًا جاهزًا بين السرعة واستخدام الذاكرة</value></data>
+  <data name="SettingsRemoteRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>السماح للأجهزة المقترنة بالوصول إلى هذا الكمبيوتر من خارج شبكة منزلك</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>إنشاء رمز لاقتران جهاز جديد</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>إنشاء رمز لاقتران جهاز جديد</value></data>
+  <data name="SettingsCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>إرسال تقارير الأعطال للمساعدة في إصلاح المشكلات</value></data>
+  <data name="SettingsAllowReplace.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>السماح لجهاز باستبدال اقتران موجود</value></data>
+  <data name="SettingsMotion.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>مقدار الحركة المستخدمة</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>العودة إلى مجلد النماذج الافتراضي</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>العودة إلى مجلد النماذج الافتراضي</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>السماح بالوصول إلى كمبيوتر المنزل عبر الوسيط عندما تكون خارج المنزل</value></data>
+  <data name="HomeTryAgainButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>إعادة محاولة تحميل قائمة النماذج</value></data>
+  <data name="HomeTryAgainButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>إعادة محاولة تحميل قائمة النماذج</value></data>
+  <data name="SettingsStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>تشغيل Portal AI Host عند تسجيل الدخول إلى Windows</value></data>
+  <data name="SettingsHomeMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>اختر ما إذا كان هذا الكمبيوتر يشغّل النماذج بنفسه أم يستخدم كمبيوتر منزلك</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>تشغيل المضيف لتتمكن التطبيقات من استخدامه</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>تشغيل المضيف لتتمكن التطبيقات من استخدامه</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>إعادة الإعدادات العامة إلى قيمها الافتراضية</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>إعادة الإعدادات العامة إلى قيمها الافتراضية</value></data>
+  <data name="SettingsHomeFallback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ما يجب فعله عند تعذّر الوصول إلى كمبيوتر المنزل</value></data>
+  <data name="SettingsDensity.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>مقدار المسافة بين العناصر</value></data>
+  <data name="SettingsTextSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>حجم النص</value></data>
+  <data name="SettingsIdle.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>المدة التي ينتظرها المضيف دون طلبات قبل أن يحرّر ذاكرة النموذج</value></data>
+  <data name="SettingsEaseOffAppBusy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>تحرير الذاكرة أثناء عمل تطبيق آخر بجهد كبير</value></data>
+  <data name="SettingsRemoveDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>إزالة هذا الجهاز. يجب أن يقترن مجددًا ليتصل.</value></data>
+  <data name="SettingsRemoveDevice.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>إزالة هذا الجهاز. يجب أن يقترن مجددًا ليتصل.</value></data>
+  <data name="SettingsMoveCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>إيقاف نقل النماذج</value></data>
+  <data name="SettingsMoveCancel.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>إيقاف نقل النماذج</value></data>
+  <data name="SettingsNotifyDownloads.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>عرض إشعار عند اكتمال تنزيل أو فشله</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>إعادة إعدادات الخصوصية إلى قيمها الافتراضية</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>إعادة إعدادات الخصوصية إلى قيمها الافتراضية</value></data>
+  <data name="HealthCheckAgainButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>تشغيل فحوصات الصحة مجددًا</value></data>
+  <data name="HealthCheckAgainButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>تشغيل فحوصات الصحة مجددًا</value></data>
+  <data name="SettingsMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>مقدار الذاكرة التي يمكن للنماذج استخدامها</value></data>
+  <data name="SettingsTheme.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>فاتح أو داكن أو اتباع Windows</value></data>
+  <data name="SettingsRemoteEnabled.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>السماح لأجهزتك الأخرى باستخدام هذا الكمبيوتر</value></data>
+  <data name="SettingsNotifyProblems.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>عرض إشعار عندما يحتاج أمر إلى انتباهك</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>فتح صفحة الدردشة لتجربة النموذج النشط</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>فتح صفحة الدردشة لتجربة النموذج النشط</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>إعادة إعدادات الإشعارات إلى قيمها الافتراضية</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>إعادة إعدادات الإشعارات إلى قيمها الافتراضية</value></data>
+  <data name="SettingsRelayAdmission.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>اشتراط تحقق الوسيط من الأجهزة قبل اتصالها</value></data>
+  <data name="HomeUnloadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>تحرير الذاكرة التي يستخدمها النموذج. يبقى ملف النموذج على القرص.</value></data>
+  <data name="HomeUnloadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>تحرير الذاكرة التي يستخدمها النموذج. يبقى ملف النموذج على القرص.</value></data>
+  <data name="HomeSeeAllModelsLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>تصفح كل نموذج يمكن تنزيله</value></data>
+  <data name="HomeSeeAllModelsLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>تصفح كل نموذج يمكن تنزيله</value></data>
+  <data name="SettingsNotifyApprovals.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>عرض إشعار عندما يطلب تطبيق إذنًا</value></data>
+  <data name="SettingsHomeRelayMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>اختر متى يُستخدم الوسيط للوصول إلى كمبيوتر المنزل</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>إعادة إعدادات المظهر إلى قيمها الافتراضية</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>إعادة إعدادات المظهر إلى قيمها الافتراضية</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>فحوصات الصحة</value></data>
+</root>

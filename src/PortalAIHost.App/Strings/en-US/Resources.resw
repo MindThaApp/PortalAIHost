@@ -164,8 +164,6 @@
   <data name="Vm_CancelDlYes" xml:space="preserve"><value>Stop download</value></data>
   <data name="Vm_CancelDlKeep" xml:space="preserve"><value>Keep downloading</value></data>
   <data name="Vm_AutoDownload" xml:space="preserve"><value>Download {0}</value></data>
-  <data name="Vm_AutoPause" xml:space="preserve"><value>Pause {0}</value></data>
-  <data name="Vm_AutoResume" xml:space="preserve"><value>Resume {0}</value></data>
   <data name="Vm_AutoCancel" xml:space="preserve"><value>Stop downloading {0}</value></data>
   <data name="Vm_AutoUse" xml:space="preserve"><value>Use {0}</value></data>
   <data name="Vm_Added" xml:space="preserve"><value>Added {0}</value></data>
@@ -488,7 +486,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <data name="ModelsRemoveFailedBar.Title" xml:space="preserve"><value>Could not remove the model</value></data>
   <data name="SettingsMoveButton.Content" xml:space="preserve"><value>Move my models there</value></data>
   <data name="SettingsMoveCancel.Content" xml:space="preserve"><value>Cancel move</value></data>
-  <data name="Vm_NeverUsed" xml:space="preserve"><value>Not used yet</value></data>
   <data name="Vm_UsedToday" xml:space="preserve"><value>Last used today</value></data>
   <data name="Vm_UsedYesterday" xml:space="preserve"><value>Last used yesterday</value></data>
   <data name="Vm_UsedDays" xml:space="preserve"><value>Last used {0} days ago</value></data>

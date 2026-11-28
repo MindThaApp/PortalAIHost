@@ -1,0 +1,989 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="NavHome.Content" xml:space="preserve"><value>Beranda</value></data>
+  <data name="NavHome.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Beranda</value></data>
+  <data name="NavModels.Content" xml:space="preserve"><value>Model</value></data>
+  <data name="NavModels.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Model</value></data>
+  <data name="NavApps.Content" xml:space="preserve"><value>Perangkat dan aplikasi</value></data>
+  <data name="NavApps.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Perangkat dan aplikasi</value></data>
+  <data name="NavTryIt.Content" xml:space="preserve"><value>Coba</value></data>
+  <data name="NavTryIt.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Coba</value></data>
+  <data name="NavSettings.Content" xml:space="preserve"><value>Pengaturan</value></data>
+  <data name="NavSettings.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Pengaturan</value></data>
+  <data name="HomeTitle.Text" xml:space="preserve"><value>Beranda</value></data>
+  <data name="HomeSafeModeBar.Title" xml:space="preserve"><value>Mode aman</value></data>
+  <data name="HomeStoreProblemBar.Title" xml:space="preserve"><value>Folder model tidak tersedia</value></data>
+  <data name="Vm_OldFolderBadge" xml:space="preserve"><value>Folder sebelumnya</value></data>
+  <data name="Vm_OldFolderRow" xml:space="preserve"><value>Di folder model sebelumnya: {0}. Hapus untuk membebaskan ruang.</value></data>
+  <data name="HomeSafeModeBar.Message" xml:space="preserve"><value>Host ditutup tak terduga lebih dari sekali, jadi host dimulai dengan pengaturan hati-hati. Aplikasi Anda tetap berfungsi. Jika ini terus terjadi, mulai ulang PC Anda.</value></data>
+  <data name="HomeStartButton.Content" xml:space="preserve"><value>Mulai Portal AI Host</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Mulai Portal AI Host</value></data>
+  <data name="HomeUpgradeText.Text" xml:space="preserve"><value>Model yang lebih baik tersedia untuk PC Anda. Model Anda saat ini tetap digunakan sampai yang baru siap.</value></data>
+  <data name="HomeSeeModelsButton.Content" xml:space="preserve"><value>Lihat model</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Lihat model</value></data>
+  <data name="ModelsTitle.Text" xml:space="preserve"><value>Model</value></data>
+  <data name="ModelsExistingBar.Title" xml:space="preserve"><value>Ditemukan salinan yang sudah ada</value></data>
+  <data name="ModelsUpgradeBar.Title" xml:space="preserve"><value>Model yang lebih baik tersedia</value></data>
+  <data name="ModelTooBig.Text" xml:space="preserve"><value>Model ini mungkin terlalu besar untuk PC ini.</value></data>
+  <data name="ModelDownload.Content" xml:space="preserve"><value>Unduh</value></data>
+  <data name="ModelPause.Content" xml:space="preserve"><value>Jeda</value></data>
+  <data name="ModelResume.Content" xml:space="preserve"><value>Lanjutkan</value></data>
+  <data name="ModelCancel.Content" xml:space="preserve"><value>Hentikan</value></data>
+  <data name="ModelUse.Content" xml:space="preserve"><value>Gunakan model ini</value></data>
+  <data name="ModelRemove.Content" xml:space="preserve"><value>Hapus</value></data>
+  <data name="ModelsCatalogueBar.Title" xml:space="preserve"><value>Daftar model tidak tersedia</value></data>
+  <data name="ModelsCatalogueBar.Message" xml:space="preserve"><value>Host tidak dapat memuat daftar model tepercaya, jadi model baru belum bisa diunduh. Model yang sudah ada di PC ini tetap berfungsi.</value></data>
+  <data name="AppsTitle.Text" xml:space="preserve"><value>Perangkat dan aplikasi</value></data>
+  <data name="AppsWaitingHeader.Text" xml:space="preserve"><value>Menunggu jawaban Anda</value></data>
+  <data name="AppsApprovedHeader.Text" xml:space="preserve"><value>Aplikasi yang dapat menggunakan host AI Anda</value></data>
+  <data name="AppsNone.Text" xml:space="preserve"><value>Belum ada aplikasi yang diizinkan. Saat aplikasi meminta menggunakan host, Anda akan ditanya di sini.</value></data>
+  <data name="AppAllow.Content" xml:space="preserve"><value>Izinkan</value></data>
+  <data name="AppDeny.Content" xml:space="preserve"><value>Tolak</value></data>
+  <data name="Vm_AppTodayNone" xml:space="preserve"><value>Belum ada permintaan hari ini</value></data>
+  <data name="Vm_AppToday1" xml:space="preserve"><value>{0} permintaan hari ini</value></data>
+  <data name="Vm_AppToday" xml:space="preserve"><value>{0} permintaan hari ini</value></data>
+  <data name="Vm_PriorityHigh" xml:space="preserve"><value>Tinggi</value></data>
+  <data name="Vm_PriorityNormal" xml:space="preserve"><value>Normal</value></data>
+  <data name="Vm_PriorityLow" xml:space="preserve"><value>Rendah</value></data>
+  <data name="Vm_AutoPriority" xml:space="preserve"><value>Prioritas untuk {0}</value></data>
+  <data name="Vm_AppPausedBadge" xml:space="preserve"><value>Dijeda</value></data>
+  <data name="Vm_AppPausedHint" xml:space="preserve"><value>{0} sedang dijeda. Permintaan baru ditolak sampai Anda melanjutkannya. Aksesnya tetap dipertahankan.</value></data>
+  <data name="Vm_AppPause" xml:space="preserve"><value>Jeda</value></data>
+  <data name="Vm_AppResume" xml:space="preserve"><value>Lanjutkan</value></data>
+  <data name="Vm_AutoPause" xml:space="preserve"><value>Jeda {0}</value></data>
+  <data name="Vm_AutoResume" xml:space="preserve"><value>Lanjutkan {0}</value></data>
+  <data name="AppPriority.Header" xml:space="preserve"><value>Prioritas</value></data>
+  <data name="AppRevoke.Content" xml:space="preserve"><value>Cabut akses</value></data>
+  <data name="SettingsTitle.Text" xml:space="preserve"><value>Pengaturan</value></data>
+  <data name="SettingsStartWithWindows.Header" xml:space="preserve"><value>Mulai saat Windows dimulai</value></data>
+  <data name="SettingsStartWithWindows.OnContent" xml:space="preserve"><value>Aktif</value></data>
+  <data name="SettingsStartWithWindows.OffContent" xml:space="preserve"><value>Nonaktif</value></data>
+  <data name="SettingsStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Mulai saat Windows dimulai</value></data>
+  <data name="SettingsIdle.Header" xml:space="preserve"><value>Bebaskan memori saat diam</value></data>
+  <data name="SettingsIdle.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Bebaskan memori saat diam</value></data>
+  <data name="SettingsIdleHelp.Text" xml:space="preserve"><value>Model akan aktif kembali saat aplikasi berikutnya memintanya. Menjaga model tetap dimuat membuat jawaban lebih cepat, tetapi memakai memori terus-menerus.</value></data>
+  <data name="SettingsFolder.Header" xml:space="preserve"><value>Folder untuk model yang diunduh</value></data>
+  <data name="SettingsFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Folder untuk model yang diunduh</value></data>
+  <data name="TryItTitle.Text" xml:space="preserve"><value>Coba</value></data>
+  <data name="TryItIntro.Text" xml:space="preserve"><value>Ajukan pertanyaan singkat ke model untuk memastikan ia berfungsi dan melihat seberapa cepat ia menjawab. Tidak ada yang Anda ketik di sini yang disimpan. Tekan Ctrl+Enter untuk bertanya.</value></data>
+  <data name="TryItPrompt.Header" xml:space="preserve"><value>Pertanyaan Anda</value></data>
+  <data name="TryItPrompt.PlaceholderText" xml:space="preserve"><value>Contoh: Tulis satu kalimat tentang laut.</value></data>
+  <data name="TryItPrompt.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Pertanyaan Anda</value></data>
+  <data name="TryItSend.Content" xml:space="preserve"><value>Tanya</value></data>
+  <data name="TryItSend.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Tanya</value></data>
+  <data name="TryItStop.Content" xml:space="preserve"><value>Hentikan</value></data>
+  <data name="TryItStop.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Hentikan</value></data>
+  <data name="TryItReply.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Balasan</value></data>
+  <data name="WelcomeTitle.Text" xml:space="preserve"><value>Selamat datang di Portal AI Host</value></data>
+  <data name="WelcomeLead.Text" xml:space="preserve"><value>AI yang tetap di PC Anda</value></data>
+  <data name="WelcomeIntro.Text" xml:space="preserve"><value>Portal AI Host menjalankan model AI di PC ini untuk aplikasi Portal Anda. Tidak perlu pengaturan apa pun: kami akan memilih model yang sesuai dengan PC Anda.</value></data>
+  <data name="WelcomePoint1Title.Text" xml:space="preserve"><value>Berjalan di PC ini</value></data>
+  <data name="WelcomePoint1Body.Text" xml:space="preserve"><value>Model menggunakan kartu grafis dan memori PC Anda sendiri, jadi tetap berfungsi tanpa koneksi internet.</value></data>
+  <data name="WelcomePoint2Title.Text" xml:space="preserve"><value>Tetap privat</value></data>
+  <data name="WelcomePoint2Body.Text" xml:space="preserve"><value>Pertanyaan dan file Anda tidak pernah meninggalkan PC ini.</value></data>
+  <data name="WelcomePoint3Title.Text" xml:space="preserve"><value>Dibuat untuk aplikasi Portal Anda</value></data>
+  <data name="WelcomePoint3Body.Text" xml:space="preserve"><value>Aplikasi Portal Anda dapat menggunakannya untuk menulis, merangkum, dan menjawab, tanpa akun tambahan.</value></data>
+  <data name="WelcomeModelTitle.Text" xml:space="preserve"><value>Pilih model</value></data>
+  <data name="WelcomeModelIntro.Text" xml:space="preserve"><value>Model adalah AI yang melakukan pekerjaan. Inilah yang menurut kami paling sesuai dengan PC Anda.</value></data>
+  <data name="WelcomeNoModel.Text" xml:space="preserve"><value>Kami belum menemukan model yang sesuai dengan PC ini saat ini. Anda dapat mencari lagi nanti di halaman Model.</value></data>
+  <data name="WelcomeDownload.Content" xml:space="preserve"><value>Unduh</value></data>
+  <data name="WelcomeDownload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Unduh model yang direkomendasikan</value></data>
+  <data name="WelcomeChooseLater.Content" xml:space="preserve"><value>Pilih nanti</value></data>
+  <data name="WelcomeChooseLater.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Pilih nanti, pilih model di Model</value></data>
+  <data name="WelcomeKeepGoing.Text" xml:space="preserve"><value>Anda bisa melanjutkan. Pengunduhan tetap berjalan di latar belakang.</value></data>
+  <data name="WelcomeRetry.Content" xml:space="preserve"><value>Coba lagi</value></data>
+  <data name="WelcomeRetry.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Coba lagi, mulai ulang pengunduhan</value></data>
+  <data name="WelcomeWhereTitle.Text" xml:space="preserve"><value>Temukan di dekat jam</value></data>
+  <data name="WelcomeTrayTitle.Text" xml:space="preserve"><value>Cari ikon baki</value></data>
+  <data name="WelcomeTrayBody.Text" xml:space="preserve"><value>Portal AI Host berjalan diam-diam di baki, yaitu ikon kecil di dekat jam. Klik ikonnya untuk membukanya. Jika Anda tidak melihatnya, klik panah untuk menampilkan ikon tersembunyi.</value></data>
+  <data name="WelcomeAskTitle.Text" xml:space="preserve"><value>Aplikasi selalu bertanya dulu</value></data>
+  <data name="WelcomeAskBody.Text" xml:space="preserve"><value>Saat pertama kali aplikasi Portal ingin menggunakan AI di PC ini, Anda akan ditanya. Anda dapat menolak, dan Anda dapat mencabut akses kapan saja.</value></data>
+  <data name="WelcomeStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Mulai saat Windows dimulai, jalankan Portal AI Host saat saya masuk</value></data>
+  <data name="WelcomeSkip.Content" xml:space="preserve"><value>Lewati dulu</value></data>
+  <data name="WelcomeSkip.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Lewati dulu, tutup selamat datang</value></data>
+  <data name="WelcomeBack.Content" xml:space="preserve"><value>Kembali</value></data>
+  <data name="WelcomeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Kembali</value></data>
+  <data name="Vm_VerifiedShort" xml:space="preserve"><value>Aplikasi Portal terverifikasi</value></data>
+  <data name="Vm_ApprovalDetails" xml:space="preserve"><value>Rincian</value></data>
+  <data name="Vm_WelcomeRecommended" xml:space="preserve"><value>Direkomendasikan: model {0}</value></data>
+  <data name="Vm_WelcomeSmall" xml:space="preserve"><value>Kecil</value></data>
+  <data name="Vm_WelcomeMedium" xml:space="preserve"><value>Sedang</value></data>
+  <data name="Vm_WelcomeLarge" xml:space="preserve"><value>Besar</value></data>
+  <data name="Vm_WelcomeDetail" xml:space="preserve"><value>{0}, {1}</value></data>
+  <data name="WelcomeLaterNote.Text" xml:space="preserve"><value>Anda dapat memilih model nanti di Model.</value></data>
+  <data name="WelcomeStartRec.Content" xml:space="preserve"><value>Mulai dengan pengaturan yang direkomendasikan</value></data>
+  <data name="WelcomeStartRec.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Mulai dengan pengaturan yang direkomendasikan</value></data>
+  <data name="WelcomeWhereIntro.Text" xml:space="preserve"><value>Dua hal yang perlu diketahui sebelum Anda mulai.</value></data>
+  <data name="WelcomeStartTitle.Text" xml:space="preserve"><value>Mulai saat Windows dimulai</value></data>
+  <data name="WelcomeStartBody.Text" xml:space="preserve"><value>Menjaga Portal AI Host tetap siap di baki saat Anda masuk, sehingga aplikasi Anda bisa langsung menggunakannya.</value></data>
+  <data name="Vm_WelcomeRecommendedTip" xml:space="preserve"><value>Mengunduh model yang direkomendasikan ({0}) di latar belakang, menjaga Portal AI Host tetap dimulai saat Windows dimulai, dan menutup jendela ini. Anda dapat mengubah semuanya nanti.</value></data>
+  <data name="Vm_WelcomeRecommendedTipNoModel" xml:space="preserve"><value>Menjaga Portal AI Host tetap dimulai saat Windows dimulai dan menutup jendela ini. Anda dapat mengubah semuanya nanti.</value></data>
+  <data name="Vm_WelcomeTitle" xml:space="preserve"><value>Selamat datang di Portal AI Host</value></data>
+  <data name="Vm_WelcomeNext" xml:space="preserve"><value>Berikutnya</value></data>
+  <data name="Vm_WelcomeFinish" xml:space="preserve"><value>Mulai</value></data>
+  <data name="Vm_WelcomeSize" xml:space="preserve"><value>Ukuran unduhan: {0}</value></data>
+  <data name="Vm_AppTitle" xml:space="preserve"><value>Portal AI Host</value></data>
+  <data name="Vm_NoHostTitle" xml:space="preserve"><value>Portal AI Host tidak berjalan</value></data>
+  <data name="Vm_NoHostBody" xml:space="preserve"><value>Helper yang menjalankan model AI dimatikan. Mulai helper agar aplikasi Anda dapat menggunakan AI.</value></data>
+  <data name="Vm_Starting" xml:space="preserve"><value>Memulai...</value></data>
+  <data name="Vm_StartFailed" xml:space="preserve"><value>Tidak dapat memulai host. Coba buka Portal AI Host lagi dari menu Start.</value></data>
+  <data name="Vm_StateReady" xml:space="preserve"><value>Siap</value></data>
+  <data name="Vm_StateBusy" xml:space="preserve"><value>Sedang menjawab</value></data>
+  <data name="Vm_StateLoading" xml:space="preserve"><value>Sedang menyiapkan model</value></data>
+  <data name="Vm_StateIdle" xml:space="preserve"><value>Beristirahat. Model aktif saat aplikasi memintanya.</value></data>
+  <data name="Vm_StateNoModel" xml:space="preserve"><value>Belum ada model</value></data>
+  <data name="Vm_StateDownloading" xml:space="preserve"><value>Mengunduh model</value></data>
+  <data name="Vm_StateError" xml:space="preserve"><value>Terjadi kesalahan</value></data>
+  <data name="Vm_HostVersion" xml:space="preserve"><value>Host versi {0}</value></data>
+  <data name="Vm_ModelNone" xml:space="preserve"><value>Belum ada model yang terpasang</value></data>
+  <data name="Vm_ModelLoaded" xml:space="preserve"><value>{0} sudah dimuat dan siap</value></data>
+  <data name="Vm_ModelLoading" xml:space="preserve"><value>Memuat {0}...</value></data>
+  <data name="Vm_ModelUnloaded" xml:space="preserve"><value>{0} sudah terpasang. Model dimuat saat aplikasi memintanya.</value></data>
+  <data name="Vm_QueueEmpty" xml:space="preserve"><value>Tidak ada permintaan yang menunggu</value></data>
+  <data name="Vm_QueueSome" xml:space="preserve"><value>{0} berjalan, {1} menunggu</value></data>
+  <data name="Vm_QualityName" xml:space="preserve"><value>Kualitas {0} dari 5</value></data>
+  <data name="Vm_DownloadProgress" xml:space="preserve"><value>{0} dari {1}</value></data>
+  <data name="Vm_DownloadEta" xml:space="preserve"><value>{0} dari {1}, sekitar {2} menit lagi</value></data>
+  <data name="Vm_Paused" xml:space="preserve"><value>Dijeda di {0}%</value></data>
+  <data name="Vm_Verifying" xml:space="preserve"><value>Memeriksa unduhan...</value></data>
+  <data name="Vm_Queued" xml:space="preserve"><value>Menunggu untuk mulai...</value></data>
+  <data name="Vm_DownloadFailed" xml:space="preserve"><value>Unduhan belum selesai. {0}</value></data>
+  <data name="Vm_DownloadDone" xml:space="preserve"><value>Unduhan selesai.</value></data>
+  <data name="Vm_InUse" xml:space="preserve"><value>Sedang digunakan</value></data>
+  <data name="Vm_Installed" xml:space="preserve"><value>Terpasang</value></data>
+  <data name="Vm_BestForYou" xml:space="preserve"><value>Terbaik untuk PC Anda</value></data>
+  <data name="Vm_StorageLine" xml:space="preserve"><value>Model menggunakan {2} di {0}. {1} kosong di drive itu.</value></data>
+  <data name="Vm_ExistingCopy" xml:space="preserve"><value>Salinan {0} sudah ada di PC ini. Host akan menggunakannya tanpa mengunduh ulang.</value></data>
+  <data name="Vm_UpgradeOffer" xml:space="preserve"><value>{0} lebih cocok. Model Anda saat ini tetap digunakan sampai yang baru siap.</value></data>
+  <data name="Vm_CancelDlTitle" xml:space="preserve"><value>Hentikan unduhan ini?</value></data>
+  <data name="Vm_CancelDlBody" xml:space="preserve"><value>Bagian yang sudah diunduh akan dibuang.</value></data>
+  <data name="Vm_CancelDlYes" xml:space="preserve"><value>Hentikan unduhan</value></data>
+  <data name="Vm_CancelDlKeep" xml:space="preserve"><value>Lanjutkan mengunduh</value></data>
+  <data name="Vm_AutoDownload" xml:space="preserve"><value>Unduh {0}</value></data>
+  <data name="Vm_AutoCancel" xml:space="preserve"><value>Hentikan pengunduhan {0}</value></data>
+  <data name="Vm_AutoUse" xml:space="preserve"><value>Gunakan {0}</value></data>
+  <data name="Vm_Added" xml:space="preserve"><value>Ditambahkan {0}</value></data>
+  <data name="Vm_LastUsed" xml:space="preserve"><value>Terakhir digunakan {0}</value></data>
+  <data name="Vm_NeverUsed" xml:space="preserve"><value>Belum pernah digunakan</value></data>
+  <data name="Vm_AutoRevoke" xml:space="preserve"><value>Cabut akses untuk {0}</value></data>
+  <data name="Vm_AutoAllow" xml:space="preserve"><value>Izinkan {0}</value></data>
+  <data name="Vm_AutoDeny" xml:space="preserve"><value>Tolak {0}</value></data>
+  <data name="Vm_RevokeTitle" xml:space="preserve"><value>Cabut akses untuk {0}?</value></data>
+  <data name="Vm_RevokeBody" xml:space="preserve"><value>{0} tidak akan berfungsi dengan host AI sampai Anda mengizinkannya lagi.</value></data>
+  <data name="Vm_RevokeYes" xml:space="preserve"><value>Cabut akses</value></data>
+  <data name="Vm_Cancel" xml:space="preserve"><value>Batal</value></data>
+  <data name="Vm_Verified" xml:space="preserve"><value>Aplikasi terpasang ({0}). Bukan aplikasi Portal.</value></data>
+  <data name="Vm_VerifiedPortal" xml:space="preserve"><value>Aplikasi Portal terverifikasi ({0})</value></data>
+  <data name="Vm_Unverified" xml:space="preserve"><value>Belum diverifikasi. Berjalan dari {0}. Izinkan hanya jika Anda sendiri yang menjalankannya.</value></data>
+  <data name="Vm_ApprovalTitle" xml:space="preserve"><value>Izinkan {0} menggunakan AI di PC ini?</value></data>
+  <data name="Vm_ApprovalBody" xml:space="preserve"><value>{0} ingin menggunakan model AI di PC ini.</value></data>
+  <data name="Vm_ApprovalReason" xml:space="preserve"><value>Alasan yang diberikan: {0}</value></data>
+  <data name="Vm_Allow" xml:space="preserve"><value>Izinkan</value></data>
+  <data name="Vm_Deny" xml:space="preserve"><value>Jangan izinkan</value></data>
+  <data name="Vm_Later" xml:space="preserve"><value>Putuskan nanti</value></data>
+  <data name="Vm_Idle_Keep" xml:space="preserve"><value>Tetap muat model</value></data>
+  <data name="Vm_Idle_5" xml:space="preserve"><value>Setelah 5 menit</value></data>
+  <data name="Vm_Idle_10" xml:space="preserve"><value>Setelah 10 menit</value></data>
+  <data name="Vm_Saved" xml:space="preserve"><value>Tersimpan</value></data>
+  <data name="Vm_SaveFailed" xml:space="preserve"><value>Tidak dapat menyimpan. Apakah host sedang berjalan?</value></data>
+  <data name="Vm_FolderTitle" xml:space="preserve"><value>Gunakan folder ini untuk model?</value></data>
+  <data name="Vm_FolderBody" xml:space="preserve"><value>Host akan menggunakan {0} untuk model. Model yang sudah Anda miliki tidak dipindahkan atau dihapus.</value></data>
+  <data name="Vm_FolderYes" xml:space="preserve"><value>Gunakan folder</value></data>
+  <data name="TryItClear.Content" xml:space="preserve"><value>Hapus</value></data>
+  <data name="TryItClear.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Hapus percakapan</value></data>
+  <data name="TryItSuggestLabel.Text" xml:space="preserve"><value>Tidak yakin apa yang harus ditanyakan? Coba salah satu ini.</value></data>
+  <data name="HomeTryItButton.Content" xml:space="preserve"><value>Coba</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Coba model dengan pertanyaan</value></data>
+  <data name="Vm_TrySuggest1" xml:space="preserve"><value>Tulis satu kalimat ramah tentang laut.</value></data>
+  <data name="Vm_TrySuggest2" xml:space="preserve"><value>Jelaskan dalam dua kalimat apa fungsi router.</value></data>
+  <data name="Vm_TrySuggest3" xml:space="preserve"><value>Beri saya tiga nama untuk seekor kucing.</value></data>
+  <data name="Vm_TryStats" xml:space="preserve"><value>Kata pertama muncul setelah {0} dtk, lalu {1} token per detik.</value></data>
+  <data name="Vm_TryStatsShort" xml:space="preserve"><value>Kata pertama muncul setelah {0} dtk.</value></data>
+  <data name="Vm_TryStatsStopped" xml:space="preserve"><value>Dihentikan. {0}</value></data>
+  <data name="TryItThinking.Header" xml:space="preserve"><value>Yang dipikirkan model terlebih dahulu</value></data>
+  <data name="Vm_TryWorking" xml:space="preserve"><value>Sedang diproses. PC kecil bisa membutuhkan waktu satu menit.</value></data>
+  <data name="Vm_TryThinking" xml:space="preserve"><value>Sedang dipikirkan...</value></data>
+  <data name="Vm_TryOnlyThinking" xml:space="preserve"><value>Model menghabiskan seluruh batas waktunya untuk berpikir tanpa memberi jawaban. Coba pertanyaan yang lebih singkat.</value></data>
+  <data name="Vm_TryEmpty" xml:space="preserve"><value>Model mengirim jawaban kosong. Coba tanyakan lagi.</value></data>
+  <data name="Vm_TryFailed" xml:space="preserve"><value>Host tidak dapat menjawab: {0}</value></data>
+  <data name="Vm_HwChecking" xml:space="preserve"><value>Memeriksa PC Anda...</value></data>
+  <data name="Vm_HwUnknown" xml:space="preserve"><value>tidak dapat dibaca</value></data>
+  <data name="Vm_HwMemory" xml:space="preserve"><value>Memori: {0}</value></data>
+  <data name="Vm_HwGraphics" xml:space="preserve"><value>Grafis: {0}</value></data>
+  <data name="Vm_HwCores" xml:space="preserve"><value>Inti prosesor: {0}</value></data>
+  <data name="Vm_HwDisk" xml:space="preserve"><value>Ruang disk kosong: {0}</value></data>
+  <data name="HomeWelcomeTitle.Text" xml:space="preserve"><value>Siapkan AI pribadi Anda di PC ini</value></data>
+  <data name="HomeWelcomeBody.Text" xml:space="preserve"><value>Portal AI Host menyimpan satu model AI di PC ini dan membagikannya ke aplikasi Portal Anda, sehingga setiap aplikasi tidak perlu salinan sendiri. Semuanya berjalan di sini: kata-kata Anda tidak pernah meninggalkan PC ini, dan tidak perlu akun cloud.</value></data>
+  <data name="HomeCatalogueBar.Title" xml:space="preserve"><value>Daftar model tidak tersedia</value></data>
+  <data name="HomeCatalogueBar.Message" xml:space="preserve"><value>Host tidak dapat memuat daftar model tepercaya, jadi belum ada yang bisa direkomendasikan. Periksa koneksi internet Anda lalu coba lagi.</value></data>
+  <data name="HomeTryAgainButton.Content" xml:space="preserve"><value>Coba lagi</value></data>
+  <data name="HomeRecommendedLabel.Text" xml:space="preserve"><value>DIREKOMENDASIKAN UNTUK PC INI</value></data>
+  <data name="HomeNoSpaceBar.Title" xml:space="preserve"><value>Ruang disk tidak cukup</value></data>
+  <data name="HomeChangeFolderButton.Content" xml:space="preserve"><value>Ubah folder di Pengaturan</value></data>
+  <data name="HomeDownloadButton.Content" xml:space="preserve"><value>Unduh</value></data>
+  <data name="HomeSeeAllModelsLink.Content" xml:space="preserve"><value>Lihat semua model</value></data>
+  <data name="HomeSeeAllModelsLink2.Content" xml:space="preserve"><value>Lihat semua model</value></data>
+  <data name="HomeActiveModelLabel.Text" xml:space="preserve"><value>MODEL AKTIF</value></data>
+  <data name="HomeAppsLabel.Text" xml:space="preserve"><value>APLIKASI TERHUBUNG</value></data>
+  <data name="HomeSeeAppsLink.Content" xml:space="preserve"><value>Lihat perangkat dan aplikasi</value></data>
+  <data name="HomeRequestsLabel.Text" xml:space="preserve"><value>PERMINTAAN</value></data>
+  <data name="Vm_HomeLoaded" xml:space="preserve"><value>Dimuat dan siap</value></data>
+  <data name="Vm_HomeLoading" xml:space="preserve"><value>Sedang bersiap...</value></data>
+  <data name="Vm_HomeUnloaded" xml:space="preserve"><value>Belum dimuat. Model dimuat saat aplikasi memintanya.</value></data>
+  <data name="Vm_HomeKeepLoaded" xml:space="preserve"><value>Tetap dimuat agar jawaban cepat dimulai.</value></data>
+  <data name="Vm_HomeIdleUnload" xml:space="preserve"><value>Membebaskan memori setelah {0} menit tanpa permintaan.</value></data>
+  <data name="Vm_HomeApps" xml:space="preserve"><value>{0} aplikasi dapat menggunakan model ini</value></data>
+  <data name="Vm_HomeApps1" xml:space="preserve"><value>1 aplikasi dapat menggunakan model ini</value></data>
+  <data name="Vm_HomeAppsNone" xml:space="preserve"><value>Belum ada aplikasi yang terhubung. Mereka meminta izin Anda pertama kali.</value></data>
+  <data name="Vm_HomeNoSpace" xml:space="preserve"><value>Model ini membutuhkan {0} tetapi hanya {1} yang kosong. Kosongkan sebagian ruang, atau pilih folder model lain di Pengaturan.</value></data>
+  <data name="Vm_NoGpu" xml:space="preserve"><value>tidak ditemukan</value></data>
+  <data name="Vm_HostMissing" xml:space="preserve"><value>Program host tidak ada di instalasi ini. Instal ulang Portal AI Host untuk memperbaikinya.</value></data>
+  <data name="Vm_HostMissingTestRun" xml:space="preserve"><value>Ini adalah uji coba dan tidak ada program host yang ditemukan di sebelah aplikasi. Host yang terpasang tidak dimulai untuk uji coba.</value></data>
+  <data name="Vm_StartTimedOut" xml:space="preserve"><value>Host sudah mulai tetapi tidak menjawab tepat waktu. Tunggu sebentar, lalu coba lagi.</value></data>
+  <data name="Vm_HostExitTestRoot" xml:space="preserve"><value>Host menolak untuk mulai: folder data uji tidak ada atau tidak ditandai sebagai folder uji.</value></data>
+  <data name="Vm_HostExitStartFailed" xml:space="preserve"><value>Host tidak dapat mulai. Mulai ulang PC Anda lalu coba lagi. Jika terus terjadi, instal ulang Portal AI Host.</value></data>
+  <data name="Vm_HostExitOtherUser" xml:space="preserve"><value>Pengguna Windows lain di PC ini sudah menjalankan Portal AI Host. Minta mereka menutupnya, atau masuk sebagai pengguna itu.</value></data>
+  <data name="Vm_CatalogueUnavailable" xml:space="preserve"><value>Daftar model tidak tersedia: host tidak dapat memuat daftar model tepercaya. Model yang sudah ada di PC ini tetap berfungsi.</value></data>
+  <data name="Vm_RemoveTitle" xml:space="preserve"><value>Hapus model ini?</value></data>
+  <data name="Vm_RemoveBody" xml:space="preserve"><value>{0} akan dihapus dari PC ini. Hanya file yang diunduh host yang dihapus; file model yang Anda tambahkan sendiri hanya dihapus dari daftar dan tetap di tempatnya.</value></data>
+  <data name="Vm_RemoveYes" xml:space="preserve"><value>Hapus</value></data>
+  <data name="Vm_AutoRemove" xml:space="preserve"><value>Hapus {0}</value></data>
+  <data name="Vm_FolderSavedNote" xml:space="preserve"><value>Tersimpan. Setelah host dimulai ulang, unduhan baru akan masuk ke {1}. Model yang sudah diunduh tidak dipindahkan atau dihapus; tetap berada di {0} dan tetap tercantum di halaman Model, sehingga Anda bisa menghapusnya di sana.</value></data>
+  <data name="Vm_FolderRefused" xml:space="preserve"><value>Pengaturan lain sudah disimpan, tetapi folder model itu tidak dapat digunakan: {0}</value></data>
+  <data name="Vm_Startup_Unavailable" xml:space="preserve"><value>Mulai saat Windows dimulai hanya tersedia di aplikasi yang terpasang.</value></data>
+  <data name="Vm_Startup_DisabledByUser" xml:space="preserve"><value>Mulai saat Windows dimulai dinonaktifkan di Pengelola Tugas. Aktifkan kembali di sana (Aplikasi startup).</value></data>
+  <data name="Vm_Startup_Policy" xml:space="preserve"><value>Mulai saat Windows dimulai diatur oleh organisasi Anda.</value></data>
+  <data name="Vm_DefaultFolder" xml:space="preserve"><value>folder bawaan</value></data>
+  <data name="Vm_Publisher" xml:space="preserve"><value>Penerbit: {0}</value></data>
+  <data name="Vm_PublisherUnknown" xml:space="preserve"><value>Penerbit: tidak diketahui</value></data>
+  <data name="NavAbout.Content" xml:space="preserve"><value>Tentang</value></data>
+  <data name="NavAbout.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Tentang</value></data>
+  <data name="AppMenuButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Menu aplikasi</value></data>
+  <data name="Vm_AppMenuTip" xml:space="preserve"><value>Menu aplikasi</value></data>
+  <data name="MenuSettings.Text" xml:space="preserve"><value>Pengaturan</value></data>
+  <data name="MenuShortcuts.Text" xml:space="preserve"><value>Pintasan keyboard</value></data>
+  <data name="MenuWhatsNew.Text" xml:space="preserve"><value>Yang baru</value></data>
+  <data name="MenuAbout.Text" xml:space="preserve"><value>Tentang Portal AI Host</value></data>
+  <data name="Vm_ShortcutsTitle" xml:space="preserve"><value>Pintasan keyboard</value></data>
+  <data name="Vm_ShortcutsBody" xml:space="preserve"><value>Ctrl+1: Beranda
+Ctrl+2: Model
+Ctrl+3: Perangkat dan aplikasi
+Ctrl+4: Coba
+Ctrl+, : Pengaturan
+F1: Tentang
+Esc: tutup Yang baru atau dialog</value></data>
+  <data name="Vm_Close" xml:space="preserve"><value>Tutup</value></data>
+  <data name="SettingsGeneralHeader.Text" xml:space="preserve"><value>Umum</value></data>
+  <data name="SettingsResetGeneral.Content" xml:space="preserve"><value>Atur ulang ke bawaan</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Atur ulang pengaturan umum ke bawaan</value></data>
+  <data name="SettingsNotificationsHeader.Text" xml:space="preserve"><value>Notifikasi</value></data>
+  <data name="SettingsResetNotifications.Content" xml:space="preserve"><value>Atur ulang ke bawaan</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Atur ulang ke bawaan, pengaturan notifikasi</value></data>
+  <data name="SettingsNotificationsHelp.Text" xml:space="preserve"><value>Pesan singkat dari Windows saat ada yang membutuhkan perhatian Anda dan jendela ini ditutup. Pesan tetap senyap saat program layar penuh berada di depan, dan tidak diulang lebih dari sekali setiap beberapa menit.</value></data>
+  <data name="SettingsNotifyDownloads.Header" xml:space="preserve"><value>Unduhan model selesai atau gagal</value></data>
+  <data name="SettingsNotifyDownloads.OnContent" xml:space="preserve"><value>Aktif</value></data>
+  <data name="SettingsNotifyDownloads.OffContent" xml:space="preserve"><value>Nonaktif</value></data>
+  <data name="SettingsNotifyDownloads.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Beri tahu saat unduhan model selesai atau gagal</value></data>
+  <data name="SettingsNotifyApprovals.Header" xml:space="preserve"><value>Aplikasi meminta persetujuan</value></data>
+  <data name="SettingsNotifyApprovals.OnContent" xml:space="preserve"><value>Aktif</value></data>
+  <data name="SettingsNotifyApprovals.OffContent" xml:space="preserve"><value>Nonaktif</value></data>
+  <data name="SettingsNotifyApprovals.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Beri tahu saat aplikasi meminta persetujuan</value></data>
+  <data name="SettingsNotifyProblems.Header" xml:space="preserve"><value>Mesin AI berhenti atau pemeriksaan gagal</value></data>
+  <data name="SettingsNotifyProblems.OnContent" xml:space="preserve"><value>Aktif</value></data>
+  <data name="SettingsNotifyProblems.OffContent" xml:space="preserve"><value>Nonaktif</value></data>
+  <data name="SettingsNotifyProblems.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Beri tahu saat mesin AI berhenti atau pemeriksaan gagal</value></data>
+  <data name="SettingsPrivacyHeader.Text" xml:space="preserve"><value>Privasi</value></data>
+  <data name="SettingsResetPrivacy.Content" xml:space="preserve"><value>Atur ulang ke bawaan</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Atur ulang ke bawaan, pengaturan privasi</value></data>
+  <data name="SettingsCrashReports.Header" xml:space="preserve"><value>Kirim laporan crash</value></data>
+  <data name="SettingsCrashReports.OnContent" xml:space="preserve"><value>Aktif</value></data>
+  <data name="SettingsCrashReports.OffContent" xml:space="preserve"><value>Nonaktif</value></data>
+  <data name="SettingsCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Kirim laporan crash</value></data>
+  <data name="SettingsCrashReportsHelp.Text" xml:space="preserve"><value>Jika Portal AI Host mengalami crash, laporan singkat membantu kami memperbaikinya dengan cepat. Laporan tidak pernah menyertakan file Anda atau apa yang Anda ketik. Mematikan ini langsung menghentikan pengiriman laporan.</value></data>
+  <data name="CrashWhatsSent.Content" xml:space="preserve"><value>Yang dikirim</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Yang dikirim, membuka halaman privasi</value></data>
+  <data name="WelcomeCrashReports.Content" xml:space="preserve"><value>Kirim laporan crash agar kami bisa memperbaiki masalah dengan cepat. Laporan tidak pernah menyertakan file Anda atau apa yang Anda ketik.</value></data>
+  <data name="WelcomeCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Kirim laporan crash agar kami bisa memperbaiki masalah dengan cepat. Laporan tidak pernah menyertakan file Anda atau apa yang Anda ketik.</value></data>
+  <data name="SettingsModelsHeader.Text" xml:space="preserve"><value>Folder model</value></data>
+  <data name="SettingsResetFolder.Content" xml:space="preserve"><value>Atur ulang ke bawaan</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Atur ulang folder model ke bawaan</value></data>
+  <data name="SettingsFolderHelp.Text" xml:space="preserve"><value>Berlaku saat Anda menekan Enter atau meninggalkan kotak. Kosongkan untuk folder bawaan. Model yang sudah Anda miliki tetap di tempatnya kecuali Anda memilih untuk memindahkannya.</value></data>
+  <data name="SettingsAppearanceHeader.Text" xml:space="preserve"><value>Tampilan</value></data>
+  <data name="SettingsResetAppearance.Content" xml:space="preserve"><value>Atur ulang ke bawaan</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Atur ulang tampilan ke bawaan</value></data>
+  <data name="SettingsTheme.Header" xml:space="preserve"><value>Tema</value></data>
+  <data name="SettingsTheme.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Tema</value></data>
+  <data name="SettingsMaterial.Header" xml:space="preserve"><value>Material jendela</value></data>
+  <data name="SettingsMaterial.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Material jendela</value></data>
+  <data name="SettingsCorners.Header" xml:space="preserve"><value>Sudut</value></data>
+  <data name="SettingsCorners.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Sudut</value></data>
+  <data name="SettingsDensity.Header" xml:space="preserve"><value>Kerapatan</value></data>
+  <data name="SettingsDensity.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Kerapatan</value></data>
+  <data name="SettingsTextSize.Header" xml:space="preserve"><value>Ukuran teks</value></data>
+  <data name="SettingsTextSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ukuran teks</value></data>
+  <data name="SettingsMotion.Header" xml:space="preserve"><value>Gerakan</value></data>
+  <data name="SettingsMotion.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Gerakan</value></data>
+  <data name="SettingsAppearanceHelp.Text" xml:space="preserve"><value>Perubahan langsung berlaku. Kontras tinggi Windows selalu memakai warna sistem yang solid, apa pun pilihan Anda di sini. Ukuran teks menambah skala teks Windows Anda.</value></data>
+  <data name="Vm_Theme_System" xml:space="preserve"><value>Ikuti pengaturan Windows saya (bawaan)</value></data>
+  <data name="Vm_Theme_Light" xml:space="preserve"><value>Terang</value></data>
+  <data name="Vm_Theme_Dark" xml:space="preserve"><value>Gelap</value></data>
+  <data name="Vm_Material_Mica" xml:space="preserve"><value>Mica (bawaan)</value></data>
+  <data name="Vm_Material_Acrylic" xml:space="preserve"><value>Akrilik</value></data>
+  <data name="Vm_Material_Solid" xml:space="preserve"><value>Solid</value></data>
+  <data name="Vm_Corners_Rounded" xml:space="preserve"><value>Membulat (bawaan)</value></data>
+  <data name="Vm_Corners_Square" xml:space="preserve"><value>Persegi</value></data>
+  <data name="Vm_Corners_ExtraRound" xml:space="preserve"><value>Sangat membulat</value></data>
+  <data name="Vm_Density_Compact" xml:space="preserve"><value>Ringkas</value></data>
+  <data name="Vm_Density_Standard" xml:space="preserve"><value>Standar (bawaan)</value></data>
+  <data name="Vm_Density_Comfortable" xml:space="preserve"><value>Nyaman</value></data>
+  <data name="Vm_Text_Normal" xml:space="preserve"><value>Normal (bawaan)</value></data>
+  <data name="Vm_Text_Larger" xml:space="preserve"><value>Lebih besar</value></data>
+  <data name="Vm_Text_Largest" xml:space="preserve"><value>Terbesar</value></data>
+  <data name="Vm_Motion_Follow" xml:space="preserve"><value>Ikuti Windows (bawaan)</value></data>
+  <data name="Vm_Motion_Reduced" xml:space="preserve"><value>Dikurangi</value></data>
+  <data name="Vm_Motion_Off" xml:space="preserve"><value>Nonaktif</value></data>
+  <data name="Vm_FolderNotFull" xml:space="preserve"><value>Ketik jalur folder lengkap, misalnya D:\Models.</value></data>
+  <data name="AboutTitle.Text" xml:space="preserve"><value>Tentang Portal AI Host</value></data>
+  <data name="Vm_AboutVersion" xml:space="preserve"><value>Portal AI Host versi {0}</value></data>
+  <data name="Vm_AboutLicenceState" xml:space="preserve"><value>Gratis. Tidak perlu akun atau pembelian.</value></data>
+  <data name="Vm_AboutCopyText" xml:space="preserve"><value>Portal AI Host {0}</value></data>
+  <data name="Vm_AboutCopied" xml:space="preserve"><value>Versi disalin.</value></data>
+  <data name="AboutCopyVersion.Content" xml:space="preserve"><value>Salin versi</value></data>
+  <data name="AboutWhatsNew.Content" xml:space="preserve"><value>Yang baru</value></data>
+  <data name="AboutHelpHeader.Text" xml:space="preserve"><value>Bantuan dan privasi</value></data>
+  <data name="AboutFeedback.Content" xml:space="preserve"><value>Kirim masukan atau usulkan ide</value></data>
+  <data name="AboutPrivacy.Content" xml:space="preserve"><value>Kebijakan privasi</value></data>
+  <data name="AboutDataFolder.Content" xml:space="preserve"><value>Buka folder data</value></data>
+  <data name="AboutLicencesHeader.Text" xml:space="preserve"><value>Lisensi</value></data>
+  <data name="Vm_ThirdParty" xml:space="preserve"><value>Portal AI Host menyertakan llama.cpp (lisensi MIT), yang menjalankan model AI di PC Anda. Model diunduh dari Hugging Face berdasarkan lisensinya masing-masing (Apache 2.0, MIT atau CreativeML OpenRAIL-M, yang pembatasan penggunaannya tetap berlaku). Pembuatan gambar dan video menggunakan stable-diffusion.cpp (lisensi MIT) dan ggml (lisensi MIT). Alat video menggunakan FFmpeg (LGPL 3.0 atau lebih baru). Fitur suara menggunakan sherpa-onnx (Apache 2.0), suara Kokoro (Apache 2.0) dan Pocket TTS oleh Kyutai (CC-BY 4.0, kredit: Kyutai). Aplikasi dibangun dengan Windows App SDK, .NET dan pustaka Community Toolkit MVVM, semuanya berlisensi MIT.</value></data>
+  <data name="AboutLlamaLink.Content" xml:space="preserve"><value>llama.cpp di GitHub</value></data>
+  <data name="AboutLlamaExpander.Header" xml:space="preserve"><value>Teks lisensi llama.cpp</value></data>
+  <data name="Vm_LlamaLicence" xml:space="preserve"><value>MIT License
+
+Copyright (c) 2023-2026 The ggml authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</value></data>
+  <data name="Vm_WhatsNewHeading" xml:space="preserve"><value>Yang baru di Portal AI Host {0}</value></data>
+  <data name="Vm_Wn1Title" xml:space="preserve"><value>Terima kasih</value></data>
+  <data name="Vm_Wn1Body" xml:space="preserve"><value>Terima kasih atas masukan dan laporan Anda. Semuanya membentuk pembaruan ini.</value></data>
+  <data name="Vm_Wn2Title" xml:space="preserve"><value>Video sebagai MP4, dan menggabungkan klip</value></data>
+  <data name="Vm_Wn2Body" xml:space="preserve"><value>Tugas video kini dapat menghasilkan file MP4, gambar bingkai terakhir, dan beberapa klip yang digabung menjadi satu video.</value></data>
+  <data name="Vm_Wn3Title" xml:space="preserve"><value>Pengaturan kualitas video</value></data>
+  <data name="Vm_Wn3Body" xml:space="preserve"><value>Pilih cara PC Anda mengenkode video MP4, misalnya kualitasnya, dan encoder video yang digunakan.</value></data>
+  <data name="Vm_Wn4Title" xml:space="preserve"><value>Unggahan untuk aplikasi lokal</value></data>
+  <data name="Vm_Wn4Body" xml:space="preserve"><value>Aplikasi di PC ini kini dapat menyerahkan file besar secara langsung, bukan mengirimnya dalam permintaan. Unggahan dihapus setelah beberapa waktu.</value></data>
+  <data name="Vm_Wn5Title" xml:space="preserve"><value>Kartu PC Rumah tetap sinkron</value></data>
+  <data name="Vm_Wn5Body" xml:space="preserve"><value>Saat Anda mengubah beberapa pengaturan PC Rumah dengan cepat, jawaban yang lambat tidak lagi menampilkan nilai lama.</value></data>
+  <data name="Vm_Wn6Title" xml:space="preserve"><value>Lebih baik di jendela sempit</value></data>
+  <data name="Vm_Wn6Body" xml:space="preserve"><value>Menu samping dilipat saat jendela sempit, dan tautan atur ulang di Pengaturan turun ke bawah judulnya.</value></data>
+  <data name="Vm_Wn7Title" xml:space="preserve"><value>Lebih jelas untuk pembaca layar</value></data>
+  <data name="Vm_Wn7Body" xml:space="preserve"><value>Bagian kesehatan Beranda, serta tombol di Beranda dan Pengaturan, kini memiliki nama dan teks bantuan untuk pembaca layar dan tooltip.</value></data>
+  <data name="Vm_Wn8Title" xml:space="preserve"><value>Gunakan PC rumah Anda dari laptop</value></data>
+  <data name="Vm_Wn8Body" xml:space="preserve"><value>Pasangkan laptop dengan PC rumah Anda sekali saja. Aplikasi di laptop lalu menggunakan AI PC rumah, di rumah maupun di luar, dan kembali ke model laptop sendiri jika Anda memilih.</value></data>
+  <data name="Vm_Wn9Title" xml:space="preserve"><value>Perangkat di PC ini</value></data>
+  <data name="Vm_Wn9Body" xml:space="preserve"><value>Lihat setiap laptop yang dipasangkan di kartunya sendiri. Jeda, atur batas harian dan jam tenang, pilih model yang boleh digunakan, atau cabut model yang dimuatnya.</value></data>
+  <data name="Vm_Wn10Title" xml:space="preserve"><value>Dua model sekaligus</value></data>
+  <data name="Vm_Wn10Body" xml:space="preserve"><value>Laptop tepercaya dapat menyimpan model kedua tetap dimuat di PC Anda, misalnya satu di kartu grafis dan satu di memori. Model Anda sendiri tidak pernah didorong keluar.</value></data>
+  <data name="Vm_Wn11Title" xml:space="preserve"><value>Penanganan perangkat yang lebih aman</value></data>
+  <data name="Vm_Wn11Body" xml:space="preserve"><value>Menghapus perangkat menghentikan permintaan yang masih berjalan darinya, dan memasangkan laptop dengan PC rumah baru tidak lagi berisiko mengirim token akses PC lama kepadanya.</value></data>
+  <data name="Vm_Wn12Title" xml:space="preserve"><value>Mode gaming bekerja di game berjendela</value></data>
+  <data name="Vm_Wn12Body" xml:space="preserve"><value>Aktifkan mode gaming dan perangkat lain diberi tahu bahwa PC Anda sibuk saat game berjalan, termasuk game dalam jendela.</value></data>
+  <data name="Vm_Wn13Title" xml:space="preserve"><value>Kunci akses relay</value></data>
+  <data name="Vm_Wn13Body" xml:space="preserve"><value>Hanya perangkat yang dipasangkan dengan kunci Anda yang dapat mengakses PC ini dari luar rumah. Buat kunci baru kapan saja.</value></data>
+  <data name="Vm_Wn14Title" xml:space="preserve"><value>Lihat memori Anda sekilas</value></data>
+  <data name="Vm_Wn14Body" xml:space="preserve"><value>Bilah di halaman Model menampilkan berapa banyak memori dan memori grafis yang dipakai model yang dimuat, dibandingkan batas Anda.</value></data>
+  <data name="Vm_WnShowMe" xml:space="preserve"><value>Tunjukkan</value></data>
+  <data name="Vm_WnShowMeName" xml:space="preserve"><value>Tunjukkan: {0}</value></data>
+  <data name="WhatsNewDone.Content" xml:space="preserve"><value>Mengerti</value></data>
+  <data name="Vm_RevokedBar" xml:space="preserve"><value>Akses dicabut untuk {0}.</value></data>
+  <data name="Vm_AutoUndo" xml:space="preserve"><value>Batalkan pencabutan akses untuk {0}</value></data>
+  <data name="AppsUndo.Content" xml:space="preserve"><value>Batalkan</value></data>
+  <data name="Vm_RemoveFrees" xml:space="preserve"><value>Ini membebaskan {0}.</value></data>
+  <data name="Vm_StepOf" xml:space="preserve"><value>Langkah {0} dari {1}</value></data>
+  <data name="Vm_LiveIdle" xml:space="preserve"><value>Saat ini tidak ada yang sedang ditulis</value></data>
+  <data name="Vm_LiveBusy" xml:space="preserve"><value>Sedang menulis jawaban</value></data>
+  <data name="Vm_LiveGenerating" xml:space="preserve"><value>{0} sedang membuat jawaban</value></data>
+  <data name="Vm_LiveSpeed" xml:space="preserve"><value>Sekitar {0} kata per detik</value></data>
+  <data name="Vm_LiveMemory" xml:space="preserve"><value>{0} dari {1}</value></data>
+  <data name="Vm_LiveMemoryNoTotal" xml:space="preserve"><value>{0}</value></data>
+  <data name="Vm_LivePendingLoad" xml:space="preserve"><value>Memuat...</value></data>
+  <data name="Vm_LivePendingUnload" xml:space="preserve"><value>Membongkar...</value></data>
+  <data name="Vm_LiveLoadFailed" xml:space="preserve"><value>Model tidak dapat dimuat. {0}</value></data>
+  <data name="Vm_LiveUnloadFailed" xml:space="preserve"><value>Model tidak dapat dibongkar. {0}</value></data>
+  <data name="Vm_TodayNone" xml:space="preserve"><value>Belum ada permintaan hari ini.</value></data>
+  <data name="Vm_TodayRow1" xml:space="preserve"><value>{0} permintaan, terakhir terlihat {1}</value></data>
+  <data name="Vm_TodayRow" xml:space="preserve"><value>{0} permintaan, terakhir terlihat {1}</value></data>
+  <data name="Vm_SeenNever" xml:space="preserve"><value>belum pernah</value></data>
+  <data name="Vm_SeenNow" xml:space="preserve"><value>baru saja</value></data>
+  <data name="Vm_SeenMinutes" xml:space="preserve"><value>{0} menit lalu</value></data>
+  <data name="Vm_SeenHours" xml:space="preserve"><value>{0} jam lalu</value></data>
+  <data name="HomeLiveTitle.Text" xml:space="preserve"><value>SAAT INI</value></data>
+  <data name="Vm_LiveRamName" xml:space="preserve"><value>Memori yang dipakai model: {0}</value></data>
+  <data name="Vm_LiveVramName" xml:space="preserve"><value>Memori grafis yang dipakai model: {0}</value></data>
+  <data name="HomeRamLabel.Text" xml:space="preserve"><value>Memori yang dipakai model</value></data>
+  <data name="HomeVramLabel.Text" xml:space="preserve"><value>Memori grafis yang dipakai model</value></data>
+  <data name="HomeUnloadButton.Content" xml:space="preserve"><value>Bongkar sekarang</value></data>
+  <data name="HomeLoadButton.Content" xml:space="preserve"><value>Muat sekarang</value></data>
+  <data name="HomeActionErrorBar.Title" xml:space="preserve"><value>Itu tidak berhasil</value></data>
+  <data name="HomeTodayLabel.Text" xml:space="preserve"><value>HARI INI</value></data>
+  <data name="Vm_TrayReady" xml:space="preserve"><value>Siap · {0} dimuat</value></data>
+  <data name="Vm_TrayBusy" xml:space="preserve"><value>Sibuk · {0}</value></data>
+  <data name="Vm_TrayBusyOther" xml:space="preserve"><value>Sibuk</value></data>
+  <data name="Vm_TrayLoading" xml:space="preserve"><value>Memuat · {0}</value></data>
+  <data name="Vm_TrayIdle" xml:space="preserve"><value>Siap · {0} dimuat saat diminta</value></data>
+  <data name="Vm_TrayNoModel" xml:space="preserve"><value>Belum ada model</value></data>
+  <data name="Vm_TrayOff" xml:space="preserve"><value>Nonaktif</value></data>
+  <data name="Vm_TrayLastNone" xml:space="preserve"><value>Belum ada permintaan hari ini</value></data>
+  <data name="Vm_TrayLast" xml:space="preserve"><value>{0}, {1}</value></data>
+  <data name="TrayModelLabel.Text" xml:space="preserve"><value>Model</value></data>
+  <data name="TrayMemoryLabel.Text" xml:space="preserve"><value>Memori</value></data>
+  <data name="TrayLastLabel.Text" xml:space="preserve"><value>Permintaan terakhir</value></data>
+  <data name="TrayQueueLabel.Text" xml:space="preserve"><value>Antrean</value></data>
+  <data name="TrayOpenButton.Content" xml:space="preserve"><value>Buka aplikasi</value></data>
+  <data name="TrayUnloadButton.Content" xml:space="preserve"><value>Bongkar model</value></data>
+  <data name="TrayWindowTitle" xml:space="preserve"><value>Status Portal AI Host</value></data>
+  <data name="ModelsDownloadedHeader.Text" xml:space="preserve"><value>Sudah diunduh</value></data>
+  <data name="ModelsMoreHeader.Text" xml:space="preserve"><value>Model yang bisa Anda tambahkan</value></data>
+  <data name="ModelCheck.Content" xml:space="preserve"><value>Periksa berkas</value></data>
+  <data name="ModelRedownload.Content" xml:space="preserve"><value>Unduh ulang</value></data>
+  <data name="ModelCancelCheck.Content" xml:space="preserve"><value>Hentikan pemeriksaan</value></data>
+  <data name="ModelDetails.Header" xml:space="preserve"><value>Rincian</value></data>
+  <data name="ModelsOpenFolder.Content" xml:space="preserve"><value>Buka folder</value></data>
+  <data name="ModelsAddOwn.Content" xml:space="preserve"><value>Tambahkan model sendiri...</value></data>
+  <data name="ModelsAddOwnHint.Text" xml:space="preserve"><value>Pilih file .gguf yang sudah Anda miliki. Host membuat salinannya sendiri di folder model. Ini membuat salinan; file asli Anda tidak diubah atau dipindahkan.</value></data>
+  <data name="Vm_UserAddedBadge" xml:space="preserve"><value>Ditambahkan oleh Anda</value></data>
+  <data name="Vm_UserAddedReason" xml:space="preserve"><value>Kecocokan tidak diketahui: host tidak dapat memastikan berapa banyak memori yang dibutuhkan model ini di PC Anda. Coba dan lihat sendiri.</value></data>
+  <data name="Vm_RemoveUserBody" xml:space="preserve"><value>{0} akan dihapus dari folder model host. Itu adalah salinan milik host: file asli yang Anda pilih tidak disentuh.</value></data>
+  <data name="Vm_ImportRunning" xml:space="preserve"><value>Menyalin model Anda ke folder model, {0}%</value></data>
+  <data name="Vm_ImportDone" xml:space="preserve"><value>Model Anda telah ditambahkan.</value></data>
+  <data name="Vm_ImportCancelled" xml:space="preserve"><value>Penambahan model dibatalkan. Tidak ada yang disimpan, dan file asli Anda tidak diubah.</value></data>
+  <data name="Vm_ImportFailed" xml:space="preserve"><value>Model tidak ditambahkan. {0}</value></data>
+  <data name="ModelsMoveHint.Text" xml:space="preserve"><value>Untuk memindahkan model ke drive lain, pilih folder baru di Pengaturan pada bagian Folder model.</value></data>
+  <data name="ModelsMoveCancel.Content" xml:space="preserve"><value>Batal</value></data>
+  <data name="ModelsFreeUp.Content" xml:space="preserve"><value>Bebaskan ruang</value></data>
+  <data name="ModelsCleanupTitle.Text" xml:space="preserve"><value>Bebaskan ruang</value></data>
+  <data name="ModelsCleanupPartialHeader.Text" xml:space="preserve"><value>Unduhan belum selesai yang tidak sedang dilanjutkan</value></data>
+  <data name="ModelsCleanupOldHeader.Text" xml:space="preserve"><value>Salinan lama yang tertinggal setelah memindahkan model</value></data>
+  <data name="ModelsCleanupDamagedHeader.Text" xml:space="preserve"><value>Model yang diperiksa dan ditemukan rusak</value></data>
+  <data name="ModelsCleanupClose.Content" xml:space="preserve"><value>Tutup</value></data>
+  <data name="ModelsCleanupHint.Text" xml:space="preserve"><value>Hanya file yang dibuat aplikasi ini yang didaftarkan. Model yang Anda gunakan, dan file yang Anda tambahkan sendiri, tidak pernah dihapus.</value></data>
+  <data name="Vm_CleanupButton" xml:space="preserve"><value>Bebaskan {0}</value></data>
+  <data name="Vm_CleanupNothing" xml:space="preserve"><value>Tidak ada yang bisa dibebaskan. Unduhan belum selesai yang masih bisa dilanjutkan disimpan selama seminggu.</value></data>
+  <data name="Vm_CleanupRunning" xml:space="preserve"><value>Membebaskan ruang...</value></data>
+  <data name="Vm_CleanupConfirmTitle" xml:space="preserve"><value>Hapus file ini?</value></data>
+  <data name="Vm_CleanupConfirmBody" xml:space="preserve"><value>Ini menghapus secara permanen:
+{0}
+Model Anda yang lain tidak disentuh.</value></data>
+  <data name="Vm_CleanupDone" xml:space="preserve"><value>Ruang {0} dibebaskan.</value></data>
+  <data name="Vm_CleanupDoneSkipped" xml:space="preserve"><value>{0} dibebaskan. Beberapa item dibiarkan di tempatnya:
+{1}</value></data>
+  <data name="Vm_CleanupFailed" xml:space="preserve"><value>Ruang tidak dapat dibebaskan: {0}</value></data>
+  <data name="ModelsRemoveFailedBar.Title" xml:space="preserve"><value>Model tidak dapat dihapus</value></data>
+  <data name="SettingsMoveButton.Content" xml:space="preserve"><value>Pindahkan model saya ke sana</value></data>
+  <data name="SettingsMoveCancel.Content" xml:space="preserve"><value>Batalkan pemindahan</value></data>
+  <data name="Vm_UsedToday" xml:space="preserve"><value>Terakhir digunakan hari ini</value></data>
+  <data name="Vm_UsedYesterday" xml:space="preserve"><value>Terakhir digunakan kemarin</value></data>
+  <data name="Vm_UsedDays" xml:space="preserve"><value>Terakhir digunakan {0} hari lalu</value></data>
+  <data name="Vm_UsedMonths" xml:space="preserve"><value>Terakhir digunakan {0} bulan lalu</value></data>
+  <data name="Vm_GoodFor" xml:space="preserve"><value>Cocok untuk: {0}</value></data>
+  <data name="Vm_Caveats" xml:space="preserve"><value>Perlu diingat: {0}</value></data>
+  <data name="Vm_MemoryNeeded" xml:space="preserve"><value>Membutuhkan sekitar {0} memori di PC ini.</value></data>
+  <data name="Vm_Licence" xml:space="preserve"><value>Lisensi: {0}</value></data>
+  <data name="Vm_RemoveActiveBody" xml:space="preserve"><value>{0} sedang digunakan. Host membongkarnya dulu, lalu menghapusnya dari PC ini. Hanya file yang diunduh host yang dihapus; file model yang Anda tambahkan sendiri hanya dihapus dari daftar dan tetap di tempatnya.</value></data>
+  <data name="Vm_RemoveVerb" xml:space="preserve"><value>Hapus {0} ({1})</value></data>
+  <data name="Vm_RemoveVerbNoSize" xml:space="preserve"><value>Hapus {0}</value></data>
+  <data name="Vm_AutoCheck" xml:space="preserve"><value>Periksa berkas {0}</value></data>
+  <data name="Vm_AutoRedownload" xml:space="preserve"><value>Unduh ulang {0}</value></data>
+  <data name="Vm_Removing" xml:space="preserve"><value>Menghapus...</value></data>
+  <data name="Vm_RemovingBadge" xml:space="preserve"><value>Menghapus</value></data>
+  <data name="Vm_DamagedBadge" xml:space="preserve"><value>Rusak</value></data>
+  <data name="Vm_Checking" xml:space="preserve"><value>Memeriksa berkas, {0}%</value></data>
+  <data name="Vm_CheckOk" xml:space="preserve"><value>Semua berkas utuh.</value></data>
+  <data name="Vm_CheckDamaged" xml:space="preserve"><value>Rusak: {0} Tidak ada yang dihapus.</value></data>
+  <data name="Vm_CheckFailed" xml:space="preserve"><value>Pemeriksaan tidak dapat selesai: {0}</value></data>
+  <data name="Vm_SwitchTitle" xml:space="preserve"><value>Gunakan model lain?</value></data>
+  <data name="Vm_SwitchBody" xml:space="preserve"><value>{0} sedang digunakan. Beralih ke {1} setelahnya, atau tidak menggunakan model untuk sementara?</value></data>
+  <data name="Vm_SwitchYes" xml:space="preserve"><value>Beralih ke {0}</value></data>
+  <data name="Vm_SwitchNo" xml:space="preserve"><value>Jangan gunakan model untuk sementara</value></data>
+  <data name="Vm_RemoveFailed" xml:space="preserve"><value>{0} tidak dihapus dan masih ada di sini. {1}</value></data>
+  <data name="Vm_RedownloadTitle" xml:space="preserve"><value>Unduh model ini lagi?</value></data>
+  <data name="Vm_RedownloadBody" xml:space="preserve"><value>{0} memiliki file yang rusak. File itu dihapus dari PC ini lalu diunduh ulang. Tidak ada yang lain yang dihapus.</value></data>
+  <data name="Vm_RedownloadActiveBody" xml:space="preserve"><value>{0} memiliki file yang rusak dan sedang digunakan. Host membongkarnya, menghapusnya dari PC ini, lalu mengunduhnya lagi. Pilih lagi model ini setelah unduhan selesai.</value></data>
+  <data name="Vm_RedownloadYes" xml:space="preserve"><value>Hapus dan unduh ulang {0}</value></data>
+  <data name="Vm_MoveRunning" xml:space="preserve"><value>Memindahkan model Anda, {0}%</value></data>
+  <data name="Vm_MoveRemovingOld" xml:space="preserve"><value>Model Anda sudah ada di folder baru. Menghapus salinan lama.</value></data>
+  <data name="Vm_MoveDone" xml:space="preserve"><value>Model Anda telah dipindahkan.</value></data>
+  <data name="Vm_MoveCancelled" xml:space="preserve"><value>Pemindahan dibatalkan. Model Anda tetap di tempat semula.</value></data>
+  <data name="Vm_MoveFailed" xml:space="preserve"><value>Pemindahan belum selesai. {0}</value></data>
+  <data name="Vm_MoveOffer" xml:space="preserve"><value>Pindahkan juga {0} model Anda ke folder baru?</value></data>
+  <data name="Vm_MoveTitle" xml:space="preserve"><value>Pindahkan model Anda?</value></data>
+  <data name="Vm_MoveBody" xml:space="preserve"><value>Model Anda disalin ke {0}, diperiksa, dan baru setelah itu salinan lama dihapus. Model yang sedang digunakan dibongkar selama proses ini. File di folder lama yang tidak ditempatkan host tidak pernah disentuh.</value></data>
+  <data name="Vm_MoveYes" xml:space="preserve"><value>Pindahkan model saya</value></data>
+  <data name="Vm_MoveSettingsRunning" xml:space="preserve"><value>Memindahkan model Anda, {0}%</value></data>
+  <data name="SettingsPerformanceHeader.Text" xml:space="preserve"><value>Performa</value></data>
+  <data name="SettingsResetPerformance.Content" xml:space="preserve"><value>Atur ulang ke bawaan</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Atur ulang pengaturan performa ke bawaan</value></data>
+  <data name="SettingsPreset.Header" xml:space="preserve"><value>Performa</value></data>
+  <data name="SettingsPreset.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Performa</value></data>
+  <data name="SettingsMemory.Header" xml:space="preserve"><value>Memori maksimum untuk AI</value></data>
+  <data name="SettingsMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Memori maksimum untuk AI</value></data>
+  <data name="SettingsKeepFree.Header" xml:space="preserve"><value>Selalu sisakan</value></data>
+  <data name="SettingsKeepFree.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Selalu sisakan</value></data>
+  <data name="SettingsRunOn.Header" xml:space="preserve"><value>Jalankan di</value></data>
+  <data name="SettingsRunOn.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Jalankan di</value></data>
+  <data name="SettingsGpuMemory.Header" xml:space="preserve"><value>Memori grafis untuk AI</value></data>
+  <data name="SettingsGpuMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Memori grafis untuk AI</value></data>
+  <data name="SettingsCores.Header" xml:space="preserve"><value>Inti prosesor</value></data>
+  <data name="SettingsCores.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Inti prosesor</value></data>
+  <data name="SettingsPriority.Header" xml:space="preserve"><value>Prioritas</value></data>
+  <data name="SettingsPriority.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Prioritas</value></data>
+  <data name="SettingsMemoryHelp.Text" xml:space="preserve"><value>AI tidak pernah memakai lebih dari ini. Semakin rendah berarti model lebih kecil atau balasan lebih lambat.</value></data>
+  <data name="SettingsKeepFreeHelp.Text" xml:space="preserve"><value>Memori yang disisakan untuk program Anda yang lain.</value></data>
+  <data name="SettingsCoresHelp.Text" xml:space="preserve"><value>Lebih sedikit inti membuat PC Anda tetap responsif saat AI bekerja.</value></data>
+  <data name="Vm_Perf_Quiet" xml:space="preserve"><value>Senyap</value></data>
+  <data name="Vm_Perf_Balanced" xml:space="preserve"><value>Seimbang</value></data>
+  <data name="Vm_Perf_Fast" xml:space="preserve"><value>Cepat</value></data>
+  <data name="Vm_Perf_Custom" xml:space="preserve"><value>Kustom</value></data>
+  <data name="Vm_Perf_Help_quiet" xml:space="preserve"><value>Sekitar setengah kecepatan. PC Anda tetap responsif.</value></data>
+  <data name="Vm_Perf_Help_balanced" xml:space="preserve"><value>Kecepatan baik, dan program Anda yang lain didahulukan.</value></data>
+  <data name="Vm_Perf_Help_fast" xml:space="preserve"><value>Balasan tercepat. Program lain mungkin melambat.</value></data>
+  <data name="Vm_Perf_Help_custom" xml:space="preserve"><value>Pengaturan Anda sendiri.</value></data>
+  <data name="Vm_Perf_Run_Auto" xml:space="preserve"><value>Otomatis</value></data>
+  <data name="Vm_Perf_Run_Gpu" xml:space="preserve"><value>Kartu grafis</value></data>
+  <data name="Vm_Perf_Run_Cpu" xml:space="preserve"><value>Prosesor</value></data>
+  <data name="Vm_Perf_RunHelp_auto" xml:space="preserve"><value>Menggunakan kartu grafis saat membantu.</value></data>
+  <data name="Vm_Perf_RunHelp_gpu" xml:space="preserve"><value>Tercepat, jika model muat.</value></data>
+  <data name="Vm_Perf_RunHelp_cpu" xml:space="preserve"><value>Lebih lambat, tetapi membiarkan kartu grafis bebas untuk game.</value></data>
+  <data name="Vm_Perf_NoGpu" xml:space="preserve"><value>Hanya prosesor: tidak ditemukan kartu grafis yang didukung</value></data>
+  <data name="SettingsCeiling.Header" xml:space="preserve"><value>Penggunaan prosesor maksimum</value></data>
+  <data name="SettingsCeiling.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Penggunaan prosesor maksimum</value></data>
+  <data name="SettingsCeilingHelp.Text" xml:space="preserve"><value>AI tidak pernah memakai lebih banyak prosesor Anda dari ini. Semakin rendah membuat PC Anda lebih lancar, dengan balasan lebih lambat.</value></data>
+  <data name="Vm_Perf_CeilingNone" xml:space="preserve"><value>Tanpa batas</value></data>
+  <data name="Vm_Perf_Percent" xml:space="preserve"><value>{0}%</value></data>
+  <data name="SettingsEaseOffHeader.Text" xml:space="preserve"><value>Kurangi beban saat</value></data>
+  <data name="SettingsEaseOffFullscreen.Content" xml:space="preserve"><value>Game atau program layar penuh sedang berjalan</value></data>
+  <data name="SettingsEaseOffBattery.Content" xml:space="preserve"><value>PC menggunakan baterai</value></data>
+  <data name="SettingsEaseOffAppBusy.Content" xml:space="preserve"><value>Aplikasi Portal sedang sibuk dengan pekerjaan langsung, seperti dikte</value></data>
+  <data name="SettingsEaseOffHelp.Text" xml:space="preserve"><value>AI kemudian berjalan dengan prioritas terendah dan memakai paling banyak setengah prosesor Anda, lalu kembali normal saat kondisi itu berakhir.</value></data>
+  <data name="Vm_Perf_Prio_Low" xml:space="preserve"><value>Rendah</value></data>
+  <data name="Vm_Perf_Prio_Normal" xml:space="preserve"><value>Normal</value></data>
+  <data name="Vm_Perf_PrioHelp_Low" xml:space="preserve"><value>Pekerjaan Anda sendiri selalu didahulukan.</value></data>
+  <data name="Vm_Perf_PrioHelp_Normal" xml:space="preserve"><value>Lebih cepat, tetapi bisa memperlambat program lain.</value></data>
+  <data name="Vm_Perf_Gb" xml:space="preserve"><value>{0} GB</value></data>
+  <data name="Vm_Perf_Cores" xml:space="preserve"><value>{0} dari {1} inti</value></data>
+  <data name="Vm_Perf_MemoryRange" xml:space="preserve"><value>Dari {0} GB hingga {1} GB</value></data>
+  <data name="Vm_Perf_StopFull" xml:space="preserve"><value>{0} GB · muat {1} sepenuhnya</value></data>
+  <data name="Vm_Perf_StopPartial" xml:space="preserve"><value>{0} GB · muat {1}, sebagian di prosesor</value></data>
+  <data name="Vm_Perf_StopCpu" xml:space="preserve"><value>{0} GB · muat {1} di prosesor</value></data>
+  <data name="Vm_Perf_StopNone" xml:space="preserve"><value>{0} GB · terlalu kecil untuk model dalam daftar</value></data>
+  <data name="Vm_Perf_Fit_Full" xml:space="preserve"><value>Berjalan sepenuhnya di kartu grafis</value></data>
+  <data name="Vm_Perf_Fit_Partial" xml:space="preserve"><value>Sebagian di kartu grafis, sebagian di prosesor: lebih lambat</value></data>
+  <data name="Vm_Perf_Fit_Cpu" xml:space="preserve"><value>Berjalan di prosesor: paling lambat</value></data>
+  <data name="Vm_Perf_Fit_Smaller" xml:space="preserve"><value>Memori terlalu sedikit untuk {0}. Beralih ke {1}?</value></data>
+  <data name="Vm_Perf_Fit_LittleMemory" xml:space="preserve"><value>Memori terlalu sedikit untuk {0}.</value></data>
+  <data name="Vm_Perf_Fit_TooBig" xml:space="preserve"><value>Terlalu besar untuk PC ini</value></data>
+  <data name="Vm_Perf_TheModel" xml:space="preserve"><value>Model</value></data>
+  <data name="Vm_Perf_Applied" xml:space="preserve"><value>Diterapkan. Batas baru sudah berlaku.</value></data>
+  <data name="Vm_Perf_Reloading" xml:space="preserve"><value>Diterapkan. {0} sedang dimuat ulang dengan batas baru.</value></data>
+  <data name="Vm_Perf_Unloaded" xml:space="preserve"><value>Diterapkan. {0} tidak lagi muat dan telah dibongkar. Model tetap ada di disk; pilih yang lebih kecil di halaman Model.</value></data>
+  <data name="HealthIconOk.AutomationProperties.Name" xml:space="preserve"><value>Baik</value></data>
+  <data name="HealthIconWarn.AutomationProperties.Name" xml:space="preserve"><value>Perlu perhatian</value></data>
+  <data name="HealthIconFail.AutomationProperties.Name" xml:space="preserve"><value>Masalah</value></data>
+  <data name="HealthWordOk.Text" xml:space="preserve"><value>Baik</value></data>
+  <data name="HealthWordWarn.Text" xml:space="preserve"><value>Perlu perhatian</value></data>
+  <data name="HealthWordFail.Text" xml:space="preserve"><value>Masalah</value></data>
+  <data name="HealthCheckAgainButton.Content" xml:space="preserve"><value>Periksa lagi</value></data>
+  <data name="HealthFixErrorBar.Title" xml:space="preserve"><value>Itu tidak berhasil</value></data>
+  <data name="Vm_HealthAllGood" xml:space="preserve"><value>Semua baik</value></data>
+  <data name="Vm_HealthOne" xml:space="preserve"><value>1 hal perlu perhatian</value></data>
+  <data name="Vm_HealthMany" xml:space="preserve"><value>{0} hal perlu perhatian</value></data>
+  <data name="Vm_HealthFixLoad" xml:space="preserve"><value>Muat model</value></data>
+  <data name="Vm_HealthFixRestart" xml:space="preserve"><value>Mulai ulang mesin</value></data>
+  <data name="Vm_HealthFixCheckFiles" xml:space="preserve"><value>Periksa berkas</value></data>
+  <data name="Vm_HealthFixPerformance" xml:space="preserve"><value>Buka pengaturan performa</value></data>
+  <data name="Vm_HealthFixModels" xml:space="preserve"><value>Pilih model</value></data>
+  <data name="Vm_HealthFixFailed" xml:space="preserve"><value>Perbaikan tidak dapat dilakukan. {0}</value></data>
+  <data name="SettingsRemoteHeader.Text" xml:space="preserve"><value>Perangkat lain</value></data>
+  <data name="SettingsRemoteEnabled.Header" xml:space="preserve"><value>Izinkan perangkat lain menggunakan AI PC ini</value></data>
+  <data name="SettingsRemoteEnabled.OnContent" xml:space="preserve"><value>Aktif</value></data>
+  <data name="SettingsRemoteEnabled.OffContent" xml:space="preserve"><value>Nonaktif</value></data>
+  <data name="SettingsRemoteEnabled.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Izinkan perangkat lain menggunakan AI PC ini</value></data>
+  <data name="SettingsRemoteHelp.Text" xml:space="preserve"><value>Nonaktif secara default. Saat aktif, ponsel, laptop, atau tablet Anda sendiri di jaringan rumah ini dapat meminta menggunakan AI PC ini. Perangkat harus dipasangkan dengan kode terlebih dahulu, dan setiap aplikasi di dalamnya tetap memerlukan persetujuan Anda. Anda dapat menghapus perangkat kapan saja.</value></data>
+  <data name="SettingsPairDevice.Content" xml:space="preserve"><value>Pasangkan perangkat</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Pasangkan perangkat</value></data>
+  <data name="SettingsPairingSteps.Text" xml:space="preserve"><value>Di perangkat lain, buka aplikasi Portal-nya, pilih untuk terhubung ke PC, lalu pindai kode ini atau ketik huruf dan angkanya. Perangkat memeriksa bahwa ia berbicara dengan PC ini sebelum mengirim apa pun. Kode hanya bisa dipakai sekali, selama 5 menit.</value></data>
+  <data name="SettingsPairingQr.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Kode QR pemasangan</value></data>
+  <data name="SettingsPairingCancel.Content" xml:space="preserve"><value>Batalkan pemasangan</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Batalkan pemasangan</value></data>
+  <data name="SettingsDevicesHeader.Text" xml:space="preserve"><value>Perangkat yang dipasangkan</value></data>
+  <data name="SettingsNoDevices.Text" xml:space="preserve"><value>Belum ada perangkat yang dipasangkan.</value></data>
+  <data name="SettingsRemoveDevice.Content" xml:space="preserve"><value>Hapus</value></data>
+  <data name="SettingsDeviceModelControl.Header" xml:space="preserve"><value>Kontrol model</value></data>
+  <data name="SettingsDeviceModelControl.OnContent" xml:space="preserve"><value>Aktif</value></data>
+  <data name="SettingsDeviceModelControl.OffContent" xml:space="preserve"><value>Nonaktif</value></data>
+  <data name="SettingsDeviceModelControl.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Memungkinkan perangkat ini memuat dan membongkar model serta memilih model yang digunakan setiap aplikasinya</value></data>
+  <data name="SettingsDeviceModelControl.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Memungkinkan perangkat ini memuat dan membongkar model serta memilih model yang digunakan setiap aplikasinya</value></data>
+  <data name="SettingsTakeBackLabel.Text" xml:space="preserve"><value>Ambil kembali</value></data>
+  <data name="SettingsTakeBack.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Bongkar model yang dimuat perangkat ini. Pilihan PC ini sendiri kembali. Tidak ada file model yang disentuh.</value></data>
+  <data name="SettingsTakeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bongkar model yang dimuat perangkat ini. Pilihan PC ini sendiri kembali. Tidak ada file model yang disentuh.</value></data>
+  <data name="SettingsAllowReplace.Header" xml:space="preserve"><value>Perangkat boleh mengganti model</value></data>
+  <data name="SettingsAllowReplace.OnContent" xml:space="preserve"><value>Aktif</value></data>
+  <data name="SettingsAllowReplace.OffContent" xml:space="preserve"><value>Nonaktif</value></data>
+  <data name="SettingsAllowReplace.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Perangkat boleh mengganti model</value></data>
+  <data name="SettingsAllowReplaceHelp.Text" xml:space="preserve"><value>Hanya berlaku untuk perangkat yang memiliki Kontrol model. Nonaktif: perangkat tidak dapat membongkar model yang sedang dipakai aplikasi Anda sendiri. Aktif: bisa, dan aplikasi Anda memuat ulang model mereka pada permintaan berikutnya.</value></data>
+  <data name="Vm_AutoModelControl" xml:space="preserve"><value>Kontrol model untuk {0}</value></data>
+  <data name="Vm_AutoTakeBack" xml:space="preserve"><value>Ambil kembali model yang dimuat {0}</value></data>
+  <data name="Vm_LoadedBy" xml:space="preserve"><value>Dimuat oleh {0}: {1} ({2})</value></data>
+  <data name="Vm_PlacementAuto" xml:space="preserve"><value>penempatan otomatis</value></data>
+  <data name="Vm_PlacementGpu" xml:space="preserve"><value>kartu grafis</value></data>
+  <data name="Vm_PlacementCpu" xml:space="preserve"><value>memori sistem</value></data>
+  <data name="Vm_PlacementCpuOnly" xml:space="preserve"><value>hanya prosesor</value></data>
+  <data name="SettingsRemoteRelay.Header" xml:space="preserve"><value>Juga akses PC ini dari luar rumah</value></data>
+  <data name="SettingsRemoteRelay.OnContent" xml:space="preserve"><value>Aktif</value></data>
+  <data name="SettingsRemoteRelay.OffContent" xml:space="preserve"><value>Nonaktif</value></data>
+  <data name="SettingsRemoteRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Juga akses PC ini dari luar rumah</value></data>
+  <data name="SettingsRelayAdmission.Header" xml:space="preserve"><value>Kunci akses relay</value></data>
+  <data name="SettingsRelayAdmission.OnContent" xml:space="preserve"><value>Aktif</value></data>
+  <data name="SettingsRelayAdmission.OffContent" xml:space="preserve"><value>Nonaktif</value></data>
+  <data name="SettingsRelayAdmission.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Kunci akses relay</value></data>
+  <data name="SettingsRelayAdmissionHelp.Text" xml:space="preserve"><value>Hanya perangkat yang dipasangkan dengan kunci dalam kode pemasangan yang dapat mengakses PC ini lewat relay. Aktifkan sebelum memasangkan: perangkat yang dipasangkan sebelumnya harus memasangkan ulang untuk memakai relay. Relay harus dalam versi terbaru.</value></data>
+  <data name="SettingsRotateRelayKeyText.Text" xml:space="preserve"><value>Kunci baru</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Buat kunci akses relay baru. Setiap perangkat yang dipasangkan harus memasangkan ulang untuk memakai relay. Menghapus perangkat tidak mengubah kunci, jadi lakukan ini setelah menghapus perangkat yang tidak Anda percayai.</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Buat kunci akses relay baru. Setiap perangkat yang dipasangkan harus memasangkan ulang untuk memakai relay. Menghapus perangkat tidak mengubah kunci, jadi lakukan ini setelah menghapus perangkat yang tidak Anda percayai.</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Kunci baru</value></data>
+  <data name="Vm_RotateKeyTitle" xml:space="preserve"><value>Buat kunci akses relay baru?</value></data>
+  <data name="Vm_RotateKeyBody" xml:space="preserve"><value>Setiap perangkat yang dipasangkan harus memasangkan ulang untuk memakai PC ini lewat relay. Di rumah tidak ada yang berubah.</value></data>
+  <data name="Vm_RotateKeyConfirm" xml:space="preserve"><value>Buat kunci baru</value></data>
+  <data name="SettingsRemoteRelayHelp.Text" xml:space="preserve"><value>PC ini terhubung keluar ke relay kecil, sehingga perangkat yang dipasangkan dapat mengaksesnya dari mana saja. Relay hanya meneruskan byte yang diacak dan tidak dapat dibacanya, dan setiap perangkat tetap harus dipasangkan serta menandatangani setiap permintaan.</value></data>
+  <data name="Vm_RelayAway" xml:space="preserve"><value>Dapat diakses dari luar rumah</value></data>
+  <data name="Vm_RelayHomeOnly" xml:space="preserve"><value>Hanya jaringan rumah</value></data>
+  <data name="Vm_RelayUnreachable" xml:space="preserve"><value>Tidak dapat menjangkau relay</value></data>
+  <data name="Vm_RelayConnecting" xml:space="preserve"><value>Menghubungkan ke relay...</value></data>
+  <data name="Vm_RemoteAddress" xml:space="preserve"><value>PC ini dapat diakses di {0}, port {1}.</value></data>
+  <data name="Vm_RemoteLastSeen" xml:space="preserve"><value>Terakhir digunakan {0}</value></data>
+  <data name="Vm_RemoteNeverSeen" xml:space="preserve"><value>Belum pernah digunakan</value></data>
+  <data name="Vm_AutoRemoveDevice" xml:space="preserve"><value>Hapus {0}</value></data>
+  <data name="Vm_PairingExpires" xml:space="preserve"><value>Kode berlaku hingga {0}.</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Salin tautan</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Kirim ini ke PC lain. Berlaku selama 5 menit dan untuk satu perangkat.</value></data>
+  <data name="SettingsPairingCopyLinkText.Text" xml:space="preserve"><value>Salin tautan</value></data>
+  <data name="Vm_PairingAddress" xml:space="preserve"><value>Alamat: {0}:{1}</value></data>
+  <data name="Vm_PairingFingerprint" xml:space="preserve"><value>Pemeriksaan sertifikat: {0}</value></data>
+  <data name="Vm_RemoveDeviceTitle" xml:space="preserve"><value>Hapus {0}?</value></data>
+  <data name="Vm_RemoveDeviceBody" xml:space="preserve"><value>{0} langsung kehilangan akses ke AI PC ini. Aplikasinya berhenti berfungsi sampai Anda memasangkannya lagi.</value></data>
+  <data name="Vm_RemoveDeviceConfirm" xml:space="preserve"><value>Hapus perangkat</value></data>
+  <data name="Vm_AppOnDevice" xml:space="preserve"><value>{0} di {1}</value></data>
+  <data name="NavDevices.Content" xml:space="preserve"><value>Perangkat PC ini</value></data>
+  <data name="NavDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Perangkat PC ini</value></data>
+  <data name="DevicesTitle.Text" xml:space="preserve"><value>Perangkat di PC ini</value></data>
+  <data name="DevicesGamingTitle.Text" xml:space="preserve"><value>Mode gaming</value></data>
+  <data name="DevicesGamingText.Text" xml:space="preserve"><value>Selama game layar penuh berjalan, panggilan dari perangkat lain diberi tahu bahwa PC ini sibuk. Nonaktif secara default.</value></data>
+  <data name="DevicesGaming.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Mode gaming</value></data>
+  <data name="DevicesNone.Text" xml:space="preserve"><value>Belum ada perangkat yang dipasangkan. Pasangkan satu di Pengaturan, pada bagian Perangkat lain.</value></data>
+  <data name="DevicesForgetLabel.Text" xml:space="preserve"><value>Lupakan</value></data>
+  <data name="DevicesForget.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Hapus perangkat ini. Aksesnya langsung berhenti dan riwayat penggunaannya dihapus. Model tidak disentuh.</value></data>
+  <data name="DevicesForget.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hapus perangkat ini. Aksesnya langsung berhenti dan riwayat penggunaannya dihapus. Model tidak disentuh.</value></data>
+  <data name="DevicesTakeBackLabel.Text" xml:space="preserve"><value>Ambil kembali</value></data>
+  <data name="DevicesTakeBack.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Bongkar model yang dimuat perangkat ini. Pilihan PC ini sendiri kembali. Tidak ada file model yang disentuh.</value></data>
+  <data name="DevicesTakeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bongkar model yang dimuat perangkat ini. Pilihan PC ini sendiri kembali. Tidak ada file model yang disentuh.</value></data>
+  <data name="DevicesRenameLabel.Text" xml:space="preserve"><value>Ganti nama</value></data>
+  <data name="DevicesRename.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Ubah nama yang ditampilkan untuk perangkat ini</value></data>
+  <data name="DevicesRename.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Ubah nama yang ditampilkan untuk perangkat ini</value></data>
+  <data name="DevicesNewName.Header" xml:space="preserve"><value>Nama perangkat</value></data>
+  <data name="DevicesRenameSave.Content" xml:space="preserve"><value>Ganti nama</value></data>
+  <data name="DevicesLimitsLabel.Text" xml:space="preserve"><value>Batas</value></data>
+  <data name="DevicesLimits.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Prioritas, batas harian, jam tenang, dan model yang boleh digunakan perangkat ini</value></data>
+  <data name="DevicesLimits.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Prioritas, batas harian, jam tenang, dan model yang boleh digunakan perangkat ini</value></data>
+  <data name="DevicesPriorityEqual.Header" xml:space="preserve"><value>Prioritas sama dengan aplikasi PC ini</value></data>
+  <data name="DevicesPriorityEqual.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Nonaktif: aplikasi milik PC ini didahulukan. Aktif: perangkat ini menunggu dalam antrean yang sama.</value></data>
+  <data name="DevicesRequestLimit.Header" xml:space="preserve"><value>Permintaan per hari</value></data>
+  <data name="DevicesTokenLimit.Header" xml:space="preserve"><value>Token per hari</value></data>
+  <data name="DevicesQuiet.Header" xml:space="preserve"><value>Jam tenang</value></data>
+  <data name="DevicesQuiet.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Perangkat tidak menerima jawaban di antara waktu ini (waktu PC ini)</value></data>
+  <data name="DevicesQuietFrom.Header" xml:space="preserve"><value>Dari</value></data>
+  <data name="DevicesQuietTo.Header" xml:space="preserve"><value>Sampai</value></data>
+  <data name="DevicesModelsHeader.Text" xml:space="preserve"><value>Model yang boleh digunakan perangkat ini</value></data>
+  <data name="DevicesSaveLabel.Text" xml:space="preserve"><value>Simpan</value></data>
+  <data name="DevicesSave.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Simpan pengaturan ini untuk perangkat ini</value></data>
+  <data name="DevicesSave.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Simpan pengaturan ini untuk perangkat ini</value></data>
+  <data name="Vm_DevOnline" xml:space="preserve"><value>Daring</value></data>
+  <data name="Vm_DevIdle" xml:space="preserve"><value>Diam</value></data>
+  <data name="Vm_DevOffline" xml:space="preserve"><value>Luring</value></data>
+  <data name="Vm_DevRouteLan" xml:space="preserve"><value>Jaringan rumah</value></data>
+  <data name="Vm_DevRouteRelay" xml:space="preserve"><value>Relay (di luar)</value></data>
+  <data name="Vm_DevRouteNone" xml:space="preserve"><value>Belum ada rute</value></data>
+  <data name="Vm_DevRunning" xml:space="preserve"><value>Sedang berjalan: {0}</value></data>
+  <data name="Vm_DevRunningQueued" xml:space="preserve"><value>Sedang berjalan: {0}, menunggu: {1}</value></data>
+  <data name="Vm_DevToday" xml:space="preserve"><value>Hari ini: {0} permintaan, {1} token</value></data>
+  <data name="Vm_DevBar" xml:space="preserve"><value>{0} permintaan, {1} hari lalu</value></data>
+  <data name="Vm_DevModel" xml:space="preserve"><value>Model: {0}</value></data>
+  <data name="Vm_DevModelNone" xml:space="preserve"><value>Belum ada panggilan</value></data>
+  <data name="Vm_DevLoadedByPc" xml:space="preserve"><value>{0}, dimuat oleh PC ini</value></data>
+  <data name="Vm_DevLoadedByDevice" xml:space="preserve"><value>{1}, dimuat oleh {0}</value></data>
+  <data name="Vm_DevSpeed" xml:space="preserve"><value>Kecepatan: {0} token/dtk, {1} md untuk byte pertama</value></data>
+  <data name="Vm_DevSpeedNone" xml:space="preserve"><value>Kecepatan: belum diukur</value></data>
+  <data name="Vm_DevPause" xml:space="preserve"><value>Jeda</value></data>
+  <data name="Vm_DevResume" xml:space="preserve"><value>Lanjutkan</value></data>
+  <data name="Vm_DevPauseTip" xml:space="preserve"><value>Jeda perangkat ini. Panggilannya mendapat jawaban jeda dan laptop memakai cadangannya sendiri.</value></data>
+  <data name="Vm_DevResumeTip" xml:space="preserve"><value>Izinkan perangkat ini menggunakan PC ini lagi</value></data>
+  <data name="Vm_DevAppPauseTip" xml:space="preserve"><value>Jeda hanya aplikasi ini di perangkat ini</value></data>
+  <data name="Vm_DevAppResumeTip" xml:space="preserve"><value>Izinkan aplikasi ini menggunakan PC ini lagi</value></data>
+  <data name="Vm_DevGamingBusy" xml:space="preserve"><value>Sebuah game sedang berjalan: perangkat diberi tahu bahwa PC ini sibuk.</value></data>
+  <data name="Vm_AutoDevPause" xml:space="preserve"><value>Jeda {0}</value></data>
+  <data name="Vm_AutoDevResume" xml:space="preserve"><value>Lanjutkan {0}</value></data>
+  <data name="Vm_AutoDevAppPause" xml:space="preserve"><value>Jeda {0} di {1}</value></data>
+  <data name="Vm_AutoDevAppResume" xml:space="preserve"><value>Lanjutkan {0} di {1}</value></data>
+  <data name="Vm_AutoDevRename" xml:space="preserve"><value>Ganti nama {0}</value></data>
+  <data name="RemoteModelLoadLabel.Text" xml:space="preserve"><value>Muat</value></data>
+  <data name="RemoteModelUnloadLabel.Text" xml:space="preserve"><value>Bongkar</value></data>
+  <data name="RemoteModelLoad.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Muat model ini di PC. Model tetap dimuat di sana sampai Anda membongkarnya atau pemilik PC mengubahnya.</value></data>
+  <data name="RemoteModelLoad.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Muat model ini di PC. Model tetap dimuat di sana sampai Anda membongkarnya atau pemilik PC mengubahnya.</value></data>
+  <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Bongkar model yang dimuat laptop ini di PC. Tidak ada file model yang disentuh.</value></data>
+  <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bongkar model yang dimuat laptop ini di PC. Tidak ada file model yang disentuh.</value></data>
+  <data name="RemoteModelPlacement.Header" xml:space="preserve"><value>Jalankan di</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Tempat PC menjalankan model ini: diputuskan oleh PC, di kartu grafisnya, di memori sistem, atau hanya di prosesor dengan batas thread (setengah inti). Batas PC sendiri tetap berlaku.</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Tempat PC menjalankan model ini: diputuskan oleh PC, di kartu grafisnya, di memori sistem, atau hanya di prosesor dengan batas thread (setengah inti). Batas PC sendiri tetap berlaku.</value></data>
+  <data name="RemoteModelTooBig.Text" xml:space="preserve"><value>Terlalu besar untuk PC</value></data>
+  <data name="SettingsAppModelsHeader.Text" xml:space="preserve"><value>Model PC untuk setiap aplikasi</value></data>
+  <data name="SettingsAppModelsHelp.Text" xml:space="preserve"><value>Pilih model PC mana yang digunakan setiap aplikasi di laptop ini. Pilihan PC membiarkannya kepada PC.</value></data>
+  <data name="Vm_RemTitle" xml:space="preserve"><value>Model di {0}</value></data>
+  <data name="Vm_RemAskOwner" xml:space="preserve"><value>Minta pemilik {0} untuk mengaktifkan Kontrol model untuk laptop ini.</value></data>
+  <data name="Vm_RemPlacementAuto" xml:space="preserve"><value>Otomatis</value></data>
+  <data name="Vm_RemPlacementGpu" xml:space="preserve"><value>Kartu grafis</value></data>
+  <data name="Vm_RemPlacementCpu" xml:space="preserve"><value>Memori sistem</value></data>
+  <data name="Vm_RemPlacementCpuOnly" xml:space="preserve"><value>Hanya prosesor</value></data>
+  <data name="Vm_RemStateLoaded" xml:space="preserve"><value>Dimuat</value></data>
+  <data name="Vm_RemStateLoading" xml:space="preserve"><value>Memuat</value></data>
+  <data name="Vm_RemByLaptop" xml:space="preserve"><value>Dimuat oleh laptop ini</value></data>
+  <data name="Vm_RemByPc" xml:space="preserve"><value>Dimuat oleh PC</value></data>
+  <data name="Vm_RemByOther" xml:space="preserve"><value>Dimuat oleh perangkat lain</value></data>
+  <data name="Vm_RemAutoLoad" xml:space="preserve"><value>Muat {0} di PC</value></data>
+  <data name="Vm_RemAutoUnload" xml:space="preserve"><value>Bongkar {0} dari PC</value></data>
+  <data name="Vm_RemHostGone" xml:space="preserve"><value>Host tidak berjalan.</value></data>
+  <data name="Vm_AppModelPcChoice" xml:space="preserve"><value>Pilihan PC</value></data>
+  <data name="Vm_AppModelAutomation" xml:space="preserve"><value>Model PC untuk {0}</value></data>
+  <data name="SettingsHomePcHeader.Text" xml:space="preserve"><value>PC rumah</value></data>
+  <data name="SettingsHomePcHelp.Text" xml:space="preserve"><value>Gunakan AI di PC lain milik Anda, bukan menjalankannya di PC ini. Pasangkan laptop ini dengan PC itu sekali; aplikasi di sini lalu meminta PC tersebut.</value></data>
+  <data name="SettingsHomeMode.Header" xml:space="preserve"><value>Tempat AI berjalan</value></data>
+  <data name="SettingsHomeMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Tempat AI berjalan</value></data>
+  <data name="SettingsHomeFallback.Header" xml:space="preserve"><value>Jika PC rumah tidak dapat dijangkau</value></data>
+  <data name="SettingsHomeFallback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Jika PC rumah tidak dapat dijangkau</value></data>
+  <data name="SettingsHomeRelayMode.Header" xml:space="preserve"><value>Koneksi di luar rumah</value></data>
+  <data name="SettingsHomeRelayMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Koneksi di luar rumah</value></data>
+  <data name="SettingsHomeUseRelay.Header" xml:space="preserve"><value>Gunakan relay</value></data>
+  <data name="SettingsHomeUseRelay.OnContent" xml:space="preserve"><value>Aktif</value></data>
+  <data name="SettingsHomeUseRelay.OffContent" xml:space="preserve"><value>Nonaktif</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Gunakan relay</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Menyalakan relay hanya untuk sesi ini. Akan diatur ulang saat aplikasi ditutup.</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Pasangkan PC</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Pasangkan laptop ini dengan PC rumah dari tautan pemasangan</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Pasangkan laptop ini dengan PC rumah dari tautan pemasangan</value></data>
+  <data name="SettingsHomePairText.Text" xml:space="preserve"><value>Pasangkan PC</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Batalkan pemasangan</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Lupakan PC yang dipasangkan. Model dan unduhan tetap seperti semula.</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Lupakan PC yang dipasangkan. Model dan unduhan tetap seperti semula.</value></data>
+  <data name="SettingsHomeUnpairText.Text" xml:space="preserve"><value>Batalkan pemasangan</value></data>
+  <data name="SettingsNotifyDevices.Header" xml:space="preserve"><value>Perangkat memasangkan atau terhubung dari luar</value></data>
+  <data name="SettingsNotifyDevices.OnContent" xml:space="preserve"><value>Aktif</value></data>
+  <data name="SettingsNotifyDevices.OffContent" xml:space="preserve"><value>Nonaktif</value></data>
+  <data name="SettingsNotifyDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Perangkat memasangkan atau terhubung dari luar</value></data>
+  <data name="HomeClientEmpty.Text" xml:space="preserve"><value>AI berjalan di PC lain Anda. Model, penggunaan memori, dan pemanasan ditampilkan di sana.</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ganti PC</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Buka pengaturan PC rumah untuk memasangkan PC lain</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Buka pengaturan PC rumah untuk memasangkan PC lain</value></data>
+  <data name="HomeChangePcText.Text" xml:space="preserve"><value>Ganti PC</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Jalankan AI di sini</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Keluar dari mode klien dan jalankan AI di PC ini lagi. Pemasangan tetap tersimpan.</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Keluar dari mode klien dan jalankan AI di PC ini lagi. Pemasangan tetap tersimpan.</value></data>
+  <data name="HomeRunHereText.Text" xml:space="preserve"><value>Jalankan AI di sini</value></data>
+  <data name="ModelsLocalNote.Text" xml:space="preserve"><value>Unduhan di halaman ini untuk saat PC ini menjalankan AI.</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Gunakan PC rumah saya</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Lewati unduhan dan gunakan AI di PC lain milik Anda. Anda akan memasangkannya berikutnya.</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Lewati unduhan dan gunakan AI di PC lain milik Anda. Anda akan memasangkannya berikutnya.</value></data>
+  <data name="WelcomeHomePcText.Text" xml:space="preserve"><value>Gunakan PC rumah saya</value></data>
+  <data name="Vm_LinkConnectedLan" xml:space="preserve"><value>Terhubung - jaringan rumah</value></data>
+  <data name="Vm_LinkConnectedRelay" xml:space="preserve"><value>Terhubung - lewat relay</value></data>
+  <data name="Vm_LinkConnecting" xml:space="preserve"><value>Menghubungkan...</value></data>
+  <data name="Vm_LinkUnreachable" xml:space="preserve"><value>Tidak dapat dijangkau</value></data>
+  <data name="Vm_LinkRevoked" xml:space="preserve"><value>Laptop ini dihapus dari PC</value></data>
+  <data name="Vm_LinkRepair" xml:space="preserve"><value>Pasangkan lagi</value></data>
+  <data name="Vm_LinkRtt" xml:space="preserve"><value>{0} - {1} md</value></data>
+  <data name="Vm_LinkLastSeen" xml:space="preserve"><value>Terakhir terlihat {0}</value></data>
+  <data name="Vm_LinkUsingLaptop" xml:space="preserve"><value>Menggunakan model laptop ini</value></data>
+  <data name="Vm_LinkUnreachableHelp" xml:space="preserve"><value>{0} tidak dapat dijangkau. Periksa apakah PC itu menyala dan berada di jaringan yang sama, atau aktifkan relay.</value></data>
+  <data name="Vm_LinkRevokedHelp" xml:space="preserve"><value>{0} tidak lagi mengizinkan laptop ini masuk. Pasangkan lagi untuk terus menggunakannya.</value></data>
+  <data name="Vm_LinkRepairHelp" xml:space="preserve"><value>Identitas {0} berubah, sehingga laptop ini berhenti mempercayainya. Jika Anda tidak menduga hal ini, jangan pasangkan lagi. Jika tidak, batalkan pemasangan, lalu pasangkan lagi.</value></data>
+  <data name="Vm_TrayLink" xml:space="preserve"><value>{0} - {1}</value></data>
+  <data name="Vm_DeviceAlertPaired" xml:space="preserve"><value>{0} telah dipasangkan dan kini dapat menggunakan AI PC ini.</value></data>
+  <data name="Vm_DeviceAlertRelay" xml:space="preserve"><value>{0} terhubung lewat relay dari luar rumah.</value></data>
+  <data name="Vm_HomeModeThisPc" xml:space="preserve"><value>PC ini</value></data>
+  <data name="Vm_HomeModeHomePc" xml:space="preserve"><value>Gunakan PC rumah saya</value></data>
+  <data name="Vm_HomeFallbackNone" xml:space="preserve"><value>Tidak ada</value></data>
+  <data name="Vm_HomeFallbackLocal" xml:space="preserve"><value>Gunakan model laptop ini</value></data>
+  <data name="Vm_HomeRelayAuto" xml:space="preserve"><value>Otomatis</value></data>
+  <data name="Vm_HomeRelayManual" xml:space="preserve"><value>Manual</value></data>
+  <data name="Vm_HomeNeedsPair" xml:space="preserve"><value>Pasangkan PC terlebih dahulu.</value></data>
+  <data name="Vm_UnpairTitle" xml:space="preserve"><value>Batalkan pemasangan PC ini?</value></data>
+  <data name="Vm_UnpairBody" xml:space="preserve"><value>Laptop ini akan melupakan {0} dan berhenti menggunakannya. Model dan unduhan tidak disentuh. Anda bisa memasangkannya lagi nanti.</value></data>
+  <data name="Vm_UnpairConfirm" xml:space="preserve"><value>Batalkan pemasangan</value></data>
+  <data name="Vm_UnpairCancel" xml:space="preserve"><value>Batal</value></data>
+  <data name="Vm_FallbackTitle" xml:space="preserve"><value>PC rumah Anda tidak dapat dijangkau</value></data>
+  <data name="Vm_FallbackBody" xml:space="preserve"><value>{0} tidak dapat dijangkau saat ini. Selama PC itu tidak tersedia, haruskah laptop ini menjawab dengan modelnya sendiri? Anda dapat mengubahnya di Pengaturan, pada bagian PC rumah.</value></data>
+  <data name="Vm_FallbackLocal" xml:space="preserve"><value>Gunakan model laptop ini</value></data>
+  <data name="Vm_FallbackNone" xml:space="preserve"><value>Tidak ada</value></data>
+  <data name="Vm_PairTitle" xml:space="preserve"><value>Gunakan PC rumah saya</value></data>
+  <data name="Vm_PairIntro" xml:space="preserve"><value>Di PC lain, buka Pengaturan dan pilih Pasangkan perangkat, lalu salin tautannya. Tempel di sini.</value></data>
+  <data name="Vm_PairLinkPlaceholder" xml:space="preserve"><value>portalai://pair?...</value></data>
+  <data name="Vm_PairLinkName" xml:space="preserve"><value>Tautan pemasangan</value></data>
+  <data name="Vm_PairPaste" xml:space="preserve"><value>Tempel tautan</value></data>
+  <data name="Vm_PairPasteTip" xml:space="preserve"><value>Tempel tautan pemasangan dari papan klip</value></data>
+  <data name="Vm_PairNext" xml:space="preserve"><value>Berikutnya</value></data>
+  <data name="Vm_PairConfirm" xml:space="preserve"><value>Pasangkan</value></data>
+  <data name="Vm_PairBack" xml:space="preserve"><value>Kembali</value></data>
+  <data name="Vm_PairCancel" xml:space="preserve"><value>Batal</value></data>
+  <data name="Vm_PairWorking" xml:space="preserve"><value>Menghubungkan ke PC...</value></data>
+  <data name="Vm_PairDeviceName" xml:space="preserve"><value>Nama laptop ini</value></data>
+  <data name="Vm_PairConfirmPc" xml:space="preserve"><value>Pasangkan dengan {0}?</value></data>
+  <data name="Vm_PairFingerprint" xml:space="preserve"><value>Sidik jari: {0}</value></data>
+  <data name="Vm_PairErr_invalid_input" xml:space="preserve"><value>Tautan tidak valid. Salin lagi dari PC lain.</value></data>
+  <data name="Vm_PairErr_address_not_allowed" xml:space="preserve"><value>Alamat itu tidak ada di jaringan rumah Anda. Saat di luar rumah, pasangkan sekali di rumah terlebih dahulu.</value></data>
+  <data name="Vm_PairErr_unreachable" xml:space="preserve"><value>Tidak dapat menjangkau alamat itu.</value></data>
+  <data name="Vm_PairErr_certificate_mismatch" xml:space="preserve"><value>PC ini tidak dapat diverifikasi.</value></data>
+  <data name="Vm_PairErr_host_proof_invalid" xml:space="preserve"><value>PC ini tidak dapat diverifikasi.</value></data>
+  <data name="Vm_PairErr_refused" xml:space="preserve"><value>PC itu menolak pemasangan.</value></data>
+  <data name="Vm_PairErr_protocol_error" xml:space="preserve"><value>PC itu mengirim jawaban yang tidak terduga.</value></data>
+  <data name="Vm_PairErr_save_failed" xml:space="preserve"><value>Pemasangan berhasil, tetapi tidak dapat disimpan di PC ini.</value></data>
+  <data name="Vm_PairErr_already_paired" xml:space="preserve"><value>Sebuah PC sudah dipasangkan. Batalkan pemasangannya di Pengaturan terlebih dahulu.</value></data>
+  <data name="Vm_PairErr_not_available" xml:space="preserve"><value>Pemasangan tidak tersedia di instalasi ini.</value></data>
+  <data name="Vm_PairErr_host" xml:space="preserve"><value>Aplikasi tidak berjalan.</value></data>
+  <data name="Vm_PairReason_expired" xml:space="preserve"><value>Kode sudah habis masa berlakunya. Minta kode baru.</value></data>
+  <data name="Vm_PairReason_code_voided" xml:space="preserve"><value>Kode itu hangus karena terlalu banyak percobaan yang salah. Minta kode baru.</value></data>
+  <data name="Vm_PairReason_no_offer" xml:space="preserve"><value>PC itu tidak sedang menunggu perangkat. Buka kode baru di PC tersebut.</value></data>
+  <data name="Vm_PairReason_too_many_devices" xml:space="preserve"><value>PC itu sudah memiliki 16 perangkat. Hapus salah satu terlebih dahulu.</value></data>
+  <data name="Vm_PairReason_wrong_code" xml:space="preserve"><value>Kode tidak benar.</value></data>
+  <data name="ModelsMemoryTitle.Text" xml:space="preserve"><value>Anggaran memori</value></data>
+  <data name="ModelsMemoryTitle.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Rencana pemakaian model yang dimuat dan sedang dimuat, dibandingkan batas RAM dan memori kartu grafis. Model yang tidak akan muat akan ditolak.</value></data>
+  <data name="Vm_MemRam" xml:space="preserve"><value>RAM</value></data>
+  <data name="Vm_MemVram" xml:space="preserve"><value>Memori grafis</value></data>
+  <data name="Vm_MemLine" xml:space="preserve"><value>{0}: {1} dipakai, {2} dicadangkan saat memuat, {3} kosong dari {4}</value></data>
+  <data name="UpdateBar.Title" xml:space="preserve"><value>Pembaruan tersedia</value></data>
+  <data name="UpdateBar.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Versi Portal AI Host yang lebih baru sudah siap di Microsoft Store</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Perbarui</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Buka halaman Microsoft Store untuk memperbarui Portal AI Host</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Buka halaman Microsoft Store untuk memperbarui Portal AI Host</value></data>
+  <data name="UpdateButtonText.Text" xml:space="preserve"><value>Perbarui</value></data>
+  <data name="Vm_ComingSoon" xml:space="preserve"><value>Segera hadir</value></data>
+  <data name="Vm_VramBoth" xml:space="preserve"><value>Membutuhkan {0} GB memori grafis dengan offload CPU; {1} GB direkomendasikan.</value></data>
+  <data name="Vm_VramMin" xml:space="preserve"><value>Membutuhkan {0} GB memori grafis dengan offload CPU.</value></data>
+  <data name="Vm_VramRec" xml:space="preserve"><value>{0} GB memori grafis direkomendasikan.</value></data>
+  <data name="Vm_GroupCount" xml:space="preserve"><value>{0} model</value></data>
+  <data name="Vm_ShowAll" xml:space="preserve"><value>Tampilkan semua {0}</value></data>
+  <data name="Vm_ShowFewer" xml:space="preserve"><value>Tampilkan lebih sedikit</value></data>
+  <data name="Vm_CatAllTip" xml:space="preserve"><value>Tampilkan model dari setiap jenis</value></data>
+  <data name="Vm_CatChip_all" xml:space="preserve"><value>Semua</value></data>
+  <data name="Vm_CatChip_chat" xml:space="preserve"><value>Obrolan</value></data>
+  <data name="Vm_CatChip_coding" xml:space="preserve"><value>Pemrograman</value></data>
+  <data name="Vm_CatChip_reasoning" xml:space="preserve"><value>Penalaran</value></data>
+  <data name="Vm_CatChip_vision" xml:space="preserve"><value>Visi</value></data>
+  <data name="Vm_CatChip_search" xml:space="preserve"><value>Pencarian</value></data>
+  <data name="Vm_CatChip_image" xml:space="preserve"><value>Gambar</value></data>
+  <data name="Vm_CatChip_video" xml:space="preserve"><value>Video</value></data>
+  <data name="Vm_CatChip_speech" xml:space="preserve"><value>Ucapan</value></data>
+  <data name="Vm_CatChip_other" xml:space="preserve"><value>Lainnya</value></data>
+  <data name="Vm_Cat_chat" xml:space="preserve"><value>Obrolan &amp; penulisan</value></data>
+  <data name="Vm_Cat_coding" xml:space="preserve"><value>Pemrograman</value></data>
+  <data name="Vm_Cat_reasoning" xml:space="preserve"><value>Penalaran</value></data>
+  <data name="Vm_Cat_vision" xml:space="preserve"><value>Memahami gambar</value></data>
+  <data name="Vm_Cat_search" xml:space="preserve"><value>Pencarian &amp; embedding</value></data>
+  <data name="Vm_Cat_image" xml:space="preserve"><value>Pembuatan gambar</value></data>
+  <data name="Vm_Cat_video" xml:space="preserve"><value>Pembuatan video</value></data>
+  <data name="Vm_Cat_speech" xml:space="preserve"><value>Ucapan</value></data>
+  <data name="Vm_Cat_other" xml:space="preserve"><value>Model lainnya</value></data>
+  <data name="ModelsSearch.PlaceholderText" xml:space="preserve"><value>Cari model</value></data>
+  <data name="ModelsSearch.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Cari model</value></data>
+  <data name="ModelsNoMatches.Text" xml:space="preserve"><value>Tidak ada model yang cocok. Hapus pencarian atau pilih Semua.</value></data>
+  <data name="HomeSeeAppsLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Lihat aplikasi mana yang terhubung ke host ini</value></data>
+  <data name="HomeSeeAppsLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Lihat aplikasi mana yang terhubung ke host ini</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Salin tautan pemasangan ke papan klip</value></data>
+  <data name="HomeLoadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Muat model ke memori agar menjawab lebih cepat</value></data>
+  <data name="HomeLoadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Muat model ke memori agar menjawab lebih cepat</value></data>
+  <data name="SettingsNotifyDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Tampilkan pemberitahuan saat perangkat memasangkan atau terhubung</value></data>
+  <data name="SettingsCorners.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Seberapa bulat sudut-sudutnya</value></data>
+  <data name="HomeChangeFolderButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Buka Pengaturan untuk memilih folder dengan ruang kosong lebih banyak</value></data>
+  <data name="HomeChangeFolderButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Buka Pengaturan untuk memilih folder dengan ruang kosong lebih banyak</value></data>
+  <data name="SettingsMoveButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Pindahkan model ke folder yang dipilih. File disalin dan diperiksa sebelum file lama dihapus.</value></data>
+  <data name="SettingsMoveButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Pindahkan model ke folder yang dipilih. File disalin dan diperiksa sebelum file lama dihapus.</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Batalkan pemasangan</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Batalkan pemasangan</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Tampilkan atau sembunyikan pemeriksaan kesehatan</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Tampilkan atau sembunyikan pemeriksaan kesehatan</value></data>
+  <data name="SettingsMaterial.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Gaya latar belakang jendela</value></data>
+  <data name="HomeDownloadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Unduh model yang direkomendasikan</value></data>
+  <data name="HomeDownloadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Unduh model yang direkomendasikan</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Lihat dengan jelas apa yang ada dalam laporan crash</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Lihat dengan jelas apa yang ada dalam laporan crash</value></data>
+  <data name="SettingsEaseOffFullscreen.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bebaskan memori saat aplikasi layar penuh atau game sedang berjalan</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Buka halaman Model untuk melihat model yang lebih baik</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Buka halaman Model untuk melihat model yang lebih baik</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Kembalikan pengaturan Performa ke bawaan</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Kembalikan pengaturan Performa ke bawaan</value></data>
+  <data name="SettingsEaseOffBattery.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bebaskan memori saat PC menggunakan baterai</value></data>
+  <data name="SettingsPreset.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Pilih keseimbangan siap pakai antara kecepatan dan penggunaan memori</value></data>
+  <data name="SettingsRemoteRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Izinkan perangkat yang dipasangkan mengakses PC ini dari luar jaringan rumah Anda</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Buat kode untuk memasangkan perangkat baru</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Buat kode untuk memasangkan perangkat baru</value></data>
+  <data name="SettingsCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Kirim laporan crash untuk membantu memperbaiki masalah</value></data>
+  <data name="SettingsAllowReplace.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Izinkan perangkat mengganti pemasangan yang ada</value></data>
+  <data name="SettingsMotion.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Seberapa banyak animasi yang digunakan</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Kembali ke folder model bawaan</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Kembali ke folder model bawaan</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Izinkan mengakses PC rumah lewat relay saat Anda di luar rumah</value></data>
+  <data name="HomeTryAgainButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Coba muat daftar model lagi</value></data>
+  <data name="HomeTryAgainButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Coba muat daftar model lagi</value></data>
+  <data name="SettingsStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Mulai Portal AI Host saat Anda masuk ke Windows</value></data>
+  <data name="SettingsHomeMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Pilih apakah PC ini menjalankan model sendiri atau menggunakan PC rumah Anda</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Mulai host agar aplikasi dapat menggunakannya</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Mulai host agar aplikasi dapat menggunakannya</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Kembalikan pengaturan Umum ke bawaan</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Kembalikan pengaturan Umum ke bawaan</value></data>
+  <data name="SettingsHomeFallback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Apa yang dilakukan saat PC rumah tidak dapat dijangkau</value></data>
+  <data name="SettingsDensity.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Seberapa lebar ruang antar item</value></data>
+  <data name="SettingsTextSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Seberapa besar teksnya</value></data>
+  <data name="SettingsIdle.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Berapa lama host menunggu tanpa permintaan sebelum membebaskan memori model</value></data>
+  <data name="SettingsEaseOffAppBusy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bebaskan memori saat aplikasi lain sedang bekerja berat</value></data>
+  <data name="SettingsRemoveDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hapus perangkat ini. Perangkat harus memasangkan ulang untuk terhubung.</value></data>
+  <data name="SettingsRemoveDevice.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Hapus perangkat ini. Perangkat harus memasangkan ulang untuk terhubung.</value></data>
+  <data name="SettingsMoveCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hentikan pemindahan model</value></data>
+  <data name="SettingsMoveCancel.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Hentikan pemindahan model</value></data>
+  <data name="SettingsNotifyDownloads.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Tampilkan pemberitahuan saat unduhan selesai atau gagal</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Kembalikan pengaturan privasi ke bawaan</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Kembalikan pengaturan privasi ke bawaan</value></data>
+  <data name="HealthCheckAgainButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Jalankan pemeriksaan kesehatan lagi</value></data>
+  <data name="HealthCheckAgainButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Jalankan pemeriksaan kesehatan lagi</value></data>
+  <data name="SettingsMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Seberapa banyak memori yang boleh digunakan model</value></data>
+  <data name="SettingsTheme.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Terang, gelap, atau ikuti Windows</value></data>
+  <data name="SettingsRemoteEnabled.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Izinkan perangkat lain Anda menggunakan PC ini</value></data>
+  <data name="SettingsNotifyProblems.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Tampilkan pemberitahuan saat ada yang memerlukan perhatian Anda</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Buka halaman obrolan untuk mencoba model yang aktif</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Buka halaman obrolan untuk mencoba model yang aktif</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Kembalikan pengaturan notifikasi ke bawaan</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Kembalikan pengaturan notifikasi ke bawaan</value></data>
+  <data name="SettingsRelayAdmission.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Wajibkan relay memeriksa perangkat sebelum terhubung</value></data>
+  <data name="HomeUnloadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bebaskan memori yang dipakai model. File model tetap tersimpan di disk.</value></data>
+  <data name="HomeUnloadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Bebaskan memori yang dipakai model. File model tetap tersimpan di disk.</value></data>
+  <data name="HomeSeeAllModelsLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Telusuri setiap model yang dapat diunduh</value></data>
+  <data name="HomeSeeAllModelsLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Telusuri setiap model yang dapat diunduh</value></data>
+  <data name="SettingsNotifyApprovals.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Tampilkan pemberitahuan saat aplikasi meminta izin</value></data>
+  <data name="SettingsHomeRelayMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Pilih kapan relay digunakan untuk menjangkau PC rumah</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Kembalikan pengaturan tampilan ke bawaan</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Kembalikan pengaturan tampilan ke bawaan</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Pemeriksaan kesehatan</value></data>
+</root>
