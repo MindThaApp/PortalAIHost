@@ -1,0 +1,986 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="NavHome.Content" xml:space="preserve"><value>Start</value></data>
+  <data name="NavHome.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Start</value></data>
+  <data name="NavModels.Content" xml:space="preserve"><value>Modeller</value></data>
+  <data name="NavModels.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Modeller</value></data>
+  <data name="NavApps.Content" xml:space="preserve"><value>Enheter och appar</value></data>
+  <data name="NavApps.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Enheter och appar</value></data>
+  <data name="NavTryIt.Content" xml:space="preserve"><value>Testa</value></data>
+  <data name="NavTryIt.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Testa</value></data>
+  <data name="NavSettings.Content" xml:space="preserve"><value>Inställningar</value></data>
+  <data name="NavSettings.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Inställningar</value></data>
+  <data name="HomeTitle.Text" xml:space="preserve"><value>Start</value></data>
+  <data name="HomeSafeModeBar.Title" xml:space="preserve"><value>Felsäkert läge</value></data>
+  <data name="HomeStoreProblemBar.Title" xml:space="preserve"><value>Modellmappen är inte tillgänglig</value></data>
+  <data name="Vm_OldFolderBadge" xml:space="preserve"><value>Tidigare mapp</value></data>
+  <data name="Vm_OldFolderRow" xml:space="preserve"><value>I en tidigare modellmapp: {0}. Ta bort den för att frigöra utrymmet.</value></data>
+  <data name="HomeSafeModeBar.Message" xml:space="preserve"><value>Värden stängdes oväntat mer än en gång, så den startade med försiktiga inställningar. Dina appar fungerar fortfarande. Om detta fortsätter, starta om datorn.</value></data>
+  <data name="HomeStartButton.Content" xml:space="preserve"><value>Starta Portal AI Host</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Starta Portal AI Host</value></data>
+  <data name="HomeUpgradeText.Text" xml:space="preserve"><value>En bättre modell finns för din dator. Din nuvarande modell används tills den nya är klar.</value></data>
+  <data name="HomeSeeModelsButton.Content" xml:space="preserve"><value>Visa modeller</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Visa modeller</value></data>
+  <data name="ModelsTitle.Text" xml:space="preserve"><value>Modeller</value></data>
+  <data name="ModelsExistingBar.Title" xml:space="preserve"><value>Hittade en befintlig kopia</value></data>
+  <data name="ModelsUpgradeBar.Title" xml:space="preserve"><value>En bättre modell finns</value></data>
+  <data name="ModelTooBig.Text" xml:space="preserve"><value>Den här kan vara för stor för den här datorn.</value></data>
+  <data name="ModelDownload.Content" xml:space="preserve"><value>Hämta</value></data>
+  <data name="ModelPause.Content" xml:space="preserve"><value>Pausa</value></data>
+  <data name="ModelResume.Content" xml:space="preserve"><value>Återuppta</value></data>
+  <data name="ModelCancel.Content" xml:space="preserve"><value>Stoppa</value></data>
+  <data name="ModelUse.Content" xml:space="preserve"><value>Använd den här modellen</value></data>
+  <data name="ModelRemove.Content" xml:space="preserve"><value>Ta bort</value></data>
+  <data name="ModelsCatalogueBar.Title" xml:space="preserve"><value>Modelllistan är inte tillgänglig</value></data>
+  <data name="ModelsCatalogueBar.Message" xml:space="preserve"><value>Värden kunde inte läsa in en betrodd modelllista, så nya modeller kan inte hämtas just nu. Modeller som redan finns på datorn fungerar fortfarande.</value></data>
+  <data name="AppsTitle.Text" xml:space="preserve"><value>Enheter och appar</value></data>
+  <data name="AppsWaitingHeader.Text" xml:space="preserve"><value>Väntar på ditt svar</value></data>
+  <data name="AppsApprovedHeader.Text" xml:space="preserve"><value>Appar som kan använda din AI-värd</value></data>
+  <data name="AppsNone.Text" xml:space="preserve"><value>Inga appar har fått åtkomst ännu. När en app vill använda värden får du frågan här.</value></data>
+  <data name="AppAllow.Content" xml:space="preserve"><value>Tillåt</value></data>
+  <data name="AppDeny.Content" xml:space="preserve"><value>Neka</value></data>
+  <data name="Vm_AppTodayNone" xml:space="preserve"><value>Inga förfrågningar idag</value></data>
+  <data name="Vm_AppToday1" xml:space="preserve"><value>{0} förfrågan idag</value></data>
+  <data name="Vm_AppToday" xml:space="preserve"><value>{0} förfrågningar idag</value></data>
+  <data name="Vm_PriorityHigh" xml:space="preserve"><value>Hög</value></data>
+  <data name="Vm_PriorityNormal" xml:space="preserve"><value>Normal</value></data>
+  <data name="Vm_PriorityLow" xml:space="preserve"><value>Låg</value></data>
+  <data name="Vm_AutoPriority" xml:space="preserve"><value>Prioritet för {0}</value></data>
+  <data name="Vm_AppPausedBadge" xml:space="preserve"><value>Pausad</value></data>
+  <data name="Vm_AppPausedHint" xml:space="preserve"><value>{0} är pausad. Nya förfrågningar nekas tills du återupptar den. Den behåller sin åtkomst.</value></data>
+  <data name="Vm_AppPause" xml:space="preserve"><value>Pausa</value></data>
+  <data name="Vm_AppResume" xml:space="preserve"><value>Återuppta</value></data>
+  <data name="Vm_AutoPause" xml:space="preserve"><value>Pausa {0}</value></data>
+  <data name="Vm_AutoResume" xml:space="preserve"><value>Återuppta {0}</value></data>
+  <data name="AppPriority.Header" xml:space="preserve"><value>Prioritet</value></data>
+  <data name="AppRevoke.Content" xml:space="preserve"><value>Ta bort åtkomst</value></data>
+  <data name="SettingsTitle.Text" xml:space="preserve"><value>Inställningar</value></data>
+  <data name="SettingsStartWithWindows.Header" xml:space="preserve"><value>Starta med Windows</value></data>
+  <data name="SettingsStartWithWindows.OnContent" xml:space="preserve"><value>På</value></data>
+  <data name="SettingsStartWithWindows.OffContent" xml:space="preserve"><value>Av</value></data>
+  <data name="SettingsStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Starta med Windows</value></data>
+  <data name="SettingsIdle.Header" xml:space="preserve"><value>Frigör minne när den är inaktiv</value></data>
+  <data name="SettingsIdle.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Frigör minne när den är inaktiv</value></data>
+  <data name="SettingsIdleHelp.Text" xml:space="preserve"><value>Modellen vaknar igen nästa gång en app begär den. Om den hålls laddad svarar den snabbare men använder minne hela tiden.</value></data>
+  <data name="SettingsFolder.Header" xml:space="preserve"><value>Mapp för hämtade modeller</value></data>
+  <data name="SettingsFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Mapp för hämtade modeller</value></data>
+  <data name="TryItTitle.Text" xml:space="preserve"><value>Testa</value></data>
+  <data name="TryItIntro.Text" xml:space="preserve"><value>Ställ en kort fråga till modellen för att kontrollera att den fungerar och se hur snabbt den svarar. Inget du skriver här sparas. Tryck på Ctrl+Enter för att fråga.</value></data>
+  <data name="TryItPrompt.Header" xml:space="preserve"><value>Din fråga</value></data>
+  <data name="TryItPrompt.PlaceholderText" xml:space="preserve"><value>Till exempel: Skriv en mening om havet.</value></data>
+  <data name="TryItPrompt.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Din fråga</value></data>
+  <data name="TryItSend.Content" xml:space="preserve"><value>Fråga</value></data>
+  <data name="TryItSend.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Fråga</value></data>
+  <data name="TryItStop.Content" xml:space="preserve"><value>Stoppa</value></data>
+  <data name="TryItStop.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Stoppa</value></data>
+  <data name="TryItReply.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Svaret</value></data>
+  <data name="WelcomeTitle.Text" xml:space="preserve"><value>Välkommen till Portal AI Host</value></data>
+  <data name="WelcomeLead.Text" xml:space="preserve"><value>AI som stannar på din dator</value></data>
+  <data name="WelcomeIntro.Text" xml:space="preserve"><value>Portal AI Host kör AI-modeller på den här datorn för dina Portal-appar. Du behöver inget konfigurera: vi väljer en modell som passar din dator.</value></data>
+  <data name="WelcomePoint1Title.Text" xml:space="preserve"><value>Körs på den här datorn</value></data>
+  <data name="WelcomePoint1Body.Text" xml:space="preserve"><value>Modellen använder ditt eget grafikkort och minne, så den fungerar även utan internetanslutning.</value></data>
+  <data name="WelcomePoint2Title.Text" xml:space="preserve"><value>Stannar privat</value></data>
+  <data name="WelcomePoint2Body.Text" xml:space="preserve"><value>Dina frågor och filer lämnar aldrig den här datorn.</value></data>
+  <data name="WelcomePoint3Title.Text" xml:space="preserve"><value>Gjord för dina Portal-appar</value></data>
+  <data name="WelcomePoint3Body.Text" xml:space="preserve"><value>Dina Portal-appar kan använda den för att skriva, sammanfatta och svara, utan extra konton.</value></data>
+  <data name="WelcomeModelTitle.Text" xml:space="preserve"><value>Välj en modell</value></data>
+  <data name="WelcomeModelIntro.Text" xml:space="preserve"><value>En modell är AI:n som gör jobbet. Det här är den vi tycker passar din dator bäst.</value></data>
+  <data name="WelcomeNoModel.Text" xml:space="preserve"><value>Vi hittade ingen modell som passar den här datorn just nu. Du kan titta igen senare på sidan Modeller.</value></data>
+  <data name="WelcomeDownload.Content" xml:space="preserve"><value>Hämta</value></data>
+  <data name="WelcomeDownload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Hämta den rekommenderade modellen</value></data>
+  <data name="WelcomeChooseLater.Content" xml:space="preserve"><value>Välj senare</value></data>
+  <data name="WelcomeChooseLater.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Välj senare, välj en modell under Modeller</value></data>
+  <data name="WelcomeKeepGoing.Text" xml:space="preserve"><value>Du kan fortsätta. Hämtningen pågår i bakgrunden.</value></data>
+  <data name="WelcomeRetry.Content" xml:space="preserve"><value>Försök igen</value></data>
+  <data name="WelcomeRetry.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Försök igen, starta hämtningen om</value></data>
+  <data name="WelcomeWhereTitle.Text" xml:space="preserve"><value>Hitta den vid klockan</value></data>
+  <data name="WelcomeTrayTitle.Text" xml:space="preserve"><value>Leta efter ikonen i aktivitetsfältet</value></data>
+  <data name="WelcomeTrayBody.Text" xml:space="preserve"><value>Portal AI Host väntar tyst i aktivitetsfältet, de små ikonerna vid klockan. Klicka på ikonen för att öppna den. Om du inte ser den, klicka på pilen för att visa dolda ikoner.</value></data>
+  <data name="WelcomeAskTitle.Text" xml:space="preserve"><value>Appar frågar alltid först</value></data>
+  <data name="WelcomeAskBody.Text" xml:space="preserve"><value>Första gången en Portal-app vill använda AI på den här datorn får du frågan. Du kan säga nej, och du kan ta bort åtkomsten när som helst.</value></data>
+  <data name="WelcomeStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Starta med Windows, starta Portal AI Host när jag loggar in</value></data>
+  <data name="WelcomeSkip.Content" xml:space="preserve"><value>Hoppa över nu</value></data>
+  <data name="WelcomeSkip.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Hoppa över nu, stäng välkomsten</value></data>
+  <data name="WelcomeBack.Content" xml:space="preserve"><value>Tillbaka</value></data>
+  <data name="WelcomeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Tillbaka</value></data>
+  <data name="Vm_VerifiedShort" xml:space="preserve"><value>Verifierad Portal-app</value></data>
+  <data name="Vm_ApprovalDetails" xml:space="preserve"><value>Detaljer</value></data>
+  <data name="Vm_WelcomeRecommended" xml:space="preserve"><value>Rekommenderad: {0}-modell</value></data>
+  <data name="Vm_WelcomeSmall" xml:space="preserve"><value>Liten</value></data>
+  <data name="Vm_WelcomeMedium" xml:space="preserve"><value>Medel</value></data>
+  <data name="Vm_WelcomeLarge" xml:space="preserve"><value>Stor</value></data>
+  <data name="Vm_WelcomeDetail" xml:space="preserve"><value>{0}, {1}</value></data>
+  <data name="WelcomeLaterNote.Text" xml:space="preserve"><value>Du kan välja en modell senare under Modeller.</value></data>
+  <data name="WelcomeStartRec.Content" xml:space="preserve"><value>Starta med rekommenderade inställningar</value></data>
+  <data name="WelcomeStartRec.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Starta med rekommenderade inställningar</value></data>
+  <data name="WelcomeWhereIntro.Text" xml:space="preserve"><value>Två saker att veta innan du börjar.</value></data>
+  <data name="WelcomeStartTitle.Text" xml:space="preserve"><value>Starta med Windows</value></data>
+  <data name="WelcomeStartBody.Text" xml:space="preserve"><value>Håller Portal AI Host redo i systemfältet när du loggar in, så att dina appar kan använda den direkt.</value></data>
+  <data name="Vm_WelcomeRecommendedTip" xml:space="preserve"><value>Hämtar den rekommenderade modellen ({0}) i bakgrunden, håller Portal AI Host igång med Windows och stänger det här fönstret. Du kan ändra allt senare.</value></data>
+  <data name="Vm_WelcomeRecommendedTipNoModel" xml:space="preserve"><value>Håller Portal AI Host igång med Windows och stänger det här fönstret. Du kan ändra allt senare.</value></data>
+  <data name="Vm_WelcomeTitle" xml:space="preserve"><value>Välkommen till Portal AI Host</value></data>
+  <data name="Vm_WelcomeNext" xml:space="preserve"><value>Nästa</value></data>
+  <data name="Vm_WelcomeFinish" xml:space="preserve"><value>Kom igång</value></data>
+  <data name="Vm_WelcomeSize" xml:space="preserve"><value>Hämtningsstorlek: {0}</value></data>
+  <data name="Vm_AppTitle" xml:space="preserve"><value>Portal AI Host</value></data>
+  <data name="Vm_NoHostTitle" xml:space="preserve"><value>Portal AI Host körs inte</value></data>
+  <data name="Vm_NoHostBody" xml:space="preserve"><value>Hjälpprogrammet som kör din AI-modell är avstängt. Starta det så att dina appar kan använda AI.</value></data>
+  <data name="Vm_Starting" xml:space="preserve"><value>Startar...</value></data>
+  <data name="Vm_StartFailed" xml:space="preserve"><value>Det gick inte att starta värden. Försök öppna Portal AI Host igen från Start-menyn.</value></data>
+  <data name="Vm_StateReady" xml:space="preserve"><value>Klar</value></data>
+  <data name="Vm_StateBusy" xml:space="preserve"><value>Svarar</value></data>
+  <data name="Vm_StateLoading" xml:space="preserve"><value>Förbereder modellen</value></data>
+  <data name="Vm_StateIdle" xml:space="preserve"><value>Vilar. Modellen vaknar när en app begär den.</value></data>
+  <data name="Vm_StateNoModel" xml:space="preserve"><value>Ingen modell än</value></data>
+  <data name="Vm_StateDownloading" xml:space="preserve"><value>Hämtar en modell</value></data>
+  <data name="Vm_StateError" xml:space="preserve"><value>Något gick fel</value></data>
+  <data name="Vm_HostVersion" xml:space="preserve"><value>Värdversion {0}</value></data>
+  <data name="Vm_ModelNone" xml:space="preserve"><value>Ingen modell installerad än</value></data>
+  <data name="Vm_ModelLoaded" xml:space="preserve"><value>{0} är laddad och klar</value></data>
+  <data name="Vm_ModelLoading" xml:space="preserve"><value>Laddar {0}...</value></data>
+  <data name="Vm_ModelUnloaded" xml:space="preserve"><value>{0} är installerad. Den laddas när en app begär den.</value></data>
+  <data name="Vm_QueueEmpty" xml:space="preserve"><value>Inga förfrågningar väntar</value></data>
+  <data name="Vm_QueueSome" xml:space="preserve"><value>{0} körs, {1} väntar</value></data>
+  <data name="Vm_QualityName" xml:space="preserve"><value>Kvalitet {0} av 5</value></data>
+  <data name="Vm_DownloadProgress" xml:space="preserve"><value>{0} av {1}</value></data>
+  <data name="Vm_DownloadEta" xml:space="preserve"><value>{0} av {1}, cirka {2} min kvar</value></data>
+  <data name="Vm_Paused" xml:space="preserve"><value>Pausad vid {0}%</value></data>
+  <data name="Vm_Verifying" xml:space="preserve"><value>Kontrollerar hämtningen...</value></data>
+  <data name="Vm_Queued" xml:space="preserve"><value>Väntar på att starta...</value></data>
+  <data name="Vm_DownloadFailed" xml:space="preserve"><value>Hämtningen slutfördes inte. {0}</value></data>
+  <data name="Vm_DownloadDone" xml:space="preserve"><value>Hämtningen är klar.</value></data>
+  <data name="Vm_InUse" xml:space="preserve"><value>Används</value></data>
+  <data name="Vm_Installed" xml:space="preserve"><value>Installerad</value></data>
+  <data name="Vm_BestForYou" xml:space="preserve"><value>Bäst för din dator</value></data>
+  <data name="Vm_StorageLine" xml:space="preserve"><value>Modeller använder {2} i {0}. {1} är ledigt på den enheten.</value></data>
+  <data name="Vm_ExistingCopy" xml:space="preserve"><value>En kopia av {0} finns redan på den här datorn. Värden använder den i stället för att hämta den igen.</value></data>
+  <data name="Vm_UpgradeOffer" xml:space="preserve"><value>{0} passar bättre. Din nuvarande modell används tills den nya är klar.</value></data>
+  <data name="Vm_CancelDlTitle" xml:space="preserve"><value>Stoppa den här hämtningen?</value></data>
+  <data name="Vm_CancelDlBody" xml:space="preserve"><value>Den del som redan hämtats kommer att kastas.</value></data>
+  <data name="Vm_CancelDlYes" xml:space="preserve"><value>Stoppa hämtningen</value></data>
+  <data name="Vm_CancelDlKeep" xml:space="preserve"><value>Fortsätt hämta</value></data>
+  <data name="Vm_AutoDownload" xml:space="preserve"><value>Hämta {0}</value></data>
+  <data name="Vm_AutoCancel" xml:space="preserve"><value>Stoppa hämtningen av {0}</value></data>
+  <data name="Vm_AutoUse" xml:space="preserve"><value>Använd {0}</value></data>
+  <data name="Vm_Added" xml:space="preserve"><value>Tillagd {0}</value></data>
+  <data name="Vm_LastUsed" xml:space="preserve"><value>Senast använd {0}</value></data>
+  <data name="Vm_NeverUsed" xml:space="preserve"><value>Inte använd än</value></data>
+  <data name="Vm_AutoRevoke" xml:space="preserve"><value>Ta bort åtkomst för {0}</value></data>
+  <data name="Vm_AutoAllow" xml:space="preserve"><value>Tillåt {0}</value></data>
+  <data name="Vm_AutoDeny" xml:space="preserve"><value>Neka {0}</value></data>
+  <data name="Vm_RevokeTitle" xml:space="preserve"><value>Ta bort åtkomst för {0}?</value></data>
+  <data name="Vm_RevokeBody" xml:space="preserve"><value>{0} slutar fungera med AI-värden tills du tillåter det igen.</value></data>
+  <data name="Vm_RevokeYes" xml:space="preserve"><value>Ta bort åtkomst</value></data>
+  <data name="Vm_Cancel" xml:space="preserve"><value>Avbryt</value></data>
+  <data name="Vm_Verified" xml:space="preserve"><value>Installerad app ({0}). Inte en Portal-app.</value></data>
+  <data name="Vm_VerifiedPortal" xml:space="preserve"><value>Verifierad Portal-app ({0})</value></data>
+  <data name="Vm_Unverified" xml:space="preserve"><value>Inte verifierad. Den körs från {0}. Tillåt den bara om du startade den själv.</value></data>
+  <data name="Vm_ApprovalTitle" xml:space="preserve"><value>Låt {0} använda AI på den här datorn?</value></data>
+  <data name="Vm_ApprovalBody" xml:space="preserve"><value>{0} vill använda AI-modellen på den här datorn.</value></data>
+  <data name="Vm_ApprovalReason" xml:space="preserve"><value>Angiven anledning: {0}</value></data>
+  <data name="Vm_Allow" xml:space="preserve"><value>Tillåt</value></data>
+  <data name="Vm_Deny" xml:space="preserve"><value>Tillåt inte</value></data>
+  <data name="Vm_Later" xml:space="preserve"><value>Bestäm senare</value></data>
+  <data name="Vm_Idle_Keep" xml:space="preserve"><value>Behåll modellen laddad</value></data>
+  <data name="Vm_Idle_5" xml:space="preserve"><value>Efter 5 minuter</value></data>
+  <data name="Vm_Idle_10" xml:space="preserve"><value>Efter 10 minuter</value></data>
+  <data name="Vm_Saved" xml:space="preserve"><value>Sparat</value></data>
+  <data name="Vm_SaveFailed" xml:space="preserve"><value>Det gick inte att spara. Körs värden?</value></data>
+  <data name="Vm_FolderTitle" xml:space="preserve"><value>Använd den här mappen för modeller?</value></data>
+  <data name="Vm_FolderBody" xml:space="preserve"><value>Värden använder {0} för modeller. Modeller du redan har flyttas eller tas inte bort.</value></data>
+  <data name="Vm_FolderYes" xml:space="preserve"><value>Använd mappen</value></data>
+  <data name="TryItClear.Content" xml:space="preserve"><value>Rensa</value></data>
+  <data name="TryItClear.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Rensa konversationen</value></data>
+  <data name="TryItSuggestLabel.Text" xml:space="preserve"><value>Vet du inte vad du ska fråga? Prova något av dessa.</value></data>
+  <data name="HomeTryItButton.Content" xml:space="preserve"><value>Testa</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Testa modellen med en fråga</value></data>
+  <data name="Vm_TrySuggest1" xml:space="preserve"><value>Skriv en vänlig mening om havet.</value></data>
+  <data name="Vm_TrySuggest2" xml:space="preserve"><value>Förklara med två meningar vad en router gör.</value></data>
+  <data name="Vm_TrySuggest3" xml:space="preserve"><value>Ge mig tre namn på en katt.</value></data>
+  <data name="Vm_TryStats" xml:space="preserve"><value>Första orden efter {0} s, sedan {1} tokens per sekund.</value></data>
+  <data name="Vm_TryStatsShort" xml:space="preserve"><value>Första orden efter {0} s.</value></data>
+  <data name="Vm_TryStatsStopped" xml:space="preserve"><value>Stoppad. {0}</value></data>
+  <data name="TryItThinking.Header" xml:space="preserve"><value>Vad modellen tänkte först</value></data>
+  <data name="Vm_TryWorking" xml:space="preserve"><value>Arbetar på det. En liten dator kan behöva en minut.</value></data>
+  <data name="Vm_TryThinking" xml:space="preserve"><value>Tänker igenom det...</value></data>
+  <data name="Vm_TryOnlyThinking" xml:space="preserve"><value>Modellen använde hela sin tid till att tänka och gav inget svar. Prova en kortare fråga.</value></data>
+  <data name="Vm_TryEmpty" xml:space="preserve"><value>Modellen skickade ett tomt svar. Försök fråga igen.</value></data>
+  <data name="Vm_TryFailed" xml:space="preserve"><value>Värden kunde inte svara: {0}</value></data>
+  <data name="Vm_HwChecking" xml:space="preserve"><value>Kontrollerar din dator...</value></data>
+  <data name="Vm_HwUnknown" xml:space="preserve"><value>kunde inte läsas</value></data>
+  <data name="Vm_HwMemory" xml:space="preserve"><value>Minne: {0}</value></data>
+  <data name="Vm_HwGraphics" xml:space="preserve"><value>Grafik: {0}</value></data>
+  <data name="Vm_HwCores" xml:space="preserve"><value>Processorkärnor: {0}</value></data>
+  <data name="Vm_HwDisk" xml:space="preserve"><value>Ledigt diskutrymme: {0}</value></data>
+  <data name="HomeWelcomeTitle.Text" xml:space="preserve"><value>Ställ in din privata AI på den här datorn</value></data>
+  <data name="HomeWelcomeBody.Text" xml:space="preserve"><value>Portal AI Host håller en AI-modell på den här datorn och delar den med dina Portal-appar, så varje app behöver inte en egen kopia. Allt körs här: dina ord lämnar aldrig datorn, och inget molnkonto behövs.</value></data>
+  <data name="HomeCatalogueBar.Title" xml:space="preserve"><value>Modelllistan är inte tillgänglig</value></data>
+  <data name="HomeCatalogueBar.Message" xml:space="preserve"><value>Värden kunde inte läsa in en betrodd modelllista, så det finns inget att rekommendera just nu. Kontrollera internetanslutningen och försök igen.</value></data>
+  <data name="HomeTryAgainButton.Content" xml:space="preserve"><value>Försök igen</value></data>
+  <data name="HomeRecommendedLabel.Text" xml:space="preserve"><value>REKOMMENDERAD FÖR DEN HÄR DATORN</value></data>
+  <data name="HomeNoSpaceBar.Title" xml:space="preserve"><value>För lite diskutrymme</value></data>
+  <data name="HomeChangeFolderButton.Content" xml:space="preserve"><value>Ändra mapp i Inställningar</value></data>
+  <data name="HomeDownloadButton.Content" xml:space="preserve"><value>Hämta</value></data>
+  <data name="HomeSeeAllModelsLink.Content" xml:space="preserve"><value>Visa alla modeller</value></data>
+  <data name="HomeSeeAllModelsLink2.Content" xml:space="preserve"><value>Visa alla modeller</value></data>
+  <data name="HomeActiveModelLabel.Text" xml:space="preserve"><value>AKTIV MODELL</value></data>
+  <data name="HomeAppsLabel.Text" xml:space="preserve"><value>ANSLUTNA APPAR</value></data>
+  <data name="HomeSeeAppsLink.Content" xml:space="preserve"><value>Visa enheter och appar</value></data>
+  <data name="HomeRequestsLabel.Text" xml:space="preserve"><value>FÖRFRÅGNINGAR</value></data>
+  <data name="Vm_HomeLoaded" xml:space="preserve"><value>Laddad och klar</value></data>
+  <data name="Vm_HomeLoading" xml:space="preserve"><value>Förbereder...</value></data>
+  <data name="Vm_HomeUnloaded" xml:space="preserve"><value>Inte laddad. Den laddas när en app begär den.</value></data>
+  <data name="Vm_HomeKeepLoaded" xml:space="preserve"><value>Hålls laddad så att svaren kommer snabbt.</value></data>
+  <data name="Vm_HomeIdleUnload" xml:space="preserve"><value>Frigör minne efter {0} minuter utan förfrågningar.</value></data>
+  <data name="Vm_HomeApps" xml:space="preserve"><value>{0} appar kan använda den här modellen</value></data>
+  <data name="Vm_HomeApps1" xml:space="preserve"><value>1 app kan använda den här modellen</value></data>
+  <data name="Vm_HomeAppsNone" xml:space="preserve"><value>Inga appar anslutna än. De frågar om tillåtelse första gången.</value></data>
+  <data name="Vm_HomeNoSpace" xml:space="preserve"><value>Den här modellen behöver {0} men bara {1} är ledigt. Frigör utrymme, eller välj en annan modellmapp i Inställningar.</value></data>
+  <data name="Vm_NoGpu" xml:space="preserve"><value>ingen hittades</value></data>
+  <data name="Vm_HostMissing" xml:space="preserve"><value>Värdprogrammet saknas i den här installationen. Installera om Portal AI Host för att åtgärda detta.</value></data>
+  <data name="Vm_HostMissingTestRun" xml:space="preserve"><value>Det här är en testkörning och inget värdprogram hittades bredvid appen. Det installerade värdprogrammet startas inte för en testkörning.</value></data>
+  <data name="Vm_StartTimedOut" xml:space="preserve"><value>Värden startade men svarade inte i tid. Vänta en stund och försök igen.</value></data>
+  <data name="Vm_HostExitTestRoot" xml:space="preserve"><value>Värden vägrade starta: testdatamappen saknas eller är inte markerad som en testmapp.</value></data>
+  <data name="Vm_HostExitStartFailed" xml:space="preserve"><value>Värden kunde inte starta. Starta om datorn och försök igen. Om det fortsätter, installera om Portal AI Host.</value></data>
+  <data name="Vm_HostExitOtherUser" xml:space="preserve"><value>En annan Windows-användare på den här datorn kör redan Portal AI Host. Be den avsluta, eller logga in som den användaren.</value></data>
+  <data name="Vm_CatalogueUnavailable" xml:space="preserve"><value>Modelllistan är inte tillgänglig: värden kunde inte läsa in en betrodd modelllista. Modeller som redan finns på datorn fungerar fortfarande.</value></data>
+  <data name="Vm_RemoveTitle" xml:space="preserve"><value>Ta bort den här modellen?</value></data>
+  <data name="Vm_RemoveBody" xml:space="preserve"><value>{0} tas bort från den här datorn. Endast filer som värden hämtat raderas. En modellfil du lagt till själv tas bara bort från listan och ligger kvar där den är.</value></data>
+  <data name="Vm_RemoveYes" xml:space="preserve"><value>Ta bort</value></data>
+  <data name="Vm_AutoRemove" xml:space="preserve"><value>Ta bort {0}</value></data>
+  <data name="Vm_FolderSavedNote" xml:space="preserve"><value>Sparat. När värden startar om går nya hämtningar till {1}. Modeller som redan hämtats flyttas eller tas inte bort; de ligger kvar i {0} och visas fortfarande på sidan Modeller, där du kan ta bort dem.</value></data>
+  <data name="Vm_FolderRefused" xml:space="preserve"><value>De övriga inställningarna sparades, men den modellmappen kan inte användas: {0}</value></data>
+  <data name="Vm_Startup_Unavailable" xml:space="preserve"><value>Starta med Windows är bara tillgängligt i den installerade appen.</value></data>
+  <data name="Vm_Startup_DisabledByUser" xml:space="preserve"><value>Starta med Windows stängdes av i Aktivitetshanteraren. Slå på det igen där (Startappar).</value></data>
+  <data name="Vm_Startup_Policy" xml:space="preserve"><value>Starta med Windows styrs av din organisation.</value></data>
+  <data name="Vm_DefaultFolder" xml:space="preserve"><value>standardmappen</value></data>
+  <data name="Vm_Publisher" xml:space="preserve"><value>Utgivare: {0}</value></data>
+  <data name="Vm_PublisherUnknown" xml:space="preserve"><value>Utgivare: okänd</value></data>
+  <data name="NavAbout.Content" xml:space="preserve"><value>Om</value></data>
+  <data name="NavAbout.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Om</value></data>
+  <data name="AppMenuButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Appmeny</value></data>
+  <data name="Vm_AppMenuTip" xml:space="preserve"><value>Appmeny</value></data>
+  <data name="MenuSettings.Text" xml:space="preserve"><value>Inställningar</value></data>
+  <data name="MenuShortcuts.Text" xml:space="preserve"><value>Tangentbordsgenvägar</value></data>
+  <data name="MenuWhatsNew.Text" xml:space="preserve"><value>Nyheter</value></data>
+  <data name="MenuAbout.Text" xml:space="preserve"><value>Om Portal AI Host</value></data>
+  <data name="Vm_ShortcutsTitle" xml:space="preserve"><value>Tangentbordsgenvägar</value></data>
+  <data name="Vm_ShortcutsBody" xml:space="preserve"><value>Ctrl+1: Start
+Ctrl+2: Modeller
+Ctrl+3: Enheter och appar
+Ctrl+4: Testa
+Ctrl+, : Inställningar
+F1: Om
+Esc: stäng Nyheter eller en dialogruta</value></data>
+  <data name="Vm_Close" xml:space="preserve"><value>Stäng</value></data>
+  <data name="SettingsGeneralHeader.Text" xml:space="preserve"><value>Allmänt</value></data>
+  <data name="SettingsResetGeneral.Content" xml:space="preserve"><value>Återställ till standard</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Återställ de allmänna inställningarna till standard</value></data>
+  <data name="SettingsNotificationsHeader.Text" xml:space="preserve"><value>Aviseringar</value></data>
+  <data name="SettingsResetNotifications.Content" xml:space="preserve"><value>Återställ till standard</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Återställ till standard, aviseringsinställningar</value></data>
+  <data name="SettingsNotificationsHelp.Text" xml:space="preserve"><value>Korta meddelanden från Windows när något behöver dig och det här fönstret är stängt. De är tysta medan ett program i helskärm är i förgrunden och upprepas högst en gång var några minuter.</value></data>
+  <data name="SettingsNotifyDownloads.Header" xml:space="preserve"><value>En modellhämtning slutförs eller misslyckas</value></data>
+  <data name="SettingsNotifyDownloads.OnContent" xml:space="preserve"><value>På</value></data>
+  <data name="SettingsNotifyDownloads.OffContent" xml:space="preserve"><value>Av</value></data>
+  <data name="SettingsNotifyDownloads.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Meddela när en modellhämtning slutförs eller misslyckas</value></data>
+  <data name="SettingsNotifyApprovals.Header" xml:space="preserve"><value>En app begär godkännande</value></data>
+  <data name="SettingsNotifyApprovals.OnContent" xml:space="preserve"><value>På</value></data>
+  <data name="SettingsNotifyApprovals.OffContent" xml:space="preserve"><value>Av</value></data>
+  <data name="SettingsNotifyApprovals.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Meddela när en app begär godkännande</value></data>
+  <data name="SettingsNotifyProblems.Header" xml:space="preserve"><value>AI-motorn stoppar eller en kontroll misslyckas</value></data>
+  <data name="SettingsNotifyProblems.OnContent" xml:space="preserve"><value>På</value></data>
+  <data name="SettingsNotifyProblems.OffContent" xml:space="preserve"><value>Av</value></data>
+  <data name="SettingsNotifyProblems.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Meddela när AI-motorn stoppar eller en kontroll misslyckas</value></data>
+  <data name="SettingsPrivacyHeader.Text" xml:space="preserve"><value>Integritet</value></data>
+  <data name="SettingsResetPrivacy.Content" xml:space="preserve"><value>Återställ till standard</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Återställ till standard, integritetsinställningar</value></data>
+  <data name="SettingsCrashReports.Header" xml:space="preserve"><value>Skicka kraschrapporter</value></data>
+  <data name="SettingsCrashReports.OnContent" xml:space="preserve"><value>På</value></data>
+  <data name="SettingsCrashReports.OffContent" xml:space="preserve"><value>Av</value></data>
+  <data name="SettingsCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Skicka kraschrapporter</value></data>
+  <data name="SettingsCrashReportsHelp.Text" xml:space="preserve"><value>Om Portal AI Host kraschar hjälper en kort rapport oss att åtgärda det snabbt. Rapporterna innehåller aldrig dina filer eller det du skriver. Om du stänger av detta slutar de skickas direkt.</value></data>
+  <data name="CrashWhatsSent.Content" xml:space="preserve"><value>Vad skickas</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Vad skickas, öppnar integritetssidan</value></data>
+  <data name="WelcomeCrashReports.Content" xml:space="preserve"><value>Skicka kraschrapporter så att vi kan åtgärda problem snabbt. De innehåller aldrig dina filer eller det du skriver.</value></data>
+  <data name="WelcomeCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Skicka kraschrapporter så att vi kan åtgärda problem snabbt. De innehåller aldrig dina filer eller det du skriver.</value></data>
+  <data name="SettingsModelsHeader.Text" xml:space="preserve"><value>Mapp för modeller</value></data>
+  <data name="SettingsResetFolder.Content" xml:space="preserve"><value>Återställ till standard</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Återställ modellmappen till standard</value></data>
+  <data name="SettingsFolderHelp.Text" xml:space="preserve"><value>Gäller när du trycker på Enter eller lämnar rutan. Lämna den tom för standardmappen. Modeller du redan har ligger kvar där de är om du inte väljer att flytta dem.</value></data>
+  <data name="SettingsAppearanceHeader.Text" xml:space="preserve"><value>Utseende</value></data>
+  <data name="SettingsResetAppearance.Content" xml:space="preserve"><value>Återställ till standard</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Återställ utseendet till standard</value></data>
+  <data name="SettingsTheme.Header" xml:space="preserve"><value>Tema</value></data>
+  <data name="SettingsTheme.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Tema</value></data>
+  <data name="SettingsMaterial.Header" xml:space="preserve"><value>Fönstermaterial</value></data>
+  <data name="SettingsMaterial.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Fönstermaterial</value></data>
+  <data name="SettingsCorners.Header" xml:space="preserve"><value>Hörn</value></data>
+  <data name="SettingsCorners.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Hörn</value></data>
+  <data name="SettingsDensity.Header" xml:space="preserve"><value>Täthet</value></data>
+  <data name="SettingsDensity.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Täthet</value></data>
+  <data name="SettingsTextSize.Header" xml:space="preserve"><value>Textstorlek</value></data>
+  <data name="SettingsTextSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Textstorlek</value></data>
+  <data name="SettingsMotion.Header" xml:space="preserve"><value>Rörelse</value></data>
+  <data name="SettingsMotion.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Rörelse</value></data>
+  <data name="SettingsAppearanceHelp.Text" xml:space="preserve"><value>Ändringar gäller direkt. Windows högkontrast använder alltid heltäckande systemfärger, oavsett vad du väljer här. Textstorlek läggs till på din Windows textskalning.</value></data>
+  <data name="Vm_Theme_System" xml:space="preserve"><value>Använd min Windows-inställning (standard)</value></data>
+  <data name="Vm_Theme_Light" xml:space="preserve"><value>Ljust</value></data>
+  <data name="Vm_Theme_Dark" xml:space="preserve"><value>Mörkt</value></data>
+  <data name="Vm_Material_Mica" xml:space="preserve"><value>Mica (standard)</value></data>
+  <data name="Vm_Material_Acrylic" xml:space="preserve"><value>Akryl</value></data>
+  <data name="Vm_Material_Solid" xml:space="preserve"><value>Enfärgad</value></data>
+  <data name="Vm_Corners_Rounded" xml:space="preserve"><value>Rundade (standard)</value></data>
+  <data name="Vm_Corners_Square" xml:space="preserve"><value>Kantiga</value></data>
+  <data name="Vm_Corners_ExtraRound" xml:space="preserve"><value>Extra runda</value></data>
+  <data name="Vm_Density_Compact" xml:space="preserve"><value>Kompakt</value></data>
+  <data name="Vm_Density_Standard" xml:space="preserve"><value>Normal (standard)</value></data>
+  <data name="Vm_Density_Comfortable" xml:space="preserve"><value>Bekväm</value></data>
+  <data name="Vm_Text_Normal" xml:space="preserve"><value>Normal (standard)</value></data>
+  <data name="Vm_Text_Larger" xml:space="preserve"><value>Större</value></data>
+  <data name="Vm_Text_Largest" xml:space="preserve"><value>Störst</value></data>
+  <data name="Vm_Motion_Follow" xml:space="preserve"><value>Följ Windows (standard)</value></data>
+  <data name="Vm_Motion_Reduced" xml:space="preserve"><value>Reducerad</value></data>
+  <data name="Vm_Motion_Off" xml:space="preserve"><value>Av</value></data>
+  <data name="Vm_FolderNotFull" xml:space="preserve"><value>Skriv en fullständig mappsökväg, till exempel D:\Models.</value></data>
+  <data name="AboutTitle.Text" xml:space="preserve"><value>Om Portal AI Host</value></data>
+  <data name="Vm_AboutVersion" xml:space="preserve"><value>Portal AI Host version {0}</value></data>
+  <data name="Vm_AboutLicenceState" xml:space="preserve"><value>Gratis. Inget konto eller köp behövs.</value></data>
+  <data name="Vm_AboutCopyText" xml:space="preserve"><value>Portal AI Host {0}</value></data>
+  <data name="Vm_AboutCopied" xml:space="preserve"><value>Versionen kopierades.</value></data>
+  <data name="AboutCopyVersion.Content" xml:space="preserve"><value>Kopiera version</value></data>
+  <data name="AboutWhatsNew.Content" xml:space="preserve"><value>Nyheter</value></data>
+  <data name="AboutHelpHeader.Text" xml:space="preserve"><value>Hjälp och integritet</value></data>
+  <data name="AboutFeedback.Content" xml:space="preserve"><value>Skicka feedback eller föreslå en idé</value></data>
+  <data name="AboutPrivacy.Content" xml:space="preserve"><value>Integritetspolicy</value></data>
+  <data name="AboutDataFolder.Content" xml:space="preserve"><value>Öppna datamappen</value></data>
+  <data name="AboutLicencesHeader.Text" xml:space="preserve"><value>Licenser</value></data>
+  <data name="Vm_ThirdParty" xml:space="preserve"><value>Portal AI Host innehåller llama.cpp (MIT-licens), som kör AI-modellerna på din dator. Modeller hämtas från Hugging Face under sina egna licenser (Apache 2.0, MIT eller CreativeML OpenRAIL-M, vars användningsbegränsningar gäller). Bild- och videogenerering använder stable-diffusion.cpp (MIT-licens) och ggml (MIT-licens). Videoverktyg använder FFmpeg (LGPL 3.0 eller senare). Röstfunktioner använder sherpa-onnx (Apache 2.0), Kokoro-röster (Apache 2.0) och Pocket TTS av Kyutai (CC-BY 4.0, kredit: Kyutai). Appen är byggd med Windows App SDK, .NET och biblioteket Community Toolkit MVVM, alla under MIT-licenser.</value></data>
+  <data name="AboutLlamaLink.Content" xml:space="preserve"><value>llama.cpp på GitHub</value></data>
+  <data name="AboutLlamaExpander.Header" xml:space="preserve"><value>llama.cpp-licenstext</value></data>
+  <data name="Vm_LlamaLicence" xml:space="preserve"><value>MIT License
+
+Copyright (c) 2023-2026 The ggml authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</value></data>
+  <data name="Vm_WhatsNewHeading" xml:space="preserve"><value>Nyheter i Portal AI Host {0}</value></data>
+  <data name="Vm_Wn1Title" xml:space="preserve"><value>Tack</value></data>
+  <data name="Vm_Wn1Body" xml:space="preserve"><value>Tack för din feedback och dina rapporter. De formade den här uppdateringen.</value></data>
+  <data name="Vm_Wn2Title" xml:space="preserve"><value>Video som MP4 och sammanfogade klipp</value></data>
+  <data name="Vm_Wn2Body" xml:space="preserve"><value>Videojobb kan nu ge dig en MP4-fil, en bild av sista bildrutan och flera klipp sammanfogade till en video.</value></data>
+  <data name="Vm_Wn3Title" xml:space="preserve"><value>Inställningar för videokvalitet</value></data>
+  <data name="Vm_Wn3Body" xml:space="preserve"><value>Välj hur din dator kodar MP4-video, till exempel kvaliteten, och vilken videokodare den använder.</value></data>
+  <data name="Vm_Wn4Title" xml:space="preserve"><value>Uppladdningar för lokala appar</value></data>
+  <data name="Vm_Wn4Body" xml:space="preserve"><value>Appar på den här datorn kan nu överlämna stora filer direkt i stället för att skicka dem i förfrågan. Uppladdningar tas bort efter en stund.</value></data>
+  <data name="Vm_Wn5Title" xml:space="preserve"><value>Kortet Hemdator håller takten</value></data>
+  <data name="Vm_Wn5Body" xml:space="preserve"><value>När du ändrar flera hemdatorinställningar snabbt kan ett långsamt svar inte längre visa ett äldre värde.</value></data>
+  <data name="Vm_Wn6Title" xml:space="preserve"><value>Bättre i smala fönster</value></data>
+  <data name="Vm_Wn6Body" xml:space="preserve"><value>Sidomenyn fälls ihop när fönstret är smalt, och återställningslänkarna i Inställningar bryts under sina rubriker.</value></data>
+  <data name="Vm_Wn7Title" xml:space="preserve"><value>Tydligare för skärmläsare</value></data>
+  <data name="Vm_Wn7Body" xml:space="preserve"><value>Avsnittet om hälsa på Start, och knapparna på Start och i Inställningar, har nu namn och hjälptext för skärmläsare och verktygstips.</value></data>
+  <data name="Vm_Wn8Title" xml:space="preserve"><value>Använd din hemdator från en bärbar dator</value></data>
+  <data name="Vm_Wn8Body" xml:space="preserve"><value>Koppla en bärbar dator till din hemdator en gång. Appar på den bärbara datorn använder då hemdatorns AI, hemma eller borta, och faller tillbaka på den bärbara datorns egen modell om du väljer det.</value></data>
+  <data name="Vm_Wn9Title" xml:space="preserve"><value>Enheter på den här datorn</value></data>
+  <data name="Vm_Wn9Body" xml:space="preserve"><value>Se varje kopplad bärbar dator på sitt eget kort. Pausa den, ange dagliga gränser och tysta timmar, välj vilka modeller den får använda, eller ta tillbaka en modell den laddat.</value></data>
+  <data name="Vm_Wn10Title" xml:space="preserve"><value>Två modeller samtidigt</value></data>
+  <data name="Vm_Wn10Body" xml:space="preserve"><value>En bärbar dator du litar på kan hålla en andra modell laddad på din dator, till exempel en på grafikkortet och en i minnet. Din egen modell trängs aldrig undan.</value></data>
+  <data name="Vm_Wn11Title" xml:space="preserve"><value>Säkrare hantering av enheter</value></data>
+  <data name="Vm_Wn11Body" xml:space="preserve"><value>Att ta bort en enhet stoppar allt den fortfarande begärde, och att koppla en bärbar dator till en ny hemdator riskerar inte längre att skicka den gamla datorns åtkomsttoken till den.</value></data>
+  <data name="Vm_Wn12Title" xml:space="preserve"><value>Spelläge fungerar i fönsterläge</value></data>
+  <data name="Vm_Wn12Body" xml:space="preserve"><value>Slå på spelläge så får andra enheter veta att din dator är upptagen medan ett spel körs, även spel i ett fönster.</value></data>
+  <data name="Vm_Wn13Title" xml:space="preserve"><value>Åtkomstnyckel för relä</value></data>
+  <data name="Vm_Wn13Body" xml:space="preserve"><value>Endast enheter som kopplats med din nyckel kan nå den här datorn när du är borta. Skapa en ny nyckel när som helst.</value></data>
+  <data name="Vm_Wn14Title" xml:space="preserve"><value>Se minnet på en blick</value></data>
+  <data name="Vm_Wn14Body" xml:space="preserve"><value>Staplar på sidan Modeller visar hur mycket minne och grafikminne de laddade modellerna använder, jämfört med dina gränser.</value></data>
+  <data name="Vm_WnShowMe" xml:space="preserve"><value>Visa mig</value></data>
+  <data name="Vm_WnShowMeName" xml:space="preserve"><value>Visa mig: {0}</value></data>
+  <data name="WhatsNewDone.Content" xml:space="preserve"><value>Jag förstår</value></data>
+  <data name="Vm_RevokedBar" xml:space="preserve"><value>Åtkomst borttagen för {0}.</value></data>
+  <data name="Vm_AutoUndo" xml:space="preserve"><value>Ångra borttagningen av åtkomst för {0}</value></data>
+  <data name="AppsUndo.Content" xml:space="preserve"><value>Ångra</value></data>
+  <data name="Vm_RemoveFrees" xml:space="preserve"><value>Detta frigör {0}.</value></data>
+  <data name="Vm_StepOf" xml:space="preserve"><value>Steg {0} av {1}</value></data>
+  <data name="Vm_LiveIdle" xml:space="preserve"><value>Inget skrivs just nu</value></data>
+  <data name="Vm_LiveBusy" xml:space="preserve"><value>Skriver ett svar nu</value></data>
+  <data name="Vm_LiveGenerating" xml:space="preserve"><value>{0} får ett svar</value></data>
+  <data name="Vm_LiveSpeed" xml:space="preserve"><value>Ungefär {0} ord per sekund</value></data>
+  <data name="Vm_LiveMemory" xml:space="preserve"><value>{0} av {1}</value></data>
+  <data name="Vm_LiveMemoryNoTotal" xml:space="preserve"><value>{0}</value></data>
+  <data name="Vm_LivePendingLoad" xml:space="preserve"><value>Laddar...</value></data>
+  <data name="Vm_LivePendingUnload" xml:space="preserve"><value>Avlastar...</value></data>
+  <data name="Vm_LiveLoadFailed" xml:space="preserve"><value>Modellen kunde inte laddas. {0}</value></data>
+  <data name="Vm_LiveUnloadFailed" xml:space="preserve"><value>Modellen kunde inte avlastas. {0}</value></data>
+  <data name="Vm_TodayNone" xml:space="preserve"><value>Inga förfrågningar än idag.</value></data>
+  <data name="Vm_TodayRow1" xml:space="preserve"><value>{0} förfrågan, senast sedd {1}</value></data>
+  <data name="Vm_TodayRow" xml:space="preserve"><value>{0} förfrågningar, senast sedd {1}</value></data>
+  <data name="Vm_SeenNever" xml:space="preserve"><value>aldrig</value></data>
+  <data name="Vm_SeenNow" xml:space="preserve"><value>just nu</value></data>
+  <data name="Vm_SeenMinutes" xml:space="preserve"><value>{0} min sedan</value></data>
+  <data name="Vm_SeenHours" xml:space="preserve"><value>{0} t sedan</value></data>
+  <data name="HomeLiveTitle.Text" xml:space="preserve"><value>JUST NU</value></data>
+  <data name="Vm_LiveRamName" xml:space="preserve"><value>Minne som används av modellen: {0}</value></data>
+  <data name="Vm_LiveVramName" xml:space="preserve"><value>Grafikminne som används av modellen: {0}</value></data>
+  <data name="HomeRamLabel.Text" xml:space="preserve"><value>Minne som används av modellen</value></data>
+  <data name="HomeVramLabel.Text" xml:space="preserve"><value>Grafikminne som används av modellen</value></data>
+  <data name="HomeUnloadButton.Content" xml:space="preserve"><value>Avlasta nu</value></data>
+  <data name="HomeLoadButton.Content" xml:space="preserve"><value>Ladda nu</value></data>
+  <data name="HomeActionErrorBar.Title" xml:space="preserve"><value>Det gick inte</value></data>
+  <data name="HomeTodayLabel.Text" xml:space="preserve"><value>IDAG</value></data>
+  <data name="Vm_TrayReady" xml:space="preserve"><value>Klar · {0} laddad</value></data>
+  <data name="Vm_TrayBusy" xml:space="preserve"><value>Upptagen · {0}</value></data>
+  <data name="Vm_TrayBusyOther" xml:space="preserve"><value>Upptagen</value></data>
+  <data name="Vm_TrayLoading" xml:space="preserve"><value>Laddar · {0}</value></data>
+  <data name="Vm_TrayIdle" xml:space="preserve"><value>Klar · {0} laddas när den begärs</value></data>
+  <data name="Vm_TrayNoModel" xml:space="preserve"><value>Ingen modell än</value></data>
+  <data name="Vm_TrayOff" xml:space="preserve"><value>Av</value></data>
+  <data name="Vm_TrayLastNone" xml:space="preserve"><value>Inga förfrågningar idag</value></data>
+  <data name="Vm_TrayLast" xml:space="preserve"><value>{0}, {1}</value></data>
+  <data name="TrayModelLabel.Text" xml:space="preserve"><value>Modell</value></data>
+  <data name="TrayMemoryLabel.Text" xml:space="preserve"><value>Minne</value></data>
+  <data name="TrayLastLabel.Text" xml:space="preserve"><value>Senaste förfrågan</value></data>
+  <data name="TrayQueueLabel.Text" xml:space="preserve"><value>Kö</value></data>
+  <data name="TrayOpenButton.Content" xml:space="preserve"><value>Öppna appen</value></data>
+  <data name="TrayUnloadButton.Content" xml:space="preserve"><value>Avlasta modellen</value></data>
+  <data name="TrayWindowTitle" xml:space="preserve"><value>Portal AI Host-status</value></data>
+  <data name="ModelsDownloadedHeader.Text" xml:space="preserve"><value>Hämtade</value></data>
+  <data name="ModelsMoreHeader.Text" xml:space="preserve"><value>Modeller du kan lägga till</value></data>
+  <data name="ModelCheck.Content" xml:space="preserve"><value>Kontrollera filer</value></data>
+  <data name="ModelRedownload.Content" xml:space="preserve"><value>Hämta igen</value></data>
+  <data name="ModelCancelCheck.Content" xml:space="preserve"><value>Stoppa kontrollen</value></data>
+  <data name="ModelDetails.Header" xml:space="preserve"><value>Detaljer</value></data>
+  <data name="ModelsOpenFolder.Content" xml:space="preserve"><value>Öppna mapp</value></data>
+  <data name="ModelsAddOwn.Content" xml:space="preserve"><value>Lägg till din egen modell...</value></data>
+  <data name="ModelsAddOwnHint.Text" xml:space="preserve"><value>Välj en .gguf-fil du redan har. Värden gör sin egen kopia i modellmappen. Det görs en kopia; din originalfil ändras eller flyttas inte.</value></data>
+  <data name="Vm_UserAddedBadge" xml:space="preserve"><value>Tillagd av dig</value></data>
+  <data name="Vm_UserAddedReason" xml:space="preserve"><value>Okänd passform: värden kan inte avgöra hur mycket minne den här modellen behöver på din dator. Prova och se.</value></data>
+  <data name="Vm_RemoveUserBody" xml:space="preserve"><value>{0} tas bort från värdens modellmapp. Det är värdens egen kopia: filen du valde som original rörs inte.</value></data>
+  <data name="Vm_ImportRunning" xml:space="preserve"><value>Kopierar din modell till modellmappen, {0}%</value></data>
+  <data name="Vm_ImportDone" xml:space="preserve"><value>Din modell lades till.</value></data>
+  <data name="Vm_ImportCancelled" xml:space="preserve"><value>Tillägget av modellen avbröts. Inget sparades, och din originalfil ändrades inte.</value></data>
+  <data name="Vm_ImportFailed" xml:space="preserve"><value>Modellen lades inte till. {0}</value></data>
+  <data name="ModelsMoveHint.Text" xml:space="preserve"><value>Om du vill flytta dina modeller till en annan enhet väljer du en ny mapp under Mapp för modeller i Inställningar.</value></data>
+  <data name="ModelsMoveCancel.Content" xml:space="preserve"><value>Avbryt</value></data>
+  <data name="ModelsFreeUp.Content" xml:space="preserve"><value>Frigör utrymme</value></data>
+  <data name="ModelsCleanupTitle.Text" xml:space="preserve"><value>Frigör utrymme</value></data>
+  <data name="ModelsCleanupPartialHeader.Text" xml:space="preserve"><value>Ofullständiga hämtningar som ingen fortsätter på</value></data>
+  <data name="ModelsCleanupOldHeader.Text" xml:space="preserve"><value>Gamla kopior kvar efter flytt av modeller</value></data>
+  <data name="ModelsCleanupDamagedHeader.Text" xml:space="preserve"><value>Modeller som en kontroll hittade skadade</value></data>
+  <data name="ModelsCleanupClose.Content" xml:space="preserve"><value>Stäng</value></data>
+  <data name="ModelsCleanupHint.Text" xml:space="preserve"><value>Endast filer som appen skapade visas. Modeller du använder, och filer du lagt till själv, tas aldrig bort.</value></data>
+  <data name="Vm_CleanupButton" xml:space="preserve"><value>Frigör {0}</value></data>
+  <data name="Vm_CleanupNothing" xml:space="preserve"><value>Det finns inget att frigöra. Ofullständiga hämtningar du fortfarande kan återuppta behålls i en vecka.</value></data>
+  <data name="Vm_CleanupRunning" xml:space="preserve"><value>Frigör utrymme...</value></data>
+  <data name="Vm_CleanupConfirmTitle" xml:space="preserve"><value>Ta bort dessa filer?</value></data>
+  <data name="Vm_CleanupConfirmBody" xml:space="preserve"><value>Detta tar permanent bort:&#10;{0}&#10;Dina andra modeller berörs inte.</value></data>
+  <data name="Vm_CleanupDone" xml:space="preserve"><value>Frigjorde {0}.</value></data>
+  <data name="Vm_CleanupDoneSkipped" xml:space="preserve"><value>Frigjorde {0}. Vissa objekt lämnades kvar där de är:&#10;{1}</value></data>
+  <data name="Vm_CleanupFailed" xml:space="preserve"><value>Utrymmet frigjordes inte: {0}</value></data>
+  <data name="ModelsRemoveFailedBar.Title" xml:space="preserve"><value>Det gick inte att ta bort modellen</value></data>
+  <data name="SettingsMoveButton.Content" xml:space="preserve"><value>Flytta mina modeller dit</value></data>
+  <data name="SettingsMoveCancel.Content" xml:space="preserve"><value>Avbryt flytten</value></data>
+  <data name="Vm_UsedToday" xml:space="preserve"><value>Senast använd idag</value></data>
+  <data name="Vm_UsedYesterday" xml:space="preserve"><value>Senast använd igår</value></data>
+  <data name="Vm_UsedDays" xml:space="preserve"><value>Senast använd för {0} dagar sedan</value></data>
+  <data name="Vm_UsedMonths" xml:space="preserve"><value>Senast använd för {0} månader sedan</value></data>
+  <data name="Vm_GoodFor" xml:space="preserve"><value>Bra för: {0}</value></data>
+  <data name="Vm_Caveats" xml:space="preserve"><value>Tänk på: {0}</value></data>
+  <data name="Vm_MemoryNeeded" xml:space="preserve"><value>Behöver cirka {0} minne på den här datorn.</value></data>
+  <data name="Vm_Licence" xml:space="preserve"><value>Licens: {0}</value></data>
+  <data name="Vm_RemoveActiveBody" xml:space="preserve"><value>{0} används. Värden avlastar den först och tar sedan bort den från datorn. Endast filer som värden hämtat raderas; en modellfil du lagt till själv tas bara bort från listan och ligger kvar där den är.</value></data>
+  <data name="Vm_RemoveVerb" xml:space="preserve"><value>Ta bort {0} ({1})</value></data>
+  <data name="Vm_RemoveVerbNoSize" xml:space="preserve"><value>Ta bort {0}</value></data>
+  <data name="Vm_AutoCheck" xml:space="preserve"><value>Kontrollera filerna i {0}</value></data>
+  <data name="Vm_AutoRedownload" xml:space="preserve"><value>Hämta {0} igen</value></data>
+  <data name="Vm_Removing" xml:space="preserve"><value>Tar bort...</value></data>
+  <data name="Vm_RemovingBadge" xml:space="preserve"><value>Tas bort</value></data>
+  <data name="Vm_DamagedBadge" xml:space="preserve"><value>Skadad</value></data>
+  <data name="Vm_Checking" xml:space="preserve"><value>Kontrollerar filer, {0}%</value></data>
+  <data name="Vm_CheckOk" xml:space="preserve"><value>Alla filer är intakta.</value></data>
+  <data name="Vm_CheckDamaged" xml:space="preserve"><value>Skadade: {0} Inget togs bort.</value></data>
+  <data name="Vm_CheckFailed" xml:space="preserve"><value>Kontrollen kunde inte slutföras: {0}</value></data>
+  <data name="Vm_SwitchTitle" xml:space="preserve"><value>Använda en annan modell?</value></data>
+  <data name="Vm_SwitchBody" xml:space="preserve"><value>{0} används. Byt till {1} efteråt, eller använd ingen modell just nu?</value></data>
+  <data name="Vm_SwitchYes" xml:space="preserve"><value>Byt till {0}</value></data>
+  <data name="Vm_SwitchNo" xml:space="preserve"><value>Använd ingen modell just nu</value></data>
+  <data name="Vm_RemoveFailed" xml:space="preserve"><value>{0} togs inte bort och finns kvar. {1}</value></data>
+  <data name="Vm_RedownloadTitle" xml:space="preserve"><value>Hämta den här modellen igen?</value></data>
+  <data name="Vm_RedownloadBody" xml:space="preserve"><value>{0} har en skadad fil. Den tas bort från datorn och hämtas igen. Inget annat tas bort.</value></data>
+  <data name="Vm_RedownloadActiveBody" xml:space="preserve"><value>{0} har en skadad fil och används. Värden avlastar den, tar bort den från datorn och hämtar den igen. Välj den igen när hämtningen är klar.</value></data>
+  <data name="Vm_RedownloadYes" xml:space="preserve"><value>Ta bort och hämta {0} igen</value></data>
+  <data name="Vm_MoveRunning" xml:space="preserve"><value>Flyttar dina modeller, {0}%</value></data>
+  <data name="Vm_MoveRemovingOld" xml:space="preserve"><value>Dina modeller finns i den nya mappen. Tar bort de gamla kopiorna.</value></data>
+  <data name="Vm_MoveDone" xml:space="preserve"><value>Dina modeller flyttades.</value></data>
+  <data name="Vm_MoveCancelled" xml:space="preserve"><value>Flytten avbröts. Dina modeller finns kvar där de var.</value></data>
+  <data name="Vm_MoveFailed" xml:space="preserve"><value>Flytten slutfördes inte. {0}</value></data>
+  <data name="Vm_MoveOffer" xml:space="preserve"><value>Vill du flytta dina {0} modeller till den nya mappen också?</value></data>
+  <data name="Vm_MoveTitle" xml:space="preserve"><value>Flytta dina modeller?</value></data>
+  <data name="Vm_MoveBody" xml:space="preserve"><value>Dina modeller kopieras till {0}, kontrolleras, och först därefter tas de gamla kopiorna bort. Modellen som används avlastas medan detta pågår. Filer i den gamla mappen som värden inte lade dit berörs aldrig.</value></data>
+  <data name="Vm_MoveYes" xml:space="preserve"><value>Flytta mina modeller</value></data>
+  <data name="Vm_MoveSettingsRunning" xml:space="preserve"><value>Flyttar dina modeller, {0}%</value></data>
+  <data name="SettingsPerformanceHeader.Text" xml:space="preserve"><value>Prestanda</value></data>
+  <data name="SettingsResetPerformance.Content" xml:space="preserve"><value>Återställ till standard</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Återställ prestandainställningarna till standard</value></data>
+  <data name="SettingsPreset.Header" xml:space="preserve"><value>Prestanda</value></data>
+  <data name="SettingsPreset.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Prestanda</value></data>
+  <data name="SettingsMemory.Header" xml:space="preserve"><value>Största minne för AI</value></data>
+  <data name="SettingsMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Största minne för AI</value></data>
+  <data name="SettingsKeepFree.Header" xml:space="preserve"><value>Lämna alltid ledigt</value></data>
+  <data name="SettingsKeepFree.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Lämna alltid ledigt</value></data>
+  <data name="SettingsRunOn.Header" xml:space="preserve"><value>Kör på</value></data>
+  <data name="SettingsRunOn.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Kör på</value></data>
+  <data name="SettingsGpuMemory.Header" xml:space="preserve"><value>Grafikminne för AI</value></data>
+  <data name="SettingsGpuMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Grafikminne för AI</value></data>
+  <data name="SettingsCores.Header" xml:space="preserve"><value>Processorkärnor</value></data>
+  <data name="SettingsCores.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Processorkärnor</value></data>
+  <data name="SettingsPriority.Header" xml:space="preserve"><value>Prioritet</value></data>
+  <data name="SettingsPriority.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Prioritet</value></data>
+  <data name="SettingsMemoryHelp.Text" xml:space="preserve"><value>AI:n använder aldrig mer än så här. Lägre innebär en mindre modell eller långsammare svar.</value></data>
+  <data name="SettingsKeepFreeHelp.Text" xml:space="preserve"><value>Minne som hålls ledigt för dina andra program.</value></data>
+  <data name="SettingsCoresHelp.Text" xml:space="preserve"><value>Färre kärnor håller datorn responsiv medan AI:n arbetar.</value></data>
+  <data name="Vm_Perf_Quiet" xml:space="preserve"><value>Tyst</value></data>
+  <data name="Vm_Perf_Balanced" xml:space="preserve"><value>Balanserad</value></data>
+  <data name="Vm_Perf_Fast" xml:space="preserve"><value>Snabb</value></data>
+  <data name="Vm_Perf_Custom" xml:space="preserve"><value>Anpassad</value></data>
+  <data name="Vm_Perf_Help_quiet" xml:space="preserve"><value>Ungefär halva hastigheten. Datorn förblir responsiv.</value></data>
+  <data name="Vm_Perf_Help_balanced" xml:space="preserve"><value>Bra hastighet, och dina andra program prioriteras.</value></data>
+  <data name="Vm_Perf_Help_fast" xml:space="preserve"><value>Snabbaste svaren. Andra program kan bli långsammare.</value></data>
+  <data name="Vm_Perf_Help_custom" xml:space="preserve"><value>Dina egna inställningar.</value></data>
+  <data name="Vm_Perf_Run_Auto" xml:space="preserve"><value>Automatisk</value></data>
+  <data name="Vm_Perf_Run_Gpu" xml:space="preserve"><value>Grafikkort</value></data>
+  <data name="Vm_Perf_Run_Cpu" xml:space="preserve"><value>Processor</value></data>
+  <data name="Vm_Perf_RunHelp_auto" xml:space="preserve"><value>Använder grafikkortet när det hjälper.</value></data>
+  <data name="Vm_Perf_RunHelp_gpu" xml:space="preserve"><value>Snabbast, om modellen får plats.</value></data>
+  <data name="Vm_Perf_RunHelp_cpu" xml:space="preserve"><value>Långsammare, men lämnar grafikkortet ledigt för spel.</value></data>
+  <data name="Vm_Perf_NoGpu" xml:space="preserve"><value>Endast processor: inget stött grafikkort hittades</value></data>
+  <data name="SettingsCeiling.Header" xml:space="preserve"><value>Högsta processoranvändning</value></data>
+  <data name="SettingsCeiling.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Högsta processoranvändning</value></data>
+  <data name="SettingsCeilingHelp.Text" xml:space="preserve"><value>AI:n använder aldrig mer av processorn än så här. Lägre gör datorn smidigare, med långsammare svar.</value></data>
+  <data name="Vm_Perf_CeilingNone" xml:space="preserve"><value>Ingen gräns</value></data>
+  <data name="Vm_Perf_Percent" xml:space="preserve"><value>{0}%</value></data>
+  <data name="SettingsEaseOffHeader.Text" xml:space="preserve"><value>Dämpa när</value></data>
+  <data name="SettingsEaseOffFullscreen.Content" xml:space="preserve"><value>Ett spel eller ett program i helskärm körs</value></data>
+  <data name="SettingsEaseOffBattery.Content" xml:space="preserve"><value>Datorn går på batteri</value></data>
+  <data name="SettingsEaseOffAppBusy.Content" xml:space="preserve"><value>En Portal-app är upptagen med liveuppgifter, till exempel diktering</value></data>
+  <data name="SettingsEaseOffHelp.Text" xml:space="preserve"><value>AI:n körs då med lägsta prioritet och använder högst hälften av processorn, och går tillbaka till normalt när det slutar.</value></data>
+  <data name="Vm_Perf_Prio_Low" xml:space="preserve"><value>Låg</value></data>
+  <data name="Vm_Perf_Prio_Normal" xml:space="preserve"><value>Normal</value></data>
+  <data name="Vm_Perf_PrioHelp_Low" xml:space="preserve"><value>Ditt eget arbete går alltid först.</value></data>
+  <data name="Vm_Perf_PrioHelp_Normal" xml:space="preserve"><value>Snabbare, men kan bromsa andra program.</value></data>
+  <data name="Vm_Perf_Gb" xml:space="preserve"><value>{0} GB</value></data>
+  <data name="Vm_Perf_Cores" xml:space="preserve"><value>{0} av {1} kärnor</value></data>
+  <data name="Vm_Perf_MemoryRange" xml:space="preserve"><value>Från {0} GB till {1} GB</value></data>
+  <data name="Vm_Perf_StopFull" xml:space="preserve"><value>{0} GB · rymmer {1} helt</value></data>
+  <data name="Vm_Perf_StopPartial" xml:space="preserve"><value>{0} GB · rymmer {1}, delvis på processorn</value></data>
+  <data name="Vm_Perf_StopCpu" xml:space="preserve"><value>{0} GB · rymmer {1} på processorn</value></data>
+  <data name="Vm_Perf_StopNone" xml:space="preserve"><value>{0} GB · för litet för modellerna i listan</value></data>
+  <data name="Vm_Perf_Fit_Full" xml:space="preserve"><value>Körs helt på grafikkortet</value></data>
+  <data name="Vm_Perf_Fit_Partial" xml:space="preserve"><value>En del på grafikkortet, en del på processorn: långsammare</value></data>
+  <data name="Vm_Perf_Fit_Cpu" xml:space="preserve"><value>Körs på processorn: långsammast</value></data>
+  <data name="Vm_Perf_Fit_Smaller" xml:space="preserve"><value>För lite minne för {0}. Byt till {1}?</value></data>
+  <data name="Vm_Perf_Fit_LittleMemory" xml:space="preserve"><value>För lite minne för {0}.</value></data>
+  <data name="Vm_Perf_Fit_TooBig" xml:space="preserve"><value>För stor för den här datorn</value></data>
+  <data name="Vm_Perf_TheModel" xml:space="preserve"><value>Modellen</value></data>
+  <data name="Vm_Perf_Applied" xml:space="preserve"><value>Tillämpat. De nya gränserna gäller.</value></data>
+  <data name="Vm_Perf_Reloading" xml:space="preserve"><value>Tillämpat. {0} laddas om med de nya gränserna.</value></data>
+  <data name="Vm_Perf_Unloaded" xml:space="preserve"><value>Tillämpat. {0} får inte plats längre och avlastades. Den ligger kvar på disken; välj en mindre på sidan Modeller.</value></data>
+  <data name="HealthIconOk.AutomationProperties.Name" xml:space="preserve"><value>Bra</value></data>
+  <data name="HealthIconWarn.AutomationProperties.Name" xml:space="preserve"><value>Kräver uppmärksamhet</value></data>
+  <data name="HealthIconFail.AutomationProperties.Name" xml:space="preserve"><value>Problem</value></data>
+  <data name="HealthWordOk.Text" xml:space="preserve"><value>Bra</value></data>
+  <data name="HealthWordWarn.Text" xml:space="preserve"><value>Kräver uppmärksamhet</value></data>
+  <data name="HealthWordFail.Text" xml:space="preserve"><value>Problem</value></data>
+  <data name="HealthCheckAgainButton.Content" xml:space="preserve"><value>Kontrollera igen</value></data>
+  <data name="HealthFixErrorBar.Title" xml:space="preserve"><value>Det gick inte</value></data>
+  <data name="Vm_HealthAllGood" xml:space="preserve"><value>Allt är bra</value></data>
+  <data name="Vm_HealthOne" xml:space="preserve"><value>1 sak kräver uppmärksamhet</value></data>
+  <data name="Vm_HealthMany" xml:space="preserve"><value>{0} saker kräver uppmärksamhet</value></data>
+  <data name="Vm_HealthFixLoad" xml:space="preserve"><value>Ladda modellen</value></data>
+  <data name="Vm_HealthFixRestart" xml:space="preserve"><value>Starta om motorn</value></data>
+  <data name="Vm_HealthFixCheckFiles" xml:space="preserve"><value>Kontrollera filer</value></data>
+  <data name="Vm_HealthFixPerformance" xml:space="preserve"><value>Öppna prestandainställningar</value></data>
+  <data name="Vm_HealthFixModels" xml:space="preserve"><value>Välj en modell</value></data>
+  <data name="Vm_HealthFixFailed" xml:space="preserve"><value>Åtgärden kunde inte utföras. {0}</value></data>
+  <data name="SettingsRemoteHeader.Text" xml:space="preserve"><value>Andra enheter</value></data>
+  <data name="SettingsRemoteEnabled.Header" xml:space="preserve"><value>Låt andra enheter använda AI på den här datorn</value></data>
+  <data name="SettingsRemoteEnabled.OnContent" xml:space="preserve"><value>På</value></data>
+  <data name="SettingsRemoteEnabled.OffContent" xml:space="preserve"><value>Av</value></data>
+  <data name="SettingsRemoteEnabled.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Låt andra enheter använda AI på den här datorn</value></data>
+  <data name="SettingsRemoteHelp.Text" xml:space="preserve"><value>Av som standard. När det är på kan din egen telefon, bärbara dator eller surfplatta i det här hemnätverket be om att få använda AI på den här datorn. En enhet måste först kopplas med en kod, och varje app på den behöver fortfarande ditt godkännande. Du kan ta bort en enhet när som helst.</value></data>
+  <data name="SettingsPairDevice.Content" xml:space="preserve"><value>Koppla en enhet</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Koppla en enhet</value></data>
+  <data name="SettingsPairingSteps.Text" xml:space="preserve"><value>På den andra enheten öppnar du dess Portal-app, väljer att ansluta till en dator, och skannar sedan koden eller skriver bokstäverna och siffrorna. Den kontrollerar att den pratar med den här datorn innan något skickas. Koden fungerar en gång, i 5 minuter.</value></data>
+  <data name="SettingsPairingQr.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>QR-kod för kopplingen</value></data>
+  <data name="SettingsPairingCancel.Content" xml:space="preserve"><value>Avbryt kopplingen</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Avbryt kopplingen</value></data>
+  <data name="SettingsDevicesHeader.Text" xml:space="preserve"><value>Kopplade enheter</value></data>
+  <data name="SettingsNoDevices.Text" xml:space="preserve"><value>Ingen enhet är kopplad än.</value></data>
+  <data name="SettingsRemoveDevice.Content" xml:space="preserve"><value>Ta bort</value></data>
+  <data name="SettingsDeviceModelControl.Header" xml:space="preserve"><value>Modellstyrning</value></data>
+  <data name="SettingsDeviceModelControl.OnContent" xml:space="preserve"><value>På</value></data>
+  <data name="SettingsDeviceModelControl.OffContent" xml:space="preserve"><value>Av</value></data>
+  <data name="SettingsDeviceModelControl.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Låter den här enheten läsa in och avlasta modeller och välja vilken modell varje av dess appar använder</value></data>
+  <data name="SettingsDeviceModelControl.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Låter den här enheten läsa in och avlasta modeller och välja vilken modell varje av dess appar använder</value></data>
+  <data name="SettingsTakeBackLabel.Text" xml:space="preserve"><value>Ta tillbaka</value></data>
+  <data name="SettingsTakeBack.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Avlasta modellen som den här enheten läste in. Den här datorns eget val återställs. Inga modellfiler berörs.</value></data>
+  <data name="SettingsTakeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Avlasta modellen som den här enheten läste in. Den här datorns eget val återställs. Inga modellfiler berörs.</value></data>
+  <data name="SettingsAllowReplace.Header" xml:space="preserve"><value>Enheter får ersätta modeller</value></data>
+  <data name="SettingsAllowReplace.OnContent" xml:space="preserve"><value>På</value></data>
+  <data name="SettingsAllowReplace.OffContent" xml:space="preserve"><value>Av</value></data>
+  <data name="SettingsAllowReplace.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Enheter får ersätta modeller</value></data>
+  <data name="SettingsAllowReplaceHelp.Text" xml:space="preserve"><value>Gäller bara enheter som har modellstyrning. Av: en enhet kan inte avlasta en modell som dina egna appar använder. På: det kan den, och dina appar läser in sin modell igen vid nästa förfrågan.</value></data>
+  <data name="Vm_AutoModelControl" xml:space="preserve"><value>Modellstyrning för {0}</value></data>
+  <data name="Vm_AutoTakeBack" xml:space="preserve"><value>Ta tillbaka modellen {0} läste in</value></data>
+  <data name="Vm_LoadedBy" xml:space="preserve"><value>Inläst av {0}: {1} ({2})</value></data>
+  <data name="Vm_PlacementAuto" xml:space="preserve"><value>automatisk placering</value></data>
+  <data name="Vm_PlacementGpu" xml:space="preserve"><value>grafikkort</value></data>
+  <data name="Vm_PlacementCpu" xml:space="preserve"><value>systemminne</value></data>
+  <data name="Vm_PlacementCpuOnly" xml:space="preserve"><value>endast processor</value></data>
+  <data name="SettingsRemoteRelay.Header" xml:space="preserve"><value>Nå även den här datorn utanför hemmet</value></data>
+  <data name="SettingsRemoteRelay.OnContent" xml:space="preserve"><value>På</value></data>
+  <data name="SettingsRemoteRelay.OffContent" xml:space="preserve"><value>Av</value></data>
+  <data name="SettingsRemoteRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Nå även den här datorn utanför hemmet</value></data>
+  <data name="SettingsRelayAdmission.Header" xml:space="preserve"><value>Åtkomstnyckel för relä</value></data>
+  <data name="SettingsRelayAdmission.OnContent" xml:space="preserve"><value>På</value></data>
+  <data name="SettingsRelayAdmission.OffContent" xml:space="preserve"><value>Av</value></data>
+  <data name="SettingsRelayAdmission.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Åtkomstnyckel för relä</value></data>
+  <data name="SettingsRelayAdmissionHelp.Text" xml:space="preserve"><value>Endast enheter som kopplats med nyckeln i kopplingskoden kan nå den här datorn via reläet. Aktivera det före kopplingen: enheter som kopplats tidigare måste koppla om sig för att använda reläet. Reläet måste vara uppdaterat.</value></data>
+  <data name="SettingsRotateRelayKeyText.Text" xml:space="preserve"><value>Ny nyckel</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Skapa en ny åtkomstnyckel för reläet. Alla kopplade enheter måste koppla om sig för att använda reläet. Att ta bort en enhet ändrar inte nyckeln, så gör detta efter att du tagit bort en enhet du inte litar på.</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Skapa en ny åtkomstnyckel för reläet. Alla kopplade enheter måste koppla om sig för att använda reläet. Att ta bort en enhet ändrar inte nyckeln, så gör detta efter att du tagit bort en enhet du inte litar på.</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Ny nyckel</value></data>
+  <data name="Vm_RotateKeyTitle" xml:space="preserve"><value>Skapa en ny åtkomstnyckel för reläet?</value></data>
+  <data name="Vm_RotateKeyBody" xml:space="preserve"><value>Alla kopplade enheter måste koppla om sig för att använda den här datorn via reläet. Hemma ändras ingenting.</value></data>
+  <data name="Vm_RotateKeyConfirm" xml:space="preserve"><value>Skapa ny nyckel</value></data>
+  <data name="SettingsRemoteRelayHelp.Text" xml:space="preserve"><value>Den här datorn ansluter ut till ett litet relä, så att en kopplad enhet kan nå den var som helst. Reläet skickar bara vidare krypterade bytes som det inte kan läsa, och varje enhet måste fortfarande vara kopplad och signera varje förfrågan.</value></data>
+  <data name="Vm_RelayAway" xml:space="preserve"><value>Går att nå utanför hemmet</value></data>
+  <data name="Vm_RelayHomeOnly" xml:space="preserve"><value>Endast hemmanätverket</value></data>
+  <data name="Vm_RelayUnreachable" xml:space="preserve"><value>Kan inte nå reläet</value></data>
+  <data name="Vm_RelayConnecting" xml:space="preserve"><value>Ansluter till reläet...</value></data>
+  <data name="Vm_RemoteAddress" xml:space="preserve"><value>Den här datorn kan nås på {0}, port {1}.</value></data>
+  <data name="Vm_RemoteLastSeen" xml:space="preserve"><value>Senast använd {0}</value></data>
+  <data name="Vm_RemoteNeverSeen" xml:space="preserve"><value>Inte använd än</value></data>
+  <data name="Vm_AutoRemoveDevice" xml:space="preserve"><value>Ta bort {0}</value></data>
+  <data name="Vm_PairingExpires" xml:space="preserve"><value>Koden gäller till {0}.</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Kopiera länk</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Skicka detta till den andra datorn. Det fungerar i 5 minuter och för en enhet.</value></data>
+  <data name="SettingsPairingCopyLinkText.Text" xml:space="preserve"><value>Kopiera länk</value></data>
+  <data name="Vm_PairingAddress" xml:space="preserve"><value>Adress: {0}:{1}</value></data>
+  <data name="Vm_PairingFingerprint" xml:space="preserve"><value>Certifikatkontroll: {0}</value></data>
+  <data name="Vm_RemoveDeviceTitle" xml:space="preserve"><value>Ta bort {0}?</value></data>
+  <data name="Vm_RemoveDeviceBody" xml:space="preserve"><value>{0} förlorar åtkomsten till den här datorns AI direkt. Dess appar slutar fungera tills du kopplar den igen.</value></data>
+  <data name="Vm_RemoveDeviceConfirm" xml:space="preserve"><value>Ta bort enheten</value></data>
+  <data name="Vm_AppOnDevice" xml:space="preserve"><value>{0} på {1}</value></data>
+  <data name="NavDevices.Content" xml:space="preserve"><value>Den här datorns enheter</value></data>
+  <data name="NavDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Den här datorns enheter</value></data>
+  <data name="DevicesTitle.Text" xml:space="preserve"><value>Enheter på den här datorn</value></data>
+  <data name="DevicesGamingTitle.Text" xml:space="preserve"><value>Spelläge</value></data>
+  <data name="DevicesGamingText.Text" xml:space="preserve"><value>Medan ett spel i helskärm körs får anrop från andra enheter veta att den här datorn är upptagen. Av som standard.</value></data>
+  <data name="DevicesGaming.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Spelläge</value></data>
+  <data name="DevicesNone.Text" xml:space="preserve"><value>Ingen enhet är kopplad än. Koppla en under Inställningar, under Andra enheter.</value></data>
+  <data name="DevicesForgetLabel.Text" xml:space="preserve"><value>Glöm</value></data>
+  <data name="DevicesForget.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Ta bort den här enheten. Dess åtkomst upphör direkt och dess användningshistorik raderas. Modeller berörs inte.</value></data>
+  <data name="DevicesForget.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Ta bort den här enheten. Dess åtkomst upphör direkt och dess användningshistorik raderas. Modeller berörs inte.</value></data>
+  <data name="DevicesTakeBackLabel.Text" xml:space="preserve"><value>Ta tillbaka</value></data>
+  <data name="DevicesTakeBack.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Avlasta modellen som den här enheten läste in. Den här datorns eget val återställs. Inga modellfiler berörs.</value></data>
+  <data name="DevicesTakeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Avlasta modellen som den här enheten läste in. Den här datorns eget val återställs. Inga modellfiler berörs.</value></data>
+  <data name="DevicesRenameLabel.Text" xml:space="preserve"><value>Byt namn</value></data>
+  <data name="DevicesRename.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Ändra namnet som visas för den här enheten</value></data>
+  <data name="DevicesRename.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Ändra namnet som visas för den här enheten</value></data>
+  <data name="DevicesNewName.Header" xml:space="preserve"><value>Enhetens namn</value></data>
+  <data name="DevicesRenameSave.Content" xml:space="preserve"><value>Byt namn</value></data>
+  <data name="DevicesLimitsLabel.Text" xml:space="preserve"><value>Gränser</value></data>
+  <data name="DevicesLimits.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Prioritet, dagliga gränser, tysta timmar och vilka modeller den här enheten får använda</value></data>
+  <data name="DevicesLimits.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Prioritet, dagliga gränser, tysta timmar och vilka modeller den här enheten får använda</value></data>
+  <data name="DevicesPriorityEqual.Header" xml:space="preserve"><value>Samma prioritet som den här datorns appar</value></data>
+  <data name="DevicesPriorityEqual.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Av: den här datorns egna appar går först. På: den här enheten väntar i samma kö.</value></data>
+  <data name="DevicesRequestLimit.Header" xml:space="preserve"><value>Förfrågningar per dag</value></data>
+  <data name="DevicesTokenLimit.Header" xml:space="preserve"><value>Tokens per dag</value></data>
+  <data name="DevicesQuiet.Header" xml:space="preserve"><value>Tysta timmar</value></data>
+  <data name="DevicesQuiet.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Enheten får inga svar mellan dessa tider (den här datorns tid)</value></data>
+  <data name="DevicesQuietFrom.Header" xml:space="preserve"><value>Från</value></data>
+  <data name="DevicesQuietTo.Header" xml:space="preserve"><value>Till</value></data>
+  <data name="DevicesModelsHeader.Text" xml:space="preserve"><value>Modeller som den här enheten får använda</value></data>
+  <data name="DevicesSaveLabel.Text" xml:space="preserve"><value>Spara</value></data>
+  <data name="DevicesSave.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Spara de här inställningarna för den här enheten</value></data>
+  <data name="DevicesSave.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Spara de här inställningarna för den här enheten</value></data>
+  <data name="Vm_DevOnline" xml:space="preserve"><value>Online</value></data>
+  <data name="Vm_DevIdle" xml:space="preserve"><value>Vilande</value></data>
+  <data name="Vm_DevOffline" xml:space="preserve"><value>Offline</value></data>
+  <data name="Vm_DevRouteLan" xml:space="preserve"><value>Hemmanätverk</value></data>
+  <data name="Vm_DevRouteRelay" xml:space="preserve"><value>Relä (borta)</value></data>
+  <data name="Vm_DevRouteNone" xml:space="preserve"><value>Ingen väg än</value></data>
+  <data name="Vm_DevRunning" xml:space="preserve"><value>Körs nu: {0}</value></data>
+  <data name="Vm_DevRunningQueued" xml:space="preserve"><value>Körs nu: {0}, väntar: {1}</value></data>
+  <data name="Vm_DevToday" xml:space="preserve"><value>Idag: {0} förfrågningar, {1} tokens</value></data>
+  <data name="Vm_DevBar" xml:space="preserve"><value>{0} förfrågningar, {1} dagar sedan</value></data>
+  <data name="Vm_DevModel" xml:space="preserve"><value>Modell: {0}</value></data>
+  <data name="Vm_DevModelNone" xml:space="preserve"><value>Inget anrop än</value></data>
+  <data name="Vm_DevLoadedByPc" xml:space="preserve"><value>{0}, inläst av den här datorn</value></data>
+  <data name="Vm_DevLoadedByDevice" xml:space="preserve"><value>{1}, inläst av {0}</value></data>
+  <data name="Vm_DevSpeed" xml:space="preserve"><value>Hastighet: {0} tokens/s, {1} ms till första byte</value></data>
+  <data name="Vm_DevSpeedNone" xml:space="preserve"><value>Hastighet: inte mätt än</value></data>
+  <data name="Vm_DevPause" xml:space="preserve"><value>Pausa</value></data>
+  <data name="Vm_DevResume" xml:space="preserve"><value>Återuppta</value></data>
+  <data name="Vm_DevPauseTip" xml:space="preserve"><value>Pausa den här enheten. Dess anrop får ett pausat svar och den bärbara datorn använder sin egen reservlösning.</value></data>
+  <data name="Vm_DevResumeTip" xml:space="preserve"><value>Låt den här enheten använda den här datorn igen</value></data>
+  <data name="Vm_DevAppPauseTip" xml:space="preserve"><value>Pausa bara den här appen på den här enheten</value></data>
+  <data name="Vm_DevAppResumeTip" xml:space="preserve"><value>Låt den här appen använda den här datorn igen</value></data>
+  <data name="Vm_DevGamingBusy" xml:space="preserve"><value>Ett spel körs: enheter får veta att den här datorn är upptagen.</value></data>
+  <data name="Vm_AutoDevPause" xml:space="preserve"><value>Pausa {0}</value></data>
+  <data name="Vm_AutoDevResume" xml:space="preserve"><value>Återuppta {0}</value></data>
+  <data name="Vm_AutoDevAppPause" xml:space="preserve"><value>Pausa {0} på {1}</value></data>
+  <data name="Vm_AutoDevAppResume" xml:space="preserve"><value>Återuppta {0} på {1}</value></data>
+  <data name="Vm_AutoDevRename" xml:space="preserve"><value>Byt namn på {0}</value></data>
+  <data name="RemoteModelLoadLabel.Text" xml:space="preserve"><value>Läs in</value></data>
+  <data name="RemoteModelUnloadLabel.Text" xml:space="preserve"><value>Avlasta</value></data>
+  <data name="RemoteModelLoad.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Läs in den här modellen på datorn. Den förblir inläst där tills du avlastar den eller datorns ägare ändrar det.</value></data>
+  <data name="RemoteModelLoad.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Läs in den här modellen på datorn. Den förblir inläst där tills du avlastar den eller datorns ägare ändrar det.</value></data>
+  <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Avlasta modellen som den här bärbara datorn läste in på datorn. Inga modellfiler berörs.</value></data>
+  <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Avlasta modellen som den här bärbara datorn läste in på datorn. Inga modellfiler berörs.</value></data>
+  <data name="RemoteModelPlacement.Header" xml:space="preserve"><value>Kör på</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Var datorn kör den här modellen: avgörs av datorn, på grafikkortet, i systemminnet, eller endast på processorn med en trådgräns (hälften av kärnorna). Datorns egna gränser gäller fortfarande.</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Var datorn kör den här modellen: avgörs av datorn, på grafikkortet, i systemminnet, eller endast på processorn med en trådgräns (hälften av kärnorna). Datorns egna gränser gäller fortfarande.</value></data>
+  <data name="RemoteModelTooBig.Text" xml:space="preserve"><value>För stor för datorn</value></data>
+  <data name="SettingsAppModelsHeader.Text" xml:space="preserve"><value>Datorns modell för varje app</value></data>
+  <data name="SettingsAppModelsHelp.Text" xml:space="preserve"><value>Välj vilken av datorns modeller varje app på den här bärbara datorn använder. Datorns val lämnar valet till datorn.</value></data>
+  <data name="Vm_RemTitle" xml:space="preserve"><value>Modeller på {0}</value></data>
+  <data name="Vm_RemAskOwner" xml:space="preserve"><value>Be ägaren till {0} slå på modellstyrning för den här bärbara datorn.</value></data>
+  <data name="Vm_RemPlacementAuto" xml:space="preserve"><value>Automatisk</value></data>
+  <data name="Vm_RemPlacementGpu" xml:space="preserve"><value>Grafikkort</value></data>
+  <data name="Vm_RemPlacementCpu" xml:space="preserve"><value>Systemminne</value></data>
+  <data name="Vm_RemPlacementCpuOnly" xml:space="preserve"><value>Endast processor</value></data>
+  <data name="Vm_RemStateLoaded" xml:space="preserve"><value>Inläst</value></data>
+  <data name="Vm_RemStateLoading" xml:space="preserve"><value>Läses in</value></data>
+  <data name="Vm_RemByLaptop" xml:space="preserve"><value>Inläst av den här bärbara datorn</value></data>
+  <data name="Vm_RemByPc" xml:space="preserve"><value>Inläst av datorn</value></data>
+  <data name="Vm_RemByOther" xml:space="preserve"><value>Inläst av en annan enhet</value></data>
+  <data name="Vm_RemAutoLoad" xml:space="preserve"><value>Läs in {0} på datorn</value></data>
+  <data name="Vm_RemAutoUnload" xml:space="preserve"><value>Avlasta {0} från datorn</value></data>
+  <data name="Vm_RemHostGone" xml:space="preserve"><value>Värden körs inte.</value></data>
+  <data name="Vm_AppModelPcChoice" xml:space="preserve"><value>Datorns val</value></data>
+  <data name="Vm_AppModelAutomation" xml:space="preserve"><value>Datorns modell för {0}</value></data>
+  <data name="SettingsHomePcHeader.Text" xml:space="preserve"><value>Hemdator</value></data>
+  <data name="SettingsHomePcHelp.Text" xml:space="preserve"><value>Använd AI:n på en annan dator i din ägo i stället för att köra den på den här. Koppla den här bärbara datorn till datorn en gång; appar här frågar sedan den datorn.</value></data>
+  <data name="SettingsHomeMode.Header" xml:space="preserve"><value>Var AI:n körs</value></data>
+  <data name="SettingsHomeMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Var AI:n körs</value></data>
+  <data name="SettingsHomeFallback.Header" xml:space="preserve"><value>Om hemdatorn inte kan nås</value></data>
+  <data name="SettingsHomeFallback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Om hemdatorn inte kan nås</value></data>
+  <data name="SettingsHomeRelayMode.Header" xml:space="preserve"><value>Anslutning utanför hemmet</value></data>
+  <data name="SettingsHomeRelayMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Anslutning utanför hemmet</value></data>
+  <data name="SettingsHomeUseRelay.Header" xml:space="preserve"><value>Använd relä</value></data>
+  <data name="SettingsHomeUseRelay.OnContent" xml:space="preserve"><value>På</value></data>
+  <data name="SettingsHomeUseRelay.OffContent" xml:space="preserve"><value>Av</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Använd relä</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Slår på reläet för den här sessionen bara. Det återställs när appen stängs.</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Koppla dator</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Koppla den här bärbara datorn till en hemdator med en kopplingslänk</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Koppla den här bärbara datorn till en hemdator med en kopplingslänk</value></data>
+  <data name="SettingsHomePairText.Text" xml:space="preserve"><value>Koppla dator</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Koppla bort</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Glöm den kopplade datorn. Modeller och hämtningar förblir som de är.</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Glöm den kopplade datorn. Modeller och hämtningar förblir som de är.</value></data>
+  <data name="SettingsHomeUnpairText.Text" xml:space="preserve"><value>Koppla bort</value></data>
+  <data name="SettingsNotifyDevices.Header" xml:space="preserve"><value>En enhet kopplas eller ansluter utifrån</value></data>
+  <data name="SettingsNotifyDevices.OnContent" xml:space="preserve"><value>På</value></data>
+  <data name="SettingsNotifyDevices.OffContent" xml:space="preserve"><value>Av</value></data>
+  <data name="SettingsNotifyDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Meddela när en enhet kopplas eller ansluter utifrån</value></data>
+  <data name="HomeClientEmpty.Text" xml:space="preserve"><value>AI:n körs på din andra dator. Modeller, minnesanvändning och uppvärmning visas där.</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Byt dator</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Öppna inställningarna för hemdatorn för att koppla en annan dator</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Öppna inställningarna för hemdatorn för att koppla en annan dator</value></data>
+  <data name="HomeChangePcText.Text" xml:space="preserve"><value>Byt dator</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Kör AI här</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Lämna klientläget och kör AI:n på den här datorn igen. Kopplingen sparas.</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Lämna klientläget och kör AI:n på den här datorn igen. Kopplingen sparas.</value></data>
+  <data name="HomeRunHereText.Text" xml:space="preserve"><value>Kör AI här</value></data>
+  <data name="ModelsLocalNote.Text" xml:space="preserve"><value>Hämtningar på den här sidan gäller när den här datorn kör AI:n.</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Använd min hemdator</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hoppa över hämtningen och använd AI:n på en annan dator i din ägo. Du kopplar med den härnäst.</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Hoppa över hämtningen och använd AI:n på en annan dator i din ägo. Du kopplar med den härnäst.</value></data>
+  <data name="WelcomeHomePcText.Text" xml:space="preserve"><value>Använd min hemdator</value></data>
+  <data name="Vm_LinkConnectedLan" xml:space="preserve"><value>Ansluten - hemmanätverk</value></data>
+  <data name="Vm_LinkConnectedRelay" xml:space="preserve"><value>Ansluten - via relä</value></data>
+  <data name="Vm_LinkConnecting" xml:space="preserve"><value>Ansluter...</value></data>
+  <data name="Vm_LinkUnreachable" xml:space="preserve"><value>Kan inte nås</value></data>
+  <data name="Vm_LinkRevoked" xml:space="preserve"><value>Den här bärbara datorn togs bort från datorn</value></data>
+  <data name="Vm_LinkRepair" xml:space="preserve"><value>Koppla igen</value></data>
+  <data name="Vm_LinkRtt" xml:space="preserve"><value>{0} - {1} ms</value></data>
+  <data name="Vm_LinkLastSeen" xml:space="preserve"><value>Senast sedd {0}</value></data>
+  <data name="Vm_LinkUsingLaptop" xml:space="preserve"><value>Använder den här bärbara datorns modell</value></data>
+  <data name="Vm_LinkUnreachableHelp" xml:space="preserve"><value>{0} kan inte nås. Kontrollera att den är på och i samma nätverk, eller slå på reläet.</value></data>
+  <data name="Vm_LinkRevokedHelp" xml:space="preserve"><value>{0} släpper inte längre in den här bärbara datorn. Koppla igen för att fortsätta använda den.</value></data>
+  <data name="Vm_LinkRepairHelp" xml:space="preserve"><value>Identiteten för {0} ändrades, så den här bärbara datorn slutade lita på den. Om du inte väntade dig detta, koppla inte igen. Annars: koppla bort och koppla sedan igen.</value></data>
+  <data name="Vm_TrayLink" xml:space="preserve"><value>{0} - {1}</value></data>
+  <data name="Vm_DeviceAlertPaired" xml:space="preserve"><value>{0} kopplades och kan nu använda den här datorns AI.</value></data>
+  <data name="Vm_DeviceAlertRelay" xml:space="preserve"><value>{0} anslöt via reläet utifrån.</value></data>
+  <data name="Vm_HomeModeThisPc" xml:space="preserve"><value>Den här datorn</value></data>
+  <data name="Vm_HomeModeHomePc" xml:space="preserve"><value>Använd min hemdator</value></data>
+  <data name="Vm_HomeFallbackNone" xml:space="preserve"><value>Ingen</value></data>
+  <data name="Vm_HomeFallbackLocal" xml:space="preserve"><value>Använd den här bärbara datorns modell</value></data>
+  <data name="Vm_HomeRelayAuto" xml:space="preserve"><value>Automatisk</value></data>
+  <data name="Vm_HomeRelayManual" xml:space="preserve"><value>Manuell</value></data>
+  <data name="Vm_HomeNeedsPair" xml:space="preserve"><value>Koppla en dator först.</value></data>
+  <data name="Vm_UnpairTitle" xml:space="preserve"><value>Koppla bort den här datorn?</value></data>
+  <data name="Vm_UnpairBody" xml:space="preserve"><value>Den här bärbara datorn glömmer {0} och slutar använda den. Modeller och hämtningar berörs inte. Du kan koppla igen senare.</value></data>
+  <data name="Vm_UnpairConfirm" xml:space="preserve"><value>Koppla bort</value></data>
+  <data name="Vm_UnpairCancel" xml:space="preserve"><value>Avbryt</value></data>
+  <data name="Vm_FallbackTitle" xml:space="preserve"><value>Din hemdator kan inte nås</value></data>
+  <data name="Vm_FallbackBody" xml:space="preserve"><value>{0} kan inte nås just nu. Ska den här bärbara datorn svara med sin egen modell medan den är borta? Du kan ändra detta i Inställningar, under Hemdator.</value></data>
+  <data name="Vm_FallbackLocal" xml:space="preserve"><value>Använd den här bärbara datorns modell</value></data>
+  <data name="Vm_FallbackNone" xml:space="preserve"><value>Ingen</value></data>
+  <data name="Vm_PairTitle" xml:space="preserve"><value>Använd min hemdator</value></data>
+  <data name="Vm_PairIntro" xml:space="preserve"><value>På den andra datorn öppnar du Inställningar och väljer Koppla en enhet, och kopierar sedan länken. Klistra in den här.</value></data>
+  <data name="Vm_PairLinkPlaceholder" xml:space="preserve"><value>portalai://pair?...</value></data>
+  <data name="Vm_PairLinkName" xml:space="preserve"><value>Kopplingslänk</value></data>
+  <data name="Vm_PairPaste" xml:space="preserve"><value>Klistra in länk</value></data>
+  <data name="Vm_PairPasteTip" xml:space="preserve"><value>Klistra in kopplingslänken från urklippet</value></data>
+  <data name="Vm_PairNext" xml:space="preserve"><value>Nästa</value></data>
+  <data name="Vm_PairConfirm" xml:space="preserve"><value>Koppla</value></data>
+  <data name="Vm_PairBack" xml:space="preserve"><value>Tillbaka</value></data>
+  <data name="Vm_PairCancel" xml:space="preserve"><value>Avbryt</value></data>
+  <data name="Vm_PairWorking" xml:space="preserve"><value>Ansluter till datorn...</value></data>
+  <data name="Vm_PairDeviceName" xml:space="preserve"><value>Namn på den här bärbara datorn</value></data>
+  <data name="Vm_PairConfirmPc" xml:space="preserve"><value>Koppla med {0}?</value></data>
+  <data name="Vm_PairFingerprint" xml:space="preserve"><value>Fingeravtryck: {0}</value></data>
+  <data name="Vm_PairErr_invalid_input" xml:space="preserve"><value>Länken är inte giltig. Kopiera den igen från den andra datorn.</value></data>
+  <data name="Vm_PairErr_address_not_allowed" xml:space="preserve"><value>Adressen finns inte på ditt hemnätverk. Utanför hemmet: koppla en gång hemma först.</value></data>
+  <data name="Vm_PairErr_unreachable" xml:space="preserve"><value>Det gick inte att nå adressen.</value></data>
+  <data name="Vm_PairErr_certificate_mismatch" xml:space="preserve"><value>Den här datorn kunde inte verifieras.</value></data>
+  <data name="Vm_PairErr_host_proof_invalid" xml:space="preserve"><value>Den här datorn kunde inte verifieras.</value></data>
+  <data name="Vm_PairErr_refused" xml:space="preserve"><value>Den datorn avvisade kopplingen.</value></data>
+  <data name="Vm_PairErr_protocol_error" xml:space="preserve"><value>Den datorn skickade ett oväntat svar.</value></data>
+  <data name="Vm_PairErr_save_failed" xml:space="preserve"><value>Kopplingen lyckades, men den kunde inte sparas på den här datorn.</value></data>
+  <data name="Vm_PairErr_already_paired" xml:space="preserve"><value>En dator är redan kopplad. Koppla bort den i Inställningar först.</value></data>
+  <data name="Vm_PairErr_not_available" xml:space="preserve"><value>Koppling är inte tillgänglig i den här installationen.</value></data>
+  <data name="Vm_PairErr_host" xml:space="preserve"><value>Appen körs inte.</value></data>
+  <data name="Vm_PairReason_expired" xml:space="preserve"><value>Koden tog slut. Be om en ny.</value></data>
+  <data name="Vm_PairReason_code_voided" xml:space="preserve"><value>Koden förbrukades av för många felaktiga försök. Be om en ny.</value></data>
+  <data name="Vm_PairReason_no_offer" xml:space="preserve"><value>Den datorn väntar inte på någon enhet. Öppna en ny kod på den.</value></data>
+  <data name="Vm_PairReason_too_many_devices" xml:space="preserve"><value>Den datorn har redan 16 enheter. Ta bort en först.</value></data>
+  <data name="Vm_PairReason_wrong_code" xml:space="preserve"><value>Koden stämmer inte.</value></data>
+  <data name="ModelsMemoryTitle.Text" xml:space="preserve"><value>Minnesbudget</value></data>
+  <data name="ModelsMemoryTitle.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Hur mycket de inlästa och inläsande modellerna planeras att använda, jämfört med RAM-gränsen och grafikkortets minne. En modell som inte skulle rymmas nekas.</value></data>
+  <data name="Vm_MemRam" xml:space="preserve"><value>RAM</value></data>
+  <data name="Vm_MemVram" xml:space="preserve"><value>Grafikminne</value></data>
+  <data name="Vm_MemLine" xml:space="preserve"><value>{0}: {1} används, {2} reserverat under inläsning, {3} ledigt av {4}</value></data>
+  <data name="UpdateBar.Title" xml:space="preserve"><value>Uppdatering finns</value></data>
+  <data name="UpdateBar.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>En nyare version av Portal AI Host finns klar i Microsoft Store</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Uppdatera</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Öppna sidan i Microsoft Store för att uppdatera Portal AI Host</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Öppna sidan i Microsoft Store för att uppdatera Portal AI Host</value></data>
+  <data name="UpdateButtonText.Text" xml:space="preserve"><value>Uppdatera</value></data>
+  <data name="Vm_ComingSoon" xml:space="preserve"><value>Kommer snart</value></data>
+  <data name="Vm_VramBoth" xml:space="preserve"><value>Behöver {0} GB grafikminne med CPU-avlastning; {1} GB rekommenderas.</value></data>
+  <data name="Vm_VramMin" xml:space="preserve"><value>Behöver {0} GB grafikminne med CPU-avlastning.</value></data>
+  <data name="Vm_VramRec" xml:space="preserve"><value>{0} GB grafikminne rekommenderas.</value></data>
+  <data name="Vm_GroupCount" xml:space="preserve"><value>{0} modeller</value></data>
+  <data name="Vm_ShowAll" xml:space="preserve"><value>Visa alla {0}</value></data>
+  <data name="Vm_ShowFewer" xml:space="preserve"><value>Visa färre</value></data>
+  <data name="Vm_CatAllTip" xml:space="preserve"><value>Visa modeller av alla slag</value></data>
+  <data name="Vm_CatChip_all" xml:space="preserve"><value>Alla</value></data>
+  <data name="Vm_CatChip_chat" xml:space="preserve"><value>Chatt</value></data>
+  <data name="Vm_CatChip_coding" xml:space="preserve"><value>Kodning</value></data>
+  <data name="Vm_CatChip_reasoning" xml:space="preserve"><value>Resonemang</value></data>
+  <data name="Vm_CatChip_vision" xml:space="preserve"><value>Bildförståelse</value></data>
+  <data name="Vm_CatChip_search" xml:space="preserve"><value>Sök</value></data>
+  <data name="Vm_CatChip_image" xml:space="preserve"><value>Bilder</value></data>
+  <data name="Vm_CatChip_video" xml:space="preserve"><value>Video</value></data>
+  <data name="Vm_CatChip_speech" xml:space="preserve"><value>Tal</value></data>
+  <data name="Vm_CatChip_other" xml:space="preserve"><value>Övriga</value></data>
+  <data name="Vm_Cat_chat" xml:space="preserve"><value>Chatt &amp; skrivande</value></data>
+  <data name="Vm_Cat_coding" xml:space="preserve"><value>Kodning</value></data>
+  <data name="Vm_Cat_reasoning" xml:space="preserve"><value>Resonemang</value></data>
+  <data name="Vm_Cat_vision" xml:space="preserve"><value>Förstå bilder</value></data>
+  <data name="Vm_Cat_search" xml:space="preserve"><value>Sök &amp; inbäddningar</value></data>
+  <data name="Vm_Cat_image" xml:space="preserve"><value>Bildgenerering</value></data>
+  <data name="Vm_Cat_video" xml:space="preserve"><value>Videogenerering</value></data>
+  <data name="Vm_Cat_speech" xml:space="preserve"><value>Tal</value></data>
+  <data name="Vm_Cat_other" xml:space="preserve"><value>Övriga modeller</value></data>
+  <data name="ModelsSearch.PlaceholderText" xml:space="preserve"><value>Sök modeller</value></data>
+  <data name="ModelsSearch.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Sök modeller</value></data>
+  <data name="ModelsNoMatches.Text" xml:space="preserve"><value>Inga modeller matchar. Rensa sökningen eller välj Alla.</value></data>
+  <data name="HomeSeeAppsLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Se vilka appar som är anslutna till värden</value></data>
+  <data name="HomeSeeAppsLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Se vilka appar som är anslutna till värden</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Kopiera kopplingslänken till urklippet</value></data>
+  <data name="HomeLoadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Läs in modellen i minnet så att den svarar snabbare</value></data>
+  <data name="HomeLoadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Läs in modellen i minnet så att den svarar snabbare</value></data>
+  <data name="SettingsNotifyDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Visa ett meddelande när en enhet kopplas eller ansluter</value></data>
+  <data name="SettingsCorners.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hur runda hörnen är</value></data>
+  <data name="HomeChangeFolderButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Öppna Inställningar för att välja en mapp med mer ledigt utrymme</value></data>
+  <data name="HomeChangeFolderButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Öppna Inställningar för att välja en mapp med mer ledigt utrymme</value></data>
+  <data name="SettingsMoveButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Flytta modellerna till den valda mappen. Filer kopieras och kontrolleras innan de gamla tas bort.</value></data>
+  <data name="SettingsMoveButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Flytta modellerna till den valda mappen. Filer kopieras och kontrolleras innan de gamla tas bort.</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Avbryt kopplingen</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Avbryt kopplingen</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Visa eller dölj hälsokontrollerna</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Visa eller dölj hälsokontrollerna</value></data>
+  <data name="SettingsMaterial.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Fönstrets bakgrundsstil</value></data>
+  <data name="HomeDownloadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hämta den rekommenderade modellen</value></data>
+  <data name="HomeDownloadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Hämta den rekommenderade modellen</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Se exakt vad en kraschrapport innehåller</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Se exakt vad en kraschrapport innehåller</value></data>
+  <data name="SettingsEaseOffFullscreen.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Frigör minne medan ett program i helskärm eller ett spel körs</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Öppna sidan Modeller för att se bättre modeller</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Öppna sidan Modeller för att se bättre modeller</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Återställ prestandainställningarna till standardvärdena</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Återställ prestandainställningarna till standardvärdena</value></data>
+  <data name="SettingsEaseOffBattery.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Frigör minne medan datorn går på batteri</value></data>
+  <data name="SettingsPreset.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Välj en färdig balans mellan hastighet och minnesanvändning</value></data>
+  <data name="SettingsRemoteRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Låt kopplade enheter nå den här datorn utanför ditt hemnätverk</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Skapa en kod för att koppla en ny enhet</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Skapa en kod för att koppla en ny enhet</value></data>
+  <data name="SettingsCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Skicka kraschrapporter för att hjälpa till att åtgärda problem</value></data>
+  <data name="SettingsAllowReplace.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Tillåt att en enhet ersätter en befintlig koppling</value></data>
+  <data name="SettingsMotion.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hur mycket animering som används</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Gå tillbaka till standardmappen för modeller</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Gå tillbaka till standardmappen för modeller</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Tillåt att nå hemdatorn via reläet när du är borta</value></data>
+  <data name="HomeTryAgainButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Försök läsa in modelllistan igen</value></data>
+  <data name="HomeTryAgainButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Försök läsa in modelllistan igen</value></data>
+  <data name="SettingsStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Starta Portal AI Host när du loggar in i Windows</value></data>
+  <data name="SettingsHomeMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Välj om den här datorn kör modeller själv eller använder din hemdator</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Starta värden så att appar kan använda den</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Starta värden så att appar kan använda den</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Återställ de allmänna inställningarna till standardvärdena</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Återställ de allmänna inställningarna till standardvärdena</value></data>
+  <data name="SettingsHomeFallback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Vad som ska göras när hemdatorn inte kan nås</value></data>
+  <data name="SettingsDensity.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hur mycket utrymme det är mellan objekten</value></data>
+  <data name="SettingsTextSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hur stor texten är</value></data>
+  <data name="SettingsIdle.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hur länge värden väntar utan förfrågningar innan den frigör modellens minne</value></data>
+  <data name="SettingsEaseOffAppBusy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Frigör minne medan en annan app arbetar hårt</value></data>
+  <data name="SettingsRemoveDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Ta bort den här enheten. Den måste koppla om sig för att ansluta igen.</value></data>
+  <data name="SettingsRemoveDevice.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Ta bort den här enheten. Den måste koppla om sig för att ansluta igen.</value></data>
+  <data name="SettingsMoveCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Sluta flytta modellerna</value></data>
+  <data name="SettingsMoveCancel.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Sluta flytta modellerna</value></data>
+  <data name="SettingsNotifyDownloads.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Visa ett meddelande när en hämtning slutförs eller misslyckas</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Återställ integritetsinställningarna till standardvärdena</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Återställ integritetsinställningarna till standardvärdena</value></data>
+  <data name="HealthCheckAgainButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Kör hälsokontrollerna igen</value></data>
+  <data name="HealthCheckAgainButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Kör hälsokontrollerna igen</value></data>
+  <data name="SettingsMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Hur mycket minne modellerna får använda</value></data>
+  <data name="SettingsTheme.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Ljust, mörkt eller följ Windows</value></data>
+  <data name="SettingsRemoteEnabled.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Låt dina andra enheter använda den här datorn</value></data>
+  <data name="SettingsNotifyProblems.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Visa ett meddelande när något kräver din uppmärksamhet</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Öppna chattsidan för att testa den aktiva modellen</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Öppna chattsidan för att testa den aktiva modellen</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Återställ aviseringsinställningarna till standardvärdena</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Återställ aviseringsinställningarna till standardvärdena</value></data>
+  <data name="SettingsRelayAdmission.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Kräv att reläet kontrollerar enheter innan de ansluter</value></data>
+  <data name="HomeUnloadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Frigör minnet som modellen använder. Modellfilen ligger kvar på disken.</value></data>
+  <data name="HomeUnloadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Frigör minnet som modellen använder. Modellfilen ligger kvar på disken.</value></data>
+  <data name="HomeSeeAllModelsLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Bläddra bland alla modeller som kan hämtas</value></data>
+  <data name="HomeSeeAllModelsLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Bläddra bland alla modeller som kan hämtas</value></data>
+  <data name="SettingsNotifyApprovals.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Visa ett meddelande när en app begär tillstånd</value></data>
+  <data name="SettingsHomeRelayMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Välj när reläet används för att nå hemdatorn</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Återställ utseendeinställningarna till standardvärdena</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>Återställ utseendeinställningarna till standardvärdena</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>Hälsokontroller</value></data>
+</root>

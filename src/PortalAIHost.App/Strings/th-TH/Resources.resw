@@ -1,0 +1,986 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="NavHome.Content" xml:space="preserve"><value>หน้าแรก</value></data>
+  <data name="NavHome.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>หน้าแรก</value></data>
+  <data name="NavModels.Content" xml:space="preserve"><value>โมเดล</value></data>
+  <data name="NavModels.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>โมเดล</value></data>
+  <data name="NavApps.Content" xml:space="preserve"><value>อุปกรณ์และแอป</value></data>
+  <data name="NavApps.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>อุปกรณ์และแอป</value></data>
+  <data name="NavTryIt.Content" xml:space="preserve"><value>ลองใช้</value></data>
+  <data name="NavTryIt.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ลองใช้</value></data>
+  <data name="NavSettings.Content" xml:space="preserve"><value>การตั้งค่า</value></data>
+  <data name="NavSettings.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>การตั้งค่า</value></data>
+  <data name="HomeTitle.Text" xml:space="preserve"><value>หน้าแรก</value></data>
+  <data name="HomeSafeModeBar.Title" xml:space="preserve"><value>โหมดปลอดภัย</value></data>
+  <data name="HomeStoreProblemBar.Title" xml:space="preserve"><value>ไม่พบโฟลเดอร์โมเดล</value></data>
+  <data name="Vm_OldFolderBadge" xml:space="preserve"><value>โฟลเดอร์ก่อนหน้า</value></data>
+  <data name="Vm_OldFolderRow" xml:space="preserve"><value>อยู่ในโฟลเดอร์โมเดลก่อนหน้า: {0} ลบออกเพื่อเพิ่มพื้นที่ว่าง</value></data>
+  <data name="HomeSafeModeBar.Message" xml:space="preserve"><value>โฮสต์ปิดโดยไม่คาดคิดมากกว่าหนึ่งครั้ง จึงเริ่มทำงานด้วยการตั้งค่าแบบระมัดระวัง แอปของคุณยังใช้งานได้ตามปกติ หากยังเกิดขึ้นอีก ให้รีสตาร์ท PC</value></data>
+  <data name="HomeStartButton.Content" xml:space="preserve"><value>เริ่ม Portal AI Host</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>เริ่ม Portal AI Host</value></data>
+  <data name="HomeUpgradeText.Text" xml:space="preserve"><value>มีโมเดลที่เหมาะกับ PC ของคุณมากกว่า โมเดลปัจจุบันจะยังคงใช้งานได้จนกว่าโมเดลใหม่จะพร้อม</value></data>
+  <data name="HomeSeeModelsButton.Content" xml:space="preserve"><value>ดูโมเดล</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ดูโมเดล</value></data>
+  <data name="ModelsTitle.Text" xml:space="preserve"><value>โมเดล</value></data>
+  <data name="ModelsExistingBar.Title" xml:space="preserve"><value>พบสำเนาที่มีอยู่แล้ว</value></data>
+  <data name="ModelsUpgradeBar.Title" xml:space="preserve"><value>มีโมเดลที่เหมาะสมกว่า</value></data>
+  <data name="ModelTooBig.Text" xml:space="preserve"><value>โมเดลนี้อาจใหญ่เกินไปสำหรับ PC เครื่องนี้</value></data>
+  <data name="ModelDownload.Content" xml:space="preserve"><value>ดาวน์โหลด</value></data>
+  <data name="ModelPause.Content" xml:space="preserve"><value>หยุดชั่วคราว</value></data>
+  <data name="ModelResume.Content" xml:space="preserve"><value>ทำต่อ</value></data>
+  <data name="ModelCancel.Content" xml:space="preserve"><value>หยุด</value></data>
+  <data name="ModelUse.Content" xml:space="preserve"><value>ใช้โมเดลนี้</value></data>
+  <data name="ModelRemove.Content" xml:space="preserve"><value>ลบ</value></data>
+  <data name="ModelsCatalogueBar.Title" xml:space="preserve"><value>ไม่มีรายการโมเดล</value></data>
+  <data name="ModelsCatalogueBar.Message" xml:space="preserve"><value>โฮสต์ไม่สามารถโหลดรายการโมเดลที่เชื่อถือได้ จึงยังดาวน์โหลดโมเดลใหม่ไม่ได้ในตอนนี้ โมเดลที่มีอยู่ใน PC เครื่องนี้ยังใช้งานได้</value></data>
+  <data name="AppsTitle.Text" xml:space="preserve"><value>อุปกรณ์และแอป</value></data>
+  <data name="AppsWaitingHeader.Text" xml:space="preserve"><value>กำลังรอคำตอบของคุณ</value></data>
+  <data name="AppsApprovedHeader.Text" xml:space="preserve"><value>แอปที่ใช้โฮสต์ AI ของคุณได้</value></data>
+  <data name="AppsNone.Text" xml:space="preserve"><value>ยังไม่มีแอปที่ได้รับอนุญาต เมื่อแอปขอใช้โฮสต์ ระบบจะถามคุณที่นี่</value></data>
+  <data name="AppAllow.Content" xml:space="preserve"><value>อนุญาต</value></data>
+  <data name="AppDeny.Content" xml:space="preserve"><value>ปฏิเสธ</value></data>
+  <data name="Vm_AppTodayNone" xml:space="preserve"><value>วันนี้ไม่มีคำขอ</value></data>
+  <data name="Vm_AppToday1" xml:space="preserve"><value>วันนี้ {0} คำขอ</value></data>
+  <data name="Vm_AppToday" xml:space="preserve"><value>วันนี้ {0} คำขอ</value></data>
+  <data name="Vm_PriorityHigh" xml:space="preserve"><value>สูง</value></data>
+  <data name="Vm_PriorityNormal" xml:space="preserve"><value>ปกติ</value></data>
+  <data name="Vm_PriorityLow" xml:space="preserve"><value>ต่ำ</value></data>
+  <data name="Vm_AutoPriority" xml:space="preserve"><value>ลำดับความสำคัญของ {0}</value></data>
+  <data name="Vm_AppPausedBadge" xml:space="preserve"><value>หยุดชั่วคราว</value></data>
+  <data name="Vm_AppPausedHint" xml:space="preserve"><value>{0} หยุดชั่วคราวอยู่ คำขอใหม่จะถูกปฏิเสธจนกว่าคุณจะทำต่อ แอปยังคงมีสิทธิ์เข้าถึงอยู่</value></data>
+  <data name="Vm_AppPause" xml:space="preserve"><value>หยุดชั่วคราว</value></data>
+  <data name="Vm_AppResume" xml:space="preserve"><value>ทำต่อ</value></data>
+  <data name="Vm_AutoPause" xml:space="preserve"><value>หยุด {0} ชั่วคราว</value></data>
+  <data name="Vm_AutoResume" xml:space="preserve"><value>ทำ {0} ต่อ</value></data>
+  <data name="AppPriority.Header" xml:space="preserve"><value>ลำดับความสำคัญ</value></data>
+  <data name="AppRevoke.Content" xml:space="preserve"><value>เพิกถอนสิทธิ์เข้าถึง</value></data>
+  <data name="SettingsTitle.Text" xml:space="preserve"><value>การตั้งค่า</value></data>
+  <data name="SettingsStartWithWindows.Header" xml:space="preserve"><value>เริ่มพร้อม Windows</value></data>
+  <data name="SettingsStartWithWindows.OnContent" xml:space="preserve"><value>เปิด</value></data>
+  <data name="SettingsStartWithWindows.OffContent" xml:space="preserve"><value>ปิด</value></data>
+  <data name="SettingsStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>เริ่มพร้อม Windows</value></data>
+  <data name="SettingsIdle.Header" xml:space="preserve"><value>เพิ่มหน่วยความจำว่างเมื่อไม่ได้ใช้งาน</value></data>
+  <data name="SettingsIdle.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>เพิ่มหน่วยความจำว่างเมื่อไม่ได้ใช้งาน</value></data>
+  <data name="SettingsIdleHelp.Text" xml:space="preserve"><value>โมเดลจะโหลดกลับมาอีกครั้งเมื่อแอปเรียกใช้ หากคงไว้ในหน่วยความจำ จะตอบเร็วขึ้นแต่ใช้หน่วยความจำตลอดเวลา</value></data>
+  <data name="SettingsFolder.Header" xml:space="preserve"><value>โฟลเดอร์สำหรับโมเดลที่ดาวน์โหลด</value></data>
+  <data name="SettingsFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>โฟลเดอร์สำหรับโมเดลที่ดาวน์โหลด</value></data>
+  <data name="TryItTitle.Text" xml:space="preserve"><value>ลองใช้</value></data>
+  <data name="TryItIntro.Text" xml:space="preserve"><value>ถามโมเดลสั้น ๆ เพื่อตรวจสอบว่าทำงานได้และดูความเร็วในการตอบ ข้อความที่คุณพิมพ์ที่นี่จะไม่ถูกบันทึก กด Ctrl+Enter เพื่อถาม</value></data>
+  <data name="TryItPrompt.Header" xml:space="preserve"><value>คำถามของคุณ</value></data>
+  <data name="TryItPrompt.PlaceholderText" xml:space="preserve"><value>ตัวอย่าง: เขียนประโยคเดียวเกี่ยวกับทะเล</value></data>
+  <data name="TryItPrompt.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>คำถามของคุณ</value></data>
+  <data name="TryItSend.Content" xml:space="preserve"><value>ถาม</value></data>
+  <data name="TryItSend.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ถาม</value></data>
+  <data name="TryItStop.Content" xml:space="preserve"><value>หยุด</value></data>
+  <data name="TryItStop.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>หยุด</value></data>
+  <data name="TryItReply.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>คำตอบ</value></data>
+  <data name="WelcomeTitle.Text" xml:space="preserve"><value>ยินดีต้อนรับสู่ Portal AI Host</value></data>
+  <data name="WelcomeLead.Text" xml:space="preserve"><value>AI ที่อยู่บน PC ของคุณ</value></data>
+  <data name="WelcomeIntro.Text" xml:space="preserve"><value>Portal AI Host เรียกใช้โมเดล AI บน PC เครื่องนี้สำหรับแอป Portal ของคุณ ไม่ต้องตั้งค่าอะไร เราจะเลือกโมเดลที่เหมาะกับ PC ของคุณให้</value></data>
+  <data name="WelcomePoint1Title.Text" xml:space="preserve"><value>ทำงานบน PC เครื่องนี้</value></data>
+  <data name="WelcomePoint1Body.Text" xml:space="preserve"><value>โมเดลใช้การ์ดแสดงผลและหน่วยความจำของคุณเอง จึงใช้งานได้แม้ไม่มีอินเทอร์เน็ต</value></data>
+  <data name="WelcomePoint2Title.Text" xml:space="preserve"><value>เป็นส่วนตัว</value></data>
+  <data name="WelcomePoint2Body.Text" xml:space="preserve"><value>คำถามและไฟล์ของคุณจะไม่ออกจาก PC เครื่องนี้</value></data>
+  <data name="WelcomePoint3Title.Text" xml:space="preserve"><value>สร้างมาเพื่อแอป Portal ของคุณ</value></data>
+  <data name="WelcomePoint3Body.Text" xml:space="preserve"><value>แอป Portal ของคุณใช้เพื่อเขียน สรุป และตอบคำถามได้ โดยไม่ต้องมีบัญชีเพิ่ม</value></data>
+  <data name="WelcomeModelTitle.Text" xml:space="preserve"><value>เลือกโมเดล</value></data>
+  <data name="WelcomeModelIntro.Text" xml:space="preserve"><value>โมเดลคือ AI ที่ทำงานให้คุณ นี่คือโมเดลที่เราคิดว่าเหมาะกับ PC ของคุณที่สุด</value></data>
+  <data name="WelcomeNoModel.Text" xml:space="preserve"><value>ขณะนี้เรายังไม่พบโมเดลที่เหมาะกับ PC เครื่องนี้ คุณลองดูอีกครั้งภายหลังได้ที่หน้าโมเดล</value></data>
+  <data name="WelcomeDownload.Content" xml:space="preserve"><value>ดาวน์โหลด</value></data>
+  <data name="WelcomeDownload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ดาวน์โหลดโมเดลที่แนะนำ</value></data>
+  <data name="WelcomeChooseLater.Content" xml:space="preserve"><value>เลือกภายหลัง</value></data>
+  <data name="WelcomeChooseLater.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>เลือกภายหลัง แล้วเลือกโมเดลในหน้าโมเดล</value></data>
+  <data name="WelcomeKeepGoing.Text" xml:space="preserve"><value>คุณทำอย่างอื่นต่อได้ การดาวน์โหลดจะดำเนินต่อไปในเบื้องหลัง</value></data>
+  <data name="WelcomeRetry.Content" xml:space="preserve"><value>ลองอีกครั้ง</value></data>
+  <data name="WelcomeRetry.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ลองอีกครั้ง เริ่มดาวน์โหลดใหม่</value></data>
+  <data name="WelcomeWhereTitle.Text" xml:space="preserve"><value>หาได้ใกล้นาฬิกา</value></data>
+  <data name="WelcomeTrayTitle.Text" xml:space="preserve"><value>มองหาไอคอนในถาด</value></data>
+  <data name="WelcomeTrayBody.Text" xml:space="preserve"><value>Portal AI Host รออยู่เงียบ ๆ ในถาดระบบ ซึ่งเป็นไอคอนเล็ก ๆ ใกล้นาฬิกา คลิกไอคอนเพื่อเปิด หากไม่เห็น ให้คลิกลูกศรเพื่อแสดงไอคอนที่ซ่อนอยู่</value></data>
+  <data name="WelcomeAskTitle.Text" xml:space="preserve"><value>แอปจะขออนุญาตก่อนเสมอ</value></data>
+  <data name="WelcomeAskBody.Text" xml:space="preserve"><value>เมื่อแอป Portal ต้องการใช้ AI บน PC เครื่องนี้เป็นครั้งแรก ระบบจะถามคุณ คุณปฏิเสธได้ และเพิกถอนสิทธิ์เข้าถึงได้ทุกเมื่อ</value></data>
+  <data name="WelcomeStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>เริ่มพร้อม Windows เริ่ม Portal AI Host เมื่อฉันลงชื่อเข้าใช้</value></data>
+  <data name="WelcomeSkip.Content" xml:space="preserve"><value>ข้ามไปก่อน</value></data>
+  <data name="WelcomeSkip.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ข้ามไปก่อน ปิดหน้าต้อนรับ</value></data>
+  <data name="WelcomeBack.Content" xml:space="preserve"><value>ย้อนกลับ</value></data>
+  <data name="WelcomeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ย้อนกลับ</value></data>
+  <data name="Vm_VerifiedShort" xml:space="preserve"><value>แอป Portal ที่ยืนยันแล้ว</value></data>
+  <data name="Vm_ApprovalDetails" xml:space="preserve"><value>รายละเอียด</value></data>
+  <data name="Vm_WelcomeRecommended" xml:space="preserve"><value>แนะนำ: โมเดล{0}</value></data>
+  <data name="Vm_WelcomeSmall" xml:space="preserve"><value>เล็ก</value></data>
+  <data name="Vm_WelcomeMedium" xml:space="preserve"><value>กลาง</value></data>
+  <data name="Vm_WelcomeLarge" xml:space="preserve"><value>ใหญ่</value></data>
+  <data name="Vm_WelcomeDetail" xml:space="preserve"><value>{0}, {1}</value></data>
+  <data name="WelcomeLaterNote.Text" xml:space="preserve"><value>คุณเลือกโมเดลภายหลังได้ในหน้าโมเดล</value></data>
+  <data name="WelcomeStartRec.Content" xml:space="preserve"><value>เริ่มด้วยการตั้งค่าที่แนะนำ</value></data>
+  <data name="WelcomeStartRec.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>เริ่มด้วยการตั้งค่าที่แนะนำ</value></data>
+  <data name="WelcomeWhereIntro.Text" xml:space="preserve"><value>สองสิ่งที่ควรรู้ก่อนเริ่มต้น</value></data>
+  <data name="WelcomeStartTitle.Text" xml:space="preserve"><value>เริ่มพร้อม Windows</value></data>
+  <data name="WelcomeStartBody.Text" xml:space="preserve"><value>คงให้ Portal AI Host พร้อมใช้งานในถาดระบบเมื่อคุณลงชื่อเข้าใช้ แอปของคุณจึงใช้งานได้ทันที</value></data>
+  <data name="Vm_WelcomeRecommendedTip" xml:space="preserve"><value>ดาวน์โหลดโมเดลที่แนะนำ ({0}) ในเบื้องหลัง ให้ Portal AI Host เริ่มพร้อม Windows และปิดหน้าต่างนี้ คุณเปลี่ยนทั้งหมดได้ภายหลัง</value></data>
+  <data name="Vm_WelcomeRecommendedTipNoModel" xml:space="preserve"><value>ให้ Portal AI Host เริ่มพร้อม Windows และปิดหน้าต่างนี้ คุณเปลี่ยนทั้งหมดได้ภายหลัง</value></data>
+  <data name="Vm_WelcomeTitle" xml:space="preserve"><value>ยินดีต้อนรับสู่ Portal AI Host</value></data>
+  <data name="Vm_WelcomeNext" xml:space="preserve"><value>ถัดไป</value></data>
+  <data name="Vm_WelcomeFinish" xml:space="preserve"><value>เริ่มต้นใช้งาน</value></data>
+  <data name="Vm_WelcomeSize" xml:space="preserve"><value>ขนาดดาวน์โหลด: {0}</value></data>
+  <data name="Vm_AppTitle" xml:space="preserve"><value>Portal AI Host</value></data>
+  <data name="Vm_NoHostTitle" xml:space="preserve"><value>Portal AI Host ไม่ทำงาน</value></data>
+  <data name="Vm_NoHostBody" xml:space="preserve"><value>ตัวช่วยที่เรียกใช้โมเดล AI ของคุณถูกปิดอยู่ เริ่มต้นเพื่อให้แอปของคุณใช้ AI ได้</value></data>
+  <data name="Vm_Starting" xml:space="preserve"><value>กำลังเริ่มต้น...</value></data>
+  <data name="Vm_StartFailed" xml:space="preserve"><value>ไม่สามารถเริ่มโฮสต์ได้ ลองเปิด Portal AI Host อีกครั้งจากเมนูเริ่ม</value></data>
+  <data name="Vm_StateReady" xml:space="preserve"><value>พร้อมใช้งาน</value></data>
+  <data name="Vm_StateBusy" xml:space="preserve"><value>กำลังตอบ</value></data>
+  <data name="Vm_StateLoading" xml:space="preserve"><value>กำลังเตรียมโมเดล</value></data>
+  <data name="Vm_StateIdle" xml:space="preserve"><value>พักอยู่ โมเดลจะตื่นขึ้นเมื่อแอปเรียกใช้</value></data>
+  <data name="Vm_StateNoModel" xml:space="preserve"><value>ยังไม่มีโมเดล</value></data>
+  <data name="Vm_StateDownloading" xml:space="preserve"><value>กำลังดาวน์โหลดโมเดล</value></data>
+  <data name="Vm_StateError" xml:space="preserve"><value>เกิดข้อผิดพลาด</value></data>
+  <data name="Vm_HostVersion" xml:space="preserve"><value>เวอร์ชันโฮสต์ {0}</value></data>
+  <data name="Vm_ModelNone" xml:space="preserve"><value>ยังไม่ได้ติดตั้งโมเดล</value></data>
+  <data name="Vm_ModelLoaded" xml:space="preserve"><value>{0} โหลดแล้วและพร้อมใช้งาน</value></data>
+  <data name="Vm_ModelLoading" xml:space="preserve"><value>กำลังโหลด {0}...</value></data>
+  <data name="Vm_ModelUnloaded" xml:space="preserve"><value>ติดตั้ง {0} แล้ว โมเดลจะโหลดเมื่อแอปเรียกใช้</value></data>
+  <data name="Vm_QueueEmpty" xml:space="preserve"><value>ไม่มีคำขอที่รออยู่</value></data>
+  <data name="Vm_QueueSome" xml:space="preserve"><value>กำลังทำงาน {0} รออยู่ {1}</value></data>
+  <data name="Vm_QualityName" xml:space="preserve"><value>คุณภาพ {0} จาก 5</value></data>
+  <data name="Vm_DownloadProgress" xml:space="preserve"><value>{0} จาก {1}</value></data>
+  <data name="Vm_DownloadEta" xml:space="preserve"><value>{0} จาก {1} เหลืออีกประมาณ {2} นาที</value></data>
+  <data name="Vm_Paused" xml:space="preserve"><value>หยุดชั่วคราวที่ {0}%</value></data>
+  <data name="Vm_Verifying" xml:space="preserve"><value>กำลังตรวจสอบการดาวน์โหลด...</value></data>
+  <data name="Vm_Queued" xml:space="preserve"><value>กำลังรอเริ่มต้น...</value></data>
+  <data name="Vm_DownloadFailed" xml:space="preserve"><value>การดาวน์โหลดไม่เสร็จสมบูรณ์ {0}</value></data>
+  <data name="Vm_DownloadDone" xml:space="preserve"><value>ดาวน์โหลดเสร็จสมบูรณ์</value></data>
+  <data name="Vm_InUse" xml:space="preserve"><value>กำลังใช้งาน</value></data>
+  <data name="Vm_Installed" xml:space="preserve"><value>ติดตั้งแล้ว</value></data>
+  <data name="Vm_BestForYou" xml:space="preserve"><value>เหมาะที่สุดกับ PC ของคุณ</value></data>
+  <data name="Vm_StorageLine" xml:space="preserve"><value>โมเดลใช้พื้นที่ {2} ใน {0} ไดรฟ์นั้นว่าง {1}</value></data>
+  <data name="Vm_ExistingCopy" xml:space="preserve"><value>มีสำเนาของ {0} อยู่ใน PC เครื่องนี้แล้ว โฮสต์จะใช้สำเนานั้นแทนการดาวน์โหลดอีกครั้ง</value></data>
+  <data name="Vm_UpgradeOffer" xml:space="preserve"><value>{0} เหมาะสมกว่า โมเดลปัจจุบันจะยังคงใช้งานได้จนกว่าโมเดลใหม่จะพร้อม</value></data>
+  <data name="Vm_CancelDlTitle" xml:space="preserve"><value>หยุดการดาวน์โหลดนี้หรือไม่</value></data>
+  <data name="Vm_CancelDlBody" xml:space="preserve"><value>ส่วนที่ดาวน์โหลดไปแล้วจะถูกทิ้ง</value></data>
+  <data name="Vm_CancelDlYes" xml:space="preserve"><value>หยุดดาวน์โหลด</value></data>
+  <data name="Vm_CancelDlKeep" xml:space="preserve"><value>ดาวน์โหลดต่อ</value></data>
+  <data name="Vm_AutoDownload" xml:space="preserve"><value>ดาวน์โหลด {0}</value></data>
+  <data name="Vm_AutoCancel" xml:space="preserve"><value>หยุดดาวน์โหลด {0}</value></data>
+  <data name="Vm_AutoUse" xml:space="preserve"><value>ใช้ {0}</value></data>
+  <data name="Vm_Added" xml:space="preserve"><value>เพิ่มเมื่อ {0}</value></data>
+  <data name="Vm_LastUsed" xml:space="preserve"><value>ใช้ล่าสุด {0}</value></data>
+  <data name="Vm_NeverUsed" xml:space="preserve"><value>ยังไม่เคยใช้</value></data>
+  <data name="Vm_AutoRevoke" xml:space="preserve"><value>เพิกถอนสิทธิ์เข้าถึงของ {0}</value></data>
+  <data name="Vm_AutoAllow" xml:space="preserve"><value>อนุญาต {0}</value></data>
+  <data name="Vm_AutoDeny" xml:space="preserve"><value>ปฏิเสธ {0}</value></data>
+  <data name="Vm_RevokeTitle" xml:space="preserve"><value>เพิกถอนสิทธิ์เข้าถึงของ {0} หรือไม่</value></data>
+  <data name="Vm_RevokeBody" xml:space="preserve"><value>{0} จะใช้งานกับโฮสต์ AI ไม่ได้จนกว่าคุณจะอนุญาตอีกครั้ง</value></data>
+  <data name="Vm_RevokeYes" xml:space="preserve"><value>เพิกถอนสิทธิ์เข้าถึง</value></data>
+  <data name="Vm_Cancel" xml:space="preserve"><value>ยกเลิก</value></data>
+  <data name="Vm_Verified" xml:space="preserve"><value>แอปที่ติดตั้ง ({0}) ไม่ใช่แอป Portal</value></data>
+  <data name="Vm_VerifiedPortal" xml:space="preserve"><value>แอป Portal ที่ยืนยันแล้ว ({0})</value></data>
+  <data name="Vm_Unverified" xml:space="preserve"><value>ยังไม่ได้ยืนยัน ทำงานจาก {0} อนุญาตเฉพาะเมื่อคุณเป็นผู้เริ่มเอง</value></data>
+  <data name="Vm_ApprovalTitle" xml:space="preserve"><value>อนุญาตให้ {0} ใช้ AI บน PC เครื่องนี้หรือไม่</value></data>
+  <data name="Vm_ApprovalBody" xml:space="preserve"><value>{0} ต้องการใช้โมเดล AI บน PC เครื่องนี้</value></data>
+  <data name="Vm_ApprovalReason" xml:space="preserve"><value>เหตุผลที่ระบุ: {0}</value></data>
+  <data name="Vm_Allow" xml:space="preserve"><value>อนุญาต</value></data>
+  <data name="Vm_Deny" xml:space="preserve"><value>ไม่อนุญาต</value></data>
+  <data name="Vm_Later" xml:space="preserve"><value>ตัดสินใจภายหลัง</value></data>
+  <data name="Vm_Idle_Keep" xml:space="preserve"><value>คงโมเดลไว้ในหน่วยความจำ</value></data>
+  <data name="Vm_Idle_5" xml:space="preserve"><value>หลังจาก 5 นาที</value></data>
+  <data name="Vm_Idle_10" xml:space="preserve"><value>หลังจาก 10 นาที</value></data>
+  <data name="Vm_Saved" xml:space="preserve"><value>บันทึกแล้ว</value></data>
+  <data name="Vm_SaveFailed" xml:space="preserve"><value>ไม่สามารถบันทึกได้ โฮสต์ทำงานอยู่หรือไม่</value></data>
+  <data name="Vm_FolderTitle" xml:space="preserve"><value>ใช้โฟลเดอร์นี้สำหรับโมเดลหรือไม่</value></data>
+  <data name="Vm_FolderBody" xml:space="preserve"><value>โฮสต์จะใช้ {0} สำหรับโมเดล โมเดลที่คุณมีอยู่แล้วจะไม่ถูกย้ายหรือลบ</value></data>
+  <data name="Vm_FolderYes" xml:space="preserve"><value>ใช้โฟลเดอร์</value></data>
+  <data name="TryItClear.Content" xml:space="preserve"><value>ล้าง</value></data>
+  <data name="TryItClear.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ล้างการสนทนา</value></data>
+  <data name="TryItSuggestLabel.Text" xml:space="preserve"><value>ไม่แน่ใจว่าจะถามอะไร ลองตัวอย่างเหล่านี้</value></data>
+  <data name="HomeTryItButton.Content" xml:space="preserve"><value>ลองใช้</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ลองโมเดลด้วยคำถาม</value></data>
+  <data name="Vm_TrySuggest1" xml:space="preserve"><value>เขียนประโยคเป็นมิตรหนึ่งประโยคเกี่ยวกับทะเล</value></data>
+  <data name="Vm_TrySuggest2" xml:space="preserve"><value>อธิบายสั้น ๆ สองประโยคว่าเราเตอร์ทำอะไร</value></data>
+  <data name="Vm_TrySuggest3" xml:space="preserve"><value>ช่วยตั้งชื่อแมวให้สามชื่อ</value></data>
+  <data name="Vm_TryStats" xml:space="preserve"><value>คำแรกใน {0} วินาที จากนั้น {1} โทเค็นต่อวินาที</value></data>
+  <data name="Vm_TryStatsShort" xml:space="preserve"><value>คำแรกใน {0} วินาที</value></data>
+  <data name="Vm_TryStatsStopped" xml:space="preserve"><value>หยุดแล้ว {0}</value></data>
+  <data name="TryItThinking.Header" xml:space="preserve"><value>สิ่งที่โมเดลคิดก่อน</value></data>
+  <data name="Vm_TryWorking" xml:space="preserve"><value>กำลังดำเนินการ PC เครื่องเล็กอาจใช้เวลาหนึ่งนาที</value></data>
+  <data name="Vm_TryThinking" xml:space="preserve"><value>กำลังคิด...</value></data>
+  <data name="Vm_TryOnlyThinking" xml:space="preserve"><value>โมเดลใช้เวลาจำกัดไปกับการคิดทั้งหมดและไม่ได้ตอบ ลองถามให้สั้นลง</value></data>
+  <data name="Vm_TryEmpty" xml:space="preserve"><value>โมเดลส่งคำตอบว่างเปล่า ลองถามอีกครั้ง</value></data>
+  <data name="Vm_TryFailed" xml:space="preserve"><value>โฮสต์ไม่สามารถตอบได้: {0}</value></data>
+  <data name="Vm_HwChecking" xml:space="preserve"><value>กำลังตรวจสอบ PC ของคุณ...</value></data>
+  <data name="Vm_HwUnknown" xml:space="preserve"><value>อ่านไม่ได้</value></data>
+  <data name="Vm_HwMemory" xml:space="preserve"><value>หน่วยความจำ: {0}</value></data>
+  <data name="Vm_HwGraphics" xml:space="preserve"><value>กราฟิก: {0}</value></data>
+  <data name="Vm_HwCores" xml:space="preserve"><value>คอร์โปรเซสเซอร์: {0}</value></data>
+  <data name="Vm_HwDisk" xml:space="preserve"><value>พื้นที่ดิสก์ว่าง: {0}</value></data>
+  <data name="HomeWelcomeTitle.Text" xml:space="preserve"><value>ตั้งค่า AI ส่วนตัวของคุณบน PC เครื่องนี้</value></data>
+  <data name="HomeWelcomeBody.Text" xml:space="preserve"><value>Portal AI Host เก็บโมเดล AI หนึ่งโมเดลไว้บน PC เครื่องนี้และใช้ร่วมกับแอป Portal ของคุณ แต่ละแอปจึงไม่ต้องมีสำเนาของตัวเอง ทุกอย่างทำงานที่นี่ ข้อความของคุณจะไม่ออกจาก PC เครื่องนี้ และไม่ต้องมีบัญชีคลาวด์</value></data>
+  <data name="HomeCatalogueBar.Title" xml:space="preserve"><value>ไม่มีรายการโมเดล</value></data>
+  <data name="HomeCatalogueBar.Message" xml:space="preserve"><value>โฮสต์ไม่สามารถโหลดรายการโมเดลที่เชื่อถือได้ จึงยังไม่มีโมเดลให้แนะนำในตอนนี้ ตรวจสอบการเชื่อมต่ออินเทอร์เน็ตแล้วลองอีกครั้ง</value></data>
+  <data name="HomeTryAgainButton.Content" xml:space="preserve"><value>ลองอีกครั้ง</value></data>
+  <data name="HomeRecommendedLabel.Text" xml:space="preserve"><value>แนะนำสำหรับ PC เครื่องนี้</value></data>
+  <data name="HomeNoSpaceBar.Title" xml:space="preserve"><value>พื้นที่ดิสก์ไม่พอ</value></data>
+  <data name="HomeChangeFolderButton.Content" xml:space="preserve"><value>เปลี่ยนโฟลเดอร์ในการตั้งค่า</value></data>
+  <data name="HomeDownloadButton.Content" xml:space="preserve"><value>ดาวน์โหลด</value></data>
+  <data name="HomeSeeAllModelsLink.Content" xml:space="preserve"><value>ดูโมเดลทั้งหมด</value></data>
+  <data name="HomeSeeAllModelsLink2.Content" xml:space="preserve"><value>ดูโมเดลทั้งหมด</value></data>
+  <data name="HomeActiveModelLabel.Text" xml:space="preserve"><value>โมเดลที่ใช้งานอยู่</value></data>
+  <data name="HomeAppsLabel.Text" xml:space="preserve"><value>แอปที่เชื่อมต่อ</value></data>
+  <data name="HomeSeeAppsLink.Content" xml:space="preserve"><value>ดูอุปกรณ์และแอป</value></data>
+  <data name="HomeRequestsLabel.Text" xml:space="preserve"><value>คำขอ</value></data>
+  <data name="Vm_HomeLoaded" xml:space="preserve"><value>โหลดแล้วและพร้อมใช้งาน</value></data>
+  <data name="Vm_HomeLoading" xml:space="preserve"><value>กำลังเตรียมพร้อม...</value></data>
+  <data name="Vm_HomeUnloaded" xml:space="preserve"><value>ยังไม่ได้โหลด จะโหลดเมื่อแอปเรียกใช้</value></data>
+  <data name="Vm_HomeKeepLoaded" xml:space="preserve"><value>คงไว้ในหน่วยความจำเพื่อให้เริ่มตอบได้เร็ว</value></data>
+  <data name="Vm_HomeIdleUnload" xml:space="preserve"><value>เพิ่มหน่วยความจำว่างหลังจากไม่มีคำขอ {0} นาที</value></data>
+  <data name="Vm_HomeApps" xml:space="preserve"><value>{0} แอปใช้โมเดลนี้ได้</value></data>
+  <data name="Vm_HomeApps1" xml:space="preserve"><value>1 แอปใช้โมเดลนี้ได้</value></data>
+  <data name="Vm_HomeAppsNone" xml:space="preserve"><value>ยังไม่มีแอปที่เชื่อมต่อ แอปจะขออนุญาตคุณเป็นครั้งแรก</value></data>
+  <data name="Vm_HomeNoSpace" xml:space="preserve"><value>โมเดลนี้ต้องการ {0} แต่ว่างเพียง {1} เพิ่มพื้นที่ว่าง หรือเลือกโฟลเดอร์โมเดลอื่นในการตั้งค่า</value></data>
+  <data name="Vm_NoGpu" xml:space="preserve"><value>ไม่พบ</value></data>
+  <data name="Vm_HostMissing" xml:space="preserve"><value>ไม่พบโปรแกรมโฮสต์ในการติดตั้งนี้ ติดตั้ง Portal AI Host ใหม่เพื่อแก้ไข</value></data>
+  <data name="Vm_HostMissingTestRun" xml:space="preserve"><value>นี่คือการทดสอบ และไม่พบโปรแกรมโฮสต์ข้างแอป โฮสต์ที่ติดตั้งไว้จะไม่เริ่มทำงานในการทดสอบ</value></data>
+  <data name="Vm_StartTimedOut" xml:space="preserve"><value>โฮสต์เริ่มทำงานแล้วแต่ไม่ตอบสนองทันเวลา รอสักครู่แล้วลองอีกครั้ง</value></data>
+  <data name="Vm_HostExitTestRoot" xml:space="preserve"><value>โฮสต์ปฏิเสธที่จะเริ่มทำงาน: ไม่พบโฟลเดอร์ข้อมูลทดสอบ หรือไม่ได้ทำเครื่องหมายเป็นโฟลเดอร์ทดสอบ</value></data>
+  <data name="Vm_HostExitStartFailed" xml:space="preserve"><value>ไม่สามารถเริ่มโฮสต์ได้ รีสตาร์ท PC แล้วลองอีกครั้ง หากยังเกิดขึ้นอีก ให้ติดตั้ง Portal AI Host ใหม่</value></data>
+  <data name="Vm_HostExitOtherUser" xml:space="preserve"><value>ผู้ใช้ Windows อีกคนบน PC เครื่องนี้กำลังเรียกใช้ Portal AI Host อยู่ ให้เขาออกจากโปรแกรม หรือลงชื่อเข้าใช้เป็นผู้ใช้นั้น</value></data>
+  <data name="Vm_CatalogueUnavailable" xml:space="preserve"><value>ไม่มีรายการโมเดล: โฮสต์ไม่สามารถโหลดรายการโมเดลที่เชื่อถือได้ โมเดลที่มีอยู่ใน PC เครื่องนี้ยังใช้งานได้</value></data>
+  <data name="Vm_RemoveTitle" xml:space="preserve"><value>ลบโมเดลนี้หรือไม่</value></data>
+  <data name="Vm_RemoveBody" xml:space="preserve"><value>{0} จะถูกลบออกจาก PC เครื่องนี้ ระบบจะลบเฉพาะไฟล์ที่โฮสต์ดาวน์โหลด ส่วนไฟล์โมเดลที่คุณเพิ่มเองจะถูกนำออกจากรายการเท่านั้นและยังอยู่ที่เดิม</value></data>
+  <data name="Vm_RemoveYes" xml:space="preserve"><value>ลบ</value></data>
+  <data name="Vm_AutoRemove" xml:space="preserve"><value>ลบ {0}</value></data>
+  <data name="Vm_FolderSavedNote" xml:space="preserve"><value>บันทึกแล้ว หลังจากโฮสต์รีสตาร์ท การดาวน์โหลดใหม่จะไปที่ {1} โมเดลที่ดาวน์โหลดไว้แล้วจะไม่ถูกย้ายหรือลบ โมเดลเหล่านั้นจะอยู่ใน {0} และยังแสดงในหน้าโมเดล คุณจึงลบออกได้ที่นั่น</value></data>
+  <data name="Vm_FolderRefused" xml:space="preserve"><value>บันทึกการตั้งค่าอื่นแล้ว แต่ใช้โฟลเดอร์โมเดลนี้ไม่ได้: {0}</value></data>
+  <data name="Vm_Startup_Unavailable" xml:space="preserve"><value>เริ่มพร้อม Windows ใช้ได้เฉพาะในแอปที่ติดตั้งแล้ว</value></data>
+  <data name="Vm_Startup_DisabledByUser" xml:space="preserve"><value>เริ่มพร้อม Windows ถูกปิดใน Task Manager เปิดกลับที่นั่น (แอปเริ่มต้นระบบ)</value></data>
+  <data name="Vm_Startup_Policy" xml:space="preserve"><value>เริ่มพร้อม Windows ถูกกำหนดโดยองค์กรของคุณ</value></data>
+  <data name="Vm_DefaultFolder" xml:space="preserve"><value>โฟลเดอร์เริ่มต้น</value></data>
+  <data name="Vm_Publisher" xml:space="preserve"><value>ผู้เผยแพร่: {0}</value></data>
+  <data name="Vm_PublisherUnknown" xml:space="preserve"><value>ผู้เผยแพร่: ไม่ทราบ</value></data>
+  <data name="NavAbout.Content" xml:space="preserve"><value>เกี่ยวกับ</value></data>
+  <data name="NavAbout.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>เกี่ยวกับ</value></data>
+  <data name="AppMenuButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>เมนูแอป</value></data>
+  <data name="Vm_AppMenuTip" xml:space="preserve"><value>เมนูแอป</value></data>
+  <data name="MenuSettings.Text" xml:space="preserve"><value>การตั้งค่า</value></data>
+  <data name="MenuShortcuts.Text" xml:space="preserve"><value>แป้นพิมพ์ลัด</value></data>
+  <data name="MenuWhatsNew.Text" xml:space="preserve"><value>มีอะไรใหม่</value></data>
+  <data name="MenuAbout.Text" xml:space="preserve"><value>เกี่ยวกับ Portal AI Host</value></data>
+  <data name="Vm_ShortcutsTitle" xml:space="preserve"><value>แป้นพิมพ์ลัด</value></data>
+  <data name="Vm_ShortcutsBody" xml:space="preserve"><value>Ctrl+1: หน้าแรก
+Ctrl+2: โมเดล
+Ctrl+3: อุปกรณ์และแอป
+Ctrl+4: ลองใช้
+Ctrl+, : การตั้งค่า
+F1: เกี่ยวกับ
+Esc: ปิดหน้ามีอะไรใหม่หรือกล่องโต้ตอบ</value></data>
+  <data name="Vm_Close" xml:space="preserve"><value>ปิด</value></data>
+  <data name="SettingsGeneralHeader.Text" xml:space="preserve"><value>ทั่วไป</value></data>
+  <data name="SettingsResetGeneral.Content" xml:space="preserve"><value>คืนค่าเริ่มต้น</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>คืนค่าเริ่มต้นของการตั้งค่าทั่วไป</value></data>
+  <data name="SettingsNotificationsHeader.Text" xml:space="preserve"><value>การแจ้งเตือน</value></data>
+  <data name="SettingsResetNotifications.Content" xml:space="preserve"><value>คืนค่าเริ่มต้น</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>คืนค่าเริ่มต้น การตั้งค่าการแจ้งเตือน</value></data>
+  <data name="SettingsNotificationsHelp.Text" xml:space="preserve"><value>ข้อความสั้น ๆ จาก Windows เมื่อมีสิ่งที่ต้องการให้คุณดูและหน้าต่างนี้ปิดอยู่ จะไม่แสดงขณะมีโปรแกรมแบบเต็มหน้าจออยู่ด้านหน้า และจะไม่ซ้ำบ่อยกว่าทุกไม่กี่นาที</value></data>
+  <data name="SettingsNotifyDownloads.Header" xml:space="preserve"><value>การดาวน์โหลดโมเดลเสร็จหรือล้มเหลว</value></data>
+  <data name="SettingsNotifyDownloads.OnContent" xml:space="preserve"><value>เปิด</value></data>
+  <data name="SettingsNotifyDownloads.OffContent" xml:space="preserve"><value>ปิด</value></data>
+  <data name="SettingsNotifyDownloads.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>แจ้งเตือนเมื่อการดาวน์โหลดโมเดลเสร็จหรือล้มเหลว</value></data>
+  <data name="SettingsNotifyApprovals.Header" xml:space="preserve"><value>แอปขออนุมัติ</value></data>
+  <data name="SettingsNotifyApprovals.OnContent" xml:space="preserve"><value>เปิด</value></data>
+  <data name="SettingsNotifyApprovals.OffContent" xml:space="preserve"><value>ปิด</value></data>
+  <data name="SettingsNotifyApprovals.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>แจ้งเตือนเมื่อแอปขออนุมัติ</value></data>
+  <data name="SettingsNotifyProblems.Header" xml:space="preserve"><value>เอนจิน AI หยุดทำงานหรือการตรวจสอบล้มเหลว</value></data>
+  <data name="SettingsNotifyProblems.OnContent" xml:space="preserve"><value>เปิด</value></data>
+  <data name="SettingsNotifyProblems.OffContent" xml:space="preserve"><value>ปิด</value></data>
+  <data name="SettingsNotifyProblems.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>แจ้งเตือนเมื่อเอนจิน AI หยุดทำงานหรือการตรวจสอบล้มเหลว</value></data>
+  <data name="SettingsPrivacyHeader.Text" xml:space="preserve"><value>ความเป็นส่วนตัว</value></data>
+  <data name="SettingsResetPrivacy.Content" xml:space="preserve"><value>คืนค่าเริ่มต้น</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>คืนค่าเริ่มต้น การตั้งค่าความเป็นส่วนตัว</value></data>
+  <data name="SettingsCrashReports.Header" xml:space="preserve"><value>ส่งรายงานข้อขัดข้อง</value></data>
+  <data name="SettingsCrashReports.OnContent" xml:space="preserve"><value>เปิด</value></data>
+  <data name="SettingsCrashReports.OffContent" xml:space="preserve"><value>ปิด</value></data>
+  <data name="SettingsCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ส่งรายงานข้อขัดข้อง</value></data>
+  <data name="SettingsCrashReportsHelp.Text" xml:space="preserve"><value>หาก Portal AI Host ขัดข้อง รายงานสั้น ๆ จะช่วยให้เราแก้ไขได้เร็ว รายงานจะไม่มีไฟล์ของคุณหรือสิ่งที่คุณพิมพ์ การปิดตัวเลือกนี้จะหยุดการส่งทันที</value></data>
+  <data name="CrashWhatsSent.Content" xml:space="preserve"><value>สิ่งที่ส่ง</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>สิ่งที่ส่ง เปิดหน้านโยบายความเป็นส่วนตัว</value></data>
+  <data name="WelcomeCrashReports.Content" xml:space="preserve"><value>ส่งรายงานข้อขัดข้องเพื่อให้เราแก้ไขปัญหาได้เร็ว รายงานจะไม่มีไฟล์ของคุณหรือสิ่งที่คุณพิมพ์</value></data>
+  <data name="WelcomeCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ส่งรายงานข้อขัดข้องเพื่อให้เราแก้ไขปัญหาได้เร็ว รายงานจะไม่มีไฟล์ของคุณหรือสิ่งที่คุณพิมพ์</value></data>
+  <data name="SettingsModelsHeader.Text" xml:space="preserve"><value>โฟลเดอร์โมเดล</value></data>
+  <data name="SettingsResetFolder.Content" xml:space="preserve"><value>คืนค่าเริ่มต้น</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>คืนค่าเริ่มต้นของโฟลเดอร์โมเดล</value></data>
+  <data name="SettingsFolderHelp.Text" xml:space="preserve"><value>มีผลเมื่อคุณกด Enter หรือออกจากช่อง เว้นว่างไว้เพื่อใช้โฟลเดอร์เริ่มต้น โมเดลที่คุณมีอยู่แล้วจะอยู่ที่เดิม เว้นแต่คุณเลือกย้าย</value></data>
+  <data name="SettingsAppearanceHeader.Text" xml:space="preserve"><value>รูปลักษณ์</value></data>
+  <data name="SettingsResetAppearance.Content" xml:space="preserve"><value>คืนค่าเริ่มต้น</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>คืนค่าเริ่มต้นของรูปลักษณ์</value></data>
+  <data name="SettingsTheme.Header" xml:space="preserve"><value>ธีม</value></data>
+  <data name="SettingsTheme.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ธีม</value></data>
+  <data name="SettingsMaterial.Header" xml:space="preserve"><value>วัสดุหน้าต่าง</value></data>
+  <data name="SettingsMaterial.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>วัสดุหน้าต่าง</value></data>
+  <data name="SettingsCorners.Header" xml:space="preserve"><value>มุม</value></data>
+  <data name="SettingsCorners.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>มุม</value></data>
+  <data name="SettingsDensity.Header" xml:space="preserve"><value>ความหนาแน่น</value></data>
+  <data name="SettingsDensity.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ความหนาแน่น</value></data>
+  <data name="SettingsTextSize.Header" xml:space="preserve"><value>ขนาดข้อความ</value></data>
+  <data name="SettingsTextSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ขนาดข้อความ</value></data>
+  <data name="SettingsMotion.Header" xml:space="preserve"><value>การเคลื่อนไหว</value></data>
+  <data name="SettingsMotion.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>การเคลื่อนไหว</value></data>
+  <data name="SettingsAppearanceHelp.Text" xml:space="preserve"><value>การเปลี่ยนแปลงมีผลทันที โหมดความคมชัดสูงของ Windows จะใช้สีระบบแบบทึบเสมอ ไม่ว่าคุณจะเลือกอะไรที่นี่ ขนาดข้อความจะเพิ่มจากการปรับขนาดข้อความของ Windows</value></data>
+  <data name="Vm_Theme_System" xml:space="preserve"><value>ใช้การตั้งค่า Windows ของฉัน (ค่าเริ่มต้น)</value></data>
+  <data name="Vm_Theme_Light" xml:space="preserve"><value>สว่าง</value></data>
+  <data name="Vm_Theme_Dark" xml:space="preserve"><value>มืด</value></data>
+  <data name="Vm_Material_Mica" xml:space="preserve"><value>Mica (ค่าเริ่มต้น)</value></data>
+  <data name="Vm_Material_Acrylic" xml:space="preserve"><value>Acrylic</value></data>
+  <data name="Vm_Material_Solid" xml:space="preserve"><value>ทึบ</value></data>
+  <data name="Vm_Corners_Rounded" xml:space="preserve"><value>มน (ค่าเริ่มต้น)</value></data>
+  <data name="Vm_Corners_Square" xml:space="preserve"><value>เหลี่ยม</value></data>
+  <data name="Vm_Corners_ExtraRound" xml:space="preserve"><value>มนมาก</value></data>
+  <data name="Vm_Density_Compact" xml:space="preserve"><value>กะทัดรัด</value></data>
+  <data name="Vm_Density_Standard" xml:space="preserve"><value>มาตรฐาน (ค่าเริ่มต้น)</value></data>
+  <data name="Vm_Density_Comfortable" xml:space="preserve"><value>สบาย</value></data>
+  <data name="Vm_Text_Normal" xml:space="preserve"><value>ปกติ (ค่าเริ่มต้น)</value></data>
+  <data name="Vm_Text_Larger" xml:space="preserve"><value>ใหญ่ขึ้น</value></data>
+  <data name="Vm_Text_Largest" xml:space="preserve"><value>ใหญ่ที่สุด</value></data>
+  <data name="Vm_Motion_Follow" xml:space="preserve"><value>ตาม Windows (ค่าเริ่มต้น)</value></data>
+  <data name="Vm_Motion_Reduced" xml:space="preserve"><value>ลดลง</value></data>
+  <data name="Vm_Motion_Off" xml:space="preserve"><value>ปิด</value></data>
+  <data name="Vm_FolderNotFull" xml:space="preserve"><value>พิมพ์เส้นทางโฟลเดอร์แบบเต็ม เช่น D:\Models</value></data>
+  <data name="AboutTitle.Text" xml:space="preserve"><value>เกี่ยวกับ Portal AI Host</value></data>
+  <data name="Vm_AboutVersion" xml:space="preserve"><value>Portal AI Host เวอร์ชัน {0}</value></data>
+  <data name="Vm_AboutLicenceState" xml:space="preserve"><value>ฟรี ไม่ต้องมีบัญชีหรือซื้อ</value></data>
+  <data name="Vm_AboutCopyText" xml:space="preserve"><value>Portal AI Host {0}</value></data>
+  <data name="Vm_AboutCopied" xml:space="preserve"><value>คัดลอกเวอร์ชันแล้ว</value></data>
+  <data name="AboutCopyVersion.Content" xml:space="preserve"><value>คัดลอกเวอร์ชัน</value></data>
+  <data name="AboutWhatsNew.Content" xml:space="preserve"><value>มีอะไรใหม่</value></data>
+  <data name="AboutHelpHeader.Text" xml:space="preserve"><value>ความช่วยเหลือและความเป็นส่วนตัว</value></data>
+  <data name="AboutFeedback.Content" xml:space="preserve"><value>ส่งคำติชมหรือเสนอแนะ</value></data>
+  <data name="AboutPrivacy.Content" xml:space="preserve"><value>นโยบายความเป็นส่วนตัว</value></data>
+  <data name="AboutDataFolder.Content" xml:space="preserve"><value>เปิดโฟลเดอร์ข้อมูล</value></data>
+  <data name="AboutLicencesHeader.Text" xml:space="preserve"><value>ใบอนุญาต</value></data>
+  <data name="Vm_ThirdParty" xml:space="preserve"><value>Portal AI Host มี llama.cpp (ใบอนุญาต MIT) ซึ่งใช้เรียกโมเดล AI บน PC ของคุณ โมเดลดาวน์โหลดจาก Hugging Face ภายใต้ใบอนุญาตของแต่ละโมเดล (Apache 2.0, MIT หรือ CreativeML OpenRAIL-M ซึ่งมีข้อจำกัดการใช้งาน) การสร้างภาพและวิดีโอใช้ stable-diffusion.cpp (ใบอนุญาต MIT) และ ggml (ใบอนุญาต MIT) เครื่องมือวิดีโอใช้ FFmpeg (LGPL 3.0 หรือใหม่กว่า) ฟีเจอร์เสียงใช้ sherpa-onnx (Apache 2.0) เสียง Kokoro (Apache 2.0) และ Pocket TTS โดย Kyutai (CC-BY 4.0 เครดิต: Kyutai) แอปสร้างด้วย Windows App SDK, .NET และไลบรารี Community Toolkit MVVM ทั้งหมดอยู่ภายใต้ใบอนุญาต MIT</value></data>
+  <data name="AboutLlamaLink.Content" xml:space="preserve"><value>llama.cpp บน GitHub</value></data>
+  <data name="AboutLlamaExpander.Header" xml:space="preserve"><value>ข้อความใบอนุญาต llama.cpp</value></data>
+  <data name="Vm_LlamaLicence" xml:space="preserve"><value>MIT License
+
+Copyright (c) 2023-2026 The ggml authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</value></data>
+  <data name="Vm_WhatsNewHeading" xml:space="preserve"><value>มีอะไรใหม่ใน Portal AI Host {0}</value></data>
+  <data name="Vm_Wn1Title" xml:space="preserve"><value>ขอบคุณ</value></data>
+  <data name="Vm_Wn1Body" xml:space="preserve"><value>ขอบคุณสำหรับคำติชมและรายงานของคุณ สิ่งเหล่านี้ช่วยกำหนดการอัปเดตนี้</value></data>
+  <data name="Vm_Wn2Title" xml:space="preserve"><value>วิดีโอเป็น MP4 และการรวมคลิป</value></data>
+  <data name="Vm_Wn2Body" xml:space="preserve"><value>งานวิดีโอสามารถให้ไฟล์ MP4 รูปของเฟรมสุดท้าย และคลิปหลายคลิปที่รวมเป็นวิดีโอเดียวได้แล้ว</value></data>
+  <data name="Vm_Wn3Title" xml:space="preserve"><value>การตั้งค่าคุณภาพวิดีโอ</value></data>
+  <data name="Vm_Wn3Body" xml:space="preserve"><value>เลือกวิธีที่ PC ของคุณเข้ารหัสวิดีโอ MP4 เช่น คุณภาพ และตัวเข้ารหัสวิดีโอที่ใช้</value></data>
+  <data name="Vm_Wn4Title" xml:space="preserve"><value>การอัปโหลดสำหรับแอปในเครื่อง</value></data>
+  <data name="Vm_Wn4Body" xml:space="preserve"><value>แอปบน PC เครื่องนี้ส่งไฟล์ขนาดใหญ่โดยตรงได้แล้ว แทนที่จะส่งไปในคำขอ การอัปโหลดจะถูกลบหลังจากผ่านไประยะหนึ่ง</value></data>
+  <data name="Vm_Wn5Title" xml:space="preserve"><value>การ์ด PC บนหน้าแรกอัปเดตตรงกัน</value></data>
+  <data name="Vm_Wn5Body" xml:space="preserve"><value>เมื่อคุณเปลี่ยนการตั้งค่า PC บนหน้าแรกหลายรายการอย่างรวดเร็ว คำตอบที่ช้าจะไม่แสดงค่าเก่าอีกต่อไป</value></data>
+  <data name="Vm_Wn6Title" xml:space="preserve"><value>ดีขึ้นในหน้าต่างแคบ</value></data>
+  <data name="Vm_Wn6Body" xml:space="preserve"><value>เมนูด้านข้างจะพับเก็บเมื่อหน้าต่างแคบ และลิงก์คืนค่าในการตั้งค่าจะตัดบรรทัดอยู่ใต้หัวข้อ</value></data>
+  <data name="Vm_Wn7Title" xml:space="preserve"><value>ชัดเจนขึ้นสำหรับโปรแกรมอ่านหน้าจอ</value></data>
+  <data name="Vm_Wn7Body" xml:space="preserve"><value>ส่วนสุขภาพบนหน้าแรก และปุ่มในหน้าแรกและการตั้งค่า มีชื่อและข้อความช่วยเหลือสำหรับโปรแกรมอ่านหน้าจอและคำแนะนำเครื่องมือแล้ว</value></data>
+  <data name="Vm_Wn8Title" xml:space="preserve"><value>ใช้ PC ที่บ้านจากแล็ปท็อป</value></data>
+  <data name="Vm_Wn8Body" xml:space="preserve"><value>จับคู่แล็ปท็อปกับ PC ที่บ้านเพียงครั้งเดียว จากนั้นแอปบนแล็ปท็อปจะใช้ AI ของ PC ที่บ้าน ทั้งที่บ้านและนอกบ้าน และถ้าคุณเลือก จะกลับไปใช้โมเดลของแล็ปท็อปเอง</value></data>
+  <data name="Vm_Wn9Title" xml:space="preserve"><value>อุปกรณ์บน PC เครื่องนี้</value></data>
+  <data name="Vm_Wn9Body" xml:space="preserve"><value>ดูแล็ปท็อปที่จับคู่แต่ละเครื่องในการ์ดของตัวเอง หยุดชั่วคราว ตั้งขีดจำกัดรายวันและช่วงเวลาเงียบ เลือกโมเดลที่ใช้ได้ หรือเรียกคืนโมเดลที่เครื่องนั้นโหลดไว้</value></data>
+  <data name="Vm_Wn10Title" xml:space="preserve"><value>สองโมเดลพร้อมกัน</value></data>
+  <data name="Vm_Wn10Body" xml:space="preserve"><value>แล็ปท็อปที่คุณเชื่อถือสามารถเก็บโมเดลที่สองไว้บน PC ของคุณได้ เช่น หนึ่งโมเดลบนการ์ดแสดงผลและอีกหนึ่งในหน่วยความจำ โมเดลของคุณเองจะไม่ถูกดันออก</value></data>
+  <data name="Vm_Wn11Title" xml:space="preserve"><value>จัดการอุปกรณ์ปลอดภัยขึ้น</value></data>
+  <data name="Vm_Wn11Body" xml:space="preserve"><value>การลบอุปกรณ์จะหยุดทุกอย่างที่อุปกรณ์นั้นยังร้องขออยู่ และการจับคู่แล็ปท็อปกับ PC ที่บ้านเครื่องใหม่จะไม่เสี่ยงส่งโทเค็นการเข้าถึงของ PC เครื่องเก่าไปให้อีก</value></data>
+  <data name="Vm_Wn12Title" xml:space="preserve"><value>โหมดเล่นเกมใช้ได้ในเกมแบบหน้าต่าง</value></data>
+  <data name="Vm_Wn12Body" xml:space="preserve"><value>เปิดโหมดเล่นเกมแล้วอุปกรณ์อื่นจะรับทราบว่า PC ของคุณไม่ว่างขณะเล่นเกม รวมถึงเกมแบบหน้าต่าง</value></data>
+  <data name="Vm_Wn13Title" xml:space="preserve"><value>คีย์การเข้าถึงรีเลย์</value></data>
+  <data name="Vm_Wn13Body" xml:space="preserve"><value>เฉพาะอุปกรณ์ที่จับคู่กับคีย์ของคุณเท่านั้นที่เข้าถึง PC เครื่องนี้ได้เมื่ออยู่นอกบ้าน สร้างคีย์ใหม่ได้ทุกเมื่อ</value></data>
+  <data name="Vm_Wn14Title" xml:space="preserve"><value>ดูหน่วยความจำได้ในพริบตา</value></data>
+  <data name="Vm_Wn14Body" xml:space="preserve"><value>แถบในหน้าโมเดลแสดงว่าโมเดลที่โหลดอยู่ใช้หน่วยความจำและหน่วยความจำกราฟิกเท่าใด เทียบกับขีดจำกัดของคุณ</value></data>
+  <data name="Vm_WnShowMe" xml:space="preserve"><value>แสดงให้ดู</value></data>
+  <data name="Vm_WnShowMeName" xml:space="preserve"><value>แสดงให้ดู: {0}</value></data>
+  <data name="WhatsNewDone.Content" xml:space="preserve"><value>เข้าใจแล้ว</value></data>
+  <data name="Vm_RevokedBar" xml:space="preserve"><value>เพิกถอนสิทธิ์เข้าถึงของ {0} แล้ว</value></data>
+  <data name="Vm_AutoUndo" xml:space="preserve"><value>เลิกทำการเพิกถอนสิทธิ์เข้าถึงของ {0}</value></data>
+  <data name="AppsUndo.Content" xml:space="preserve"><value>เลิกทำ</value></data>
+  <data name="Vm_RemoveFrees" xml:space="preserve"><value>การดำเนินการนี้จะเพิ่มพื้นที่ว่าง {0}</value></data>
+  <data name="Vm_StepOf" xml:space="preserve"><value>ขั้นตอนที่ {0} จาก {1}</value></data>
+  <data name="Vm_LiveIdle" xml:space="preserve"><value>ขณะนี้ไม่มีการเขียนอะไร</value></data>
+  <data name="Vm_LiveBusy" xml:space="preserve"><value>กำลังเขียนคำตอบ</value></data>
+  <data name="Vm_LiveGenerating" xml:space="preserve"><value>{0} กำลังรับคำตอบ</value></data>
+  <data name="Vm_LiveSpeed" xml:space="preserve"><value>ประมาณ {0} คำต่อวินาที</value></data>
+  <data name="Vm_LiveMemory" xml:space="preserve"><value>{0} จาก {1}</value></data>
+  <data name="Vm_LiveMemoryNoTotal" xml:space="preserve"><value>{0}</value></data>
+  <data name="Vm_LivePendingLoad" xml:space="preserve"><value>กำลังโหลด...</value></data>
+  <data name="Vm_LivePendingUnload" xml:space="preserve"><value>กำลังยกเลิกการโหลด...</value></data>
+  <data name="Vm_LiveLoadFailed" xml:space="preserve"><value>ไม่สามารถโหลดโมเดลได้ {0}</value></data>
+  <data name="Vm_LiveUnloadFailed" xml:space="preserve"><value>ไม่สามารถยกเลิกการโหลดโมเดลได้ {0}</value></data>
+  <data name="Vm_TodayNone" xml:space="preserve"><value>วันนี้ยังไม่มีคำขอ</value></data>
+  <data name="Vm_TodayRow1" xml:space="preserve"><value>{0} คำขอ ล่าสุดเมื่อ {1}</value></data>
+  <data name="Vm_TodayRow" xml:space="preserve"><value>{0} คำขอ ล่าสุดเมื่อ {1}</value></data>
+  <data name="Vm_SeenNever" xml:space="preserve"><value>ไม่เคย</value></data>
+  <data name="Vm_SeenNow" xml:space="preserve"><value>เมื่อสักครู่</value></data>
+  <data name="Vm_SeenMinutes" xml:space="preserve"><value>{0} นาทีที่แล้ว</value></data>
+  <data name="Vm_SeenHours" xml:space="preserve"><value>{0} ชม. ที่แล้ว</value></data>
+  <data name="HomeLiveTitle.Text" xml:space="preserve"><value>ขณะนี้</value></data>
+  <data name="Vm_LiveRamName" xml:space="preserve"><value>หน่วยความจำที่โมเดลใช้: {0}</value></data>
+  <data name="Vm_LiveVramName" xml:space="preserve"><value>หน่วยความจำกราฟิกที่โมเดลใช้: {0}</value></data>
+  <data name="HomeRamLabel.Text" xml:space="preserve"><value>หน่วยความจำที่โมเดลใช้</value></data>
+  <data name="HomeVramLabel.Text" xml:space="preserve"><value>หน่วยความจำกราฟิกที่โมเดลใช้</value></data>
+  <data name="HomeUnloadButton.Content" xml:space="preserve"><value>ยกเลิกการโหลดทันที</value></data>
+  <data name="HomeLoadButton.Content" xml:space="preserve"><value>โหลดทันที</value></data>
+  <data name="HomeActionErrorBar.Title" xml:space="preserve"><value>ไม่สำเร็จ</value></data>
+  <data name="HomeTodayLabel.Text" xml:space="preserve"><value>วันนี้</value></data>
+  <data name="Vm_TrayReady" xml:space="preserve"><value>พร้อมใช้งาน · โหลด {0} แล้ว</value></data>
+  <data name="Vm_TrayBusy" xml:space="preserve"><value>ไม่ว่าง · {0}</value></data>
+  <data name="Vm_TrayBusyOther" xml:space="preserve"><value>ไม่ว่าง</value></data>
+  <data name="Vm_TrayLoading" xml:space="preserve"><value>กำลังโหลด · {0}</value></data>
+  <data name="Vm_TrayIdle" xml:space="preserve"><value>พร้อมใช้งาน · {0} จะโหลดเมื่อเรียกใช้</value></data>
+  <data name="Vm_TrayNoModel" xml:space="preserve"><value>ยังไม่มีโมเดล</value></data>
+  <data name="Vm_TrayOff" xml:space="preserve"><value>ปิด</value></data>
+  <data name="Vm_TrayLastNone" xml:space="preserve"><value>วันนี้ไม่มีคำขอ</value></data>
+  <data name="Vm_TrayLast" xml:space="preserve"><value>{0}, {1}</value></data>
+  <data name="TrayModelLabel.Text" xml:space="preserve"><value>โมเดล</value></data>
+  <data name="TrayMemoryLabel.Text" xml:space="preserve"><value>หน่วยความจำ</value></data>
+  <data name="TrayLastLabel.Text" xml:space="preserve"><value>คำขอล่าสุด</value></data>
+  <data name="TrayQueueLabel.Text" xml:space="preserve"><value>คิว</value></data>
+  <data name="TrayOpenButton.Content" xml:space="preserve"><value>เปิดแอป</value></data>
+  <data name="TrayUnloadButton.Content" xml:space="preserve"><value>ยกเลิกการโหลดโมเดล</value></data>
+  <data name="TrayWindowTitle" xml:space="preserve"><value>สถานะ Portal AI Host</value></data>
+  <data name="ModelsDownloadedHeader.Text" xml:space="preserve"><value>ดาวน์โหลดแล้ว</value></data>
+  <data name="ModelsMoreHeader.Text" xml:space="preserve"><value>โมเดลที่คุณเพิ่มได้</value></data>
+  <data name="ModelCheck.Content" xml:space="preserve"><value>ตรวจสอบไฟล์</value></data>
+  <data name="ModelRedownload.Content" xml:space="preserve"><value>ดาวน์โหลดอีกครั้ง</value></data>
+  <data name="ModelCancelCheck.Content" xml:space="preserve"><value>หยุดตรวจสอบ</value></data>
+  <data name="ModelDetails.Header" xml:space="preserve"><value>รายละเอียด</value></data>
+  <data name="ModelsOpenFolder.Content" xml:space="preserve"><value>เปิดโฟลเดอร์</value></data>
+  <data name="ModelsAddOwn.Content" xml:space="preserve"><value>เพิ่มโมเดลของคุณเอง...</value></data>
+  <data name="ModelsAddOwnHint.Text" xml:space="preserve"><value>เลือกไฟล์ .gguf ที่คุณมีอยู่แล้ว โฮสต์จะสร้างสำเนาของตัวเองในโฟลเดอร์โมเดล เป็นการทำสำเนา ไฟล์ต้นฉบับของคุณจะไม่ถูกเปลี่ยนแปลงหรือย้าย</value></data>
+  <data name="Vm_UserAddedBadge" xml:space="preserve"><value>เพิ่มโดยคุณ</value></data>
+  <data name="Vm_UserAddedReason" xml:space="preserve"><value>ไม่ทราบความเหมาะสม: โฮสต์ไม่สามารถบอกได้ว่าโมเดลนี้ต้องใช้หน่วยความจำเท่าใดบน PC ของคุณ ลองใช้ดู</value></data>
+  <data name="Vm_RemoveUserBody" xml:space="preserve"><value>{0} จะถูกลบออกจากโฟลเดอร์โมเดลของโฮสต์ นั่นคือสำเนาของโฮสต์เอง ไฟล์ต้นฉบับที่คุณเลือกจะไม่ถูกแตะต้อง</value></data>
+  <data name="Vm_ImportRunning" xml:space="preserve"><value>กำลังคัดลอกโมเดลของคุณไปยังโฟลเดอร์โมเดล {0}%</value></data>
+  <data name="Vm_ImportDone" xml:space="preserve"><value>เพิ่มโมเดลของคุณแล้ว</value></data>
+  <data name="Vm_ImportCancelled" xml:space="preserve"><value>ยกเลิกการเพิ่มโมเดลแล้ว ไม่มีอะไรถูกเก็บไว้ และไฟล์ต้นฉบับของคุณไม่ถูกเปลี่ยนแปลง</value></data>
+  <data name="Vm_ImportFailed" xml:space="preserve"><value>ไม่ได้เพิ่มโมเดล {0}</value></data>
+  <data name="ModelsMoveHint.Text" xml:space="preserve"><value>หากต้องการย้ายโมเดลไปไดรฟ์อื่น ให้เลือกโฟลเดอร์ใหม่ในการตั้งค่า ภายใต้โฟลเดอร์โมเดล</value></data>
+  <data name="ModelsMoveCancel.Content" xml:space="preserve"><value>ยกเลิก</value></data>
+  <data name="ModelsFreeUp.Content" xml:space="preserve"><value>เพิ่มพื้นที่ว่าง</value></data>
+  <data name="ModelsCleanupTitle.Text" xml:space="preserve"><value>เพิ่มพื้นที่ว่าง</value></data>
+  <data name="ModelsCleanupPartialHeader.Text" xml:space="preserve"><value>การดาวน์โหลดที่ไม่เสร็จและไม่มีการทำต่อ</value></data>
+  <data name="ModelsCleanupOldHeader.Text" xml:space="preserve"><value>สำเนาเก่าที่เหลือหลังจากย้ายโมเดลของคุณ</value></data>
+  <data name="ModelsCleanupDamagedHeader.Text" xml:space="preserve"><value>โมเดลที่การตรวจสอบพบว่าเสียหาย</value></data>
+  <data name="ModelsCleanupClose.Content" xml:space="preserve"><value>ปิด</value></data>
+  <data name="ModelsCleanupHint.Text" xml:space="preserve"><value>แสดงเฉพาะไฟล์ที่แอปนี้สร้างขึ้น โมเดลที่คุณใช้อยู่และไฟล์ที่คุณเพิ่มเองจะไม่ถูกลบ</value></data>
+  <data name="Vm_CleanupButton" xml:space="preserve"><value>เพิ่มพื้นที่ว่าง {0}</value></data>
+  <data name="Vm_CleanupNothing" xml:space="preserve"><value>ไม่มีอะไรให้เพิ่มพื้นที่ว่าง การดาวน์โหลดที่ไม่เสร็จซึ่งยังทำต่อได้จะถูกเก็บไว้หนึ่งสัปดาห์</value></data>
+  <data name="Vm_CleanupRunning" xml:space="preserve"><value>กำลังเพิ่มพื้นที่ว่าง...</value></data>
+  <data name="Vm_CleanupConfirmTitle" xml:space="preserve"><value>ลบไฟล์เหล่านี้หรือไม่</value></data>
+  <data name="Vm_CleanupConfirmBody" xml:space="preserve"><value>การดำเนินการนี้จะลบถาวร:&#10;{0}&#10;โมเดลอื่นของคุณจะไม่ถูกแตะต้อง</value></data>
+  <data name="Vm_CleanupDone" xml:space="preserve"><value>เพิ่มพื้นที่ว่าง {0} แล้ว</value></data>
+  <data name="Vm_CleanupDoneSkipped" xml:space="preserve"><value>เพิ่มพื้นที่ว่าง {0} แล้ว บางรายการถูกเก็บไว้ที่เดิม:&#10;{1}</value></data>
+  <data name="Vm_CleanupFailed" xml:space="preserve"><value>ไม่ได้เพิ่มพื้นที่ว่าง: {0}</value></data>
+  <data name="ModelsRemoveFailedBar.Title" xml:space="preserve"><value>ไม่สามารถลบโมเดลได้</value></data>
+  <data name="SettingsMoveButton.Content" xml:space="preserve"><value>ย้ายโมเดลของฉันไปที่นั่น</value></data>
+  <data name="SettingsMoveCancel.Content" xml:space="preserve"><value>ยกเลิกการย้าย</value></data>
+  <data name="Vm_UsedToday" xml:space="preserve"><value>ใช้ล่าสุดวันนี้</value></data>
+  <data name="Vm_UsedYesterday" xml:space="preserve"><value>ใช้ล่าสุดเมื่อวาน</value></data>
+  <data name="Vm_UsedDays" xml:space="preserve"><value>ใช้ล่าสุด {0} วันที่แล้ว</value></data>
+  <data name="Vm_UsedMonths" xml:space="preserve"><value>ใช้ล่าสุด {0} เดือนที่แล้ว</value></data>
+  <data name="Vm_GoodFor" xml:space="preserve"><value>เหมาะสำหรับ: {0}</value></data>
+  <data name="Vm_Caveats" xml:space="preserve"><value>ควรทราบ: {0}</value></data>
+  <data name="Vm_MemoryNeeded" xml:space="preserve"><value>ต้องการหน่วยความจำบน PC เครื่องนี้ประมาณ {0}</value></data>
+  <data name="Vm_Licence" xml:space="preserve"><value>ใบอนุญาต: {0}</value></data>
+  <data name="Vm_RemoveActiveBody" xml:space="preserve"><value>{0} กำลังใช้งานอยู่ โฮสต์จะยกเลิกการโหลดก่อน แล้วจึงลบออกจาก PC เครื่องนี้ ระบบจะลบเฉพาะไฟล์ที่โฮสต์ดาวน์โหลด ส่วนไฟล์โมเดลที่คุณเพิ่มเองจะถูกนำออกจากรายการเท่านั้นและยังอยู่ที่เดิม</value></data>
+  <data name="Vm_RemoveVerb" xml:space="preserve"><value>ลบ {0} ({1})</value></data>
+  <data name="Vm_RemoveVerbNoSize" xml:space="preserve"><value>ลบ {0}</value></data>
+  <data name="Vm_AutoCheck" xml:space="preserve"><value>ตรวจสอบไฟล์ของ {0}</value></data>
+  <data name="Vm_AutoRedownload" xml:space="preserve"><value>ดาวน์โหลด {0} อีกครั้ง</value></data>
+  <data name="Vm_Removing" xml:space="preserve"><value>กำลังลบ...</value></data>
+  <data name="Vm_RemovingBadge" xml:space="preserve"><value>กำลังลบ</value></data>
+  <data name="Vm_DamagedBadge" xml:space="preserve"><value>เสียหาย</value></data>
+  <data name="Vm_Checking" xml:space="preserve"><value>กำลังตรวจสอบไฟล์ {0}%</value></data>
+  <data name="Vm_CheckOk" xml:space="preserve"><value>ไฟล์ทั้งหมดสมบูรณ์</value></data>
+  <data name="Vm_CheckDamaged" xml:space="preserve"><value>เสียหาย: {0} ไม่มีอะไรถูกลบ</value></data>
+  <data name="Vm_CheckFailed" xml:space="preserve"><value>การตรวจสอบไม่เสร็จสมบูรณ์: {0}</value></data>
+  <data name="Vm_SwitchTitle" xml:space="preserve"><value>ใช้โมเดลอื่นหรือไม่</value></data>
+  <data name="Vm_SwitchBody" xml:space="preserve"><value>{0} กำลังใช้งานอยู่ สลับไปใช้ {1} หลังจากนั้น หรือไม่ใช้โมเดลไปก่อน</value></data>
+  <data name="Vm_SwitchYes" xml:space="preserve"><value>สลับไปใช้ {0}</value></data>
+  <data name="Vm_SwitchNo" xml:space="preserve"><value>ไม่ใช้โมเดลไปก่อน</value></data>
+  <data name="Vm_RemoveFailed" xml:space="preserve"><value>{0} ไม่ได้ถูกลบและยังอยู่ที่นี่ {1}</value></data>
+  <data name="Vm_RedownloadTitle" xml:space="preserve"><value>ดาวน์โหลดโมเดลนี้อีกครั้งหรือไม่</value></data>
+  <data name="Vm_RedownloadBody" xml:space="preserve"><value>{0} มีไฟล์เสียหาย ระบบจะลบออกจาก PC เครื่องนี้และดาวน์โหลดใหม่ ไม่มีอะไรอื่นถูกลบ</value></data>
+  <data name="Vm_RedownloadActiveBody" xml:space="preserve"><value>{0} มีไฟล์เสียหายและกำลังใช้งานอยู่ โฮสต์จะยกเลิกการโหลด ลบออกจาก PC เครื่องนี้ และดาวน์โหลดใหม่ เลือกอีกครั้งเมื่อดาวน์โหลดเสร็จ</value></data>
+  <data name="Vm_RedownloadYes" xml:space="preserve"><value>ลบและดาวน์โหลด {0} อีกครั้ง</value></data>
+  <data name="Vm_MoveRunning" xml:space="preserve"><value>กำลังย้ายโมเดลของคุณ {0}%</value></data>
+  <data name="Vm_MoveRemovingOld" xml:space="preserve"><value>โมเดลของคุณอยู่ในโฟลเดอร์ใหม่แล้ว กำลังลบสำเนาเก่า</value></data>
+  <data name="Vm_MoveDone" xml:space="preserve"><value>ย้ายโมเดลของคุณแล้ว</value></data>
+  <data name="Vm_MoveCancelled" xml:space="preserve"><value>ยกเลิกการย้ายแล้ว โมเดลของคุณอยู่ที่เดิม</value></data>
+  <data name="Vm_MoveFailed" xml:space="preserve"><value>การย้ายไม่เสร็จสมบูรณ์ {0}</value></data>
+  <data name="Vm_MoveOffer" xml:space="preserve"><value>ย้ายโมเดลขนาด {0} ของคุณไปยังโฟลเดอร์ใหม่ด้วยหรือไม่</value></data>
+  <data name="Vm_MoveTitle" xml:space="preserve"><value>ย้ายโมเดลของคุณหรือไม่</value></data>
+  <data name="Vm_MoveBody" xml:space="preserve"><value>โมเดลของคุณจะถูกคัดลอกไปยัง {0} ตรวจสอบ แล้วจึงลบสำเนาเก่า โมเดลที่ใช้อยู่จะถูกยกเลิกการโหลดระหว่างนี้ ไฟล์ในโฟลเดอร์เก่าที่โฮสต์ไม่ได้วางไว้จะไม่ถูกแตะต้อง</value></data>
+  <data name="Vm_MoveYes" xml:space="preserve"><value>ย้ายโมเดลของฉัน</value></data>
+  <data name="Vm_MoveSettingsRunning" xml:space="preserve"><value>กำลังย้ายโมเดลของคุณ {0}%</value></data>
+  <data name="SettingsPerformanceHeader.Text" xml:space="preserve"><value>ประสิทธิภาพ</value></data>
+  <data name="SettingsResetPerformance.Content" xml:space="preserve"><value>คืนค่าเริ่มต้น</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>คืนค่าเริ่มต้นของการตั้งค่าประสิทธิภาพ</value></data>
+  <data name="SettingsPreset.Header" xml:space="preserve"><value>ประสิทธิภาพ</value></data>
+  <data name="SettingsPreset.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ประสิทธิภาพ</value></data>
+  <data name="SettingsMemory.Header" xml:space="preserve"><value>หน่วยความจำสูงสุดสำหรับ AI</value></data>
+  <data name="SettingsMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>หน่วยความจำสูงสุดสำหรับ AI</value></data>
+  <data name="SettingsKeepFree.Header" xml:space="preserve"><value>เว้นว่างไว้เสมอ</value></data>
+  <data name="SettingsKeepFree.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>เว้นว่างไว้เสมอ</value></data>
+  <data name="SettingsRunOn.Header" xml:space="preserve"><value>ทำงานบน</value></data>
+  <data name="SettingsRunOn.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ทำงานบน</value></data>
+  <data name="SettingsGpuMemory.Header" xml:space="preserve"><value>หน่วยความจำกราฟิกสำหรับ AI</value></data>
+  <data name="SettingsGpuMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>หน่วยความจำกราฟิกสำหรับ AI</value></data>
+  <data name="SettingsCores.Header" xml:space="preserve"><value>คอร์โปรเซสเซอร์</value></data>
+  <data name="SettingsCores.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>คอร์โปรเซสเซอร์</value></data>
+  <data name="SettingsPriority.Header" xml:space="preserve"><value>ลำดับความสำคัญ</value></data>
+  <data name="SettingsPriority.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ลำดับความสำคัญ</value></data>
+  <data name="SettingsMemoryHelp.Text" xml:space="preserve"><value>AI จะไม่ใช้เกินค่านี้ ค่าที่ต่ำลงหมายถึงโมเดลที่เล็กลงหรือตอบช้าลง</value></data>
+  <data name="SettingsKeepFreeHelp.Text" xml:space="preserve"><value>หน่วยความจำที่เว้นว่างไว้สำหรับโปรแกรมอื่นของคุณ</value></data>
+  <data name="SettingsCoresHelp.Text" xml:space="preserve"><value>คอร์ที่น้อยลงช่วยให้ PC ตอบสนองได้ดีขณะ AI ทำงาน</value></data>
+  <data name="Vm_Perf_Quiet" xml:space="preserve"><value>เงียบ</value></data>
+  <data name="Vm_Perf_Balanced" xml:space="preserve"><value>สมดุล</value></data>
+  <data name="Vm_Perf_Fast" xml:space="preserve"><value>เร็ว</value></data>
+  <data name="Vm_Perf_Custom" xml:space="preserve"><value>กำหนดเอง</value></data>
+  <data name="Vm_Perf_Help_quiet" xml:space="preserve"><value>ความเร็วประมาณครึ่งหนึ่ง PC ยังตอบสนองได้ดี</value></data>
+  <data name="Vm_Perf_Help_balanced" xml:space="preserve"><value>ความเร็วดี และโปรแกรมอื่นของคุณมาก่อน</value></data>
+  <data name="Vm_Perf_Help_fast" xml:space="preserve"><value>ตอบเร็วที่สุด โปรแกรมอื่นอาจช้าลง</value></data>
+  <data name="Vm_Perf_Help_custom" xml:space="preserve"><value>การตั้งค่าของคุณเอง</value></data>
+  <data name="Vm_Perf_Run_Auto" xml:space="preserve"><value>อัตโนมัติ</value></data>
+  <data name="Vm_Perf_Run_Gpu" xml:space="preserve"><value>การ์ดแสดงผล</value></data>
+  <data name="Vm_Perf_Run_Cpu" xml:space="preserve"><value>โปรเซสเซอร์</value></data>
+  <data name="Vm_Perf_RunHelp_auto" xml:space="preserve"><value>ใช้การ์ดแสดงผลเมื่อช่วยได้</value></data>
+  <data name="Vm_Perf_RunHelp_gpu" xml:space="preserve"><value>เร็วที่สุด หากโมเดลพอดี</value></data>
+  <data name="Vm_Perf_RunHelp_cpu" xml:space="preserve"><value>ช้ากว่า แต่เหลือการ์ดแสดงผลไว้สำหรับเกม</value></data>
+  <data name="Vm_Perf_NoGpu" xml:space="preserve"><value>ใช้โปรเซสเซอร์เท่านั้น: ไม่พบการ์ดแสดงผลที่รองรับ</value></data>
+  <data name="SettingsCeiling.Header" xml:space="preserve"><value>การใช้โปรเซสเซอร์สูงสุด</value></data>
+  <data name="SettingsCeiling.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>การใช้โปรเซสเซอร์สูงสุด</value></data>
+  <data name="SettingsCeilingHelp.Text" xml:space="preserve"><value>AI จะไม่ใช้โปรเซสเซอร์ของคุณเกินค่านี้ ค่าที่ต่ำลงทำให้ PC ลื่นไหลขึ้น แต่ตอบช้าลง</value></data>
+  <data name="Vm_Perf_CeilingNone" xml:space="preserve"><value>ไม่จำกัด</value></data>
+  <data name="Vm_Perf_Percent" xml:space="preserve"><value>{0}%</value></data>
+  <data name="SettingsEaseOffHeader.Text" xml:space="preserve"><value>ลดการทำงานเมื่อ</value></data>
+  <data name="SettingsEaseOffFullscreen.Content" xml:space="preserve"><value>มีเกมหรือโปรแกรมแบบเต็มหน้าจอทำงานอยู่</value></data>
+  <data name="SettingsEaseOffBattery.Content" xml:space="preserve"><value>PC ใช้แบตเตอรี่</value></data>
+  <data name="SettingsEaseOffAppBusy.Content" xml:space="preserve"><value>แอป Portal กำลังทำงานแบบสด เช่น การเขียนตามคำบอก</value></data>
+  <data name="SettingsEaseOffHelp.Text" xml:space="preserve"><value>AI จะทำงานด้วยลำดับความสำคัญต่ำสุดและใช้โปรเซสเซอร์ไม่เกินครึ่งหนึ่ง แล้วกลับสู่ปกติเมื่อเสร็จ</value></data>
+  <data name="Vm_Perf_Prio_Low" xml:space="preserve"><value>ต่ำ</value></data>
+  <data name="Vm_Perf_Prio_Normal" xml:space="preserve"><value>ปกติ</value></data>
+  <data name="Vm_Perf_PrioHelp_Low" xml:space="preserve"><value>งานของคุณเองมาก่อนเสมอ</value></data>
+  <data name="Vm_Perf_PrioHelp_Normal" xml:space="preserve"><value>เร็วกว่า แต่อาจทำให้โปรแกรมอื่นช้าลง</value></data>
+  <data name="Vm_Perf_Gb" xml:space="preserve"><value>{0} GB</value></data>
+  <data name="Vm_Perf_Cores" xml:space="preserve"><value>{0} จาก {1} คอร์</value></data>
+  <data name="Vm_Perf_MemoryRange" xml:space="preserve"><value>จาก {0} GB ถึง {1} GB</value></data>
+  <data name="Vm_Perf_StopFull" xml:space="preserve"><value>{0} GB · พอดีกับ {1} ทั้งหมด</value></data>
+  <data name="Vm_Perf_StopPartial" xml:space="preserve"><value>{0} GB · พอดีกับ {1} บางส่วนอยู่บนโปรเซสเซอร์</value></data>
+  <data name="Vm_Perf_StopCpu" xml:space="preserve"><value>{0} GB · พอดีกับ {1} บนโปรเซสเซอร์</value></data>
+  <data name="Vm_Perf_StopNone" xml:space="preserve"><value>{0} GB · เล็กเกินไปสำหรับโมเดลในรายการ</value></data>
+  <data name="Vm_Perf_Fit_Full" xml:space="preserve"><value>ทำงานบนการ์ดแสดงผลทั้งหมด</value></data>
+  <data name="Vm_Perf_Fit_Partial" xml:space="preserve"><value>ส่วนหนึ่งบนการ์ดแสดงผล ส่วนหนึ่งบนโปรเซสเซอร์: ช้ากว่า</value></data>
+  <data name="Vm_Perf_Fit_Cpu" xml:space="preserve"><value>ทำงานบนโปรเซสเซอร์: ช้าที่สุด</value></data>
+  <data name="Vm_Perf_Fit_Smaller" xml:space="preserve"><value>หน่วยความจำน้อยเกินไปสำหรับ {0} สลับไปใช้ {1} หรือไม่</value></data>
+  <data name="Vm_Perf_Fit_LittleMemory" xml:space="preserve"><value>หน่วยความจำน้อยเกินไปสำหรับ {0}</value></data>
+  <data name="Vm_Perf_Fit_TooBig" xml:space="preserve"><value>ใหญ่เกินไปสำหรับ PC เครื่องนี้</value></data>
+  <data name="Vm_Perf_TheModel" xml:space="preserve"><value>โมเดล</value></data>
+  <data name="Vm_Perf_Applied" xml:space="preserve"><value>นำไปใช้แล้ว ขีดจำกัดใหม่มีผลแล้ว</value></data>
+  <data name="Vm_Perf_Reloading" xml:space="preserve"><value>นำไปใช้แล้ว {0} กำลังโหลดใหม่ด้วยขีดจำกัดใหม่</value></data>
+  <data name="Vm_Perf_Unloaded" xml:space="preserve"><value>นำไปใช้แล้ว {0} ไม่พอดีอีกต่อไปและถูกยกเลิกการโหลด ยังอยู่ในดิสก์ เลือกโมเดลที่เล็กกว่าในหน้าโมเดล</value></data>
+  <data name="HealthIconOk.AutomationProperties.Name" xml:space="preserve"><value>ปกติดี</value></data>
+  <data name="HealthIconWarn.AutomationProperties.Name" xml:space="preserve"><value>ต้องตรวจสอบ</value></data>
+  <data name="HealthIconFail.AutomationProperties.Name" xml:space="preserve"><value>มีปัญหา</value></data>
+  <data name="HealthWordOk.Text" xml:space="preserve"><value>ปกติดี</value></data>
+  <data name="HealthWordWarn.Text" xml:space="preserve"><value>ต้องตรวจสอบ</value></data>
+  <data name="HealthWordFail.Text" xml:space="preserve"><value>มีปัญหา</value></data>
+  <data name="HealthCheckAgainButton.Content" xml:space="preserve"><value>ตรวจสอบอีกครั้ง</value></data>
+  <data name="HealthFixErrorBar.Title" xml:space="preserve"><value>ไม่สำเร็จ</value></data>
+  <data name="Vm_HealthAllGood" xml:space="preserve"><value>ปกติดีทั้งหมด</value></data>
+  <data name="Vm_HealthOne" xml:space="preserve"><value>1 รายการต้องตรวจสอบ</value></data>
+  <data name="Vm_HealthMany" xml:space="preserve"><value>{0} รายการต้องตรวจสอบ</value></data>
+  <data name="Vm_HealthFixLoad" xml:space="preserve"><value>โหลดโมเดล</value></data>
+  <data name="Vm_HealthFixRestart" xml:space="preserve"><value>รีสตาร์ทเอนจิน</value></data>
+  <data name="Vm_HealthFixCheckFiles" xml:space="preserve"><value>ตรวจสอบไฟล์</value></data>
+  <data name="Vm_HealthFixPerformance" xml:space="preserve"><value>เปิดการตั้งค่าประสิทธิภาพ</value></data>
+  <data name="Vm_HealthFixModels" xml:space="preserve"><value>เลือกโมเดล</value></data>
+  <data name="Vm_HealthFixFailed" xml:space="preserve"><value>ไม่สามารถแก้ไขได้ {0}</value></data>
+  <data name="SettingsRemoteHeader.Text" xml:space="preserve"><value>อุปกรณ์อื่น</value></data>
+  <data name="SettingsRemoteEnabled.Header" xml:space="preserve"><value>ให้อุปกรณ์อื่นใช้ AI ของ PC เครื่องนี้</value></data>
+  <data name="SettingsRemoteEnabled.OnContent" xml:space="preserve"><value>เปิด</value></data>
+  <data name="SettingsRemoteEnabled.OffContent" xml:space="preserve"><value>ปิด</value></data>
+  <data name="SettingsRemoteEnabled.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ให้อุปกรณ์อื่นใช้ AI ของ PC เครื่องนี้</value></data>
+  <data name="SettingsRemoteHelp.Text" xml:space="preserve"><value>ปิดไว้เป็นค่าเริ่มต้น เมื่อเปิด โทรศัพท์ แล็ปท็อป หรือแท็บเล็ตของคุณในเครือข่ายบ้านนี้จะขอใช้ AI ของ PC เครื่องนี้ได้ ต้องจับคู่อุปกรณ์ด้วยรหัสก่อน และแต่ละแอปบนอุปกรณ์ยังต้องได้รับการอนุมัติจากคุณ คุณลบอุปกรณ์ได้ทุกเมื่อ</value></data>
+  <data name="SettingsPairDevice.Content" xml:space="preserve"><value>จับคู่อุปกรณ์</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>จับคู่อุปกรณ์</value></data>
+  <data name="SettingsPairingSteps.Text" xml:space="preserve"><value>บนอุปกรณ์อีกเครื่อง เปิดแอป Portal เลือกเชื่อมต่อกับ PC แล้วสแกนรหัสนี้หรือพิมพ์ตัวอักษรและตัวเลข อุปกรณ์จะตรวจสอบว่ากำลังคุยกับ PC เครื่องนี้ก่อนส่งข้อมูลใด ๆ รหัสใช้ได้ครั้งเดียวภายใน 5 นาที</value></data>
+  <data name="SettingsPairingQr.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>คิวอาร์โค้ดสำหรับจับคู่</value></data>
+  <data name="SettingsPairingCancel.Content" xml:space="preserve"><value>ยกเลิกการจับคู่</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ยกเลิกการจับคู่</value></data>
+  <data name="SettingsDevicesHeader.Text" xml:space="preserve"><value>อุปกรณ์ที่จับคู่แล้ว</value></data>
+  <data name="SettingsNoDevices.Text" xml:space="preserve"><value>ยังไม่มีอุปกรณ์ที่จับคู่</value></data>
+  <data name="SettingsRemoveDevice.Content" xml:space="preserve"><value>ลบ</value></data>
+  <data name="SettingsDeviceModelControl.Header" xml:space="preserve"><value>การควบคุมโมเดล</value></data>
+  <data name="SettingsDeviceModelControl.OnContent" xml:space="preserve"><value>เปิด</value></data>
+  <data name="SettingsDeviceModelControl.OffContent" xml:space="preserve"><value>ปิด</value></data>
+  <data name="SettingsDeviceModelControl.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>อนุญาตให้อุปกรณ์นี้โหลดและยกเลิกการโหลดโมเดล และเลือกโมเดลที่แต่ละแอปของอุปกรณ์ใช้</value></data>
+  <data name="SettingsDeviceModelControl.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>อนุญาตให้อุปกรณ์นี้โหลดและยกเลิกการโหลดโมเดล และเลือกโมเดลที่แต่ละแอปของอุปกรณ์ใช้</value></data>
+  <data name="SettingsTakeBackLabel.Text" xml:space="preserve"><value>เรียกคืน</value></data>
+  <data name="SettingsTakeBack.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ยกเลิกการโหลดโมเดลที่อุปกรณ์นี้โหลดไว้ ตัวเลือกของ PC เครื่องนี้จะกลับมา ไม่มีไฟล์โมเดลถูกแตะต้อง</value></data>
+  <data name="SettingsTakeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ยกเลิกการโหลดโมเดลที่อุปกรณ์นี้โหลดไว้ ตัวเลือกของ PC เครื่องนี้จะกลับมา ไม่มีไฟล์โมเดลถูกแตะต้อง</value></data>
+  <data name="SettingsAllowReplace.Header" xml:space="preserve"><value>อุปกรณ์แทนที่โมเดลได้</value></data>
+  <data name="SettingsAllowReplace.OnContent" xml:space="preserve"><value>เปิด</value></data>
+  <data name="SettingsAllowReplace.OffContent" xml:space="preserve"><value>ปิด</value></data>
+  <data name="SettingsAllowReplace.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>อุปกรณ์แทนที่โมเดลได้</value></data>
+  <data name="SettingsAllowReplaceHelp.Text" xml:space="preserve"><value>มีผลเฉพาะอุปกรณ์ที่มีการควบคุมโมเดล ปิด: อุปกรณ์ยกเลิกการโหลดโมเดลที่แอปของคุณกำลังใช้ไม่ได้ เปิด: ทำได้ และแอปของคุณจะโหลดโมเดลอีกครั้งเมื่อมีคำขอถัดไป</value></data>
+  <data name="Vm_AutoModelControl" xml:space="preserve"><value>การควบคุมโมเดลสำหรับ {0}</value></data>
+  <data name="Vm_AutoTakeBack" xml:space="preserve"><value>เรียกคืนโมเดลที่ {0} โหลด</value></data>
+  <data name="Vm_LoadedBy" xml:space="preserve"><value>โหลดโดย {0}: {1} ({2})</value></data>
+  <data name="Vm_PlacementAuto" xml:space="preserve"><value>จัดวางอัตโนมัติ</value></data>
+  <data name="Vm_PlacementGpu" xml:space="preserve"><value>การ์ดแสดงผล</value></data>
+  <data name="Vm_PlacementCpu" xml:space="preserve"><value>หน่วยความจำระบบ</value></data>
+  <data name="Vm_PlacementCpuOnly" xml:space="preserve"><value>โปรเซสเซอร์เท่านั้น</value></data>
+  <data name="SettingsRemoteRelay.Header" xml:space="preserve"><value>เข้าถึง PC เครื่องนี้ได้เมื่ออยู่นอกบ้านด้วย</value></data>
+  <data name="SettingsRemoteRelay.OnContent" xml:space="preserve"><value>เปิด</value></data>
+  <data name="SettingsRemoteRelay.OffContent" xml:space="preserve"><value>ปิด</value></data>
+  <data name="SettingsRemoteRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>เข้าถึง PC เครื่องนี้ได้เมื่ออยู่นอกบ้านด้วย</value></data>
+  <data name="SettingsRelayAdmission.Header" xml:space="preserve"><value>คีย์การเข้าถึงรีเลย์</value></data>
+  <data name="SettingsRelayAdmission.OnContent" xml:space="preserve"><value>เปิด</value></data>
+  <data name="SettingsRelayAdmission.OffContent" xml:space="preserve"><value>ปิด</value></data>
+  <data name="SettingsRelayAdmission.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>คีย์การเข้าถึงรีเลย์</value></data>
+  <data name="SettingsRelayAdmissionHelp.Text" xml:space="preserve"><value>เฉพาะอุปกรณ์ที่จับคู่กับคีย์ในรหัสจับคู่เท่านั้นที่เข้าถึง PC เครื่องนี้ผ่านรีเลย์ได้ เปิดก่อนจับคู่ อุปกรณ์ที่จับคู่ไว้ก่อนหน้าต้องจับคู่ใหม่เพื่อใช้รีเลย์ รีเลย์ต้องเป็นเวอร์ชันล่าสุด</value></data>
+  <data name="SettingsRotateRelayKeyText.Text" xml:space="preserve"><value>คีย์ใหม่</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>สร้างคีย์การเข้าถึงรีเลย์ใหม่ อุปกรณ์ที่จับคู่ทุกเครื่องต้องจับคู่ใหม่เพื่อใช้รีเลย์ การลบอุปกรณ์ไม่เปลี่ยนคีย์ ดังนั้นให้ทำเช่นนี้หลังลบอุปกรณ์ที่คุณไม่ไว้ใจ</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>สร้างคีย์การเข้าถึงรีเลย์ใหม่ อุปกรณ์ที่จับคู่ทุกเครื่องต้องจับคู่ใหม่เพื่อใช้รีเลย์ การลบอุปกรณ์ไม่เปลี่ยนคีย์ ดังนั้นให้ทำเช่นนี้หลังลบอุปกรณ์ที่คุณไม่ไว้ใจ</value></data>
+  <data name="SettingsRotateRelayKey.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>คีย์ใหม่</value></data>
+  <data name="Vm_RotateKeyTitle" xml:space="preserve"><value>สร้างคีย์การเข้าถึงรีเลย์ใหม่หรือไม่</value></data>
+  <data name="Vm_RotateKeyBody" xml:space="preserve"><value>อุปกรณ์ที่จับคู่ทุกเครื่องต้องจับคู่ใหม่เพื่อใช้ PC เครื่องนี้ผ่านรีเลย์ ที่บ้านไม่มีอะไรเปลี่ยนแปลง</value></data>
+  <data name="Vm_RotateKeyConfirm" xml:space="preserve"><value>สร้างคีย์ใหม่</value></data>
+  <data name="SettingsRemoteRelayHelp.Text" xml:space="preserve"><value>PC เครื่องนี้เชื่อมต่อออกไปยังรีเลย์ขนาดเล็ก เพื่อให้อุปกรณ์ที่จับคู่เข้าถึงได้จากทุกที่ รีเลย์ส่งต่อเฉพาะไบต์ที่ถูกเข้ารหัสซึ่งอ่านไม่ได้ และแต่ละอุปกรณ์ยังต้องจับคู่และลงนามทุกคำขอ</value></data>
+  <data name="Vm_RelayAway" xml:space="preserve"><value>เข้าถึงได้เมื่ออยู่นอกบ้าน</value></data>
+  <data name="Vm_RelayHomeOnly" xml:space="preserve"><value>เฉพาะเครือข่ายบ้าน</value></data>
+  <data name="Vm_RelayUnreachable" xml:space="preserve"><value>เข้าถึงรีเลย์ไม่ได้</value></data>
+  <data name="Vm_RelayConnecting" xml:space="preserve"><value>กำลังเชื่อมต่อกับรีเลย์...</value></data>
+  <data name="Vm_RemoteAddress" xml:space="preserve"><value>เข้าถึง PC เครื่องนี้ได้ที่ {0} พอร์ต {1}</value></data>
+  <data name="Vm_RemoteLastSeen" xml:space="preserve"><value>ใช้ล่าสุด {0}</value></data>
+  <data name="Vm_RemoteNeverSeen" xml:space="preserve"><value>ยังไม่เคยใช้</value></data>
+  <data name="Vm_AutoRemoveDevice" xml:space="preserve"><value>ลบ {0}</value></data>
+  <data name="Vm_PairingExpires" xml:space="preserve"><value>รหัสใช้ได้จนถึง {0}</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>คัดลอกลิงก์</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ส่งให้ PC อีกเครื่อง ใช้ได้ 5 นาทีและหนึ่งอุปกรณ์</value></data>
+  <data name="SettingsPairingCopyLinkText.Text" xml:space="preserve"><value>คัดลอกลิงก์</value></data>
+  <data name="Vm_PairingAddress" xml:space="preserve"><value>ที่อยู่: {0}:{1}</value></data>
+  <data name="Vm_PairingFingerprint" xml:space="preserve"><value>การตรวจสอบใบรับรอง: {0}</value></data>
+  <data name="Vm_RemoveDeviceTitle" xml:space="preserve"><value>ลบ {0} หรือไม่</value></data>
+  <data name="Vm_RemoveDeviceBody" xml:space="preserve"><value>{0} จะสูญเสียสิทธิ์เข้าถึง AI ของ PC เครื่องนี้ทันที แอปของอุปกรณ์จะหยุดทำงานจนกว่าคุณจะจับคู่อีกครั้ง</value></data>
+  <data name="Vm_RemoveDeviceConfirm" xml:space="preserve"><value>ลบอุปกรณ์</value></data>
+  <data name="Vm_AppOnDevice" xml:space="preserve"><value>{0} บน {1}</value></data>
+  <data name="NavDevices.Content" xml:space="preserve"><value>อุปกรณ์ของ PC เครื่องนี้</value></data>
+  <data name="NavDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>อุปกรณ์ของ PC เครื่องนี้</value></data>
+  <data name="DevicesTitle.Text" xml:space="preserve"><value>อุปกรณ์บน PC เครื่องนี้</value></data>
+  <data name="DevicesGamingTitle.Text" xml:space="preserve"><value>โหมดเล่นเกม</value></data>
+  <data name="DevicesGamingText.Text" xml:space="preserve"><value>ขณะที่เกมแบบเต็มหน้าจอทำงานอยู่ การเรียกจากอุปกรณ์อื่นจะได้รับแจ้งว่า PC เครื่องนี้ไม่ว่าง ปิดไว้เป็นค่าเริ่มต้น</value></data>
+  <data name="DevicesGaming.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>โหมดเล่นเกม</value></data>
+  <data name="DevicesNone.Text" xml:space="preserve"><value>ยังไม่มีอุปกรณ์ที่จับคู่ จับคู่ได้ในการตั้งค่า ภายใต้อุปกรณ์อื่น</value></data>
+  <data name="DevicesForgetLabel.Text" xml:space="preserve"><value>ลืม</value></data>
+  <data name="DevicesForget.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ลบอุปกรณ์นี้ สิทธิ์เข้าถึงจะหยุดทันทีและประวัติการใช้งานจะถูกลบ โมเดลจะไม่ถูกแตะต้อง</value></data>
+  <data name="DevicesForget.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ลบอุปกรณ์นี้ สิทธิ์เข้าถึงจะหยุดทันทีและประวัติการใช้งานจะถูกลบ โมเดลจะไม่ถูกแตะต้อง</value></data>
+  <data name="DevicesTakeBackLabel.Text" xml:space="preserve"><value>เรียกคืน</value></data>
+  <data name="DevicesTakeBack.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ยกเลิกการโหลดโมเดลที่อุปกรณ์นี้โหลดไว้ ตัวเลือกของ PC เครื่องนี้จะกลับมา ไม่มีไฟล์โมเดลถูกแตะต้อง</value></data>
+  <data name="DevicesTakeBack.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ยกเลิกการโหลดโมเดลที่อุปกรณ์นี้โหลดไว้ ตัวเลือกของ PC เครื่องนี้จะกลับมา ไม่มีไฟล์โมเดลถูกแตะต้อง</value></data>
+  <data name="DevicesRenameLabel.Text" xml:space="preserve"><value>เปลี่ยนชื่อ</value></data>
+  <data name="DevicesRename.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>เปลี่ยนชื่อที่แสดงของอุปกรณ์นี้</value></data>
+  <data name="DevicesRename.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>เปลี่ยนชื่อที่แสดงของอุปกรณ์นี้</value></data>
+  <data name="DevicesNewName.Header" xml:space="preserve"><value>ชื่ออุปกรณ์</value></data>
+  <data name="DevicesRenameSave.Content" xml:space="preserve"><value>เปลี่ยนชื่อ</value></data>
+  <data name="DevicesLimitsLabel.Text" xml:space="preserve"><value>ขีดจำกัด</value></data>
+  <data name="DevicesLimits.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ลำดับความสำคัญ ขีดจำกัดรายวัน ช่วงเวลาเงียบ และโมเดลที่อุปกรณ์นี้ใช้ได้</value></data>
+  <data name="DevicesLimits.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ลำดับความสำคัญ ขีดจำกัดรายวัน ช่วงเวลาเงียบ และโมเดลที่อุปกรณ์นี้ใช้ได้</value></data>
+  <data name="DevicesPriorityEqual.Header" xml:space="preserve"><value>ลำดับความสำคัญเดียวกับแอปของ PC เครื่องนี้</value></data>
+  <data name="DevicesPriorityEqual.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ปิด: แอปของ PC เครื่องนี้มาก่อน เปิด: อุปกรณ์นี้รอในคิวเดียวกัน</value></data>
+  <data name="DevicesRequestLimit.Header" xml:space="preserve"><value>คำขอต่อวัน</value></data>
+  <data name="DevicesTokenLimit.Header" xml:space="preserve"><value>โทเค็นต่อวัน</value></data>
+  <data name="DevicesQuiet.Header" xml:space="preserve"><value>ช่วงเวลาเงียบ</value></data>
+  <data name="DevicesQuiet.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>อุปกรณ์จะไม่ได้รับคำตอบระหว่างเวลาเหล่านี้ (ตามเวลาของ PC เครื่องนี้)</value></data>
+  <data name="DevicesQuietFrom.Header" xml:space="preserve"><value>จาก</value></data>
+  <data name="DevicesQuietTo.Header" xml:space="preserve"><value>ถึง</value></data>
+  <data name="DevicesModelsHeader.Text" xml:space="preserve"><value>โมเดลที่อุปกรณ์นี้ใช้ได้</value></data>
+  <data name="DevicesSaveLabel.Text" xml:space="preserve"><value>บันทึก</value></data>
+  <data name="DevicesSave.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>บันทึกการตั้งค่านี้สำหรับอุปกรณ์นี้</value></data>
+  <data name="DevicesSave.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>บันทึกการตั้งค่านี้สำหรับอุปกรณ์นี้</value></data>
+  <data name="Vm_DevOnline" xml:space="preserve"><value>ออนไลน์</value></data>
+  <data name="Vm_DevIdle" xml:space="preserve"><value>ว่าง</value></data>
+  <data name="Vm_DevOffline" xml:space="preserve"><value>ออฟไลน์</value></data>
+  <data name="Vm_DevRouteLan" xml:space="preserve"><value>เครือข่ายบ้าน</value></data>
+  <data name="Vm_DevRouteRelay" xml:space="preserve"><value>รีเลย์ (นอกบ้าน)</value></data>
+  <data name="Vm_DevRouteNone" xml:space="preserve"><value>ยังไม่มีเส้นทาง</value></data>
+  <data name="Vm_DevRunning" xml:space="preserve"><value>กำลังทำงาน: {0}</value></data>
+  <data name="Vm_DevRunningQueued" xml:space="preserve"><value>กำลังทำงาน: {0} รออยู่: {1}</value></data>
+  <data name="Vm_DevToday" xml:space="preserve"><value>วันนี้: {0} คำขอ {1} โทเค็น</value></data>
+  <data name="Vm_DevBar" xml:space="preserve"><value>{0} คำขอ เมื่อ {1} วันที่แล้ว</value></data>
+  <data name="Vm_DevModel" xml:space="preserve"><value>โมเดล: {0}</value></data>
+  <data name="Vm_DevModelNone" xml:space="preserve"><value>ยังไม่มีการเรียก</value></data>
+  <data name="Vm_DevLoadedByPc" xml:space="preserve"><value>{0} โหลดโดย PC เครื่องนี้</value></data>
+  <data name="Vm_DevLoadedByDevice" xml:space="preserve"><value>{1} โหลดโดย {0}</value></data>
+  <data name="Vm_DevSpeed" xml:space="preserve"><value>ความเร็ว: {0} โทเค็น/วินาที {1} มิลลิวินาทีถึงไบต์แรก</value></data>
+  <data name="Vm_DevSpeedNone" xml:space="preserve"><value>ความเร็ว: ยังไม่ได้วัด</value></data>
+  <data name="Vm_DevPause" xml:space="preserve"><value>หยุดชั่วคราว</value></data>
+  <data name="Vm_DevResume" xml:space="preserve"><value>ทำต่อ</value></data>
+  <data name="Vm_DevPauseTip" xml:space="preserve"><value>หยุดอุปกรณ์นี้ชั่วคราว การเรียกจะได้รับคำตอบว่าหยุดชั่วคราว และแล็ปท็อปจะใช้ตัวสำรองของตัวเอง</value></data>
+  <data name="Vm_DevResumeTip" xml:space="preserve"><value>ให้อุปกรณ์นี้ใช้ PC เครื่องนี้อีกครั้ง</value></data>
+  <data name="Vm_DevAppPauseTip" xml:space="preserve"><value>หยุดเฉพาะแอปนี้บนอุปกรณ์นี้ชั่วคราว</value></data>
+  <data name="Vm_DevAppResumeTip" xml:space="preserve"><value>ให้แอปนี้ใช้ PC เครื่องนี้อีกครั้ง</value></data>
+  <data name="Vm_DevGamingBusy" xml:space="preserve"><value>เกมกำลังทำงาน: อุปกรณ์จะได้รับแจ้งว่า PC เครื่องนี้ไม่ว่าง</value></data>
+  <data name="Vm_AutoDevPause" xml:space="preserve"><value>หยุด {0} ชั่วคราว</value></data>
+  <data name="Vm_AutoDevResume" xml:space="preserve"><value>ทำ {0} ต่อ</value></data>
+  <data name="Vm_AutoDevAppPause" xml:space="preserve"><value>หยุด {0} บน {1} ชั่วคราว</value></data>
+  <data name="Vm_AutoDevAppResume" xml:space="preserve"><value>ทำ {0} บน {1} ต่อ</value></data>
+  <data name="Vm_AutoDevRename" xml:space="preserve"><value>เปลี่ยนชื่อ {0}</value></data>
+  <data name="RemoteModelLoadLabel.Text" xml:space="preserve"><value>โหลด</value></data>
+  <data name="RemoteModelUnloadLabel.Text" xml:space="preserve"><value>ยกเลิกการโหลด</value></data>
+  <data name="RemoteModelLoad.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>โหลดโมเดลนี้บน PC โมเดลจะคงอยู่ที่นั่นจนกว่าคุณจะยกเลิกการโหลดหรือเจ้าของ PC เปลี่ยน</value></data>
+  <data name="RemoteModelLoad.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>โหลดโมเดลนี้บน PC โมเดลจะคงอยู่ที่นั่นจนกว่าคุณจะยกเลิกการโหลดหรือเจ้าของ PC เปลี่ยน</value></data>
+  <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ยกเลิกการโหลดโมเดลที่แล็ปท็อปเครื่องนี้โหลดไว้บน PC ไม่มีไฟล์โมเดลถูกแตะต้อง</value></data>
+  <data name="RemoteModelUnload.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ยกเลิกการโหลดโมเดลที่แล็ปท็อปเครื่องนี้โหลดไว้บน PC ไม่มีไฟล์โมเดลถูกแตะต้อง</value></data>
+  <data name="RemoteModelPlacement.Header" xml:space="preserve"><value>ทำงานบน</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ตำแหน่งที่ PC เรียกใช้โมเดลนี้: PC เป็นผู้ตัดสิน บนการ์ดแสดงผล ในหน่วยความจำระบบ หรือบนโปรเซสเซอร์เท่านั้นโดยจำกัดเธรด (ครึ่งหนึ่งของคอร์) ขีดจำกัดของ PC ยังมีผลอยู่</value></data>
+  <data name="RemoteModelPlacement.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ตำแหน่งที่ PC เรียกใช้โมเดลนี้: PC เป็นผู้ตัดสิน บนการ์ดแสดงผล ในหน่วยความจำระบบ หรือบนโปรเซสเซอร์เท่านั้นโดยจำกัดเธรด (ครึ่งหนึ่งของคอร์) ขีดจำกัดของ PC ยังมีผลอยู่</value></data>
+  <data name="RemoteModelTooBig.Text" xml:space="preserve"><value>ใหญ่เกินไปสำหรับ PC</value></data>
+  <data name="SettingsAppModelsHeader.Text" xml:space="preserve"><value>โมเดลของ PC สำหรับแต่ละแอป</value></data>
+  <data name="SettingsAppModelsHelp.Text" xml:space="preserve"><value>เลือกว่าแต่ละแอปบนแล็ปท็อปเครื่องนี้ใช้โมเดลใดของ PC ตัวเลือกของ PC คือให้ PC ตัดสิน</value></data>
+  <data name="Vm_RemTitle" xml:space="preserve"><value>โมเดลบน {0}</value></data>
+  <data name="Vm_RemAskOwner" xml:space="preserve"><value>ขอให้เจ้าของ {0} เปิดการควบคุมโมเดลสำหรับแล็ปท็อปเครื่องนี้</value></data>
+  <data name="Vm_RemPlacementAuto" xml:space="preserve"><value>อัตโนมัติ</value></data>
+  <data name="Vm_RemPlacementGpu" xml:space="preserve"><value>การ์ดแสดงผล</value></data>
+  <data name="Vm_RemPlacementCpu" xml:space="preserve"><value>หน่วยความจำระบบ</value></data>
+  <data name="Vm_RemPlacementCpuOnly" xml:space="preserve"><value>โปรเซสเซอร์เท่านั้น</value></data>
+  <data name="Vm_RemStateLoaded" xml:space="preserve"><value>โหลดแล้ว</value></data>
+  <data name="Vm_RemStateLoading" xml:space="preserve"><value>กำลังโหลด</value></data>
+  <data name="Vm_RemByLaptop" xml:space="preserve"><value>โหลดโดยแล็ปท็อปเครื่องนี้</value></data>
+  <data name="Vm_RemByPc" xml:space="preserve"><value>โหลดโดย PC</value></data>
+  <data name="Vm_RemByOther" xml:space="preserve"><value>โหลดโดยอุปกรณ์อื่น</value></data>
+  <data name="Vm_RemAutoLoad" xml:space="preserve"><value>โหลด {0} บน PC</value></data>
+  <data name="Vm_RemAutoUnload" xml:space="preserve"><value>ยกเลิกการโหลด {0} จาก PC</value></data>
+  <data name="Vm_RemHostGone" xml:space="preserve"><value>โฮสต์ไม่ทำงาน</value></data>
+  <data name="Vm_AppModelPcChoice" xml:space="preserve"><value>ตัวเลือกของ PC</value></data>
+  <data name="Vm_AppModelAutomation" xml:space="preserve"><value>โมเดลของ PC สำหรับ {0}</value></data>
+  <data name="SettingsHomePcHeader.Text" xml:space="preserve"><value>PC ที่บ้าน</value></data>
+  <data name="SettingsHomePcHelp.Text" xml:space="preserve"><value>ใช้ AI บน PC อีกเครื่องของคุณแทนการเรียกใช้บนเครื่องนี้ จับคู่แล็ปท็อปเครื่องนี้กับ PC เพียงครั้งเดียว จากนั้นแอปที่นี่จะขอไปยัง PC เครื่องนั้น</value></data>
+  <data name="SettingsHomeMode.Header" xml:space="preserve"><value>ตำแหน่งที่ AI ทำงาน</value></data>
+  <data name="SettingsHomeMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ตำแหน่งที่ AI ทำงาน</value></data>
+  <data name="SettingsHomeFallback.Header" xml:space="preserve"><value>หากเข้าถึง PC ที่บ้านไม่ได้</value></data>
+  <data name="SettingsHomeFallback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>หากเข้าถึง PC ที่บ้านไม่ได้</value></data>
+  <data name="SettingsHomeRelayMode.Header" xml:space="preserve"><value>การเชื่อมต่อเมื่ออยู่นอกบ้าน</value></data>
+  <data name="SettingsHomeRelayMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>การเชื่อมต่อเมื่ออยู่นอกบ้าน</value></data>
+  <data name="SettingsHomeUseRelay.Header" xml:space="preserve"><value>ใช้รีเลย์</value></data>
+  <data name="SettingsHomeUseRelay.OnContent" xml:space="preserve"><value>เปิด</value></data>
+  <data name="SettingsHomeUseRelay.OffContent" xml:space="preserve"><value>ปิด</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ใช้รีเลย์</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>เปิดรีเลย์สำหรับเซสชันนี้เท่านั้น จะรีเซ็ตเมื่อปิดแอป</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>จับคู่ PC</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>จับคู่แล็ปท็อปเครื่องนี้กับ PC ที่บ้านจากลิงก์จับคู่</value></data>
+  <data name="SettingsHomePair.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>จับคู่แล็ปท็อปเครื่องนี้กับ PC ที่บ้านจากลิงก์จับคู่</value></data>
+  <data name="SettingsHomePairText.Text" xml:space="preserve"><value>จับคู่ PC</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>เลิกจับคู่</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ลืม PC ที่จับคู่ไว้ โมเดลและการดาวน์โหลดจะอยู่ตามเดิม</value></data>
+  <data name="SettingsHomeUnpair.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ลืม PC ที่จับคู่ไว้ โมเดลและการดาวน์โหลดจะอยู่ตามเดิม</value></data>
+  <data name="SettingsHomeUnpairText.Text" xml:space="preserve"><value>เลิกจับคู่</value></data>
+  <data name="SettingsNotifyDevices.Header" xml:space="preserve"><value>อุปกรณ์จับคู่หรือเชื่อมต่อจากนอกบ้าน</value></data>
+  <data name="SettingsNotifyDevices.OnContent" xml:space="preserve"><value>เปิด</value></data>
+  <data name="SettingsNotifyDevices.OffContent" xml:space="preserve"><value>ปิด</value></data>
+  <data name="SettingsNotifyDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>อุปกรณ์จับคู่หรือเชื่อมต่อจากนอกบ้าน</value></data>
+  <data name="HomeClientEmpty.Text" xml:space="preserve"><value>AI ทำงานบน PC อีกเครื่องของคุณ โมเดล การใช้หน่วยความจำ และการอุ่นเครื่องจะแสดงที่นั่น</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>เปลี่ยน PC</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>เปิดการตั้งค่า PC ที่บ้านเพื่อจับคู่ PC เครื่องอื่น</value></data>
+  <data name="HomeChangePc.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>เปิดการตั้งค่า PC ที่บ้านเพื่อจับคู่ PC เครื่องอื่น</value></data>
+  <data name="HomeChangePcText.Text" xml:space="preserve"><value>เปลี่ยน PC</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>เรียกใช้ AI ที่นี่</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ออกจากโหมดไคลเอนต์และเรียกใช้ AI บน PC เครื่องนี้อีกครั้ง การจับคู่ยังคงถูกบันทึกไว้</value></data>
+  <data name="HomeRunHere.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ออกจากโหมดไคลเอนต์และเรียกใช้ AI บน PC เครื่องนี้อีกครั้ง การจับคู่ยังคงถูกบันทึกไว้</value></data>
+  <data name="HomeRunHereText.Text" xml:space="preserve"><value>เรียกใช้ AI ที่นี่</value></data>
+  <data name="ModelsLocalNote.Text" xml:space="preserve"><value>การดาวน์โหลดในหน้านี้ใช้เมื่อ PC เครื่องนี้เรียกใช้ AI</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ใช้ PC ที่บ้านของฉัน</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ข้ามการดาวน์โหลดและใช้ AI บน PC อีกเครื่องของคุณ ถัดไปคุณจะจับคู่กับเครื่องนั้น</value></data>
+  <data name="WelcomeHomePc.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ข้ามการดาวน์โหลดและใช้ AI บน PC อีกเครื่องของคุณ ถัดไปคุณจะจับคู่กับเครื่องนั้น</value></data>
+  <data name="WelcomeHomePcText.Text" xml:space="preserve"><value>ใช้ PC ที่บ้านของฉัน</value></data>
+  <data name="Vm_LinkConnectedLan" xml:space="preserve"><value>เชื่อมต่อแล้ว - เครือข่ายบ้าน</value></data>
+  <data name="Vm_LinkConnectedRelay" xml:space="preserve"><value>เชื่อมต่อแล้ว - ผ่านรีเลย์</value></data>
+  <data name="Vm_LinkConnecting" xml:space="preserve"><value>กำลังเชื่อมต่อ...</value></data>
+  <data name="Vm_LinkUnreachable" xml:space="preserve"><value>เข้าถึงไม่ได้</value></data>
+  <data name="Vm_LinkRevoked" xml:space="preserve"><value>แล็ปท็อปเครื่องนี้ถูกลบออกจาก PC แล้ว</value></data>
+  <data name="Vm_LinkRepair" xml:space="preserve"><value>จับคู่อีกครั้ง</value></data>
+  <data name="Vm_LinkRtt" xml:space="preserve"><value>{0} - {1} มิลลิวินาที</value></data>
+  <data name="Vm_LinkLastSeen" xml:space="preserve"><value>พบล่าสุด {0}</value></data>
+  <data name="Vm_LinkUsingLaptop" xml:space="preserve"><value>ใช้โมเดลของแล็ปท็อปเครื่องนี้</value></data>
+  <data name="Vm_LinkUnreachableHelp" xml:space="preserve"><value>เข้าถึง {0} ไม่ได้ ตรวจสอบว่าเปิดอยู่และอยู่ในเครือข่ายเดียวกัน หรือเปิดรีเลย์</value></data>
+  <data name="Vm_LinkRevokedHelp" xml:space="preserve"><value>{0} ไม่อนุญาตให้แล็ปท็อปเครื่องนี้เข้าอีกต่อไป จับคู่อีกครั้งเพื่อใช้งานต่อ</value></data>
+  <data name="Vm_LinkRepairHelp" xml:space="preserve"><value>ตัวตนของ {0} เปลี่ยนไป แล็ปท็อปเครื่องนี้จึงหยุดเชื่อถือ หากคุณไม่ได้คาดไว้ อย่าจับคู่อีก มิฉะนั้นให้เลิกจับคู่แล้วจับคู่ใหม่</value></data>
+  <data name="Vm_TrayLink" xml:space="preserve"><value>{0} - {1}</value></data>
+  <data name="Vm_DeviceAlertPaired" xml:space="preserve"><value>จับคู่ {0} แล้ว และตอนนี้ใช้ AI ของ PC เครื่องนี้ได้</value></data>
+  <data name="Vm_DeviceAlertRelay" xml:space="preserve"><value>{0} เชื่อมต่อผ่านรีเลย์จากนอกบ้าน</value></data>
+  <data name="Vm_HomeModeThisPc" xml:space="preserve"><value>PC เครื่องนี้</value></data>
+  <data name="Vm_HomeModeHomePc" xml:space="preserve"><value>ใช้ PC ที่บ้านของฉัน</value></data>
+  <data name="Vm_HomeFallbackNone" xml:space="preserve"><value>ไม่มี</value></data>
+  <data name="Vm_HomeFallbackLocal" xml:space="preserve"><value>ใช้โมเดลของแล็ปท็อปเครื่องนี้</value></data>
+  <data name="Vm_HomeRelayAuto" xml:space="preserve"><value>อัตโนมัติ</value></data>
+  <data name="Vm_HomeRelayManual" xml:space="preserve"><value>ด้วยตนเอง</value></data>
+  <data name="Vm_HomeNeedsPair" xml:space="preserve"><value>จับคู่ PC ก่อน</value></data>
+  <data name="Vm_UnpairTitle" xml:space="preserve"><value>เลิกจับคู่ PC เครื่องนี้หรือไม่</value></data>
+  <data name="Vm_UnpairBody" xml:space="preserve"><value>แล็ปท็อปเครื่องนี้จะลืม {0} และเลิกใช้ โมเดลและการดาวน์โหลดจะไม่ถูกแตะต้อง คุณจับคู่อีกครั้งได้ภายหลัง</value></data>
+  <data name="Vm_UnpairConfirm" xml:space="preserve"><value>เลิกจับคู่</value></data>
+  <data name="Vm_UnpairCancel" xml:space="preserve"><value>ยกเลิก</value></data>
+  <data name="Vm_FallbackTitle" xml:space="preserve"><value>เข้าถึง PC ที่บ้านของคุณไม่ได้</value></data>
+  <data name="Vm_FallbackBody" xml:space="preserve"><value>ขณะนี้เข้าถึง {0} ไม่ได้ ระหว่างที่ไม่อยู่ ให้แล็ปท็อปเครื่องนี้ตอบด้วยโมเดลของตัวเองหรือไม่ คุณเปลี่ยนได้ในการตั้งค่า ภายใต้ PC ที่บ้าน</value></data>
+  <data name="Vm_FallbackLocal" xml:space="preserve"><value>ใช้โมเดลของแล็ปท็อปเครื่องนี้</value></data>
+  <data name="Vm_FallbackNone" xml:space="preserve"><value>ไม่มี</value></data>
+  <data name="Vm_PairTitle" xml:space="preserve"><value>ใช้ PC ที่บ้านของฉัน</value></data>
+  <data name="Vm_PairIntro" xml:space="preserve"><value>บน PC อีกเครื่อง เปิดการตั้งค่าแล้วเลือกจับคู่อุปกรณ์ จากนั้นคัดลอกลิงก์ แล้ววางที่นี่</value></data>
+  <data name="Vm_PairLinkPlaceholder" xml:space="preserve"><value>portalai://pair?...</value></data>
+  <data name="Vm_PairLinkName" xml:space="preserve"><value>ลิงก์จับคู่</value></data>
+  <data name="Vm_PairPaste" xml:space="preserve"><value>วางลิงก์</value></data>
+  <data name="Vm_PairPasteTip" xml:space="preserve"><value>วางลิงก์จับคู่จากคลิปบอร์ด</value></data>
+  <data name="Vm_PairNext" xml:space="preserve"><value>ถัดไป</value></data>
+  <data name="Vm_PairConfirm" xml:space="preserve"><value>จับคู่</value></data>
+  <data name="Vm_PairBack" xml:space="preserve"><value>ย้อนกลับ</value></data>
+  <data name="Vm_PairCancel" xml:space="preserve"><value>ยกเลิก</value></data>
+  <data name="Vm_PairWorking" xml:space="preserve"><value>กำลังเชื่อมต่อกับ PC...</value></data>
+  <data name="Vm_PairDeviceName" xml:space="preserve"><value>ชื่อของแล็ปท็อปเครื่องนี้</value></data>
+  <data name="Vm_PairConfirmPc" xml:space="preserve"><value>จับคู่กับ {0} หรือไม่</value></data>
+  <data name="Vm_PairFingerprint" xml:space="preserve"><value>ลายนิ้วมือ: {0}</value></data>
+  <data name="Vm_PairErr_invalid_input" xml:space="preserve"><value>ลิงก์ไม่ถูกต้อง คัดลอกอีกครั้งจาก PC อีกเครื่อง</value></data>
+  <data name="Vm_PairErr_address_not_allowed" xml:space="preserve"><value>ที่อยู่นั้นไม่ได้อยู่ในเครือข่ายบ้านของคุณ เมื่ออยู่นอกบ้าน ให้จับคู่ที่บ้านก่อนหนึ่งครั้ง</value></data>
+  <data name="Vm_PairErr_unreachable" xml:space="preserve"><value>เข้าถึงที่อยู่นั้นไม่ได้</value></data>
+  <data name="Vm_PairErr_certificate_mismatch" xml:space="preserve"><value>ไม่สามารถยืนยัน PC เครื่องนี้ได้</value></data>
+  <data name="Vm_PairErr_host_proof_invalid" xml:space="preserve"><value>ไม่สามารถยืนยัน PC เครื่องนี้ได้</value></data>
+  <data name="Vm_PairErr_refused" xml:space="preserve"><value>PC เครื่องนั้นปฏิเสธการจับคู่</value></data>
+  <data name="Vm_PairErr_protocol_error" xml:space="preserve"><value>PC เครื่องนั้นส่งคำตอบที่ไม่คาดคิดมา</value></data>
+  <data name="Vm_PairErr_save_failed" xml:space="preserve"><value>จับคู่สำเร็จ แต่ไม่สามารถบันทึกบน PC เครื่องนี้ได้</value></data>
+  <data name="Vm_PairErr_already_paired" xml:space="preserve"><value>มี PC ที่จับคู่อยู่แล้ว เลิกจับคู่ในการตั้งค่าก่อน</value></data>
+  <data name="Vm_PairErr_not_available" xml:space="preserve"><value>การจับคู่ใช้ไม่ได้ในการติดตั้งนี้</value></data>
+  <data name="Vm_PairErr_host" xml:space="preserve"><value>แอปไม่ทำงาน</value></data>
+  <data name="Vm_PairReason_expired" xml:space="preserve"><value>รหัสหมดอายุ ขอรหัสใหม่</value></data>
+  <data name="Vm_PairReason_code_voided" xml:space="preserve"><value>รหัสนั้นถูกใช้หมดจากการลองผิดหลายครั้ง ขอรหัสใหม่</value></data>
+  <data name="Vm_PairReason_no_offer" xml:space="preserve"><value>PC เครื่องนั้นไม่ได้รออุปกรณ์อยู่ เปิดรหัสใหม่บนเครื่องนั้น</value></data>
+  <data name="Vm_PairReason_too_many_devices" xml:space="preserve"><value>PC เครื่องนั้นมี 16 อุปกรณ์แล้ว ลบหนึ่งอุปกรณ์ก่อน</value></data>
+  <data name="Vm_PairReason_wrong_code" xml:space="preserve"><value>รหัสไม่ถูกต้อง</value></data>
+  <data name="ModelsMemoryTitle.Text" xml:space="preserve"><value>งบหน่วยความจำ</value></data>
+  <data name="ModelsMemoryTitle.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>สิ่งที่โมเดลที่โหลดอยู่และกำลังโหลดวางแผนจะใช้ เทียบกับขีดจำกัด RAM และหน่วยความจำการ์ดแสดงผล โมเดลที่ไม่พอดีจะถูกปฏิเสธ</value></data>
+  <data name="Vm_MemRam" xml:space="preserve"><value>RAM</value></data>
+  <data name="Vm_MemVram" xml:space="preserve"><value>หน่วยความจำกราฟิก</value></data>
+  <data name="Vm_MemLine" xml:space="preserve"><value>{0}: ใช้ {1} สำรอง {2} ขณะโหลด ว่าง {3} จาก {4}</value></data>
+  <data name="UpdateBar.Title" xml:space="preserve"><value>มีการอัปเดต</value></data>
+  <data name="UpdateBar.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>Portal AI Host เวอร์ชันใหม่กว่าพร้อมใน Microsoft Store</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>อัปเดต</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>เปิดหน้า Microsoft Store เพื่ออัปเดต Portal AI Host</value></data>
+  <data name="UpdateButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>เปิดหน้า Microsoft Store เพื่ออัปเดต Portal AI Host</value></data>
+  <data name="UpdateButtonText.Text" xml:space="preserve"><value>อัปเดต</value></data>
+  <data name="Vm_ComingSoon" xml:space="preserve"><value>เร็ว ๆ นี้</value></data>
+  <data name="Vm_VramBoth" xml:space="preserve"><value>ต้องใช้หน่วยความจำกราฟิก {0} GB เมื่อออฟโหลดไปยัง CPU แนะนำ {1} GB</value></data>
+  <data name="Vm_VramMin" xml:space="preserve"><value>ต้องใช้หน่วยความจำกราฟิก {0} GB เมื่อออฟโหลดไปยัง CPU</value></data>
+  <data name="Vm_VramRec" xml:space="preserve"><value>แนะนำหน่วยความจำกราฟิก {0} GB</value></data>
+  <data name="Vm_GroupCount" xml:space="preserve"><value>{0} โมเดล</value></data>
+  <data name="Vm_ShowAll" xml:space="preserve"><value>แสดงทั้งหมด {0}</value></data>
+  <data name="Vm_ShowFewer" xml:space="preserve"><value>แสดงน้อยลง</value></data>
+  <data name="Vm_CatAllTip" xml:space="preserve"><value>แสดงโมเดลทุกประเภท</value></data>
+  <data name="Vm_CatChip_all" xml:space="preserve"><value>ทั้งหมด</value></data>
+  <data name="Vm_CatChip_chat" xml:space="preserve"><value>แชต</value></data>
+  <data name="Vm_CatChip_coding" xml:space="preserve"><value>การเขียนโค้ด</value></data>
+  <data name="Vm_CatChip_reasoning" xml:space="preserve"><value>การให้เหตุผล</value></data>
+  <data name="Vm_CatChip_vision" xml:space="preserve"><value>การมองเห็น</value></data>
+  <data name="Vm_CatChip_search" xml:space="preserve"><value>ค้นหา</value></data>
+  <data name="Vm_CatChip_image" xml:space="preserve"><value>รูปภาพ</value></data>
+  <data name="Vm_CatChip_video" xml:space="preserve"><value>วิดีโอ</value></data>
+  <data name="Vm_CatChip_speech" xml:space="preserve"><value>เสียงพูด</value></data>
+  <data name="Vm_CatChip_other" xml:space="preserve"><value>อื่น ๆ</value></data>
+  <data name="Vm_Cat_chat" xml:space="preserve"><value>แชตและการเขียน</value></data>
+  <data name="Vm_Cat_coding" xml:space="preserve"><value>การเขียนโค้ด</value></data>
+  <data name="Vm_Cat_reasoning" xml:space="preserve"><value>การให้เหตุผล</value></data>
+  <data name="Vm_Cat_vision" xml:space="preserve"><value>การทำความเข้าใจรูปภาพ</value></data>
+  <data name="Vm_Cat_search" xml:space="preserve"><value>การค้นหาและเอมเบดดิง</value></data>
+  <data name="Vm_Cat_image" xml:space="preserve"><value>การสร้างรูปภาพ</value></data>
+  <data name="Vm_Cat_video" xml:space="preserve"><value>การสร้างวิดีโอ</value></data>
+  <data name="Vm_Cat_speech" xml:space="preserve"><value>เสียงพูด</value></data>
+  <data name="Vm_Cat_other" xml:space="preserve"><value>โมเดลอื่น ๆ</value></data>
+  <data name="ModelsSearch.PlaceholderText" xml:space="preserve"><value>ค้นหาโมเดล</value></data>
+  <data name="ModelsSearch.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>ค้นหาโมเดล</value></data>
+  <data name="ModelsNoMatches.Text" xml:space="preserve"><value>ไม่มีโมเดลที่ตรงกัน ล้างการค้นหาหรือเลือกทั้งหมด</value></data>
+  <data name="HomeSeeAppsLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ดูว่าแอปใดเชื่อมต่อกับโฮสต์นี้</value></data>
+  <data name="HomeSeeAppsLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ดูว่าแอปใดเชื่อมต่อกับโฮสต์นี้</value></data>
+  <data name="SettingsPairingCopyLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>คัดลอกลิงก์จับคู่ไปยังคลิปบอร์ด</value></data>
+  <data name="HomeLoadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>โหลดโมเดลเข้าหน่วยความจำเพื่อให้ตอบเร็วขึ้น</value></data>
+  <data name="HomeLoadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>โหลดโมเดลเข้าหน่วยความจำเพื่อให้ตอบเร็วขึ้น</value></data>
+  <data name="SettingsNotifyDevices.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>แสดงการแจ้งเตือนเมื่ออุปกรณ์จับคู่หรือเชื่อมต่อ</value></data>
+  <data name="SettingsCorners.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ความโค้งมนของมุม</value></data>
+  <data name="HomeChangeFolderButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>เปิดการตั้งค่าเพื่อเลือกโฟลเดอร์ที่มีพื้นที่ว่างมากกว่า</value></data>
+  <data name="HomeChangeFolderButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>เปิดการตั้งค่าเพื่อเลือกโฟลเดอร์ที่มีพื้นที่ว่างมากกว่า</value></data>
+  <data name="SettingsMoveButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ย้ายโมเดลไปยังโฟลเดอร์ที่เลือก ระบบจะคัดลอกและตรวจสอบไฟล์ก่อนลบไฟล์เก่า</value></data>
+  <data name="SettingsMoveButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ย้ายโมเดลไปยังโฟลเดอร์ที่เลือก ระบบจะคัดลอกและตรวจสอบไฟล์ก่อนลบไฟล์เก่า</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ยกเลิกการจับคู่</value></data>
+  <data name="SettingsPairingCancel.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ยกเลิกการจับคู่</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>แสดงหรือซ่อนการตรวจสอบสุขภาพ</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>แสดงหรือซ่อนการตรวจสอบสุขภาพ</value></data>
+  <data name="SettingsMaterial.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>รูปแบบพื้นหลังของหน้าต่าง</value></data>
+  <data name="HomeDownloadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ดาวน์โหลดโมเดลที่แนะนำ</value></data>
+  <data name="HomeDownloadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ดาวน์โหลดโมเดลที่แนะนำ</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ดูว่ารายงานข้อขัดข้องมีอะไรบ้าง</value></data>
+  <data name="CrashWhatsSent.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ดูว่ารายงานข้อขัดข้องมีอะไรบ้าง</value></data>
+  <data name="SettingsEaseOffFullscreen.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>เพิ่มหน่วยความจำว่างขณะแอปหรือเกมแบบเต็มหน้าจอทำงานอยู่</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>เปิดหน้าโมเดลเพื่อดูโมเดลที่ดีกว่า</value></data>
+  <data name="HomeSeeModelsButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>เปิดหน้าโมเดลเพื่อดูโมเดลที่ดีกว่า</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>คืนการตั้งค่าประสิทธิภาพเป็นค่าเริ่มต้น</value></data>
+  <data name="SettingsResetPerformance.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>คืนการตั้งค่าประสิทธิภาพเป็นค่าเริ่มต้น</value></data>
+  <data name="SettingsEaseOffBattery.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>เพิ่มหน่วยความจำว่างขณะ PC ใช้แบตเตอรี่</value></data>
+  <data name="SettingsPreset.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>เลือกสมดุลสำเร็จรูประหว่างความเร็วและการใช้หน่วยความจำ</value></data>
+  <data name="SettingsRemoteRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ให้อุปกรณ์ที่จับคู่เข้าถึง PC เครื่องนี้ได้จากนอกเครือข่ายบ้านของคุณ</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>สร้างรหัสเพื่อจับคู่อุปกรณ์ใหม่</value></data>
+  <data name="SettingsPairDevice.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>สร้างรหัสเพื่อจับคู่อุปกรณ์ใหม่</value></data>
+  <data name="SettingsCrashReports.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ส่งรายงานข้อขัดข้องเพื่อช่วยแก้ไขปัญหา</value></data>
+  <data name="SettingsAllowReplace.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>อนุญาตให้อุปกรณ์แทนที่การจับคู่ที่มีอยู่</value></data>
+  <data name="SettingsMotion.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ปริมาณแอนิเมชันที่ใช้</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>กลับไปใช้โฟลเดอร์โมเดลเริ่มต้น</value></data>
+  <data name="SettingsResetFolder.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>กลับไปใช้โฟลเดอร์โมเดลเริ่มต้น</value></data>
+  <data name="SettingsHomeUseRelay.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>อนุญาตให้เข้าถึง PC ที่บ้านผ่านรีเลย์เมื่ออยู่นอกบ้าน</value></data>
+  <data name="HomeTryAgainButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ลองโหลดรายการโมเดลอีกครั้ง</value></data>
+  <data name="HomeTryAgainButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ลองโหลดรายการโมเดลอีกครั้ง</value></data>
+  <data name="SettingsStartWithWindows.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>เริ่ม Portal AI Host เมื่อคุณลงชื่อเข้าใช้ Windows</value></data>
+  <data name="SettingsHomeMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>เลือกว่า PC เครื่องนี้จะเรียกใช้โมเดลเองหรือใช้ PC ที่บ้านของคุณ</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>เริ่มโฮสต์เพื่อให้แอปใช้งานได้</value></data>
+  <data name="HomeStartButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>เริ่มโฮสต์เพื่อให้แอปใช้งานได้</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>คืนการตั้งค่าทั่วไปเป็นค่าเริ่มต้น</value></data>
+  <data name="SettingsResetGeneral.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>คืนการตั้งค่าทั่วไปเป็นค่าเริ่มต้น</value></data>
+  <data name="SettingsHomeFallback.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>สิ่งที่ต้องทำเมื่อเข้าถึง PC ที่บ้านไม่ได้</value></data>
+  <data name="SettingsDensity.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ระยะห่างระหว่างรายการ</value></data>
+  <data name="SettingsTextSize.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ขนาดของข้อความ</value></data>
+  <data name="SettingsIdle.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ระยะเวลาที่โฮสต์รอโดยไม่มีคำขอก่อนจะคืนหน่วยความจำของโมเดล</value></data>
+  <data name="SettingsEaseOffAppBusy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>เพิ่มหน่วยความจำว่างขณะแอปอื่นทำงานหนัก</value></data>
+  <data name="SettingsRemoveDevice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ลบอุปกรณ์นี้ ต้องจับคู่ใหม่จึงจะเชื่อมต่อได้</value></data>
+  <data name="SettingsRemoveDevice.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>ลบอุปกรณ์นี้ ต้องจับคู่ใหม่จึงจะเชื่อมต่อได้</value></data>
+  <data name="SettingsMoveCancel.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>หยุดการย้ายโมเดล</value></data>
+  <data name="SettingsMoveCancel.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>หยุดการย้ายโมเดล</value></data>
+  <data name="SettingsNotifyDownloads.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>แสดงการแจ้งเตือนเมื่อการดาวน์โหลดเสร็จหรือล้มเหลว</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>คืนการตั้งค่าความเป็นส่วนตัวเป็นค่าเริ่มต้น</value></data>
+  <data name="SettingsResetPrivacy.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>คืนการตั้งค่าความเป็นส่วนตัวเป็นค่าเริ่มต้น</value></data>
+  <data name="HealthCheckAgainButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>เรียกใช้การตรวจสอบสุขภาพอีกครั้ง</value></data>
+  <data name="HealthCheckAgainButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>เรียกใช้การตรวจสอบสุขภาพอีกครั้ง</value></data>
+  <data name="SettingsMemory.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>หน่วยความจำที่โมเดลใช้ได้</value></data>
+  <data name="SettingsTheme.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>สว่าง มืด หรือตาม Windows</value></data>
+  <data name="SettingsRemoteEnabled.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ให้อุปกรณ์อื่นของคุณใช้ PC เครื่องนี้</value></data>
+  <data name="SettingsNotifyProblems.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>แสดงการแจ้งเตือนเมื่อมีสิ่งที่ต้องการให้คุณดู</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>เปิดหน้าแชตเพื่อลองโมเดลที่ใช้งานอยู่</value></data>
+  <data name="HomeTryItButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>เปิดหน้าแชตเพื่อลองโมเดลที่ใช้งานอยู่</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>คืนการตั้งค่าการแจ้งเตือนเป็นค่าเริ่มต้น</value></data>
+  <data name="SettingsResetNotifications.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>คืนการตั้งค่าการแจ้งเตือนเป็นค่าเริ่มต้น</value></data>
+  <data name="SettingsRelayAdmission.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>ให้รีเลย์ตรวจสอบอุปกรณ์ก่อนเชื่อมต่อ</value></data>
+  <data name="HomeUnloadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>คืนหน่วยความจำที่โมเดลใช้ ไฟล์โมเดลยังอยู่ในดิสก์</value></data>
+  <data name="HomeUnloadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>คืนหน่วยความจำที่โมเดลใช้ ไฟล์โมเดลยังอยู่ในดิสก์</value></data>
+  <data name="HomeSeeAllModelsLink.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>เรียกดูโมเดลทั้งหมดที่ดาวน์โหลดได้</value></data>
+  <data name="HomeSeeAllModelsLink.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>เรียกดูโมเดลทั้งหมดที่ดาวน์โหลดได้</value></data>
+  <data name="SettingsNotifyApprovals.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>แสดงการแจ้งเตือนเมื่อแอปขออนุญาต</value></data>
+  <data name="SettingsHomeRelayMode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>เลือกเวลาที่ใช้รีเลย์เพื่อเข้าถึง PC ที่บ้าน</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.HelpText" xml:space="preserve"><value>คืนการตั้งค่ารูปลักษณ์เป็นค่าเริ่มต้น</value></data>
+  <data name="SettingsResetAppearance.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve"><value>คืนการตั้งค่ารูปลักษณ์เป็นค่าเริ่มต้น</value></data>
+  <data name="HomeHealthExpander.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve"><value>การตรวจสอบสุขภาพ</value></data>
+</root>

@@ -42,7 +42,7 @@ public class LocalizationResourceTests
     [Fact]
     public void RequiredLanguagesExist()
     {
-        foreach (var lang in new[] { "de-DE", "fr-FR", "ar-SA" })
+        foreach (var lang in new[] { "en-US", "de-DE", "fr-FR", "es-ES", "it-IT", "pt-BR", "ja-JP", "zh-Hans", "zh-Hant", "ko-KR", "ru-RU", "pl-PL", "nl-NL", "tr-TR", "ar-SA", "hi-IN", "id-ID", "vi-VN", "th-TH", "sv-SE" })
             Assert.True(File.Exists(Path.Combine(StringsDir, lang, "Resources.resw")), lang + " is missing");
     }
 
